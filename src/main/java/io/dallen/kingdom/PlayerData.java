@@ -18,21 +18,35 @@
  */
 package io.dallen.kingdom;
 
-import org.bukkit.plugin.java.JavaPlugin;
+import io.dallen.kingdom.Handlers.Party;
+import io.dallen.kingdom.Roles.Role;
+import io.dallen.kingdom.Vaults.PlayerVault;
+import java.util.HashMap;
+import lombok.Getter;
+import lombok.Setter;
+import org.bukkit.entity.Player;
 
 /**
  *
  * @author donoa_000
  */
-public class Main extends JavaPlugin{
+public class PlayerData {
+    @Getter
+    private static HashMap<Player, PlayerData> PlayerDat = new HashMap<Player, PlayerData>();
     
-    @Override
-    public void onEnable(){
-        
-    }
+    @Getter @Setter
+    private Role Role;
     
-    @Override
-    public void onDisable(){
+    @Getter @Setter
+    private String Faction;
+    
+    @Getter @Setter
+    private PlayerVault Vault;
+    
+    @Getter @Setter
+    private Party CurrParty;
+    
+    public PlayerData(){
         
     }
 }

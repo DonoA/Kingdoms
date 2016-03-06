@@ -16,23 +16,30 @@
  * 
  * 
  */
-package io.dallen.kingdom;
+package io.dallen.kingdom.Handlers;
 
-import org.bukkit.plugin.java.JavaPlugin;
+import java.util.ArrayList;
+import java.util.HashMap;
+import lombok.Getter;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 /**
  *
  * @author donoa_000
  */
-public class Main extends JavaPlugin{
+public class Party implements CommandExecutor{
+    
+    @Getter
+    private static HashMap<String, Party> Parties = new HashMap<String, Party>(); 
+    
+    @Getter
+    private ArrayList<Player> Members = new ArrayList<Player>();
     
     @Override
-    public void onEnable(){
-        
-    }
-    
-    @Override
-    public void onDisable(){
-        
+    public boolean onCommand(CommandSender sender, Command cmd, String lbl, String[] args){
+        return true;
     }
 }

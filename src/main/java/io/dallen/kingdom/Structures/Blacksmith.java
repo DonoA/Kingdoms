@@ -16,23 +16,19 @@
  * 
  * 
  */
-package io.dallen.kingdom;
+package io.dallen.kingdom.Structures;
 
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.Location;
 
 /**
- *
+ * Allows the kingdom to manufacture weapons and armor
+ * 
  * @author donoa_000
  */
-public class Main extends JavaPlugin{
-    
-    @Override
-    public void onEnable(){
-        
+public class Blacksmith extends Structure{
+
+    public Blacksmith(int w, int l, int h, Location cent, String own, String fac) {
+        super(w, l, h, cent, own, fac);
     }
     
-    @Override
-    public void onDisable(){
-        
-    }
 }

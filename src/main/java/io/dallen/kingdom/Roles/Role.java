@@ -16,23 +16,17 @@
  * 
  * 
  */
-package io.dallen.kingdom;
+package io.dallen.kingdom.Roles;
 
-import org.bukkit.plugin.java.JavaPlugin;
+import lombok.Getter;
 
 /**
  *
  * @author donoa_000
  */
-public class Main extends JavaPlugin{
+public class Role {
+    @Getter
+    private String title;
     
-    @Override
-    public void onEnable(){
-        
-    }
     
-    @Override
-    public void onDisable(){
-        
-    }
 }

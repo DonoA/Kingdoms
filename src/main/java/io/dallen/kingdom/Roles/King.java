@@ -16,23 +16,12 @@
  * 
  * 
  */
-package io.dallen.kingdom;
-
-import org.bukkit.plugin.java.JavaPlugin;
+package io.dallen.kingdom.Roles;
 
 /**
  *
  * @author donoa_000
  */
-public class Main extends JavaPlugin{
+public class King extends Role{
     
-    @Override
-    public void onEnable(){
-        
-    }
-    
-    @Override
-    public void onDisable(){
-        
-    }
 }

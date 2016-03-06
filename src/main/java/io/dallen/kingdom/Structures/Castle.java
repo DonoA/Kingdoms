@@ -16,23 +16,19 @@
  * 
  * 
  */
-package io.dallen.kingdom;
+package io.dallen.kingdom.Structures;
 
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.Bukkit;
 
 /**
  *
  * @author donoa_000
  */
-public class Main extends JavaPlugin{
+public class Castle extends Structure{
     
-    @Override
-    public void onEnable(){
-        
-    }
+    private int level;
     
-    @Override
-    public void onDisable(){
-        
+    public Castle(){
+        super(0,0,0,Bukkit.getWorlds().get(0).getSpawnLocation(),"none","none");
     }
 }

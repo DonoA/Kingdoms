@@ -16,23 +16,25 @@
  * 
  * 
  */
-package io.dallen.kingdom;
+package io.dallen.kingdom.Roles;
 
-import org.bukkit.plugin.java.JavaPlugin;
+import java.util.ArrayList;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
  * @author donoa_000
  */
-public class Main extends JavaPlugin{
+public class RoleTree {
     
-    @Override
-    public void onEnable(){
-        
-    }
     
-    @Override
-    public void onDisable(){
+    
+    private static class RoleNode{
         
+        @Getter @Setter
+        private ArrayList<RoleNode> Parents;
+        @Getter @Setter
+        private ArrayList<RoleNode> Children;
     }
 }

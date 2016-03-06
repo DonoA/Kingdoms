@@ -16,23 +16,35 @@
  * 
  * 
  */
-package io.dallen.kingdom;
+package io.dallen.kingdom.Structures;
 
-import org.bukkit.plugin.java.JavaPlugin;
+import lombok.Getter;
+import lombok.Setter;
+import org.bukkit.Location;
 
 /**
  *
  * @author donoa_000
  */
-public class Main extends JavaPlugin{
+public class Structure {
     
-    @Override
-    public void onEnable(){
+    @Getter @Setter
+    private int Width;
+    @Getter @Setter
+    private int Height;
+    @Getter @Setter
+    private int Length;
+    @Getter @Setter
+    private Location Center;
+    @Getter @Setter
+    private int ID;
+    @Getter @Setter
+    private String Owner;
+    @Getter @Setter
+    private String Faction;
+    
+    public Structure(int w, int l, int h, Location cent, String own, String fac){
         
     }
     
-    @Override
-    public void onDisable(){
-        
-    }
 }

@@ -16,23 +16,13 @@
  * 
  * 
  */
-package io.dallen.kingdom;
-
-import org.bukkit.plugin.java.JavaPlugin;
+package io.dallen.kingdom.Vaults;
 
 /**
  *
  * @author donoa_000
  */
-public class Main extends JavaPlugin{
+public class PlayerVault {
     
-    @Override
-    public void onEnable(){
-        
-    }
-    
-    @Override
-    public void onDisable(){
-        
-    }
+    private String Owner;
 }

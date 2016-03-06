@@ -16,23 +16,14 @@
  * 
  * 
  */
-package io.dallen.kingdom;
+package io.dallen.kingdom.Handlers;
 
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.event.Listener;
 
 /**
  *
  * @author donoa_000
  */
-public class Main extends JavaPlugin{
+public class JoinLeaveHandler implements Listener{
     
-    @Override
-    public void onEnable(){
-        
-    }
-    
-    @Override
-    public void onDisable(){
-        
-    }
 }
