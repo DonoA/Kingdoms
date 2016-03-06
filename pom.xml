@@ -44,11 +44,16 @@
                                     <pattern>com.fasterxml</pattern>
                                     <shadedPattern>libs.com.fasterxml</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>com.comphenix.protocol</pattern>
+                                    <shadedPattern>libs.com.comphenix.protocol</shadedPattern>
+                                </relocation>
                             </relocations>
                             <artifactSet>
                                 <excludes>
                                     <exclude>org.projectlombok:lombok</exclude>
                                     <exclude>org.spigotmc:spigot-api</exclude>
+                                    <exclude>net.citizensnpcs:citizensapi</exclude>
                                 </excludes>
                             </artifactSet>
                         </configuration>
@@ -128,14 +133,14 @@
             <type>javadoc</type>
             <scope>provided</scope>
         </dependency>
-        <!-- Citizens -->
+        <!-- Citizens API -->
         <dependency>
             <groupId>net.citizensnpcs</groupId>
             <artifactId>citizensapi</artifactId>
             <version>2.0.14-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
-        <!-- ProtocolLib -->
+        <!-- ProtocolLib API -->
         <dependency>
             <groupId>com.comphenix.protocol</groupId>
             <artifactId>ProtocolLib</artifactId>
