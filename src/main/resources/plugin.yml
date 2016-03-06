@@ -1,0 +1,8 @@
+name: ${project.artifactId}
+main: ${project.groupId}.Main
+version: ${project.version}
+author: Dallen/Donovan Allen
+commands:
+  Kingdom:
+    Desription: Base Kingdom command
+    usage: /Kingdom <sub cmd>
