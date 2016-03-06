@@ -18,6 +18,11 @@
  */
 package io.dallen.kingdom;
 
+import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.npc.NPC;
+import net.citizensnpcs.api.npc.NPCRegistry;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.EntityType;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -28,7 +33,9 @@ public class Main extends JavaPlugin{
     
     @Override
     public void onEnable(){
-        
+        NPCRegistry registry = CitizensAPI.getNPCRegistry();
+        NPC npc = registry.createNPC(EntityType.PLAYER, "MyNPC");
+        npc.spawn(Bukkit.getWorlds().get(0).getSpawnLocation());
     }
     
     @Override
