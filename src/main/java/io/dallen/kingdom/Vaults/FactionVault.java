@@ -18,10 +18,26 @@
  */
 package io.dallen.kingdom.Vaults;
 
+import io.dallen.kingdom.Faction;
+import lombok.Getter;
+import org.bukkit.entity.Player;
+
 /**
  *
  * @author donoa_000
  */
-public class FactionVault {
+public class FactionVault implements Vault{
+    @Getter
+    private Faction Owner;
     
+    @Getter
+    private int Size;
+    
+    public void SendToPlayer(Player p){
+        
+    }
+    
+    public boolean CanOpen(Player p){
+        return true;
+    }
 }

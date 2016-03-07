@@ -16,28 +16,13 @@
  * 
  * 
  */
-package io.dallen.kingdom.Vaults;
-
-import io.dallen.kingdom.Structures.Structure;
-import lombok.Getter;
-import org.bukkit.entity.Player;
+package io.dallen.kingdom.Roles;
 
 /**
- *
+ * High variety of horizontal progression within
+ * 
  * @author donoa_000
  */
-public class BuildingVault implements Vault{
-    @Getter
-    private Structure Owner;
+public class Tradesman extends Role{
     
-    @Getter
-    private int Size;
-    
-    public void SendToPlayer(Player p){
-        
-    }
-    
-    public boolean CanOpen(Player p){
-        return true;
-    }
 }

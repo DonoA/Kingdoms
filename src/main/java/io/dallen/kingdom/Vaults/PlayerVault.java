@@ -18,11 +18,26 @@
  */
 package io.dallen.kingdom.Vaults;
 
+import lombok.Getter;
+import org.bukkit.entity.Player;
+
 /**
  *
  * @author donoa_000
  */
-public class PlayerVault {
+public class PlayerVault implements Vault{
+    @Getter
+    private Player Owner;
     
-    private String Owner;
+    @Getter
+    private int Size;
+    
+    public void SendToPlayer(Player p){
+        
+    }
+    
+    public boolean CanOpen(Player p){
+        return true;
+    }
+    
 }

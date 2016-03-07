@@ -24,9 +24,14 @@ import lombok.Getter;
  *
  * @author donoa_000
  */
-public class Role {
+public abstract class Role {
     @Getter
-    private String title;
+    private String Title;
     
+    @Getter
+    private boolean Master;
+    
+    @Getter
+    private int Renoun;
     
 }

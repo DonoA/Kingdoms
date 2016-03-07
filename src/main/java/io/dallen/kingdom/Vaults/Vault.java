@@ -16,25 +16,22 @@
  * 
  * 
  */
-package io.dallen.kingdom.Roles;
+package io.dallen.kingdom.Vaults;
 
-import java.util.ArrayList;
-import lombok.Getter;
-import lombok.Setter;
+import org.bukkit.entity.Player;
 
 /**
  *
  * @author donoa_000
  */
-public class RoleTree {
+public interface Vault {
     
+    public void SendToPlayer(Player p);
     
+    public boolean CanOpen(Player p);
     
-    private static class RoleNode{
-        
-        @Getter @Setter
-        private ArrayList<RoleNode> Parents;
-        @Getter @Setter
-        private ArrayList<RoleNode> Children;
-    }
+    public int getSize();
+    
+    public Object getOwner();
+    
 }

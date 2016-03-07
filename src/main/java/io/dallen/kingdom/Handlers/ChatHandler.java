@@ -64,6 +64,48 @@ public class ChatHandler implements Listener, CommandExecutor{
     
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String lbl, String[] args){
-        return true;
+        if(sender instanceof Player){
+            Player p = (Player) sender;
+            if(args.length >= 1){
+                switch(args[0]){
+                    case "public":
+                        PlayerChatModes.put(p, 0);
+                        break;
+                    case "faction":
+                        PlayerChatModes.put(p, 1);
+                        break;
+                    case "f":
+                        PlayerChatModes.put(p, 1);
+                        break;
+                    case "party":
+                        PlayerChatModes.put(p, 2);
+                        break;
+                }
+            }else{
+                if(PlayerChatModes.get(p) == 2){
+                    PlayerChatModes.put(p, 0);
+                }else{
+                    PlayerChatModes.put(p, PlayerChatModes.get(p)+1);
+                }
+            }
+            switch(PlayerChatModes.get(p)){
+                case 0:
+                    p.sendMessage("[ChatHandler] Switched to public chat");
+                    break;
+                case 1:
+                    p.sendMessage("[ChatHandler] Switched to faction chat");
+                    break;
+                case 2:
+                    p.sendMessage("[ChatHandler] Switched to party chat");
+                    if(PlayerData.getPlayerDat().get(p).getCurrParty() == null){
+                        p.sendMessage("[ChatHandler] Your party is currently empty!");
+                    }
+                    break;
+            }
+            return true;
+        }else{
+            sender.sendMessage(ChatColor.RED + "Console chat modes is not allowed!");
+            return true;
+        }
     }
 }
