@@ -48,6 +48,10 @@
                                     <pattern>com.comphenix.protocol</pattern>
                                     <shadedPattern>libs.com.comphenix.protocol</shadedPattern>
                                 </relocation>
+<!--                                <relocation>
+                                    <pattern>net.citizensnpcs</pattern>
+                                    <shadedPattern>libs.net.citizensnpcs</shadedPattern>
+                                </relocation>-->
                             </relocations>
                             <artifactSet>
                                 <excludes>

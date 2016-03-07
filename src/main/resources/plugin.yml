@@ -1,10 +1,16 @@
 name: ${project.artifactId}
-main: ${project.groupId}.Main
+main: ${project.groupId}.${project.artifactId}.Main
 version: ${project.version}
 author: Dallen/Donovan Allen
 depend: [Citizens]
 load: STARTUP
 commands:
   Kingdom:
+    Desription: Base Kingdom command
+    usage: /Kingdom <sub cmd>
+  Chat:
+    Desription: Base Kingdom command
+    usage: /Kingdom <sub cmd>
+  Party:
     Desription: Base Kingdom command
     usage: /Kingdom <sub cmd>
