@@ -16,7 +16,7 @@
  * 
  * 
  */
-package io.dallen.Kingdom;
+package io.dallen.Kingdom.NPCs;
 
 //import java.io.PrintStream;
 //import java.lang.reflect.Field;

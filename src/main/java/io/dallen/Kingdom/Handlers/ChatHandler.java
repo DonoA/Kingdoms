@@ -68,16 +68,22 @@ public class ChatHandler implements Listener, CommandExecutor{
             Player p = (Player) sender;
             if(args.length >= 1){
                 switch(args[0]){
-                    case "public":
+                    case "global":
                         PlayerChatModes.put(p, 0);
                         break;
-                    case "faction":
+                    case "g":
+                        PlayerChatModes.put(p, 0);
+                        break;
+                    case "kingdom":
                         PlayerChatModes.put(p, 1);
                         break;
-                    case "f":
+                    case "k":
                         PlayerChatModes.put(p, 1);
                         break;
                     case "party":
+                        PlayerChatModes.put(p, 2);
+                        break;
+                    case "p":
                         PlayerChatModes.put(p, 2);
                         break;
                 }
@@ -90,10 +96,10 @@ public class ChatHandler implements Listener, CommandExecutor{
             }
             switch(PlayerChatModes.get(p)){
                 case 0:
-                    p.sendMessage("[ChatHandler] Switched to public chat");
+                    p.sendMessage("[ChatHandler] Switched to global chat");
                     break;
                 case 1:
-                    p.sendMessage("[ChatHandler] Switched to faction chat");
+                    p.sendMessage("[ChatHandler] Switched to kingdom chat");
                     break;
                 case 2:
                     p.sendMessage("[ChatHandler] Switched to party chat");

@@ -6,11 +6,37 @@ depend: [Citizens]
 load: STARTUP
 commands:
   Kingdom:
-    Desription: Base Kingdom command
-    usage: /Kingdom <sub cmd>
+    Desription: Base Kingdom Command
+    usage: |
+            /Kingdom [Kingdom]
+            /Kingdom found <name>
+            /Kingdom online [Kingdom]
+            /Kingdom list
+            /Kingdom stats [Kingdom]
+            /Kingdom edit [Kingdom]
+            /Kingdom promote <player> [rank]
+            /Kingdom announcements
+            /Kingdom build [building name]
+            /Kingdom demote <player> [rank]
+            /Kingdom addnpc <name> <rank>
   Chat:
-    Desription: Base Kingdom command
-    usage: /Kingdom <sub cmd>
+    Desription: Chat Handling Command
+    usage: |
+            /Chat
+            /Chat <global|g|kingdom|k|party|p>
   Party:
-    Desription: Base Kingdom command
-    usage: /Kingdom <sub cmd>
+    Desription: Party Command
+    usage: |
+            /Party
+            /Party invite <player>
+            /Party leave
+            /Party join
+            /Party join <player>
+  Party:
+    Desription: Party Command
+    usage: |
+            /Party
+            /Party invite <player>
+            /Party leave
+            /Party join
+            /Party join <player>

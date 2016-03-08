@@ -16,27 +16,14 @@
  * 
  * 
  */
-package io.dallen.Kingdom;
-
-import lombok.Getter;
-import lombok.Setter;
-import net.citizensnpcs.api.CitizensAPI;
-import net.citizensnpcs.api.npc.NPCRegistry;
+package io.dallen.Kingdom.NPCs;
 
 /**
- *
+ * Routes of NPCs to follow when the patrol or move around from time to time
+ * 
  * @author donoa_000
  */
-public class NpcManager {
+public class Route {
+
     
-    @Getter @Setter
-    private NPCRegistry NPCreg;
-    
-    public NpcManager(){
-        NPCreg = CitizensAPI.getNPCRegistry();
-    }
-    
-    public void CreateNPCs(){
-        
-    }
 }

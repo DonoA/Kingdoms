@@ -18,6 +18,7 @@
  */
 package io.dallen.Kingdom;
 
+import io.dallen.Kingdom.NPCs.NpcManager;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import io.dallen.Kingdom.Handlers.ChatHandler;
