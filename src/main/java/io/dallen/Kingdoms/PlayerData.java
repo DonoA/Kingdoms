@@ -18,9 +18,11 @@
  */
 package io.dallen.Kingdoms;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.dallen.Kingdoms.Handlers.Party;
 import io.dallen.Kingdoms.Roles.Role;
 import io.dallen.Kingdoms.Vaults.PlayerVault;
+import java.util.ArrayList;
 import java.util.HashMap;
 import lombok.Getter;
 import lombok.Setter;
@@ -44,8 +46,8 @@ public class PlayerData {
     @Getter @Setter
     private PlayerVault Vault;
     
-    @Getter @Setter
-    private Party CurrParty;
+    @Getter @Setter @JsonIgnore
+    private String PartyID;
     
     @Getter @Setter
     private int Might;
@@ -53,7 +55,29 @@ public class PlayerData {
     @Getter @Setter
     private Location Spawn;
     
+    @Getter
+    private boolean muted;
+    
     public PlayerData(){
         
+    }
+    
+    public static PlayerData getData(Player p){
+        if(PlayerDat.containsKey(p)){
+            return PlayerDat.get(p);
+        }
+        return null;
+    }
+    
+    public Party getCurrParty(){
+        if(PartyID == null){
+            return null;
+        }
+        return Party.getParties().get(PartyID);
+    }
+    
+    public boolean mute(){
+        muted = !muted;
+        return muted;
     }
 }

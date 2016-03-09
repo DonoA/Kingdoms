@@ -19,17 +19,12 @@
 package io.dallen.Kingdoms;
 
 import io.dallen.Kingdoms.NPCs.NpcManager;
-import com.google.common.io.ByteArrayDataOutput;
-import com.google.common.io.ByteStreams;
 import io.dallen.Kingdoms.Handlers.ChatHandler;
 import io.dallen.Kingdoms.Handlers.Party;
 import io.dallen.Kingdoms.Util.LogUtil;
 import lombok.Getter;
 import lombok.Setter;
-import net.citizensnpcs.api.CitizensAPI;
-import net.citizensnpcs.api.npc.NPCRegistry;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -57,7 +52,7 @@ public class Main extends JavaPlugin {
                 NPCs = new NpcManager();
                 Main.getPlugin().getCommand("kingdom").setExecutor(new KingdomCommands());
                 Main.getPlugin().getCommand("chat").setExecutor(new ChatHandler());
-                Main.getPlugin().getCommand("party").setExecutor(new Party());
+                Main.getPlugin().getCommand("party").setExecutor(new Party.PartyCommands());
 //                Main.getPlugin().getServer().getScheduler().scheduleSyncRepeatingTask(this, new DisguiseTask(this), 1200L, 1200L);
             }
         };

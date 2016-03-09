@@ -30,13 +30,9 @@ commands:
             /Party
             /Party invite <player>
             /Party leave
-            /Party join
+            /Party kick <player>
             /Party join <player>
-  Party:
-    Desription: Party Command
+  mute:
+    Desription: Used to mute a player from chat
     usage: |
-            /Party
-            /Party invite <player>
-            /Party leave
-            /Party join
-            /Party join <player>
+            /mute <player> [global]

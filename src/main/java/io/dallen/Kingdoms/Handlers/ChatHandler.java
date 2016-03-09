@@ -20,6 +20,7 @@ package io.dallen.Kingdoms.Handlers;
 
 import io.dallen.Kingdoms.Faction;
 import io.dallen.Kingdoms.PlayerData;
+import io.dallen.Kingdoms.Util.MuteCommand;
 import java.util.HashMap;
 import lombok.Getter;
 import lombok.Setter;
@@ -43,23 +44,39 @@ public class ChatHandler implements Listener, CommandExecutor{
     
     @EventHandler
     public void onChat(AsyncPlayerChatEvent e){
-        e.setFormat(ChatColor.WHITE + "[%c]" + PlayerData.getPlayerDat().get(e.getPlayer()).getRole().getTitle() + "%s" + ChatColor.WHITE + ": %s");
-        switch(PlayerChatModes.get(e.getPlayer())){
-            case 0: //Public
-                e.setFormat(e.getFormat().replace("%c", "Public"));
-               break;
-            case 1: //Faction
-                Faction f = Faction.getFactions().get(PlayerData.getPlayerDat().get(e.getPlayer()).getFaction());
-                e.setFormat(e.getFormat().replace("%c", f.getName()));
-                e.getRecipients().clear();
-                e.getRecipients().addAll(f.getOnlinePlayers());
-                break;
-            case 2: //Party
-                e.setFormat(e.getFormat().replace("%c", "Party"));
-                e.getRecipients().clear();
-                e.getRecipients().addAll(PlayerData.getPlayerDat().get(e.getPlayer()).getCurrParty().getMembers());
-                break;
-        }   
+        PlayerData pd = PlayerData.getData(e.getPlayer());
+        if(!pd.isMuted()){
+            e.setFormat(ChatColor.WHITE + "[%c]" + PlayerData.getPlayerDat().get(e.getPlayer()).getRole().getTitle() + "%s" + ChatColor.WHITE + ": %s");
+            switch(PlayerChatModes.get(e.getPlayer())){
+                case 0: //Public
+                    e.setFormat(e.getFormat().replace("%c", "Public"));
+                    if(MuteCommand.getLocalMutes().containsKey(e.getPlayer())){
+                        e.getRecipients().removeAll(MuteCommand.getLocalMutes().get(e.getPlayer()));
+                    }
+                   break;
+                case 1: //Faction
+                    Faction f = Faction.getFactions().get(PlayerData.getPlayerDat().get(e.getPlayer()).getFaction());
+                    e.setFormat(e.getFormat().replace("%c", f.getName()));
+                    e.getRecipients().clear();
+                    e.getRecipients().addAll(f.getOnlinePlayers());
+                    if(MuteCommand.getLocalMutes().containsKey(e.getPlayer())){
+                        e.getRecipients().removeAll(MuteCommand.getLocalMutes().get(e.getPlayer()));
+                    }
+                    break;
+                case 2: //Party
+                    e.setFormat(e.getFormat().replace("%c", "Party"));
+                    e.getRecipients().clear();
+                    e.getRecipients().addAll(PlayerData.getPlayerDat().get(e.getPlayer()).getCurrParty().getMembers());
+                    if(MuteCommand.getLocalMutes().containsKey(e.getPlayer())){
+                        e.getRecipients().removeAll(MuteCommand.getLocalMutes().get(e.getPlayer()));
+                    }
+                    break;
+            }
+        }else{
+            e.getPlayer().sendMessage("You are currently muted, you cannot chat");
+            e.getRecipients().clear();
+            e.setCancelled(true);
+        }
     }
     
     @Override
@@ -110,7 +127,7 @@ public class ChatHandler implements Listener, CommandExecutor{
             }
             return true;
         }else{
-            sender.sendMessage(ChatColor.RED + "Console chat modes is not allowed!");
+            sender.sendMessage(ChatColor.RED + "[ChatHandler] Console chat modes is not allowed!");
             return true;
         }
     }
