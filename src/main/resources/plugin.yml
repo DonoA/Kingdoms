@@ -33,6 +33,121 @@ commands:
             /Party kick <player>
             /Party join <player>
   mute:
-    Desription: Used to mute a player from chat
+    Desription: Used to mute a player from chat.
     usage: |
-            /mute <player> [global]
+            /mute <player> [global|local]
+  message:
+    Desription: Used to private message a player
+    aliases: msg
+    usage: |
+            /message <player> <chat>
+  reply:
+    Desription: Used to reply to a private message
+    aliases: r
+    usage: |
+            /reply <chat>
+  info:
+    Desription: Get info about the server. Provides links to about pages.
+    usage: |
+            /info
+  help:
+    Desription: Gets help about how the server works. Provides links to help pages.
+    aliases: [h, ?]
+    usage: |
+            /help
+  list:
+    Desription: Lists players in kingdom currently online.
+    usage: |
+            /list
+  where:
+    Desription: Gets the current location of the player.
+    usage: |
+            /where <player>
+  ban:
+    Desription: Bans a player on given mediums
+    usage: |
+            /ban <player> <reason> [network|website|all]
+  unban:
+    Desription: Unbans a player on the given mediums
+    aliases: pardon
+    usage: |
+            /unban <player> [network|website|all]
+  ipban:
+    Desription: Ip bans a player's ip and the player if instructed.
+    usage: |
+            /ipban <player> [iponly]
+  unipban:
+    Desription: Unbans a player's ip and the player if instructed.
+    aliases: ippardon
+    usage: |
+            /unipban <player> [iponly]
+  kick:
+    Desription: Kicks the player for the given reason.
+    usage: |
+            /kick <player> <reason>
+  tmpban:
+    Desription: Bans the player for the given time years(y) months(mo) weeks(w) days(d) hours(h) minutes(m) seconds(s) or a date in mm/dd/yyyy
+    usage: |
+            /tmpban <player> <time|date>
+  invspy:
+    Desription: Allows the viewing (or editing) of a players inventory
+    usage: |
+            /invspy <player> [edit]
+  fjail:
+    Desription: Force jails a player
+    usage: |
+            /fjail <player> <reason> [time]
+  vanish:
+    Desription: poof
+    aliases: v
+    usage: |
+            /vanish
+  menu:
+    Desription: opens the server main menu
+    aliases: m
+    usage: |
+            /menu
+            /menu textures
+            /menu disconnect
+            /menu serverSelect
+            /menu connected
+            /menu website
+            /menu donate
+            /menu vote
+            /menu shop
+            /menu ads
+  self:
+    Desription: gives stats about yourself
+    usage: |
+            /self
+  uuid:
+    Desription: gives player's uuid
+    usage: |
+            /uuid <player>
+  crash:
+    Desription: Crashes the player
+    usage: |
+            /crash <player> [style: 1|2]
+  strack:
+    Desription: stat tracker for admins of the server
+    usage: |
+            /strack load
+            /strack mem
+            /strack users
+            /strack dbsize
+            /strack newusers
+            /strack kingdoms
+            /strack covens
+            /strack levels
+            /strack dumpmem
+            /strack errors
+  broadcast:
+    Desription: sends the given message to server/network (-n)
+    aliases: b
+    usage: |
+            /broadcast [-n] <message>
+  is:
+    Desription: view info about ranks/players
+    usage: |
+            /is <player>
+            /is <role>
