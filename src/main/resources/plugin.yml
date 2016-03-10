@@ -6,7 +6,7 @@ depend: [Citizens]
 load: STARTUP
 commands:
   Kingdom:
-    Desription: Base Kingdom Command
+    description: Base Kingdom Command
     usage: |
             /Kingdom [Kingdom]
             /Kingdom found <name>
@@ -20,12 +20,12 @@ commands:
             /Kingdom demote <player> [rank]
             /Kingdom addnpc <name> <rank>
   Chat:
-    Desription: Chat Handling Command
+    description: Chat Handling Command
     usage: |
             /Chat
             /Chat <global|g|kingdom|k|party|p>
   Party:
-    Desription: Party Command
+    description: Party Command
     usage: |
             /Party
             /Party invite <player>
@@ -33,77 +33,77 @@ commands:
             /Party kick <player>
             /Party join <player>
   mute:
-    Desription: Used to mute a player from chat.
+    description: Used to mute a player from chat.
     usage: |
             /mute <player> [global|local]
   message:
-    Desription: Used to private message a player
+    description: Used to private message a player
     aliases: msg
     usage: |
             /message <player> <chat>
   reply:
-    Desription: Used to reply to a private message
+    description: Used to reply to a private message
     aliases: r
     usage: |
             /reply <chat>
   info:
-    Desription: Get info about the server. Provides links to about pages.
+    description: Get info about the server. Provides links to about pages.
     usage: |
             /info
   help:
-    Desription: Gets help about how the server works. Provides links to help pages.
+    description: Gets help about how the server works. Provides links to help pages.
     aliases: [h, ?]
     usage: |
             /help
   list:
-    Desription: Lists players in kingdom currently online.
+    description: Lists players in kingdom currently online.
     usage: |
             /list
   where:
-    Desription: Gets the current location of the player.
+    description: Gets the current location of the player.
     usage: |
             /where <player>
   ban:
-    Desription: Bans a player on given mediums
+    description: Bans a player on given mediums
     usage: |
             /ban <player> <reason> [network|website|all]
   unban:
-    Desription: Unbans a player on the given mediums
+    description: Unbans a player on the given mediums
     aliases: pardon
     usage: |
             /unban <player> [network|website|all]
   ipban:
-    Desription: Ip bans a player's ip and the player if instructed.
+    description: Ip bans a player's ip and the player if instructed.
     usage: |
             /ipban <player> [iponly]
   unipban:
-    Desription: Unbans a player's ip and the player if instructed.
+    description: Unbans a player's ip and the player if instructed.
     aliases: ippardon
     usage: |
             /unipban <player> [iponly]
   kick:
-    Desription: Kicks the player for the given reason.
+    description: Kicks the player for the given reason.
     usage: |
             /kick <player> <reason>
   tmpban:
-    Desription: Bans the player for the given time years(y) months(mo) weeks(w) days(d) hours(h) minutes(m) seconds(s) or a date in mm/dd/yyyy
+    description: Bans the player for the given time years(y) months(mo) weeks(w) days(d) hours(h) minutes(m) seconds(s) or a date in mm/dd/yyyy
     usage: |
             /tmpban <player> <time|date>
   invspy:
-    Desription: Allows the viewing (or editing) of a players inventory
+    description: Allows the viewing (or editing) of a players inventory
     usage: |
             /invspy <player> [edit]
   fjail:
-    Desription: Force jails a player
+    description: Force jails a player
     usage: |
             /fjail <player> <reason> [time]
   vanish:
-    Desription: poof
+    description: poof
     aliases: v
     usage: |
             /vanish
   menu:
-    Desription: opens the server main menu
+    description: opens the server main menu
     aliases: m
     usage: |
             /menu
@@ -117,19 +117,19 @@ commands:
             /menu shop
             /menu ads
   self:
-    Desription: gives stats about yourself
+    description: gives stats about yourself
     usage: |
             /self
   uuid:
-    Desription: gives player's uuid
+    description: gives player's uuid
     usage: |
             /uuid <player>
   crash:
-    Desription: Crashes the player
+    description: Crashes the player
     usage: |
             /crash <player> [style: 1|2]
   strack:
-    Desription: stat tracker for admins of the server
+    description: stat tracker for admins of the server
     usage: |
             /strack load
             /strack mem
@@ -142,12 +142,12 @@ commands:
             /strack dumpmem
             /strack errors
   broadcast:
-    Desription: sends the given message to server/network (-n)
+    description: sends the given message to server/network (-n)
     aliases: b
     usage: |
             /broadcast [-n] <message>
   is:
-    Desription: view info about ranks/players
+    description: view info about ranks/players
     usage: |
             /is <player>
             /is <role>
