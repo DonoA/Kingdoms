@@ -87,7 +87,6 @@ public class Main extends JavaPlugin {
                 Main.getPlugin().getCommand("fjail").setExecutor(moderation);
                 Main.getPlugin().getCommand("uuid").setExecutor(moderation);
                 Main.getPlugin().getCommand("broadcast").setExecutor(moderation);
-                Main.getPlugin().getCommand("broadcast").setExecutor(moderation);
                 Main.getPlugin().getCommand("kingdom").setExecutor(new KingdomCommands());
                 Main.getPlugin().getCommand("chat").setExecutor(new ChatHandler());
                 Main.getPlugin().getCommand("party").setExecutor(new Party.PartyCommands());

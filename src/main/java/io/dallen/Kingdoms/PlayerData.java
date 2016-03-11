@@ -62,6 +62,11 @@ public class PlayerData {
         
     }
     
+    @Override
+    public String toString(){
+        return Faction;//need to add JSON here
+    }
+    
     public static PlayerData getData(Player p){
         if(PlayerDat.containsKey(p)){
             return PlayerDat.get(p);
