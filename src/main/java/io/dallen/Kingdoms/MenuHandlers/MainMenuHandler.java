@@ -18,20 +18,37 @@
  */
 package io.dallen.Kingdoms.MenuHandlers;
 
+import io.dallen.Kingdoms.Util.ChestGUI;
+import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEventHandler;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemStack;
 
 /**
  *
  * @author donoa_000
  */
-public class MainMenuHandler implements CommandExecutor, Listener{
+public class MainMenuHandler implements CommandExecutor, OptionClickEventHandler{
+    
+    public static ChestGUI MainMenu;
+    
+    public MainMenuHandler(){
+        MainMenu = new ChestGUI("MainMenu", 5, this) {{
+            setOption(0, new ItemStack(Material.ACACIA_DOOR), "Item", "Lore");
+        }};
+    }
     
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String lbl, String[] args){
         return false;
+    }
+
+    @Override
+    public void onOptionClick(ChestGUI.OptionClickEvent event) {
+        
     }
     
 }
