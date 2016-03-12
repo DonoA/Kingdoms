@@ -20,6 +20,8 @@ package io.dallen.Kingdoms.Util;
 
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
+import org.bukkit.block.banner.Pattern;
+import org.bukkit.block.banner.PatternType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
 
@@ -38,6 +40,11 @@ public class BannerUtil{
         b.setBaseColor(DyeColor.WHITE);
         switch(l){ //https://imgur.com/gallery/D9KhL
             case 'a':
+                b.addPattern(new Pattern(DyeColor.BLACK, PatternType.STRIPE_LEFT));
+                b.addPattern(new Pattern(DyeColor.BLACK, PatternType.STRIPE_RIGHT));
+                b.addPattern(new Pattern(DyeColor.BLACK, PatternType.STRIPE_TOP));
+                b.addPattern(new Pattern(DyeColor.BLACK, PatternType.STRIPE_MIDDLE));
+                b.addPattern(new Pattern(DyeColor.WHITE, PatternType.BORDER));
                 break;
             case 'b':
                 break;
