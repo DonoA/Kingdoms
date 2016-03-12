@@ -55,6 +55,9 @@ public class Main extends JavaPlugin {
     @Getter
     private static ProtocolManager protocolManager;
     
+    @Getter
+    private static Runtime runtime = Runtime.getRuntime();
+    
     public void onLoad() {
         protocolManager = ProtocolLibrary.getProtocolManager();
     }
