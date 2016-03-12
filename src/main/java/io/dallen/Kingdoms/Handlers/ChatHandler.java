@@ -21,6 +21,8 @@ package io.dallen.Kingdoms.Handlers;
 import io.dallen.Kingdoms.Faction;
 import io.dallen.Kingdoms.PlayerData;
 import io.dallen.Kingdoms.Util.MuteCommand;
+import io.dallen.Kingdoms.Util.TimeUtil;
+import java.util.Date;
 import java.util.HashMap;
 import lombok.Getter;
 import lombok.Setter;
@@ -45,7 +47,7 @@ public class ChatHandler implements Listener, CommandExecutor{
     @EventHandler
     public void onChat(AsyncPlayerChatEvent e){
         PlayerData pd = PlayerData.getData(e.getPlayer());
-        if(!pd.isMuted()){
+        if(pd.getMuted() == null){
             e.setFormat(ChatColor.WHITE + "[%c]" + PlayerData.getPlayerDat().get(e.getPlayer()).getRole().getTitle() + "%s" + ChatColor.WHITE + ": %s");
             switch(PlayerChatModes.get(e.getPlayer())){
                 case 0: //Public
@@ -74,6 +76,9 @@ public class ChatHandler implements Listener, CommandExecutor{
             }
         }else{
             e.getPlayer().sendMessage("You are currently muted, you cannot chat");
+            if(pd.getMuted().getTime() != null){
+                e.getPlayer().sendMessage("You are muted for another " + TimeUtil.asTime(new Date(System.currentTimeMillis()), pd.getMuted().getTime()));
+            }
             e.getRecipients().clear();
             e.setCancelled(true);
         }

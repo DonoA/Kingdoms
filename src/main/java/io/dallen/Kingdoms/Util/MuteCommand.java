@@ -21,8 +21,10 @@ package io.dallen.Kingdoms.Util;
 import io.dallen.Kingdoms.PlayerData;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -42,12 +44,22 @@ public class MuteCommand implements CommandExecutor{
     public boolean onCommand(CommandSender sender, Command cmd, String lbl, String[] args){
         Player m;
         if(args.length > 0 && (m = Bukkit.getPlayer(args[0])) != null){
-            if(args.length > 1 && args[1].equalsIgnoreCase("global") && sender.hasPermission(PermissionManager.getModPermission())){
+            if(sender.hasPermission(PermissionManager.getModPermission()) && args.length > 1 && 
+                    (args[1].equalsIgnoreCase("global") || args[1].equalsIgnoreCase("g"))){
                 PlayerData pd = PlayerData.getData(m);
-                if(pd.mute()){
-                    sender.sendMessage("You have muted " + args[0]);
-                }else{
+                if(pd.getMuted() != null){
+                    pd.setMuted(null);
                     sender.sendMessage("You have unmuted " + args[0]);
+                }else{
+                    if(args.length == 2){
+                        pd.setMuted(new MuteClass(args[1]));
+                        sender.sendMessage("You have muted " + args[0] + " for " + args[1]);
+                        m.sendMessage("You have been muted for " + args[1]);
+                    }else if(args.length == 3){
+                        pd.setMuted(new MuteClass(args[1], TimeUtil.getDate(args[2])));
+                        sender.sendMessage("You have muted " + args[0] + " for " + args[1] + " for " + args[2]);
+                        m.sendMessage("You have been muted for " + args[1] + " for " + args[2]);
+                    }
                 }
             }else{
                 if(sender instanceof Player){
@@ -74,5 +86,23 @@ public class MuteCommand implements CommandExecutor{
             sender.sendMessage("Player not found");
         }
         return true;
+    }
+    
+    public static class MuteClass {
+        
+        @Getter @Setter
+        private String reason;
+        
+        @Getter @Setter
+        private Date time;
+        
+        public MuteClass(String r){
+            reason = r;
+        }
+        
+        public MuteClass(String r, Date time){
+            reason = r;
+            this.time = time;
+        }
     }
 }

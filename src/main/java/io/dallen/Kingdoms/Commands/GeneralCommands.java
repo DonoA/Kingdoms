@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import lombok.Getter;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -66,25 +67,41 @@ public class GeneralCommands implements CommandExecutor{
         }else if(cmd.getName().equalsIgnoreCase("message") && args.length > 1){
             if(Bukkit.getPlayer(args[0]) != null){
                 Player p = Bukkit.getPlayer(args[0]);
-                String msg = "";
-                List<String> msgs = Arrays.asList(args);
-                msgs.remove(0);
-                p.sendMessage("[" + sender.getName() + "] " + StringUtils.join(msgs, " "));
+                p.sendMessage("[" + sender.getName() + "] " + StringUtils.join(ArrayUtils.remove(args, 0), " "));
                 Convos.put(sender, p);
                 Convos.put(p, sender);
             }
         }else if(cmd.getName().equalsIgnoreCase("reply")){
             if(Convos.containsKey(sender)){
-                Convos.get(sender).sendMessage("[" + sender.getName() + "]" + StringUtils.join(args, " "));
+                Convos.get(sender).sendMessage("[" + sender.getName() + "]" + StringUtils.join(ArrayUtils.remove(args, 0), " "));
             }else{
                 sender.sendMessage("No player to reply to");
             }
         }else if(cmd.getName().equalsIgnoreCase("info")){
-            //send all sorts of info about the server
+            sender.sendMessage("&7Welcome to &6Kingdoms&7! "
+                    + "If you are just starting out, find a kingdom's message board so that you can grab a contract. "
+                    + "Contracts are basically jobs other players can offer, allowing each kingdom to set up its own economy. "
+                    + "Some example contracts might be to infiltrate an enemy kingdom or build warehouses and other structures, "
+                    + "and there are tons of other things that can be done with contracts.\n" 
+                    + "\n" 
+                    + "&6If you have any specific questions, feel free to ask in chat or check out our help section:\n" 
+                    + "&7<forum link>");
         }else if(cmd.getName().equalsIgnoreCase("help")){
-            //quick and easy help message
+            sender.sendMessage("&4--- &6Kingdoms &7Help Links &4---\n" 
+                    + "\n" 
+                    + "&6Chat with other players and staff on our forums!\n" 
+                    + "&7<forum link>\n" 
+                    + "&6Report issues or bugs:\n" 
+                    + "&7<forum link>\n" 
+                    + "&6Report player abuse or cheating:\n" 
+                    + "&7<forum link>\n" 
+                    + "&6Check out our wiki here for help!\n" 
+                    + "&7<forum link>\n" 
+                    + "&6Want more specific help? Check out our help section:\n" 
+                    + "&7<forum link>");
         }else if(cmd.getName().equalsIgnoreCase("is")){
-            //get info about roles and kingdoms and stuff
+            //get info from wiki database
+            
         }else{
             if(sender instanceof Player){
                 Player p = (Player) sender;

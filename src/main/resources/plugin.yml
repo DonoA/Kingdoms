@@ -86,7 +86,8 @@ commands:
     usage: |
             /kick <player> <reason>
   tmpban:
-    description: Bans the player for the given time years(y) months(mo) weeks(w) days(d) hours(h) minutes(m) seconds(s) or a date in mm/dd/yyyy
+    description: Bans the player for the given time hh:mm:ss
+    aliases: [tempban, temporaryban]
     usage: |
             /tmpban <player> <time|date>
   invspy:

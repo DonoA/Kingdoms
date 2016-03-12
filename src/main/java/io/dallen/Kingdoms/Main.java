@@ -18,6 +18,8 @@
  */
 package io.dallen.Kingdoms;
 
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
 import io.dallen.Kingdoms.Commands.AdminCommands;
 import io.dallen.Kingdoms.Commands.GeneralCommands;
 import io.dallen.Kingdoms.Commands.ModerationCommands;
@@ -30,6 +32,7 @@ import io.dallen.Kingdoms.Util.LogUtil;
 import io.dallen.Kingdoms.Util.MuteCommand;
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -48,6 +51,13 @@ public class Main extends JavaPlugin {
     
     @Getter @Setter
     private static KingdomTerrainGeneration Overworld;
+    
+    @Getter
+    private static ProtocolManager protocolManager;
+    
+    public void onLoad() {
+        protocolManager = ProtocolLibrary.getProtocolManager();
+    }
 
     @Getter
     private static Runnable onServerLoad = new Runnable(){ //put normal onEnable code here

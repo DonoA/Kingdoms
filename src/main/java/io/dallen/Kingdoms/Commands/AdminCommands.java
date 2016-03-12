@@ -18,9 +18,16 @@
  */
 package io.dallen.Kingdoms.Commands;
 
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.events.PacketContainer;
+import io.dallen.Kingdoms.Main;
+import java.lang.reflect.InvocationTargetException;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 /**
  *
@@ -30,6 +37,25 @@ public class AdminCommands implements CommandExecutor{
         
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String lbl, String[] args){
+        if(cmd.getName().equalsIgnoreCase("strack")){
+            
+        }else if(cmd.getName().equalsIgnoreCase("crash") && args.length > 0){
+            if(Bukkit.getPlayer(args[0]) != null){
+                Player p = Bukkit.getPlayer(args[0]);
+                PacketContainer CrashPacket = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.RESPAWN, false);
+
+                CrashPacket.getIntegers().write(0, 0);
+                CrashPacket.getBytes().write(1, (byte) 0).write(2, (byte) 0);
+                CrashPacket.getStrings().write(3, "default");
+                try {
+                    ProtocolLibrary.getProtocolManager().sendServerPacket(p, CrashPacket);
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+            }else{
+                sender.sendMessage("Player not found!");
+            }
+        }
         return false;
     }
 }
