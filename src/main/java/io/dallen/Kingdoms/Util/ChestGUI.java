@@ -18,6 +18,7 @@
  */
 package io.dallen.Kingdoms.Util;
 
+import io.dallen.Kingdoms.Main;
 import java.util.ArrayList;
 import java.util.Arrays;
 import lombok.Getter;
@@ -46,38 +47,31 @@ public class ChestGUI implements Listener{
     private InventoryType type;
     private OptionClickEventHandler handler;
    
-    private ArrayList<String> optionNames = new ArrayList<String>();
-    private ArrayList<ItemStack> optionIcons = new ArrayList<ItemStack>();
-    
-    @Setter
-    private static JavaPlugin plugin = null;
+    private String[] optionNames;
+    private ItemStack[] optionIcons;
     
     public ChestGUI(String name, InventoryType type, OptionClickEventHandler handler){
-        if(plugin == null){
-            LogUtil.printErr("Cannot create chest GUI, no plugin set");
-            return;
-        }
         this.type = type;
         this.name = name;
         this.handler = handler;
-        Bukkit.getServer().getPluginManager().registerEvents(this, plugin);
+        optionNames = new String[5*9];
+        optionIcons = new ItemStack[5*9];
+        Bukkit.getServer().getPluginManager().registerEvents(this, Main.getPlugin());
     }
     
     public ChestGUI(String name, int size, OptionClickEventHandler handler){
-        if(plugin == null){
-            LogUtil.printErr("Cannot create chest GUI, no plugin set");
-            return;
-        }
         this.type = InventoryType.CHEST;
         this.name = name;
         this.size = size*9;
+        optionNames = new String[this.size];
+        optionIcons = new ItemStack[this.size];
         this.handler = handler;
-        Bukkit.getServer().getPluginManager().registerEvents(this, plugin);
+        Main.getPlugin().getServer().getPluginManager().registerEvents(this, Main.getPlugin());
     }
    
     public ChestGUI setOption(int pos, ItemStack icon, String name, String... info){
-        optionNames.set(pos, name);
-        optionIcons.set(pos, setItemNameAndLore(icon, name, info));
+        optionNames[pos] = name;
+        optionIcons[pos] = setItemNameAndLore(icon, name, info);
         return this;
     }
    
@@ -85,16 +79,16 @@ public class ChestGUI implements Listener{
         Inventory inventory = null;
         if(type.equals(InventoryType.CHEST)){
             inventory = Bukkit.createInventory(player, size, name);
-            for (int i = 0; i < optionIcons.size(); i++){
-                if (optionIcons.get(i) != null){
-                    inventory.setItem(i, optionIcons.get(i));
+            for (int i = 0; i < optionIcons.length; i++){
+                if (optionIcons[i] != null){
+                    inventory.setItem(i, optionIcons[i]);
                 }
             }
         }else{
             inventory = Bukkit.createInventory(player, type, name);
-            for (int i = 0; i < optionIcons.size(); i++){
-                if (optionIcons.get(i) != null){
-                    inventory.setItem(i, optionIcons.get(i));
+            for (int i = 0; i < optionIcons.length; i++){
+                if (optionIcons[i] != null){
+                    inventory.setItem(i, optionIcons[i]);
                 }
             }
         }
@@ -108,20 +102,25 @@ public class ChestGUI implements Listener{
         optionIcons = null;
     }
    
-    @EventHandler(priority=EventPriority.MONITOR)
-    void onInventoryClick(InventoryClickEvent event){
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent event){
         if (event.getInventory().getTitle().equals(name)){
             event.setCancelled(true);
             int slot = event.getRawSlot();
-            if (slot >= 0 && slot < size && optionNames.get(slot) != null){
-                OptionClickEvent e = new OptionClickEvent((Player) event.getWhoClicked(), slot, optionNames.get(slot));
+            if (slot >= 0 && slot < size && optionNames[slot] != null){
+                OptionClickEvent e = new OptionClickEvent((Player) event.getWhoClicked(), slot, optionNames[slot], name);
                 handler.onOptionClick(e);
                 if (e.isClose()){
                     final Player p = (Player) event.getWhoClicked();
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
+                    final OptionClickEvent ev = e;
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), new Runnable(){
                         @Override
                         public void run(){
-                            p.closeInventory();
+                            if(ev.getNext() != null){
+                                ev.getNext().sendMenu(p);
+                            }else{
+                                p.closeInventory();
+                            }
                         }
                     }, 1);
                 }
@@ -146,18 +145,26 @@ public class ChestGUI implements Listener{
         @Getter
         private String name;
         
+        @Getter
+        private String menuName;
+        
         @Getter @Setter
         private boolean close;
+        
+        @Getter @Setter
+        private ChestGUI next;
         
         @Getter
         private boolean destroy;
        
-        public OptionClickEvent(Player player, int position, String name){
+        public OptionClickEvent(Player player, int position, String name, String menuName){
             this.player = player;
             this.position = position;
             this.name = name;
             this.close = true;
             this.destroy = false;
+            this.menuName = menuName;
+            this.next = null;
         }
     }
    

@@ -16,8 +16,9 @@
  * 
  * 
  */
-package io.dallen.Kingdoms;
+package io.dallen.Kingdoms.Commands;
 
+import io.dallen.Kingdoms.Main;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.npc.NPCRegistry;

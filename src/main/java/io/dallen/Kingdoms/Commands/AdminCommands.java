@@ -58,7 +58,7 @@ public class AdminCommands implements CommandExecutor{
                 }else if(args[0].equalsIgnoreCase("kingdoms")){
                     sender.sendMessage("Current Kingdoms:");
                     sender.sendMessage("======================");
-                    for(String f : Kingdom.getFactions().keySet()){
+                    for(String f : Kingdom.getKingdoms().keySet()){
                         sender.sendMessage(" - " + f);
                     }
                 }else if(args[0].equalsIgnoreCase("covens")){

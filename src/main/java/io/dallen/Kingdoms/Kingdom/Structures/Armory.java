@@ -18,7 +18,10 @@
  */
 package io.dallen.Kingdoms.Kingdom.Structures;
 
+import io.dallen.Kingdoms.Kingdom.Kingdom;
+import io.dallen.Kingdoms.Kingdom.Municipality;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 
 /**
  * Allows the kingdom to store weapons and armor for its subjects
@@ -27,8 +30,10 @@ import org.bukkit.Location;
  */
 public class Armory extends Structure{
 
-    public Armory(int w, int l, int h, Location cent, String own, String fac) {
-        super(w, l, h, cent, own, fac);
+    public Armory(int w, int l, int h, Location cent, Player own, Kingdom kingdom, Municipality Muicipal) {
+        super(w, l, h, cent, own, kingdom, Muicipal);
     }
+
+    
     
 }

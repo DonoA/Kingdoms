@@ -18,9 +18,13 @@
  */
 package io.dallen.Kingdoms.Kingdom.Structures;
 
+import io.dallen.Kingdoms.Kingdom.Kingdom;
+import io.dallen.Kingdoms.Kingdom.Municipality;
+import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 
 /**
  *
@@ -29,21 +33,31 @@ import org.bukkit.Location;
 public class Structure {
     
     @Getter @Setter
-    private int Width;
+    private int Width; // X
     @Getter @Setter
-    private int Height;
+    private int Height; // Y
     @Getter @Setter
-    private int Length;
+    private int Length; // Z
     @Getter @Setter
     private Location Center;
     @Getter @Setter
     private int ID;
     @Getter @Setter
-    private String Owner;
+    private Player Owner;
     @Getter @Setter
-    private String Faction;
+    private Kingdom Kingdom;
+    @Getter @Setter
+    private Municipality Municipal;
     
-    public Structure(int w, int l, int h, Location cent, String own, String fac){
+    public Structure(int w, int l, int h, Location cent, Player own, Kingdom kingdom, Municipality Muicipal){
+        
+    }
+    
+    public Structure(int w, int l, int h, Location cent, Player own, Municipality Muicipal){
+        
+    }
+    
+    public Structure(int w, int l, int h, Location cent, Player own, Kingdom kingdom){
         
     }
     

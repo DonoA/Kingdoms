@@ -18,8 +18,10 @@
  */
 package io.dallen.Kingdoms.Kingdom.Structures;
 
+import io.dallen.Kingdoms.Kingdom.Municipality;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 
 /**
  * Allows the kingdom to house its NPCs
@@ -28,8 +30,9 @@ import org.bukkit.Location;
  */
 public class Barracks extends Structure{
 
-    public Barracks(int w, int l, int h, Location cent, String own, String fac) {
-        super(w, l, h, cent, own, fac);
+    public Barracks(int w, int l, int h, Location cent, Player own, io.dallen.Kingdoms.Kingdom.Kingdom kingdom, Municipality Muicipal) {
+        super(w, l, h, cent, own, kingdom, Muicipal);
     }
+
         
 }

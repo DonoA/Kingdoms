@@ -16,7 +16,7 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.SkinHandler;
+package io.dallen.Kingdoms.Handlers.SkinHandler;
 
 /**
  *

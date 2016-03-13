@@ -18,6 +18,7 @@
  */
 package io.dallen.Kingdoms.Kingdom;
 
+import io.dallen.Kingdoms.Kingdom.Structures.Structure;
 import java.util.ArrayList;
 import java.util.HashMap;
 import lombok.Getter;
@@ -31,7 +32,7 @@ import org.bukkit.entity.Player;
 public class Kingdom {
     
     @Getter
-    private static HashMap<String, Kingdom> Factions = new HashMap<String, Kingdom>();
+    private static HashMap<String, Kingdom> Kingdoms = new HashMap<String, Kingdom>();
     
     private String Leader;
     
@@ -41,6 +42,13 @@ public class Kingdom {
     private String Name;
     
     private ResourceStats Resources;
+    
+    @Getter
+    private ArrayList<Municipality> Municipals = new ArrayList<Municipality>();
+    
+    @Getter
+    private ArrayList<Structure> Structures = new ArrayList<Structure>();
+    
     @Getter
     private ArrayList<Player> OnlinePlayers = new ArrayList<Player>();
     

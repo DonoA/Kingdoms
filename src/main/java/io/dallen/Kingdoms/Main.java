@@ -18,16 +18,19 @@
  */
 package io.dallen.Kingdoms;
 
+import io.dallen.Kingdoms.Commands.KingdomCommands;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import io.dallen.Kingdoms.Commands.AdminCommands;
 import io.dallen.Kingdoms.Commands.GeneralCommands;
 import io.dallen.Kingdoms.Commands.ModerationCommands;
+import io.dallen.Kingdoms.Handlers.DecayHandler.ChangeTracker;
 import io.dallen.Kingdoms.NPCs.NpcManager;
 import io.dallen.Kingdoms.Handlers.ChatHandler;
 import io.dallen.Kingdoms.Handlers.Party;
-import io.dallen.Kingdoms.MenuHandlers.MainMenuHandler;
+import io.dallen.Kingdoms.Handlers.MenuHandlers.MainMenuHandler;
 import io.dallen.Kingdoms.Terrain.KingdomTerrainGeneration;
+import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.LogUtil;
 import io.dallen.Kingdoms.Util.MuteCommand;
 import lombok.Getter;
@@ -58,6 +61,9 @@ public class Main extends JavaPlugin {
     @Getter
     private static Runtime runtime = Runtime.getRuntime();
     
+    @Getter
+    private static ChangeTracker changes;
+    
     public void onLoad() {
         protocolManager = ProtocolLibrary.getProtocolManager();
     }
@@ -73,11 +79,13 @@ public class Main extends JavaPlugin {
                     Main.getPlugin().getServer().getPluginManager().disablePlugin(Main.getPlugin());
                     return;
                 }
+                changes = new ChangeTracker(Plugin);
                 NPCs = new NpcManager();
                 ModerationCommands moderation = new ModerationCommands();
                 GeneralCommands general = new GeneralCommands();
                 AdminCommands admin = new AdminCommands();
-                Main.getPlugin().getCommand("menu").setExecutor(new MainMenuHandler());
+                MainMenuHandler mmh = new MainMenuHandler();
+                Main.getPlugin().getCommand("menu").setExecutor(mmh);
                 Main.getPlugin().getCommand("crash").setExecutor(admin);
                 Main.getPlugin().getCommand("strack").setExecutor(admin);
                 Main.getPlugin().getCommand("message").setExecutor(general);

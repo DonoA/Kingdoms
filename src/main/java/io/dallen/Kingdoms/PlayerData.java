@@ -23,7 +23,7 @@ import io.dallen.Kingdoms.Handlers.Party;
 import io.dallen.Kingdoms.Kingdom.Roles.Role;
 import io.dallen.Kingdoms.Util.MuteCommand.MuteClass;
 import io.dallen.Kingdoms.Util.MuteCommand;
-import io.dallen.Kingdoms.Vaults.PlayerVault;
+import io.dallen.Kingdoms.Kingdom.Vaults.PlayerVault;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -44,7 +44,7 @@ public class PlayerData {
     private Role Role;
     
     @Getter @Setter
-    private String Faction;
+    private String Kingdom;
     
     @Getter @Setter
     private PlayerVault Vault;
@@ -67,7 +67,7 @@ public class PlayerData {
     
     @Override
     public String toString(){
-        return Faction;//need to add JSON here
+        return Kingdom;//need to add JSON here
     }
     
     public static PlayerData getData(Player p){

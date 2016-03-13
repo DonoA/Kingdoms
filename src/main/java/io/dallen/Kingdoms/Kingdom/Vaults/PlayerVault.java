@@ -16,21 +16,30 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.Kingdom.Structures;
+package io.dallen.Kingdoms.Kingdom.Vaults;
 
-import io.dallen.Kingdoms.Kingdom.Municipality;
-import org.bukkit.Location;
+import lombok.Getter;
 import org.bukkit.entity.Player;
 
 /**
- * Allows the kingdom to store raw and refined materials
- * 
+ *
  * @author donoa_000
  */
-public class Storeroom extends Structure{
-
-    public Storeroom(int w, int l, int h, Location cent, Player own, io.dallen.Kingdoms.Kingdom.Kingdom kingdom, Municipality Muicipal) {
-        super(w, l, h, cent, own, kingdom, Muicipal);
+public class PlayerVault implements Vault{
+    @Getter
+    private Player Owner;
+    
+    @Getter
+    private int Size;
+    
+    @Override
+    public void SendToPlayer(Player p){
+        
+    }
+    
+    @Override
+    public boolean CanOpen(Player p){
+        return true;
     }
     
 }

@@ -18,7 +18,10 @@
  */
 package io.dallen.Kingdoms.Kingdom.Structures;
 
+import io.dallen.Kingdoms.Kingdom.Municipality;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
 
 /**
  *
@@ -27,8 +30,9 @@ import org.bukkit.Bukkit;
 public class Castle extends Structure{
     
     private int level;
-    
-    public Castle(){
-        super(0,0,0,Bukkit.getWorlds().get(0).getSpawnLocation(),"none","none");
+
+    public Castle(int w, int l, int h, Location cent, Player own, io.dallen.Kingdoms.Kingdom.Kingdom kingdom, Municipality Muicipal) {
+        super(w, l, h, cent, own, kingdom, Muicipal);
     }
+    
 }

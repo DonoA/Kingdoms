@@ -16,12 +16,12 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.SkinHandler;
+package io.dallen.Kingdoms.Handlers.DecayHandler;
 
 /**
  *
  * @author donoa_000
  */
-public class SkinPacketHandler {
+public class PlotDecay { // for regenerating terrain slowly over time
     
 }

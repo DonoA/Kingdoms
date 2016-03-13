@@ -18,7 +18,9 @@
  */
 package io.dallen.Kingdoms.Kingdom.Structures;
 
+import io.dallen.Kingdoms.Kingdom.Municipality;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 
 /**
  * Allows the kingdom to create and maintain crops
@@ -27,8 +29,8 @@ import org.bukkit.Location;
  */
 public class Farm extends Structure{
 
-    public Farm(int w, int l, int h, Location cent, String own, String fac) {
-        super(w, l, h, cent, own, fac);
+    public Farm(int w, int l, int h, Location cent, Player own, io.dallen.Kingdoms.Kingdom.Kingdom kingdom, Municipality Muicipal) {
+        super(w, l, h, cent, own, kingdom, Muicipal);
     }
-    
+
 }

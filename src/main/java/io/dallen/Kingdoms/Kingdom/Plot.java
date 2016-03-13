@@ -18,17 +18,47 @@
  */
 package io.dallen.Kingdoms.Kingdom;
 
-import io.dallen.Kingdom.Structures.Structure;
+import io.dallen.Kingdoms.Kingdom.Structures.Structure;
+import java.util.ArrayList;
+import lombok.Getter;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockPlaceEvent;
 
 /**
  *
  * @author donoa_000
  */
-public class Plot extends Structure{
-
-    public Plot(int w, int l, int h, Location cent, String own, String fac) {
-        super(w, l, h, cent, own, fac);
+public class Plot extends Structure implements Listener{
+    
+    @Getter
+    private static ArrayList<Plot> allPlots = new ArrayList<Plot>();
+    
+    public Plot(int w, int l, int h, Location cent, Player own, Municipality mun) {
+        super(w, l, h, cent, own, mun);
+    }
+    
+    public static Plot inPlot(Location l){
+        for(Plot p : allPlots){
+            if(l.getBlockX() > p.getCenter().getBlockX() - p.getWidth()/2 && 
+               l.getBlockX() < p.getCenter().getBlockX() + p.getWidth()/2 &&
+               l.getBlockZ() > p.getCenter().getBlockZ() - p.getLength()/2 && 
+               l.getBlockZ() < p.getCenter().getBlockZ() + p.getLength()/2){
+                return p;
+            }
+        }
+        return null;
+    }
+    
+    public boolean createMucicpal(){
+        if(super.getKingdom() != null){
+            return false;
+        }
+        super.setMunicipal(new Municipality((Structure) this));
+        super.getKingdom().getMunicipals().add(super.getMunicipal());
+        return true;
     }
     
 }

@@ -18,7 +18,9 @@
  */
 package io.dallen.Kingdoms.Kingdom.Structures;
 
+import io.dallen.Kingdoms.Kingdom.Municipality;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 
 /**
  * Allows the kingdom to imprison those that deserve it
@@ -27,8 +29,8 @@ import org.bukkit.Location;
  */
 public class Dungeon extends Structure{
 
-    public Dungeon(int w, int l, int h, Location cent, String own, String fac) {
-        super(w, l, h, cent, own, fac);
+    public Dungeon(int w, int l, int h, Location cent, Player own, io.dallen.Kingdoms.Kingdom.Kingdom kingdom, Municipality Muicipal) {
+        super(w, l, h, cent, own, kingdom, Muicipal);
     }
-    
+
 }

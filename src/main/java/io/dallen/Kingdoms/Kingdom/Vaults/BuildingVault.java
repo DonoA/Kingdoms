@@ -16,9 +16,9 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.Vaults;
+package io.dallen.Kingdoms.Kingdom.Vaults;
 
-import io.dallen.Kingdoms.Kingdom.Kingdom;
+import io.dallen.Kingdoms.Kingdom.Structures.Structure;
 import lombok.Getter;
 import org.bukkit.entity.Player;
 
@@ -26,10 +26,9 @@ import org.bukkit.entity.Player;
  *
  * @author donoa_000
  */
-public class KingdomVault implements Vault{
-    
+public class BuildingVault implements Vault{
     @Getter
-    private Kingdom Owner;
+    private Structure Owner;
     
     @Getter
     private int Size;
