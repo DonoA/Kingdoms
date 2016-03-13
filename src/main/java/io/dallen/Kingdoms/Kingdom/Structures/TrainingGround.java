@@ -16,18 +16,18 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.Structures;
+package io.dallen.Kingdoms.Kingdom.Structures;
 
 import org.bukkit.Location;
 
 /**
- * Allows the kingdom to train and hold horses
+ * Allows the kingdom to train its NPCs
  * 
  * @author donoa_000
  */
-public class Stable extends Structure{
+public class TrainingGround extends Structure{
 
-    public Stable(int w, int l, int h, Location cent, String own, String fac) {
+    public TrainingGround(int w, int l, int h, Location cent, String own, String fac) {
         super(w, l, h, cent, own, fac);
     }
     

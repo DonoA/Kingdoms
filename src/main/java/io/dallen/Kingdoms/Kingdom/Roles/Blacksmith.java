@@ -16,13 +16,13 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.Roles;
+package io.dallen.Kingdoms.Kingdom.Roles;
 
 /**
- * Cultivates crops for a kingdom
+ * Crafts armor and weapons for a kingdom
  * 
  * @author donoa_000
  */
-public class Farmer extends Tradesman{
+public class Blacksmith extends Tradesman{
     
 }

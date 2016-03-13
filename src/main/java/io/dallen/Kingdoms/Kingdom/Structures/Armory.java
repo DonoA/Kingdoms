@@ -16,18 +16,18 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.Structures;
+package io.dallen.Kingdoms.Kingdom.Structures;
 
 import org.bukkit.Location;
 
 /**
- * Allows the kingdom to imprison those that deserve it
+ * Allows the kingdom to store weapons and armor for its subjects
  * 
  * @author donoa_000
  */
-public class Dungeon extends Structure{
+public class Armory extends Structure{
 
-    public Dungeon(int w, int l, int h, Location cent, String own, String fac) {
+    public Armory(int w, int l, int h, Location cent, String own, String fac) {
         super(w, l, h, cent, own, fac);
     }
     

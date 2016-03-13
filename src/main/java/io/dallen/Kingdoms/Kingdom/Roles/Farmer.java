@@ -16,13 +16,13 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.Roles;
+package io.dallen.Kingdoms.Kingdom.Roles;
 
 /**
- * No might, honor, or wealth, can take low level contracts
+ * Cultivates crops for a kingdom
  * 
  * @author donoa_000
  */
-public class Peasant extends Role{
+public class Farmer extends Tradesman{
     
 }

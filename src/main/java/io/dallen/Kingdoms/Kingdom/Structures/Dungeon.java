@@ -16,20 +16,19 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.Structures;
+package io.dallen.Kingdoms.Kingdom.Structures;
 
 import org.bukkit.Location;
 
 /**
- * Allows the kingdom to store raw and refined materials
+ * Allows the kingdom to imprison those that deserve it
  * 
  * @author donoa_000
  */
-public class Storeroom extends Structure{
+public class Dungeon extends Structure{
 
-    public Storeroom(int w, int l, int h, Location cent, String own, String fac) {
+    public Dungeon(int w, int l, int h, Location cent, String own, String fac) {
         super(w, l, h, cent, own, fac);
     }
-    
     
 }

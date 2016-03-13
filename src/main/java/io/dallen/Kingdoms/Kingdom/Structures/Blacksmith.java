@@ -16,7 +16,7 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.Structures;
+package io.dallen.Kingdoms.Kingdom.Structures;
 
 import org.bukkit.Location;
 

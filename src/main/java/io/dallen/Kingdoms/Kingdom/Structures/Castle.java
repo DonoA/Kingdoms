@@ -16,30 +16,19 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.Vaults;
+package io.dallen.Kingdoms.Kingdom.Structures;
 
-import io.dallen.Kingdoms.Faction;
-import lombok.Getter;
-import org.bukkit.entity.Player;
+import org.bukkit.Bukkit;
 
 /**
  *
  * @author donoa_000
  */
-public class FactionVault implements Vault{
-    @Getter
-    private Faction Owner;
+public class Castle extends Structure{
     
-    @Getter
-    private int Size;
+    private int level;
     
-    @Override
-    public void SendToPlayer(Player p){
-        
-    }
-    
-    @Override
-    public boolean CanOpen(Player p){
-        return true;
+    public Castle(){
+        super(0,0,0,Bukkit.getWorlds().get(0).getSpawnLocation(),"none","none");
     }
 }

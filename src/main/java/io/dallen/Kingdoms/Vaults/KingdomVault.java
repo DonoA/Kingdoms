@@ -16,19 +16,31 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.Structures;
+package io.dallen.Kingdoms.Vaults;
 
-import org.bukkit.Location;
+import io.dallen.Kingdoms.Kingdom.Kingdom;
+import lombok.Getter;
+import org.bukkit.entity.Player;
 
 /**
- * Allows the kingdom to set trade restrictions
- * 
+ *
  * @author donoa_000
  */
-public class Marketplace extends Structure{
-
-    public Marketplace(int w, int l, int h, Location cent, String own, String fac) {
-        super(w, l, h, cent, own, fac);
+public class KingdomVault implements Vault{
+    
+    @Getter
+    private Kingdom Owner;
+    
+    @Getter
+    private int Size;
+    
+    @Override
+    public void SendToPlayer(Player p){
+        
     }
     
+    @Override
+    public boolean CanOpen(Player p){
+        return true;
+    }
 }

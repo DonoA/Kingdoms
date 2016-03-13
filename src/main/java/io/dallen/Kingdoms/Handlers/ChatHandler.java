@@ -18,7 +18,7 @@
  */
 package io.dallen.Kingdoms.Handlers;
 
-import io.dallen.Kingdoms.Faction;
+import io.dallen.Kingdoms.Kingdom.Kingdom;
 import io.dallen.Kingdoms.PlayerData;
 import io.dallen.Kingdoms.Util.MuteCommand;
 import io.dallen.Kingdoms.Util.TimeUtil;
@@ -57,7 +57,7 @@ public class ChatHandler implements Listener, CommandExecutor{
                     }
                    break;
                 case 1: //Faction
-                    Faction f = Faction.getFactions().get(PlayerData.getPlayerDat().get(e.getPlayer()).getFaction());
+                    Kingdom f = Kingdom.getFactions().get(PlayerData.getPlayerDat().get(e.getPlayer()).getFaction());
                     e.setFormat(e.getFormat().replace("%c", f.getName()));
                     e.getRecipients().clear();
                     e.getRecipients().addAll(f.getOnlinePlayers());

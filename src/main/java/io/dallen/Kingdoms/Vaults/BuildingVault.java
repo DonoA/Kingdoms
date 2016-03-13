@@ -18,7 +18,7 @@
  */
 package io.dallen.Kingdoms.Vaults;
 
-import io.dallen.Kingdoms.Structures.Structure;
+import io.dallen.Kingdoms.Kingdom.Structures.Structure;
 import lombok.Getter;
 import org.bukkit.entity.Player;
 

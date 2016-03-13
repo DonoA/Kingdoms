@@ -16,7 +16,7 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.Roles;
+package io.dallen.Kingdoms.Kingdom.Roles;
 
 /**
  *

@@ -16,7 +16,7 @@
  * 
  * 
  */
-package io.dallen.Kingdoms;
+package io.dallen.Kingdoms.Kingdom;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,10 +28,10 @@ import org.bukkit.entity.Player;
  *
  * @author donoa_000
  */
-public class Faction {
+public class Kingdom {
     
     @Getter
-    private static HashMap<String, Faction> Factions = new HashMap<String, Faction>();
+    private static HashMap<String, Kingdom> Factions = new HashMap<String, Kingdom>();
     
     private String Leader;
     

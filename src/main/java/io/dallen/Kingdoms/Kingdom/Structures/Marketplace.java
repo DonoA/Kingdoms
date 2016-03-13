@@ -16,19 +16,19 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.Structures;
+package io.dallen.Kingdoms.Kingdom.Structures;
 
-import org.bukkit.Bukkit;
+import org.bukkit.Location;
 
 /**
- *
+ * Allows the kingdom to set trade restrictions
+ * 
  * @author donoa_000
  */
-public class Castle extends Structure{
-    
-    private int level;
-    
-    public Castle(){
-        super(0,0,0,Bukkit.getWorlds().get(0).getSpawnLocation(),"none","none");
+public class Marketplace extends Structure{
+
+    public Marketplace(int w, int l, int h, Location cent, String own, String fac) {
+        super(w, l, h, cent, own, fac);
     }
+    
 }

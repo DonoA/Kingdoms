@@ -20,7 +20,7 @@ package io.dallen.Kingdoms;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.dallen.Kingdoms.Handlers.Party;
-import io.dallen.Kingdoms.Roles.Role;
+import io.dallen.Kingdoms.Kingdom.Roles.Role;
 import io.dallen.Kingdoms.Util.MuteCommand.MuteClass;
 import io.dallen.Kingdoms.Util.MuteCommand;
 import io.dallen.Kingdoms.Vaults.PlayerVault;

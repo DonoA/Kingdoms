@@ -16,13 +16,20 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.Roles;
+package io.dallen.Kingdoms.Kingdom.Structures;
+
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 
 /**
- * Fights for the kingdom
+ * Allows the kingdom to house its NPCs
  * 
  * @author donoa_000
  */
-public class Soldier extends Tradesman{
-    
+public class Barracks extends Structure{
+
+    public Barracks(int w, int l, int h, Location cent, String own, String fac) {
+        super(w, l, h, cent, own, fac);
+    }
+        
 }

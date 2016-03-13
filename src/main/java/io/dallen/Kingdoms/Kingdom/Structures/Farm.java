@@ -16,13 +16,19 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.Roles;
+package io.dallen.Kingdoms.Kingdom.Structures;
+
+import org.bukkit.Location;
 
 /**
- * High variety of horizontal progression within
+ * Allows the kingdom to create and maintain crops
  * 
  * @author donoa_000
  */
-public class Tradesman extends Role{
+public class Farm extends Structure{
+
+    public Farm(int w, int l, int h, Location cent, String own, String fac) {
+        super(w, l, h, cent, own, fac);
+    }
     
 }

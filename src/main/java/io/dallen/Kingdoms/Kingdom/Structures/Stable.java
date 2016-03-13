@@ -16,35 +16,19 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.Structures;
+package io.dallen.Kingdoms.Kingdom.Structures;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.bukkit.Location;
 
 /**
- *
+ * Allows the kingdom to train and hold horses
+ * 
  * @author donoa_000
  */
-public class Structure {
-    
-    @Getter @Setter
-    private int Width;
-    @Getter @Setter
-    private int Height;
-    @Getter @Setter
-    private int Length;
-    @Getter @Setter
-    private Location Center;
-    @Getter @Setter
-    private int ID;
-    @Getter @Setter
-    private String Owner;
-    @Getter @Setter
-    private String Faction;
-    
-    public Structure(int w, int l, int h, Location cent, String own, String fac){
-        
+public class Stable extends Structure{
+
+    public Stable(int w, int l, int h, Location cent, String own, String fac) {
+        super(w, l, h, cent, own, fac);
     }
     
 }

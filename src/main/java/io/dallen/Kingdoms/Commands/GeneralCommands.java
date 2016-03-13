@@ -18,7 +18,7 @@
  */
 package io.dallen.Kingdoms.Commands;
 
-import io.dallen.Kingdoms.Faction;
+import io.dallen.Kingdoms.Kingdom.Kingdom;
 import io.dallen.Kingdoms.PlayerData;
 import io.dallen.Kingdoms.Util.PermissionManager;
 import java.util.ArrayList;
@@ -55,8 +55,8 @@ public class GeneralCommands implements CommandExecutor{
                     }
                 }else{
                     PlayerData pd = PlayerData.getData(p);
-                    if(Faction.getFactions().get(pd.getFaction()) != null){
-                        Faction.getFactions().get(pd.getFaction()).getOnlinePlayers();
+                    if(Kingdom.getFactions().get(pd.getFaction()) != null){
+                        Kingdom.getFactions().get(pd.getFaction()).getOnlinePlayers();
                     }
                 }
             }else{

@@ -16,19 +16,20 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.Structures;
+package io.dallen.Kingdoms.Kingdom.Structures;
 
 import org.bukkit.Location;
 
 /**
- * Allows the kingdom to train its NPCs
+ * Allows the kingdom to store raw and refined materials
  * 
  * @author donoa_000
  */
-public class TrainingGround extends Structure{
+public class Storeroom extends Structure{
 
-    public TrainingGround(int w, int l, int h, Location cent, String own, String fac) {
+    public Storeroom(int w, int l, int h, Location cent, String own, String fac) {
         super(w, l, h, cent, own, fac);
     }
+    
     
 }

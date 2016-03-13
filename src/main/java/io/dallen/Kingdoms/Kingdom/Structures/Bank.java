@@ -16,13 +16,19 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.Roles;
+package io.dallen.Kingdoms.Kingdom.Structures;
+
+import org.bukkit.Location;
 
 /**
- * Trades with people and between kingdoms
+ * Allows the kingdom to store its subjects’ wealth safely
  * 
  * @author donoa_000
  */
-public class Merchant extends Tradesman{
+public class Bank extends Structure{
+
+    public Bank(int w, int l, int h, Location cent, String own, String fac) {
+        super(w, l, h, cent, own, fac);
+    }
     
 }

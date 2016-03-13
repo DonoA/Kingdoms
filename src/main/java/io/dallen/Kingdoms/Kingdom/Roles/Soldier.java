@@ -16,19 +16,13 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.Structures;
-
-import org.bukkit.Location;
+package io.dallen.Kingdoms.Kingdom.Roles;
 
 /**
- * Allows the kingdom to create and maintain crops
+ * Fights for the kingdom
  * 
  * @author donoa_000
  */
-public class Farm extends Structure{
-
-    public Farm(int w, int l, int h, Location cent, String own, String fac) {
-        super(w, l, h, cent, own, fac);
-    }
+public class Soldier extends Tradesman{
     
 }

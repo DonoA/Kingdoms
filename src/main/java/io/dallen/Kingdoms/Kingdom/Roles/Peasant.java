@@ -16,13 +16,13 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.Roles;
+package io.dallen.Kingdoms.Kingdom.Roles;
 
 /**
- * Crafts armor and weapons for a kingdom
+ * No might, honor, or wealth, can take low level contracts
  * 
  * @author donoa_000
  */
-public class Blacksmith extends Tradesman{
+public class Peasant extends Role{
     
 }

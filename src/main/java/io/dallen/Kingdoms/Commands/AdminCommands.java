@@ -21,7 +21,7 @@ package io.dallen.Kingdoms.Commands;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketContainer;
-import io.dallen.Kingdoms.Faction;
+import io.dallen.Kingdoms.Kingdom.Kingdom;
 import io.dallen.Kingdoms.Main;
 import io.dallen.Kingdoms.Util.PermissionManager;
 import java.lang.reflect.InvocationTargetException;
@@ -58,7 +58,7 @@ public class AdminCommands implements CommandExecutor{
                 }else if(args[0].equalsIgnoreCase("kingdoms")){
                     sender.sendMessage("Current Kingdoms:");
                     sender.sendMessage("======================");
-                    for(String f : Faction.getFactions().keySet()){
+                    for(String f : Kingdom.getFactions().keySet()){
                         sender.sendMessage(" - " + f);
                     }
                 }else if(args[0].equalsIgnoreCase("covens")){

@@ -16,19 +16,13 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.Structures;
-
-import org.bukkit.Location;
+package io.dallen.Kingdoms.Kingdom.Roles;
 
 /**
- * Allows the kingdom to store its subjects’ wealth safely
+ * High variety of horizontal progression within
  * 
  * @author donoa_000
  */
-public class Bank extends Structure{
-
-    public Bank(int w, int l, int h, Location cent, String own, String fac) {
-        super(w, l, h, cent, own, fac);
-    }
+public class Tradesman extends Role{
     
 }

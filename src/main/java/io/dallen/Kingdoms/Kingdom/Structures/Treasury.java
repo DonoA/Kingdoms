@@ -16,22 +16,19 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.Roles;
+package io.dallen.Kingdoms.Kingdom.Structures;
 
-import lombok.Getter;
+import org.bukkit.Location;
 
 /**
- *
+ * Allows the kingdom to store wealth
+ * 
  * @author donoa_000
  */
-public abstract class Role {
-    @Getter
-    private String Title;
-    
-    @Getter
-    private boolean Master;
-    
-    @Getter
-    private int Renoun;
+public class Treasury extends Structure{
+
+    public Treasury(int w, int l, int h, Location cent, String own, String fac) {
+        super(w, l, h, cent, own, fac);
+    }
     
 }
