@@ -49,16 +49,32 @@ public class Structure {
     @Getter @Setter
     private Municipality Municipal;
     
-    public Structure(int w, int l, int h, Location cent, Player own, Kingdom kingdom, Municipality Muicipal){
-        
+    public Structure(int w, int l, int h, Location cent, Player own, Kingdom kingdom, Municipality municipal){
+        this.Width = w;
+        this.Length = l;
+        this.Height = h;
+        this.Center = cent;
+        this.Owner = own;
+        this.Kingdom = kingdom;
+        this.Municipal = municipal;
     }
     
-    public Structure(int w, int l, int h, Location cent, Player own, Municipality Muicipal){
-        
+    public Structure(int w, int l, int h, Location cent, Player own, Municipality municipal){
+        this.Width = w;
+        this.Length = l;
+        this.Height = h;
+        this.Center = cent;
+        this.Owner = own;
+        this.Municipal = municipal;
     }
     
     public Structure(int w, int l, int h, Location cent, Player own, Kingdom kingdom){
-        
+        this.Width = w;
+        this.Length = l;
+        this.Height = h;
+        this.Center = cent;
+        this.Owner = own;
+        this.Kingdom = kingdom;
     }
     
 }

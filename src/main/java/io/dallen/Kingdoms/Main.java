@@ -21,6 +21,7 @@ package io.dallen.Kingdoms;
 import io.dallen.Kingdoms.Commands.KingdomCommands;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
+import io.dallen.Kingdoms.Handlers.JoinLeaveHandler;
 import io.dallen.Kingdoms.Commands.AdminCommands;
 import io.dallen.Kingdoms.Commands.GeneralCommands;
 import io.dallen.Kingdoms.Commands.ModerationCommands;
@@ -29,13 +30,12 @@ import io.dallen.Kingdoms.NPCs.NpcManager;
 import io.dallen.Kingdoms.Handlers.ChatHandler;
 import io.dallen.Kingdoms.Handlers.Party;
 import io.dallen.Kingdoms.Handlers.MenuHandlers.MainMenuHandler;
+import io.dallen.Kingdoms.Handlers.MultiBlockHandler;
 import io.dallen.Kingdoms.Terrain.KingdomTerrainGeneration;
-import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.LogUtil;
 import io.dallen.Kingdoms.Util.MuteCommand;
 import lombok.Getter;
 import lombok.Setter;
-import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -122,6 +122,9 @@ public class Main extends JavaPlugin {
         this.saveDefaultConfig();
         World mainworld = Bukkit.getWorld(this.getConfig().getString("MainWorld"));
         Overworld = new KingdomTerrainGeneration(mainworld);
+        MultiBlockHandler mbh = new MultiBlockHandler();
+        Bukkit.getPluginManager().registerEvents(mbh, this);
+        Bukkit.getPluginManager().registerEvents(new JoinLeaveHandler(), this);
         Bukkit.getScheduler().scheduleSyncDelayedTask(this, onServerLoad);
     }
     

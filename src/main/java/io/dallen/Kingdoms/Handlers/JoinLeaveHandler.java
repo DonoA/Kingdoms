@@ -18,12 +18,24 @@
  */
 package io.dallen.Kingdoms.Handlers;
 
+import io.dallen.Kingdoms.PlayerData;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 /**
  *
  * @author donoa_000
  */
 public class JoinLeaveHandler implements Listener{
+    @EventHandler
+    public void onJoin(PlayerJoinEvent e){
+        PlayerData.getPlayerDat().put(e.getPlayer(), new PlayerData());
+    }
     
+    @EventHandler
+    public void onQuit(PlayerQuitEvent e){
+        PlayerData.getPlayerDat().remove(e.getPlayer());
+    }
 }

@@ -19,13 +19,12 @@
 package io.dallen.Kingdoms.Kingdom;
 
 import io.dallen.Kingdoms.Kingdom.Structures.Structure;
+import io.dallen.Kingdoms.Util.LogUtil;
 import java.util.ArrayList;
 import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockPlaceEvent;
 
 /**
  *
@@ -46,6 +45,7 @@ public class Plot extends Structure implements Listener{
                l.getBlockX() < p.getCenter().getBlockX() + p.getWidth()/2 &&
                l.getBlockZ() > p.getCenter().getBlockZ() - p.getLength()/2 && 
                l.getBlockZ() < p.getCenter().getBlockZ() + p.getLength()/2){
+                LogUtil.printDebug("Found a plot");
                 return p;
             }
         }

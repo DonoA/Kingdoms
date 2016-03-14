@@ -20,6 +20,7 @@ package io.dallen.Kingdoms;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.dallen.Kingdoms.Handlers.Party;
+import io.dallen.Kingdoms.Kingdom.Plot;
 import io.dallen.Kingdoms.Kingdom.Roles.Role;
 import io.dallen.Kingdoms.Util.MuteCommand.MuteClass;
 import io.dallen.Kingdoms.Util.MuteCommand;
@@ -60,6 +61,9 @@ public class PlayerData {
     
     @Getter @Setter
     private MuteClass muted;
+    
+    @Getter
+    private ArrayList<Plot> Plots = new ArrayList<Plot>();
     
     public PlayerData(){
         

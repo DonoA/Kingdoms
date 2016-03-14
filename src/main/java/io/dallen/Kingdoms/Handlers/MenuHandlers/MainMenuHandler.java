@@ -28,7 +28,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -50,6 +50,7 @@ public class MainMenuHandler implements CommandExecutor, OptionClickEventHandler
     private static HashMap<Player, ArrayList<ChestGUI>> history = new HashMap<Player, ArrayList<ChestGUI>>();
     
     public MainMenuHandler(){
+        
         HomeMenu = new ChestGUI("Home Menu", 3, this) {{
             setOption(1*9 + 2, new ItemStack(Material.ENCHANTED_BOOK), "Encyclopedia", "");
             setOption(1*9 + 3, new ItemStack(Material.ENCHANTED_BOOK), "Plot Menu", "");

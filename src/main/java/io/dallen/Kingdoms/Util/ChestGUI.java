@@ -30,6 +30,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -49,6 +50,7 @@ public class ChestGUI implements Listener{
    
     private String[] optionNames;
     private ItemStack[] optionIcons;
+    private Object[] optionData;
     
     public ChestGUI(String name, InventoryType type, OptionClickEventHandler handler){
         this.type = type;
@@ -56,7 +58,8 @@ public class ChestGUI implements Listener{
         this.handler = handler;
         optionNames = new String[5*9];
         optionIcons = new ItemStack[5*9];
-        Bukkit.getServer().getPluginManager().registerEvents(this, Main.getPlugin());
+        optionData = new Object[5*9];
+        Main.getPlugin().getServer().getPluginManager().registerEvents(this, Main.getPlugin());
     }
     
     public ChestGUI(String name, int size, OptionClickEventHandler handler){
@@ -65,6 +68,7 @@ public class ChestGUI implements Listener{
         this.size = size*9;
         optionNames = new String[this.size];
         optionIcons = new ItemStack[this.size];
+        optionData = new Object[this.size];
         this.handler = handler;
         Main.getPlugin().getServer().getPluginManager().registerEvents(this, Main.getPlugin());
     }
@@ -72,6 +76,14 @@ public class ChestGUI implements Listener{
     public ChestGUI setOption(int pos, ItemStack icon, String name, String... info){
         optionNames[pos] = name;
         optionIcons[pos] = setItemNameAndLore(icon, name, info);
+        optionData[pos] = null;
+        return this;
+    }
+    
+    public ChestGUI setOption(int pos, ItemStack icon, String name, Object data, String... info){
+        optionNames[pos] = name;
+        optionIcons[pos] = setItemNameAndLore(icon, name, info);
+        optionData[pos] = data;
         return this;
     }
    
@@ -100,6 +112,7 @@ public class ChestGUI implements Listener{
         handler = null;
         optionNames = null;
         optionIcons = null;
+        optionData = null;
     }
    
     @EventHandler
@@ -107,8 +120,8 @@ public class ChestGUI implements Listener{
         if (event.getInventory().getTitle().equals(name)){
             event.setCancelled(true);
             int slot = event.getRawSlot();
-            if (slot >= 0 && slot < size && optionNames[slot] != null){
-                OptionClickEvent e = new OptionClickEvent((Player) event.getWhoClicked(), slot, optionNames[slot], name);
+            if (slot >= 0 && optionNames[slot] != null){
+                OptionClickEvent e = new OptionClickEvent((Player) event.getWhoClicked(), slot, optionData[slot], optionNames[slot], name);
                 handler.onOptionClick(e);
                 if (e.isClose()){
                     final Player p = (Player) event.getWhoClicked();
@@ -130,6 +143,7 @@ public class ChestGUI implements Listener{
             }
         }
     }
+    
     
     public interface OptionClickEventHandler{
         public void onOptionClick(OptionClickEvent event);       
@@ -154,10 +168,13 @@ public class ChestGUI implements Listener{
         @Getter @Setter
         private ChestGUI next;
         
-        @Getter
+        @Getter @Setter
         private boolean destroy;
+        
+        @Getter
+        private Object data;
        
-        public OptionClickEvent(Player player, int position, String name, String menuName){
+        public OptionClickEvent(Player player, int position, Object data, String name, String menuName){
             this.player = player;
             this.position = position;
             this.name = name;
@@ -165,6 +182,7 @@ public class ChestGUI implements Listener{
             this.destroy = false;
             this.menuName = menuName;
             this.next = null;
+            this.data = data;
         }
     }
    
