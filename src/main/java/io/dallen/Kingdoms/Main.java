@@ -34,8 +34,9 @@ import io.dallen.Kingdoms.Handlers.MultiBlockHandler;
 import io.dallen.Kingdoms.Terrain.KingdomTerrainGeneration;
 import io.dallen.Kingdoms.Util.DBmanager;
 import io.dallen.Kingdoms.Util.LogUtil;
-import io.dallen.Kingdoms.Util.MuteCommand;
+import io.dallen.Kingdoms.Commands.MuteCommand;
 import io.dallen.Kingdoms.Util.NBTmanager;
+import io.dallen.Kingdoms.Util.RedisManager;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -138,6 +139,7 @@ public class Main extends JavaPlugin {
         } catch (IOException | DataFormatException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
+        RedisManager RM = new RedisManager();
     }
     
     @Override

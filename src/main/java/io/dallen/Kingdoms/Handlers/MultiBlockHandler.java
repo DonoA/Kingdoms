@@ -71,12 +71,10 @@ public class MultiBlockHandler implements Listener{
                             public void run(){
                                 for(int x = -64; x < 64; x++){
                                     if(l.clone().add(x, 0, 0).getBlock().getType().equals(Material.REDSTONE_TORCH_ON) && x != 0){
-                                        LogUtil.printDebug("found torch at " + x);
                                         for(int z = -64; z < 64; z++){
                                             if(l.clone().add(0, 0, z).getBlock().getType().equals(Material.REDSTONE_TORCH_ON) && z != 0){
-                                                LogUtil.printDebug("found torch at " + z);
                                                 Plot NewPlot = new Plot(Math.abs(x),Math.abs(z),-1,l.add(x/2, 0, z/2), p, null);
-                                                NewPlotMenu.setOption(1, new ItemStack(Material.ENCHANTED_BOOK), "Confirm and Claim Plot", NewPlot, "").sendMenu(p);//will cause problems for multiple players
+                                                NewPlotMenu.setOption(1, new ItemStack(Material.ENCHANTED_BOOK), "Confirm and Claim Plot", NewPlot, p, "Plot size: " + x + ", " + z).sendMenu(p);
                                                 return;
                                             }
                                         } 

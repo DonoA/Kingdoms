@@ -48,6 +48,10 @@
                                     <pattern>com.comphenix.protocol</pattern>
                                     <shadedPattern>libs.com.comphenix.protocol</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>com.lambdaworks.redis</pattern>
+                                    <shadedPattern>libs.com.lambdaworks.redis</shadedPattern>
+                                </relocation>
 <!--                                <relocation>
                                     <pattern>net.citizensnpcs</pattern>
                                     <shadedPattern>libs.net.citizensnpcs</shadedPattern>
@@ -105,41 +109,12 @@
             <type>jar</type>
             <scope>provided</scope>
         </dependency>
-        <!--Bukkit API-->
-        <!--dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>bukkit</artifactId>
-            <version>1.7.9-R0.2</version>
-            <type>javadoc</type>
-            <scope>provided</scope>
-        </dependency>
+        <!-- Redis -->
         <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>bukkit</artifactId>
-            <version>1.7.9-R0.2</version>
+            <groupId>biz.paluch.redis</groupId>
+            <artifactId>lettuce</artifactId>
+            <version>4.1.1.Final</version>
             <type>jar</type>
-            <scope>provided</scope>
-        </dependency-->
-        <!--Passwords-->
-        <dependency>
-            <groupId>org.jasypt</groupId>
-            <artifactId>jasypt</artifactId>
-            <version>1.9.2</version>
-        </dependency>
-        <!--BungeeCord API -->
-        <dependency>
-            <groupId>net.md-5</groupId>
-            <artifactId>bungeecord-api</artifactId>
-            <version>1.8-SNAPSHOT</version>
-            <type>jar</type>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.md-5</groupId>
-            <artifactId>bungeecord-api</artifactId>
-            <version>1.8-SNAPSHOT</version>
-            <type>javadoc</type>
-            <scope>provided</scope>
         </dependency>
         <!-- Citizens API -->
         <dependency>

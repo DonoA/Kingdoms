@@ -38,7 +38,7 @@ import org.bukkit.util.BlockVector;
 import org.bukkit.util.Vector;
 
 /**
- * Based on code from sk98q WorldEdit
+ * Based on code from sk98q's WorldEdit
  * 
  * @author donoa_000
  */

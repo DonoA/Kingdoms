@@ -19,23 +19,20 @@
 package io.dallen.Kingdoms.Util;
 
 import io.dallen.Kingdoms.Main;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  *
@@ -50,15 +47,19 @@ public class ChestGUI implements Listener{
    
     private String[] optionNames;
     private ItemStack[] optionIcons;
-    private Object[] optionData;
+    private HashMap<String, Object[]> optionData;
     
     public ChestGUI(String name, InventoryType type, OptionClickEventHandler handler){
         this.type = type;
         this.name = name;
         this.handler = handler;
+        this.size = 5*9;
         optionNames = new String[5*9];
         optionIcons = new ItemStack[5*9];
-        optionData = new Object[5*9];
+        final int s = this.size;
+        optionData = new HashMap<String, Object[]>() {{
+            put("all", new Object[s]);
+        }};
         Main.getPlugin().getServer().getPluginManager().registerEvents(this, Main.getPlugin());
     }
     
@@ -68,7 +69,10 @@ public class ChestGUI implements Listener{
         this.size = size*9;
         optionNames = new String[this.size];
         optionIcons = new ItemStack[this.size];
-        optionData = new Object[this.size];
+        final int s = this.size;
+        optionData = new HashMap<String, Object[]>() {{
+            put("all", new Object[s]);
+        }};
         this.handler = handler;
         Main.getPlugin().getServer().getPluginManager().registerEvents(this, Main.getPlugin());
     }
@@ -76,15 +80,31 @@ public class ChestGUI implements Listener{
     public ChestGUI setOption(int pos, ItemStack icon, String name, String... info){
         optionNames[pos] = name;
         optionIcons[pos] = setItemNameAndLore(icon, name, info);
-        optionData[pos] = null;
         return this;
     }
     
     public ChestGUI setOption(int pos, ItemStack icon, String name, Object data, String... info){
         optionNames[pos] = name;
         optionIcons[pos] = setItemNameAndLore(icon, name, info);
-        optionData[pos] = data;
+        optionData.get("all")[pos] = data; 
         return this;
+    }
+//      WILL USE IF NEED INSTANCED OPTION TITLES
+//
+//    public ChestGUI setOption(int pos, ItemStack icon, String name, Player p, String... info){
+//        optionNames[pos] = name;
+//        optionIcons[pos] = setItemNameAndLore(icon, name, info);
+//        return this;
+//    }
+    
+    public ChestGUI setOption(int pos, ItemStack icon, String name, Object data, Player p, String... info){
+        optionNames[pos] = name;
+        optionIcons[pos] = setItemNameAndLore(icon, name, info);
+        if(!optionData.containsKey(p.getName())){
+            optionData.put(p.getName(), new Object[this.size]);
+        }
+        optionData.get(p.getName())[pos] = data;
+       return this;
     }
    
     public void sendMenu(Player player){
@@ -121,7 +141,11 @@ public class ChestGUI implements Listener{
             event.setCancelled(true);
             int slot = event.getRawSlot();
             if (slot >= 0 && optionNames[slot] != null){
-                OptionClickEvent e = new OptionClickEvent((Player) event.getWhoClicked(), slot, optionData[slot], optionNames[slot], name);
+                Object dat = optionData.get("all")[slot];
+                if(optionData.containsKey(((Player) event.getWhoClicked()).getName())){
+                    dat = optionData.get(((Player) event.getWhoClicked()).getName())[slot];
+                }
+                OptionClickEvent e = new OptionClickEvent((Player) event.getWhoClicked(), slot, dat, optionNames[slot], name);
                 handler.onOptionClick(e);
                 if (e.isClose()){
                     final Player p = (Player) event.getWhoClicked();
