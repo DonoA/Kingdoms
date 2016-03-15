@@ -32,8 +32,15 @@ import io.dallen.Kingdoms.Handlers.Party;
 import io.dallen.Kingdoms.Handlers.MenuHandlers.MainMenuHandler;
 import io.dallen.Kingdoms.Handlers.MultiBlockHandler;
 import io.dallen.Kingdoms.Terrain.KingdomTerrainGeneration;
+import io.dallen.Kingdoms.Util.DBmanager;
 import io.dallen.Kingdoms.Util.LogUtil;
 import io.dallen.Kingdoms.Util.MuteCommand;
+import io.dallen.Kingdoms.Util.NBTmanager;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.zip.DataFormatException;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
@@ -72,7 +79,7 @@ public class Main extends JavaPlugin {
     private static Runnable onServerLoad = new Runnable(){ //put normal onEnable code here
             @Override
             public void run(){
-                if ((Main.getPlugin().getServer().getPluginManager().getPlugin("Citizens") == null) || 
+                if((Main.getPlugin().getServer().getPluginManager().getPlugin("Citizens") == null) || 
                     (!Main.getPlugin().getServer().getPluginManager().getPlugin("Citizens").isEnabled())){
                     LogUtil.printErr("Citizens 2 not found!");
                     LogUtil.printErr("Shutting Down!");
@@ -126,6 +133,11 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(mbh, this);
         Bukkit.getPluginManager().registerEvents(new JoinLeaveHandler(), this);
         Bukkit.getScheduler().scheduleSyncDelayedTask(this, onServerLoad);
+        try {
+            NBTmanager.loadData(new File(this.getDataFolder() + DBmanager.getFileSep() + "generic.schematic"));
+        } catch (IOException | DataFormatException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     @Override

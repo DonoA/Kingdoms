@@ -70,6 +70,10 @@
       <id>dmulloy2-repo</id>
       <url>http://repo.dmulloy2.net/content/groups/public/</url>
     </repository>
+    <repository>
+      <id>sk89q-repo</id>
+      <url>http://maven.sk89q.com/artifactory/repo/</url>
+    </repository>
   </repositories>
   <dependencies>
     <dependency>

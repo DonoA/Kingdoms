@@ -35,6 +35,7 @@ public class DBmanager {
     @Getter
     private static ObjectMapper JSonParser = new ObjectMapper();
     
+    @Getter
     private static String FileSep = System.getProperty("file.separator");
     
     /**
