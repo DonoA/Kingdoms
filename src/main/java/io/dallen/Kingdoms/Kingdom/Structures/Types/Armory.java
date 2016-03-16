@@ -16,21 +16,26 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.Kingdom.Structures;
+package io.dallen.Kingdoms.Kingdom.Structures.Types;
 
+import io.dallen.Kingdoms.Kingdom.Kingdom;
 import io.dallen.Kingdoms.Kingdom.Municipality;
+import io.dallen.Kingdoms.Kingdom.Structures.Structure;
+import java.awt.Polygon;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 /**
- * Allows the kingdom to store raw and refined materials
+ * Allows the kingdom to store weapons and armor for its subjects
  * 
  * @author donoa_000
  */
-public class Storeroom extends Structure{
+public class Armory extends Structure{
 
-    public Storeroom(int w, int l, int h, Location cent, Player own, io.dallen.Kingdoms.Kingdom.Kingdom kingdom, Municipality Muicipal) {
-        super(w, l, h, cent, own, kingdom, Muicipal);
+    public Armory(Polygon base, Location cent, Player own, Kingdom kingdom, Municipality Muicipal) {
+        super(base, cent, own, kingdom, Muicipal);
     }
+
+    
     
 }

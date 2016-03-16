@@ -21,7 +21,6 @@ package io.dallen.Kingdoms.Handlers;
 import java.util.HashMap;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockEvent;
 

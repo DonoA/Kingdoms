@@ -19,7 +19,9 @@
 package io.dallen.Kingdoms.Kingdom;
 
 import io.dallen.Kingdoms.Kingdom.Structures.Structure;
+import io.dallen.Kingdoms.Util.LocationUtil;
 import io.dallen.Kingdoms.Util.LogUtil;
+import java.awt.Polygon;
 import java.util.ArrayList;
 import lombok.Getter;
 import org.bukkit.Location;
@@ -35,17 +37,13 @@ public class Plot extends Structure implements Listener{
     @Getter
     private static ArrayList<Plot> allPlots = new ArrayList<Plot>();
     
-    public Plot(int w, int l, int h, Location cent, Player own, Municipality mun) {
-        super(w, l, h, cent, own, mun);
+    public Plot(Polygon base, Location cent, Player own, Municipality mun) {
+        super(base, cent, own, mun);
     }
     
     public static Plot inPlot(Location l){
         for(Plot p : allPlots){
-            if(l.getBlockX() > p.getCenter().getBlockX() - p.getWidth()/2 && 
-               l.getBlockX() < p.getCenter().getBlockX() + p.getWidth()/2 &&
-               l.getBlockZ() > p.getCenter().getBlockZ() - p.getLength()/2 && 
-               l.getBlockZ() < p.getCenter().getBlockZ() + p.getLength()/2){
-                LogUtil.printDebug("Found a plot");
+            if(p.getBase().contains(LocationUtil.asPoint(l))){
                 return p;
             }
         }

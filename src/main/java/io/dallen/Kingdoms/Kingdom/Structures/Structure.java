@@ -20,6 +20,7 @@ package io.dallen.Kingdoms.Kingdom.Structures;
 
 import io.dallen.Kingdoms.Kingdom.Kingdom;
 import io.dallen.Kingdoms.Kingdom.Municipality;
+import java.awt.Polygon;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Location;
@@ -38,6 +39,8 @@ public class Structure {
     @Getter @Setter
     private int Length; // Z
     @Getter @Setter
+    private Polygon Base; // Z
+    @Getter @Setter
     private Location Center;
     @Getter @Setter
     private int ID;
@@ -48,29 +51,23 @@ public class Structure {
     @Getter @Setter
     private Municipality Municipal;
     
-    public Structure(int w, int l, int h, Location cent, Player own, Kingdom kingdom, Municipality municipal){
-        this.Width = w;
-        this.Length = l;
-        this.Height = h;
+    public Structure(Polygon base, Location cent, Player own, Kingdom kingdom, Municipality municipal){
         this.Center = cent;
         this.Owner = own;
         this.Kingdom = kingdom;
         this.Municipal = municipal;
+        this.Base = base;
     }
     
-    public Structure(int w, int l, int h, Location cent, Player own, Municipality municipal){
-        this.Width = w;
-        this.Length = l;
-        this.Height = h;
+    public Structure(Polygon base, Location cent, Player own, Municipality municipal){
+        this.Base = base;
         this.Center = cent;
         this.Owner = own;
         this.Municipal = municipal;
     }
     
-    public Structure(int w, int l, int h, Location cent, Player own, Kingdom kingdom){
-        this.Width = w;
-        this.Length = l;
-        this.Height = h;
+    public Structure(Polygon base, Location cent, Player own, Kingdom kingdom){
+        this.Base = base;
         this.Center = cent;
         this.Owner = own;
         this.Kingdom = kingdom;

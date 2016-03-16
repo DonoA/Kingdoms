@@ -16,21 +16,23 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.Kingdom.Structures;
+package io.dallen.Kingdoms.Kingdom.Structures.Types;
 
 import io.dallen.Kingdoms.Kingdom.Municipality;
+import io.dallen.Kingdoms.Kingdom.Structures.Structure;
 import org.bukkit.Location;
+import java.awt.Polygon;
 import org.bukkit.entity.Player;
 
 /**
- * Allows the kingdom to train its NPCs
+ * Allows the kingdom to store raw and refined materials
  * 
  * @author donoa_000
  */
-public class TrainingGround extends Structure{
+public class Storeroom extends Structure{
 
-    public TrainingGround(int w, int l, int h, Location cent, Player own, io.dallen.Kingdoms.Kingdom.Kingdom kingdom, Municipality Muicipal) {
-        super(w, l, h, cent, own, kingdom, Muicipal);
+    public Storeroom(Polygon base, Location cent, Player own, io.dallen.Kingdoms.Kingdom.Kingdom kingdom, Municipality Muicipal) {
+        super(base, cent, own, kingdom, Muicipal);
     }
-
+    
 }

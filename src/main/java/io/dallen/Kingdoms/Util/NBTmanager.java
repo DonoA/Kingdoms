@@ -18,6 +18,7 @@
  */
 package io.dallen.Kingdoms.Util;
 
+import io.dallen.Kingdoms.Kingdom.Structures.Blueprint;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -44,7 +45,7 @@ import org.bukkit.util.Vector;
  */
 public class NBTmanager {
     
-    public static void loadData(File f) throws IOException, DataFormatException {
+    public static Blueprint loadData(File f) throws IOException, DataFormatException {
         FileInputStream stream = new FileInputStream(f);
         NBTInputStream nbtStream = new NBTInputStream(new GZIPInputStream(stream));
 
@@ -70,9 +71,6 @@ public class NBTmanager {
         short width = getChildTag(schematic, "Width", ShortTag.class).getValue();
         short length = getChildTag(schematic, "Length", ShortTag.class).getValue();
         short height = getChildTag(schematic, "Height", ShortTag.class).getValue();
-        LogUtil.printDebug(width);
-        LogUtil.printDebug(length);
-        LogUtil.printDebug(height);
         try {
             int originX = getChildTag(schematic, "WEOriginX", IntTag.class).getValue();
             int originY = getChildTag(schematic, "WEOriginY", IntTag.class).getValue();
@@ -157,6 +155,7 @@ public class NBTmanager {
             BlockVector vec = new BlockVector(x, y, z);
             tileEntitiesMap.put(vec, values);
         }
+        return null;
     }
 
     /**

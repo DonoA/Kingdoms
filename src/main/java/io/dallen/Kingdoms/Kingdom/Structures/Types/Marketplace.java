@@ -16,22 +16,23 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.Kingdom.Structures;
+package io.dallen.Kingdoms.Kingdom.Structures.Types;
 
 import io.dallen.Kingdoms.Kingdom.Municipality;
+import io.dallen.Kingdoms.Kingdom.Structures.Structure;
+import java.awt.Polygon;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 /**
- * Allows the kingdom to manufacture weapons and armor
+ * Allows the kingdom to set trade restrictions
  * 
  * @author donoa_000
  */
-public class Blacksmith extends Structure{
+public class Marketplace extends Structure{
 
-    public Blacksmith(int w, int l, int h, Location cent, Player own, io.dallen.Kingdoms.Kingdom.Kingdom kingdom, Municipality Muicipal) {
-        super(w, l, h, cent, own, kingdom, Muicipal);
+    public Marketplace(Polygon base, Location cent, Player own, io.dallen.Kingdoms.Kingdom.Kingdom kingdom, Municipality Muicipal) {
+        super(base, cent, own, kingdom, Muicipal);
     }
 
-    
 }

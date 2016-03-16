@@ -24,6 +24,10 @@ import io.dallen.Kingdoms.PlayerData;
 import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEvent;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEventHandler;
+import io.dallen.Kingdoms.Util.LocationUtil;
+import java.awt.Point;
+import java.awt.Polygon;
+import java.util.ArrayList;
 import java.util.HashMap;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -68,18 +72,65 @@ public class MultiBlockHandler implements Listener{
                         p.sendMessage("Calculating Plot...");
                         new Thread(new Runnable(){
                             @Override
-                            public void run(){
-                                for(int x = -64; x < 64; x++){
-                                    if(l.clone().add(x, 0, 0).getBlock().getType().equals(Material.REDSTONE_TORCH_ON) && x != 0){
-                                        for(int z = -64; z < 64; z++){
-                                            if(l.clone().add(0, 0, z).getBlock().getType().equals(Material.REDSTONE_TORCH_ON) && z != 0){
-                                                Plot NewPlot = new Plot(Math.abs(x),Math.abs(z),-1,l.add(x/2, 0, z/2), p, null);
-                                                NewPlotMenu.setOption(1, new ItemStack(Material.ENCHANTED_BOOK), "Confirm and Claim Plot", NewPlot, p, "Plot size: " + x + ", " + z).sendMenu(p);
-                                                return;
+                            public void run(){ // Calculate redstone torch plot
+                                ArrayList<Point> corners = new ArrayList<Point>();
+                                Point start = LocationUtil.asPoint(l);
+                                corners.add(start);
+                                int x = l.getBlockX();
+                                int y = l.getBlockY();
+                                int z = l.getBlockZ();
+                                Point currentX = null;
+                                Point currentZ = null;
+                                Point lastX = null;
+                                Point lastZ = null;
+                                for(x = (int) start.getX() - 64; x < start.getX() + 64; x++){
+                                    if(new Location(l.getWorld(), x, y, z).getBlock().getType().equals(Material.REDSTONE_TORCH_ON) && x != l.getBlockX()){
+                                        currentX = new Point(x,z);
+                                        corners.add(currentX);
+                                        for(z = (int) start.getY() - 64; z < start.getY() + 64; z++){
+                                            if(new Location(l.getWorld(), x, y, z).getBlock().getType().equals(Material.REDSTONE_TORCH_ON) && x != l.getBlockZ()){
+                                                currentZ = new Point(x,z);
+                                                corners.add(new Point(x,z));
                                             }
-                                        } 
+                                        }
                                     }
                                 }
+                                if(currentX == null || currentZ == null){
+                                    p.sendMessage("Plot not found!");
+                                    return;
+                                }
+                                while(!start.equals(currentX) || !start.equals(currentZ)){
+                                    lastX = currentX;
+                                    lastZ = currentZ;
+                                    currentX = null;
+                                    currentZ = null;
+                                    for(x = (int) lastX.getX() - 64; x < lastX.getX() + 64; x++){
+                                        if(new Location(l.getWorld(), x, y, z).getBlock().getType().equals(Material.REDSTONE_TORCH_ON) && x != lastX.getX()){
+                                            currentX = new Point(x,z);
+                                            corners.add(currentX);
+                                            for(z = (int) lastZ.getY() - 64; z < lastZ.getY() + 64; z++){
+                                                if(new Location(l.getWorld(), x, y, z).getBlock().getType().equals(Material.REDSTONE_TORCH_ON) && x != lastZ.getY()){
+                                                    currentZ = new Point(x,z);
+                                                    corners.add(new Point(x,z));
+                                                }
+                                            }
+                                        }
+                                    }
+                                    if(currentX == null || currentZ == null){
+                                        p.sendMessage("Plot not found!");
+                                        return;
+                                    }
+                                }
+                                int[] Xs = new int[corners.size()];
+                                int[] Zs = new int[corners.size()];
+                                int i = 0;
+                                for(Point p : corners){
+                                    Xs[0] = (int) p.getX();
+                                    Zs[0] = (int) p.getY();
+                                    i++;
+                                }
+                                Plot NewPlot = new Plot(new Polygon(Xs, Zs, corners.size()), LocationUtil.asLocation(LocationUtil.calcCenter(corners.toArray(new Point[1])), l.getWorld()), p, null);
+                                NewPlotMenu.setOption(1, new ItemStack(Material.ENCHANTED_BOOK), "Confirm and Claim Plot", NewPlot, p, "Plot size: " + x + ", " + z).sendMenu(p);
                                 p.sendMessage("Plot not found!");
                             }
                         }).start();

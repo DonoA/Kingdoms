@@ -16,21 +16,24 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.Kingdom.Structures;
+package io.dallen.Kingdoms.Kingdom.Structures.Types;
 
 import io.dallen.Kingdoms.Kingdom.Municipality;
+import io.dallen.Kingdoms.Kingdom.Structures.Structure;
+import java.awt.Polygon;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 /**
- * Allows the kingdom to train and hold horses
- * 
+ *
  * @author donoa_000
  */
-public class Stable extends Structure{
+public class Castle extends Structure{
+    
+    private int level;
 
-    public Stable(int w, int l, int h, Location cent, Player own, io.dallen.Kingdoms.Kingdom.Kingdom kingdom, Municipality Muicipal) {
-        super(w, l, h, cent, own, kingdom, Muicipal);
+    public Castle(Polygon base, Location cent, Player own, io.dallen.Kingdoms.Kingdom.Kingdom kingdom, Municipality Muicipal) {
+        super(base, cent, own, kingdom, Muicipal);
     }
-
+    
 }

@@ -16,23 +16,24 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.Kingdom.Structures;
+package io.dallen.Kingdoms.Kingdom.Structures.Types;
 
 import io.dallen.Kingdoms.Kingdom.Municipality;
-import org.bukkit.Bukkit;
+import io.dallen.Kingdoms.Kingdom.Structures.Structure;
+import java.awt.Polygon;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 /**
- *
+ * Allows the kingdom to manufacture weapons and armor
+ * 
  * @author donoa_000
  */
-public class Castle extends Structure{
-    
-    private int level;
+public class Blacksmith extends Structure{
 
-    public Castle(int w, int l, int h, Location cent, Player own, io.dallen.Kingdoms.Kingdom.Kingdom kingdom, Municipality Muicipal) {
-        super(w, l, h, cent, own, kingdom, Muicipal);
+    public Blacksmith(Polygon base, Location cent, Player own, io.dallen.Kingdoms.Kingdom.Kingdom kingdom, Municipality Muicipal) {
+        super(base, cent, own, kingdom, Muicipal);
     }
+
     
 }

@@ -23,12 +23,11 @@ import io.dallen.Kingdoms.Handlers.Party;
 import io.dallen.Kingdoms.Kingdom.Plot;
 import io.dallen.Kingdoms.Kingdom.Roles.Role;
 import io.dallen.Kingdoms.Commands.MuteCommand.MuteClass;
-import io.dallen.Kingdoms.Commands.MuteCommand;
 import io.dallen.Kingdoms.Kingdom.Vaults.PlayerVault;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -37,6 +36,7 @@ import org.bukkit.entity.Player;
  *
  * @author donoa_000
  */
+@NoArgsConstructor
 public class PlayerData {
     @Getter
     private static HashMap<Player, PlayerData> PlayerDat = new HashMap<Player, PlayerData>();
@@ -64,10 +64,6 @@ public class PlayerData {
     
     @Getter
     private ArrayList<Plot> Plots = new ArrayList<Plot>();
-    
-    public PlayerData(){
-        
-    }
     
     @Override
     public String toString(){
