@@ -65,7 +65,7 @@ public class ChangeTracker implements Listener{
                 }
                 if(!Changes.isEmpty()){
                     for(Entry<Location, SaveBlock> e : Changes.entrySet()){//*60*60*48
-                        if(new Date(System.currentTimeMillis() - 1000).after(e.getValue().getBreakDate())){
+                        if(new Date(System.currentTimeMillis() - 1000*60*60*48).after(e.getValue().getBreakDate())){
                             forDecay.add(e.getKey());
                         }
                     }
@@ -89,8 +89,8 @@ public class ChangeTracker implements Listener{
         };
     
     public ChangeTracker(JavaPlugin p){
-        Bukkit.getScheduler().scheduleAsyncRepeatingTask(p, MarkDecayBlocks, 1, 20); //  * 60
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(p, DecayBlocks, 2, 20); //  * 60
+        Bukkit.getScheduler().scheduleAsyncRepeatingTask(p, MarkDecayBlocks, 1, 20*60); //  * 60
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(p, DecayBlocks, 2, 20*60); //  * 60
         Bukkit.getPluginManager().registerEvents(this, p);
     }
     

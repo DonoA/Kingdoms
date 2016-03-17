@@ -32,8 +32,8 @@ public class LocationUtil {
         return new Point(l.getBlockX(), l.getBlockZ());
     }
     
-    public static Location asLocation(Point p, World w){
-        return new Location(w, p.getX(), 0, p.getY());
+    public static Location asLocation(Point p, World w, int Ycord){
+        return new Location(w, p.getX(), Ycord, p.getY());
     }
     
     public static Point calcCenter(Point[] corners){

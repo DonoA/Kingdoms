@@ -18,6 +18,7 @@
  */
 package io.dallen.Kingdoms.Handlers;
 
+import com.google.common.primitives.Ints;
 import io.dallen.Kingdoms.Util.LogUtil;
 import io.dallen.Kingdoms.Kingdom.Plot;
 import io.dallen.Kingdoms.PlayerData;
@@ -28,6 +29,7 @@ import io.dallen.Kingdoms.Util.LocationUtil;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -81,57 +83,83 @@ public class MultiBlockHandler implements Listener{
                                 int z = l.getBlockZ();
                                 Point currentX = null;
                                 Point currentZ = null;
-                                Point lastX = null;
-                                Point lastZ = null;
-                                for(x = (int) start.getX() - 64; x < start.getX() + 64; x++){
-                                    if(new Location(l.getWorld(), x, y, z).getBlock().getType().equals(Material.REDSTONE_TORCH_ON) && x != l.getBlockX()){
+                                Point last = start;
+                                for(x = (int) last.getX() - 64; x < last.getX() + 64; x++){
+                                    if(new Location(l.getWorld(), x, y, last.getY()).getBlock().getType().equals(Material.REDSTONE_TORCH_ON) && x != last.getX()){
                                         currentX = new Point(x,z);
                                         corners.add(currentX);
-                                        for(z = (int) start.getY() - 64; z < start.getY() + 64; z++){
-                                            if(new Location(l.getWorld(), x, y, z).getBlock().getType().equals(Material.REDSTONE_TORCH_ON) && x != l.getBlockZ()){
+                                        last = currentX;
+                                        LogUtil.printDebug(last);
+                                        for(z = (int) last.getY() - 64; z < last.getY() + 64; z++){
+                                            if(new Location(l.getWorld(), last.getX(), y, z).getBlock().getType().equals(Material.REDSTONE_TORCH_ON) && z != last.getY()){
                                                 currentZ = new Point(x,z);
                                                 corners.add(new Point(x,z));
+                                                last = currentZ;
+                                                LogUtil.printDebug(last);
                                             }
                                         }
                                     }
                                 }
                                 if(currentX == null || currentZ == null){
+                                    LogUtil.printDebug("Init not found");
                                     p.sendMessage("Plot not found!");
                                     return;
                                 }
-                                while(!start.equals(currentX) || !start.equals(currentZ)){
-                                    lastX = currentX;
-                                    lastZ = currentZ;
+                                LogUtil.printDebug(Arrays.toString(corners.toArray()));
+                                boolean finished = false;
+                                finish:
+                                while(!finished){
                                     currentX = null;
                                     currentZ = null;
-                                    for(x = (int) lastX.getX() - 64; x < lastX.getX() + 64; x++){
-                                        if(new Location(l.getWorld(), x, y, z).getBlock().getType().equals(Material.REDSTONE_TORCH_ON) && x != lastX.getX()){
-                                            currentX = new Point(x,z);
+                                    LogUtil.printDebug(last);
+                                    for(x = (int) last.getX() - 64; x < last.getX() + 64; x++){
+                                        if(new Location(l.getWorld(), x, y, last.getY()).getBlock().getType().equals(Material.REDSTONE_TORCH_ON) && x != last.getX()){
+                                            currentX = new Point(x,(int)last.getY());
+                                            if(corners.contains(currentX)){
+                                                finished = true;
+                                                break finish;
+                                            }
                                             corners.add(currentX);
-                                            for(z = (int) lastZ.getY() - 64; z < lastZ.getY() + 64; z++){
-                                                if(new Location(l.getWorld(), x, y, z).getBlock().getType().equals(Material.REDSTONE_TORCH_ON) && x != lastZ.getY()){
-                                                    currentZ = new Point(x,z);
-                                                    corners.add(new Point(x,z));
+                                            last = currentX;
+                                            LogUtil.printDebug(last);
+                                            for(z = (int) last.getY() - 64; z < last.getY() + 64; z++){
+                                                if(new Location(l.getWorld(), last.getX(), y, z).getBlock().getType().equals(Material.REDSTONE_TORCH_ON) && z != last.getY()){
+                                                    currentZ = new Point((int)last.getX(),z);
+                                                    if(corners.contains(currentZ)){
+                                                        finished = true;
+                                                        break finish;
+                                                    }
+                                                    corners.add(currentZ);
+                                                    last = currentZ;
+                                                    LogUtil.printDebug(last);
+                                                    break finish;
                                                 }
                                             }
                                         }
                                     }
                                     if(currentX == null || currentZ == null){
+                                        LogUtil.printDebug(Arrays.toString(corners.toArray()));
+                                        LogUtil.printDebug("While not found");
                                         p.sendMessage("Plot not found!");
                                         return;
                                     }
+                                    LogUtil.printDebug(Arrays.toString(corners.toArray()));
                                 }
+                                LogUtil.printDebug(Arrays.toString(corners.toArray()));
                                 int[] Xs = new int[corners.size()];
                                 int[] Zs = new int[corners.size()];
                                 int i = 0;
                                 for(Point p : corners){
-                                    Xs[0] = (int) p.getX();
-                                    Zs[0] = (int) p.getY();
+                                    Xs[i] = (int) p.getX();
+                                    Zs[i] = (int) p.getY();
                                     i++;
                                 }
-                                Plot NewPlot = new Plot(new Polygon(Xs, Zs, corners.size()), LocationUtil.asLocation(LocationUtil.calcCenter(corners.toArray(new Point[1])), l.getWorld()), p, null);
-                                NewPlotMenu.setOption(1, new ItemStack(Material.ENCHANTED_BOOK), "Confirm and Claim Plot", NewPlot, p, "Plot size: " + x + ", " + z).sendMenu(p);
-                                p.sendMessage("Plot not found!");
+                                Plot NewPlot = new Plot(new Polygon(Xs, Zs, corners.size()), LocationUtil.asLocation(LocationUtil.calcCenter(corners.toArray(new Point[1])), l.getWorld(), l.getBlockY()), p, null);
+                                if(NewPlot.isValid()){
+                                    NewPlotMenu.setOption(1, new ItemStack(Material.ENCHANTED_BOOK), "Confirm and Claim Plot", NewPlot, p, "Plot size: " + x + ", " + z).sendMenu(p);
+                                }else{
+                                    p.sendMessage("Invalid Plot");
+                                }
                             }
                         }).start();
 
@@ -143,18 +171,34 @@ public class MultiBlockHandler implements Listener{
         }
     }
     
-    
     private static class MBOptions implements OptionClickEventHandler{
     
         @Override
         public void onOptionClick(OptionClickEvent e){
             if(e.getMenuName().equalsIgnoreCase("New Plot")){
                 if(e.getName().equalsIgnoreCase("Confirm and Claim Plot")){
-                    Plot p = (Plot) e.getData();
+                    final Plot p = (Plot) e.getData();
                     Plot.getAllPlots().add(p);
                     PlayerData pd = PlayerData.getData(e.getPlayer());
-//                    pd.getPlots().add(p);
+                    pd.getPlots().add(p);
                     e.getPlayer().sendMessage("You have claimed this plot");
+                    e.getPlayer().sendMessage("Setting base");
+                    final Polygon bounds = p.getBase();
+                    int Xmax = Ints.max(bounds.xpoints);
+                    int Zmax = Ints.max(bounds.ypoints);
+                    LogUtil.printDebug(Arrays.toString(bounds.xpoints));
+                    LogUtil.printDebug("size " + Xmax + ", " + Zmax + " to " + Ints.min(bounds.xpoints) + ", " + Ints.min(bounds.ypoints));
+                    for(int x = Ints.min(bounds.xpoints); x <= Xmax; x++){
+                        for(int z = Ints.min(bounds.ypoints); z <= Zmax; z++){
+                            LogUtil.printDebug("try " + new Point(x,z).toString());
+                            if(bounds.contains(new Point(x,z))){
+                                LogUtil.printDebug("setting " + new Point(x,z).toString());
+                                Location l = new Location(p.getCenter().getWorld(), x, p.getCenter().getBlockY()-1, z);
+                                l.getBlock().setType(Material.DIRT);
+                                l.getBlock().setData((byte) 1);
+                            }
+                        }
+                    }
                 }
             }
 

@@ -20,7 +20,6 @@ package io.dallen.Kingdoms.Kingdom;
 
 import io.dallen.Kingdoms.Kingdom.Structures.Structure;
 import io.dallen.Kingdoms.Util.LocationUtil;
-import io.dallen.Kingdoms.Util.LogUtil;
 import java.awt.Polygon;
 import java.util.ArrayList;
 import lombok.Getter;
@@ -48,6 +47,15 @@ public class Plot extends Structure implements Listener{
             }
         }
         return null;
+    }
+    
+    public boolean isValid(){
+        for(Plot p : allPlots){
+            if(p.getBase().intersects(super.getBase().getBounds())){
+                return false;
+            }
+        }
+        return true;
     }
     
     public boolean createMucicpal(){
