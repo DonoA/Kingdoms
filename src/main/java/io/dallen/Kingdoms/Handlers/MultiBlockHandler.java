@@ -31,6 +31,7 @@ import java.awt.Polygon;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -68,7 +69,7 @@ public class MultiBlockHandler implements Listener{
                 cooldown.put(e.getPlayer(), System.currentTimeMillis());
                 if(!e.hasItem()){
                     Block b = e.getClickedBlock();
-                    if(b.getType().equals(Material.GOLD_BLOCK)){ // TESTING: REDSTONE_TORCH_ON
+                    if(b.getType().equals(Material.REDSTONE_TORCH_ON)){ // TESTING: REDSTONE_TORCH_ON
                         final Location l = b.getLocation();
                         final Player p = e.getPlayer();
                         p.sendMessage("Calculating Plot...");
@@ -86,15 +87,13 @@ public class MultiBlockHandler implements Listener{
                                 //continue until the found point is also the start point
                                 Point last; // the last confirmed point
                                 Point current = start; // the current point being tested delt with
-                                Point currentOffSet = start; // to allow for the border off-set
                                 while(!complete){
                                     last = current; // cycle points
                                     current = null;
-                                    currentOffSet = null;
                                     for(int i = 1; i<64 && current == null; i++){//Still doesnt include the border
                                         Location neg = new Location(l.getWorld(), (direction ? last.getX() - i : last.getX()), l.getBlockY(), (!direction ? last.getY() - i : last.getY())); // the point in the negative direction
                                         Location pos = new Location(l.getWorld(), (direction ? last.getX() + i : last.getX()), l.getBlockY(), (!direction ? last.getY() + i : last.getY())); // the point in the positive direction
-                                        if(neg.getBlock().getType().equals(Material.GOLD_BLOCK)){
+                                        if(neg.getBlock().getType().equals(Material.REDSTONE_TORCH_ON)){
                                             LogUtil.printDebug("neg triggered!");
                                             LogUtil.printDebug(LocationUtil.asPoint(neg));
                                             current = LocationUtil.asPoint(neg);
@@ -102,7 +101,7 @@ public class MultiBlockHandler implements Listener{
                                                 complete = true;
                                             }
                                         }
-                                        if(pos.getBlock().getType().equals(Material.GOLD_BLOCK)){
+                                        if(pos.getBlock().getType().equals(Material.REDSTONE_TORCH_ON)){
                                             LogUtil.printDebug("pos triggered!");
                                             LogUtil.printDebug(new Point(pos.getBlockX(), pos.getBlockZ()));
                                             if(current != null){
@@ -122,11 +121,7 @@ public class MultiBlockHandler implements Listener{
 //                                        return;
 //                                    }
                                     if(!complete){
-                                        if(currentOffSet != null){
-                                            corners.add(currentOffSet);
-                                        }else{
-                                            corners.add(current);
-                                        }
+                                        corners.add(current);
                                     }
                                     direction = !direction;
                                 }
@@ -137,6 +132,22 @@ public class MultiBlockHandler implements Listener{
                                 for(Point p : corners){
                                     Xs[i] = (int) p.getX();
                                     Zs[i] = (int) p.getY();
+                                    i++;
+                                }
+                                int xMax = Ints.max(Xs);
+                                int zMax = Ints.max(Zs);
+                                i = 0;
+                                for(int x : Xs){
+                                    if(x == xMax){
+                                        Xs[i]++;
+                                    }
+                                    i++;
+                                }
+                                i = 0;
+                                for(int z : Zs){
+                                    if(z == zMax){
+                                        Zs[i]++;
+                                    }
                                     i++;
                                 }
                                 Plot NewPlot = new Plot(new Polygon(Xs, Zs, corners.size()), LocationUtil.asLocation(LocationUtil.calcCenter(corners.toArray(new Point[1])), l.getWorld(), l.getBlockY()), p, null);
