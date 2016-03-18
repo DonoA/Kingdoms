@@ -68,7 +68,7 @@ public class MultiBlockHandler implements Listener{
                 cooldown.put(e.getPlayer(), System.currentTimeMillis());
                 if(!e.hasItem()){
                     Block b = e.getClickedBlock();
-                    if(b.getType().equals(Material.REDSTONE_TORCH_ON)){
+                    if(b.getType().equals(Material.GOLD_BLOCK)){ // TESTING: REDSTONE_TORCH_ON
                         final Location l = b.getLocation();
                         final Player p = e.getPlayer();
                         p.sendMessage("Calculating Plot...");
@@ -78,72 +78,57 @@ public class MultiBlockHandler implements Listener{
                                 ArrayList<Point> corners = new ArrayList<Point>();
                                 Point start = LocationUtil.asPoint(l);
                                 corners.add(start);
-                                int x = l.getBlockX();
-                                int y = l.getBlockY();
-                                int z = l.getBlockZ();
-                                Point currentX = null;
-                                Point currentZ = null;
-                                Point last = start;
-                                for(x = (int) last.getX() - 64; x < last.getX() + 64; x++){
-                                    if(new Location(l.getWorld(), x, y, last.getY()).getBlock().getType().equals(Material.REDSTONE_TORCH_ON) && x != last.getX()){
-                                        currentX = new Point(x,z);
-                                        corners.add(currentX);
-                                        last = currentX;
-                                        LogUtil.printDebug(last);
-                                        for(z = (int) last.getY() - 64; z < last.getY() + 64; z++){
-                                            if(new Location(l.getWorld(), last.getX(), y, z).getBlock().getType().equals(Material.REDSTONE_TORCH_ON) && z != last.getY()){
-                                                currentZ = new Point(x,z);
-                                                corners.add(new Point(x,z));
-                                                last = currentZ;
-                                                LogUtil.printDebug(last);
+                                //Redstone direction check needs to be first
+                                boolean complete = false;
+                                boolean direction = true;//true:X, false:Z
+                                //Start with X direction
+                                //Then check Z
+                                //continue until the found point is also the start point
+                                Point last; // the last confirmed point
+                                Point current = start; // the current point being tested delt with
+                                Point currentOffSet = start; // to allow for the border off-set
+                                while(!complete){
+                                    last = current; // cycle points
+                                    current = null;
+                                    currentOffSet = null;
+                                    for(int i = 1; i<64 && current == null; i++){//Still doesnt include the border
+                                        Location neg = new Location(l.getWorld(), (direction ? last.getX() - i : last.getX()), l.getBlockY(), (!direction ? last.getY() - i : last.getY())); // the point in the negative direction
+                                        Location pos = new Location(l.getWorld(), (direction ? last.getX() + i : last.getX()), l.getBlockY(), (!direction ? last.getY() + i : last.getY())); // the point in the positive direction
+                                        if(neg.getBlock().getType().equals(Material.GOLD_BLOCK)){
+                                            LogUtil.printDebug("neg triggered!");
+                                            LogUtil.printDebug(LocationUtil.asPoint(neg));
+                                            current = LocationUtil.asPoint(neg);
+                                            if(current.equals(start)){
+                                                complete = true;
                                             }
                                         }
-                                    }
-                                }
-                                if(currentX == null || currentZ == null){
-                                    LogUtil.printDebug("Init not found");
-                                    p.sendMessage("Plot not found!");
-                                    return;
-                                }
-                                LogUtil.printDebug(Arrays.toString(corners.toArray()));
-                                boolean finished = false;
-                                finish:
-                                while(!finished){
-                                    currentX = null;
-                                    currentZ = null;
-                                    LogUtil.printDebug(last);
-                                    for(x = (int) last.getX() - 64; x < last.getX() + 64; x++){
-                                        if(new Location(l.getWorld(), x, y, last.getY()).getBlock().getType().equals(Material.REDSTONE_TORCH_ON) && x != last.getX()){
-                                            currentX = new Point(x,(int)last.getY());
-                                            if(corners.contains(currentX)){
-                                                finished = true;
-                                                break finish;
+                                        if(pos.getBlock().getType().equals(Material.GOLD_BLOCK)){
+                                            LogUtil.printDebug("pos triggered!");
+                                            LogUtil.printDebug(new Point(pos.getBlockX(), pos.getBlockZ()));
+                                            if(current != null){
+                                                p.sendMessage("Plot cannot be deturmined, please use the redstone dust method");
+                                                return;
                                             }
-                                            corners.add(currentX);
-                                            last = currentX;
-                                            LogUtil.printDebug(last);
-                                            for(z = (int) last.getY() - 64; z < last.getY() + 64; z++){
-                                                if(new Location(l.getWorld(), last.getX(), y, z).getBlock().getType().equals(Material.REDSTONE_TORCH_ON) && z != last.getY()){
-                                                    currentZ = new Point((int)last.getX(),z);
-                                                    if(corners.contains(currentZ)){
-                                                        finished = true;
-                                                        break finish;
-                                                    }
-                                                    corners.add(currentZ);
-                                                    last = currentZ;
-                                                    LogUtil.printDebug(last);
-                                                    break finish;
+                                            if(!complete){
+                                                current = new Point(pos.getBlockX(), pos.getBlockZ());
+                                                if(current.equals(start)){
+                                                    complete = true;
                                                 }
                                             }
                                         }
                                     }
-                                    if(currentX == null || currentZ == null){
-                                        LogUtil.printDebug(Arrays.toString(corners.toArray()));
-                                        LogUtil.printDebug("While not found");
-                                        p.sendMessage("Plot not found!");
-                                        return;
+//                                    if(current == null){
+//                                        p.sendMessage("Could not calculate plot");
+//                                        return;
+//                                    }
+                                    if(!complete){
+                                        if(currentOffSet != null){
+                                            corners.add(currentOffSet);
+                                        }else{
+                                            corners.add(current);
+                                        }
                                     }
-                                    LogUtil.printDebug(Arrays.toString(corners.toArray()));
+                                    direction = !direction;
                                 }
                                 LogUtil.printDebug(Arrays.toString(corners.toArray()));
                                 int[] Xs = new int[corners.size()];
@@ -156,7 +141,7 @@ public class MultiBlockHandler implements Listener{
                                 }
                                 Plot NewPlot = new Plot(new Polygon(Xs, Zs, corners.size()), LocationUtil.asLocation(LocationUtil.calcCenter(corners.toArray(new Point[1])), l.getWorld(), l.getBlockY()), p, null);
                                 if(NewPlot.isValid()){
-                                    NewPlotMenu.setOption(1, new ItemStack(Material.ENCHANTED_BOOK), "Confirm and Claim Plot", NewPlot, p, "Plot size: " + x + ", " + z).sendMenu(p);
+                                    NewPlotMenu.setOption(1, new ItemStack(Material.ENCHANTED_BOOK), "Confirm and Claim Plot", NewPlot, p, "Plot size: " + -1 + ", " + -1).sendMenu(p);
                                 }else{
                                     p.sendMessage("Invalid Plot");
                                 }
