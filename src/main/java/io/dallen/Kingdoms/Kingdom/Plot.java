@@ -20,6 +20,7 @@ package io.dallen.Kingdoms.Kingdom;
 
 import io.dallen.Kingdoms.Kingdom.Structures.Structure;
 import io.dallen.Kingdoms.Util.LocationUtil;
+import java.awt.Point;
 import java.awt.Polygon;
 import java.util.ArrayList;
 import lombok.Getter;
@@ -42,11 +43,21 @@ public class Plot extends Structure implements Listener{
     
     public static Plot inPlot(Location l){
         for(Plot p : allPlots){
-            if(p.getBase().contains(LocationUtil.asPoint(l))){
+            if(p.getBase().contains(new Point(l.getBlockX(),l.getBlockZ())) || 
+                   (p.getBase().contains(new Point(l.getBlockX()-1,l.getBlockZ())) || 
+                    p.getBase().contains(new Point(l.getBlockX(),l.getBlockZ()-1)) || 
+                    p.getBase().contains(new Point(l.getBlockX()-1,l.getBlockZ()-1)))){
                 return p;
             }
         }
         return null;
+    }
+    
+    public boolean contains(Location l){
+        return super.getBase().contains(new Point(l.getBlockX(),l.getBlockZ())) || 
+              (super.getBase().contains(new Point(l.getBlockX()-1,l.getBlockZ())) || 
+               super.getBase().contains(new Point(l.getBlockX(),l.getBlockZ()-1)) || 
+               super.getBase().contains(new Point(l.getBlockX()-1,l.getBlockZ()-1)));
     }
     
     public boolean isValid(){

@@ -90,7 +90,7 @@ public class MultiBlockHandler implements Listener{
                                 while(!complete){
                                     last = current; // cycle points
                                     current = null;
-                                    for(int i = 1; i<64 && current == null; i++){//Still doesnt include the border
+                                    for(int i = 1; i<64 && current == null; i++){//Still doesnt include the border // inorder to fix this, need to add lines for the border to calculate full plot
                                         Location neg = new Location(l.getWorld(), (direction ? last.getX() - i : last.getX()), l.getBlockY(), (!direction ? last.getY() - i : last.getY())); // the point in the negative direction
                                         Location pos = new Location(l.getWorld(), (direction ? last.getX() + i : last.getX()), l.getBlockY(), (!direction ? last.getY() + i : last.getY())); // the point in the positive direction
                                         if(neg.getBlock().getType().equals(Material.REDSTONE_TORCH_ON)){
@@ -116,10 +116,10 @@ public class MultiBlockHandler implements Listener{
                                             }
                                         }
                                     }
-//                                    if(current == null){
-//                                        p.sendMessage("Could not calculate plot");
-//                                        return;
-//                                    }
+                                    if(current == null){
+                                        p.sendMessage("Could not calculate plot");
+                                        return;
+                                    }
                                     if(!complete){
                                         corners.add(current);
                                     }
@@ -132,22 +132,6 @@ public class MultiBlockHandler implements Listener{
                                 for(Point p : corners){
                                     Xs[i] = (int) p.getX();
                                     Zs[i] = (int) p.getY();
-                                    i++;
-                                }
-                                int xMax = Ints.max(Xs);
-                                int zMax = Ints.max(Zs);
-                                i = 0;
-                                for(int x : Xs){
-                                    if(x == xMax){
-                                        Xs[i]++;
-                                    }
-                                    i++;
-                                }
-                                i = 0;
-                                for(int z : Zs){
-                                    if(z == zMax){
-                                        Zs[i]++;
-                                    }
                                     i++;
                                 }
                                 Plot NewPlot = new Plot(new Polygon(Xs, Zs, corners.size()), LocationUtil.asLocation(LocationUtil.calcCenter(corners.toArray(new Point[1])), l.getWorld(), l.getBlockY()), p, null);
@@ -187,7 +171,7 @@ public class MultiBlockHandler implements Listener{
                     for(int x = Ints.min(bounds.xpoints); x <= Xmax; x++){
                         for(int z = Ints.min(bounds.ypoints); z <= Zmax; z++){
                             LogUtil.printDebug("try " + new Point(x,z).toString());
-                            if(bounds.contains(new Point(x,z))){
+                            if(bounds.contains(new Point(x,z)) || (bounds.contains(new Point(x-1,z)) || bounds.contains(new Point(x,z-1)) || bounds.contains(new Point(x-1,z-1)))){
                                 LogUtil.printDebug("setting " + new Point(x,z).toString());
                                 Location l = new Location(p.getCenter().getWorld(), x, p.getCenter().getBlockY()-1, z);
                                 l.getBlock().setType(Material.DIRT);
