@@ -18,12 +18,16 @@
  */
 package io.dallen.Kingdoms.Kingdom.Structures;
 
+import com.google.common.primitives.Ints;
 import io.dallen.Kingdoms.Kingdom.Kingdom;
 import io.dallen.Kingdoms.Kingdom.Municipality;
+import io.dallen.Kingdoms.Util.LogUtil;
+import java.awt.Point;
 import java.awt.Polygon;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 /**
@@ -50,6 +54,8 @@ public class Structure {
     private Kingdom Kingdom;
     @Getter @Setter
     private Municipality Municipal;
+    @Getter @Setter
+    private int Area;
     
     public Structure(Polygon base, Location cent, Player own, Kingdom kingdom, Municipality municipal){
         this.Center = cent;
@@ -57,6 +63,7 @@ public class Structure {
         this.Kingdom = kingdom;
         this.Municipal = municipal;
         this.Base = base;
+        setArea();
     }
     
     public Structure(Polygon base, Location cent, Player own, Municipality municipal){
@@ -64,6 +71,7 @@ public class Structure {
         this.Center = cent;
         this.Owner = own;
         this.Municipal = municipal;
+        setArea();
     }
     
     public Structure(Polygon base, Location cent, Player own, Kingdom kingdom){
@@ -71,6 +79,19 @@ public class Structure {
         this.Center = cent;
         this.Owner = own;
         this.Kingdom = kingdom;
+        setArea();
+    }
+    
+    private void setArea(){
+        int Xmax = Ints.max(Base.xpoints);
+        int Zmax = Ints.max(Base.ypoints);
+        for(int x = Ints.min(Base.xpoints); x <= Xmax; x++){
+            for(int z = Ints.min(Base.ypoints); z <= Zmax; z++){
+                if(Base.contains(new Point(x,z)) || (Base.contains(new Point(x-1,z)) || Base.contains(new Point(x,z-1)) || Base.contains(new Point(x-1,z-1)))){
+                    Area++;
+                }
+            }
+        }
     }
     
 }

@@ -41,6 +41,10 @@ public class Plot extends Structure implements Listener{
         super(base, cent, own, mun);
     }
     
+    public Plot(Plot p) {
+        super(p.getBase(), p.getCenter(), p.getOwner(), p.getKingdom(), p.getMunicipal());
+    }
+    
     public static Plot inPlot(Location l){
         for(Plot p : allPlots){
             if(p.getBase().contains(new Point(l.getBlockX(),l.getBlockZ())) || 

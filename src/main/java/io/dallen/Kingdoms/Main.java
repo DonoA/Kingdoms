@@ -72,6 +72,7 @@ public class Main extends JavaPlugin {
     @Getter
     private static ChangeTracker changes;
     
+    @Override
     public void onLoad() {
         protocolManager = ProtocolLibrary.getProtocolManager();
     }

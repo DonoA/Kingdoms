@@ -20,6 +20,7 @@ package io.dallen.Kingdoms.Kingdom.Structures.Types;
 
 import io.dallen.Kingdoms.Kingdom.Kingdom;
 import io.dallen.Kingdoms.Kingdom.Municipality;
+import io.dallen.Kingdoms.Kingdom.Plot;
 import io.dallen.Kingdoms.Kingdom.Structures.Structure;
 import java.awt.Polygon;
 import org.bukkit.Location;
@@ -30,7 +31,7 @@ import org.bukkit.entity.Player;
  * 
  * @author donoa_000
  */
-public class Armory extends Structure{
+public class Armory extends Plot{
 
     public Armory(Polygon base, Location cent, Player own, Kingdom kingdom, Municipality Muicipal) {
         super(base, cent, own, kingdom, Muicipal);

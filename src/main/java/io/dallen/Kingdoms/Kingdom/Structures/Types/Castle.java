@@ -28,7 +28,7 @@ import org.bukkit.entity.Player;
  *
  * @author donoa_000
  */
-public class Castle extends Structure{
+public class Castle extends Plot{
     
     private int level;
 

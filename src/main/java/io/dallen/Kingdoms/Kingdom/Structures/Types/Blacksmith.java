@@ -29,7 +29,7 @@ import org.bukkit.entity.Player;
  * 
  * @author donoa_000
  */
-public class Blacksmith extends Structure{
+public class Blacksmith extends Plot{
 
     public Blacksmith(Polygon base, Location cent, Player own, io.dallen.Kingdoms.Kingdom.Kingdom kingdom, Municipality Muicipal) {
         super(base, cent, own, kingdom, Muicipal);

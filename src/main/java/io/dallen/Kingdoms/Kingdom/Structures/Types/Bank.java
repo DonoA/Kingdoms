@@ -29,7 +29,7 @@ import org.bukkit.entity.Player;
  * 
  * @author donoa_000
  */
-public class Bank extends Structure{
+public class Bank extends Plot{
 
     public Bank(Polygon base, Location cent, Player own, io.dallen.Kingdoms.Kingdom.Kingdom kingdom, Municipality Muicipal) {
         super(base, cent, own, kingdom, Muicipal);

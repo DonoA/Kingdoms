@@ -21,6 +21,8 @@ package io.dallen.Kingdoms.Handlers;
 import com.google.common.primitives.Ints;
 import io.dallen.Kingdoms.Util.LogUtil;
 import io.dallen.Kingdoms.Kingdom.Plot;
+import io.dallen.Kingdoms.Kingdom.Structures.Types.Barracks;
+import io.dallen.Kingdoms.Kingdom.Structures.Types.Storeroom;
 import io.dallen.Kingdoms.PlayerData;
 import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEvent;
@@ -31,7 +33,6 @@ import java.awt.Polygon;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -52,6 +53,10 @@ public class MultiBlockHandler implements Listener{
     
     private ChestGUI NewPlotMenu;
     
+    private ChestGUI SetPlotType;
+    
+    private ChestGUI ViewPlotMenu;
+    
     private HashMap<Player, Long> cooldown = new HashMap<Player, Long>();
     
     public MultiBlockHandler(){
@@ -59,17 +64,44 @@ public class MultiBlockHandler implements Listener{
             setOption(1, new ItemStack(Material.ENCHANTED_BOOK), "Confirm and Claim Plot", "");
             setOption(3, new ItemStack(Material.ENCHANTED_BOOK), "Cancel Plot Claim", "");
         }};
+        
+        SetPlotType = new ChestGUI("Set Plot Type", 4, new MBOptions()) {{
+            setOption(9*0 + 1, new ItemStack(Material.ENCHANTED_BOOK), "Storeroom", "");
+            setOption(9*0 + 2, new ItemStack(Material.ENCHANTED_BOOK), "Barracks", "");
+            setOption(9*0 + 3, new ItemStack(Material.ENCHANTED_BOOK), "Training Ground", "");
+            setOption(9*0 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Armory", "");
+            setOption(9*0 + 5, new ItemStack(Material.ENCHANTED_BOOK), "Blacksmith", "");
+            setOption(9*0 + 6, new ItemStack(Material.ENCHANTED_BOOK), "Farm", "");
+            setOption(9*1 + 1, new ItemStack(Material.ENCHANTED_BOOK), "Treasury", "");
+            setOption(9*1 + 2, new ItemStack(Material.ENCHANTED_BOOK), "Bank", "");
+            setOption(9*1 + 3, new ItemStack(Material.ENCHANTED_BOOK), "Stable", "");
+            setOption(9*1 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Dungeon", "");
+            setOption(9*1 + 5, new ItemStack(Material.ENCHANTED_BOOK), "Marketplace", "");
+            setOption(9*1 + 6, new ItemStack(Material.ENCHANTED_BOOK), "Court", "");
+            setOption(9*2 + 2, new ItemStack(Material.ENCHANTED_BOOK), "Wall", "");
+            setOption(9*2 + 3, new ItemStack(Material.ENCHANTED_BOOK), "Wall with Door", "");
+            setOption(9*2 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Corner", "");
+            setOption(9*2 + 5, new ItemStack(Material.ENCHANTED_BOOK), "Tower", "");
+            setOption(9*3 + 3, new ItemStack(Material.ENCHANTED_BOOK), "Contract", "");
+            setOption(9*3 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Demolish", "");
+            setOption(9*3 + 5, new ItemStack(Material.ENCHANTED_BOOK), "Erase", "");
+        }};
+        
+        ViewPlotMenu = new ChestGUI("Plot Info", InventoryType.HOPPER, new MBOptions()) {{
+            setOption(2, new ItemStack(Material.ENCHANTED_BOOK), "No current contracts avalible", "");
+        }};
     }
     
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerInteract(PlayerInteractEvent e){
         if(e.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
             if((!cooldown.containsKey(e.getPlayer())) || 
-               (cooldown.containsKey(e.getPlayer()) && cooldown.get(e.getPlayer()) < System.currentTimeMillis() - 500)){//Legit fuck bukkits
+               (cooldown.containsKey(e.getPlayer()) && cooldown.get(e.getPlayer()) < System.currentTimeMillis() - 500)){
                 cooldown.put(e.getPlayer(), System.currentTimeMillis());
                 if(!e.hasItem()){
                     Block b = e.getClickedBlock();
                     if(b.getType().equals(Material.REDSTONE_TORCH_ON)){ // TESTING: REDSTONE_TORCH_ON
+                
                         final Location l = b.getLocation();
                         final Player p = e.getPlayer();
                         p.sendMessage("Calculating Plot...");
@@ -86,29 +118,25 @@ public class MultiBlockHandler implements Listener{
                                 //Then check Z
                                 //continue until the found point is also the start point
                                 Point last; // the last confirmed point
-                                Point current = start; // the current point being tested delt with
+                                Point current = start; // the current point being delt with
                                 while(!complete){
                                     last = current; // cycle points
                                     current = null;
-                                    for(int i = 1; i<64 && current == null; i++){//Still doesnt include the border // inorder to fix this, need to add lines for the border to calculate full plot
+                                    for(int i = 1; i<64 && current == null; i++){
                                         Location neg = new Location(l.getWorld(), (direction ? last.getX() - i : last.getX()), l.getBlockY(), (!direction ? last.getY() - i : last.getY())); // the point in the negative direction
                                         Location pos = new Location(l.getWorld(), (direction ? last.getX() + i : last.getX()), l.getBlockY(), (!direction ? last.getY() + i : last.getY())); // the point in the positive direction
-                                        if(neg.getBlock().getType().equals(Material.REDSTONE_TORCH_ON)){
-                                            LogUtil.printDebug("neg triggered!");
-                                            LogUtil.printDebug(LocationUtil.asPoint(neg));
+                                        if(neg.getBlock().getType().equals(Material.REDSTONE_TORCH_ON)){ // Test in the negative direction
                                             current = LocationUtil.asPoint(neg);
-                                            if(current.equals(start)){
+                                            if(current.equals(start)){// If the found point is the start point
                                                 complete = true;
                                             }
                                         }
                                         if(pos.getBlock().getType().equals(Material.REDSTONE_TORCH_ON)){
-                                            LogUtil.printDebug("pos triggered!");
-                                            LogUtil.printDebug(new Point(pos.getBlockX(), pos.getBlockZ()));
-                                            if(current != null){
+                                            if(current != null){ // If a point has already been found
                                                 p.sendMessage("Plot cannot be deturmined, please use the redstone dust method");
                                                 return;
                                             }
-                                            if(!complete){
+                                            if(!complete){ // If the loop is complete
                                                 current = new Point(pos.getBlockX(), pos.getBlockZ());
                                                 if(current.equals(start)){
                                                     complete = true;
@@ -116,11 +144,11 @@ public class MultiBlockHandler implements Listener{
                                             }
                                         }
                                     }
-                                    if(current == null){
+                                    if(current == null || corners.contains(current)){ // If the test failed to located the shape
                                         p.sendMessage("Could not calculate plot");
                                         return;
                                     }
-                                    if(!complete){
+                                    if(!complete){//dont add the start point into the list again
                                         corners.add(current);
                                     }
                                     direction = !direction;
@@ -135,6 +163,15 @@ public class MultiBlockHandler implements Listener{
                                     i++;
                                 }
                                 Plot NewPlot = new Plot(new Polygon(Xs, Zs, corners.size()), LocationUtil.asLocation(LocationUtil.calcCenter(corners.toArray(new Point[1])), l.getWorld(), l.getBlockY()), p, null);
+                                for(Plot plot : Plot.getAllPlots()){
+                                    if(plot.getCenter().equals(NewPlot.getCenter())){
+                                        if(plot.getOwner().equals(p)){
+                                            p.sendMessage("You already own this plot!");
+                                        }else{
+                                            p.sendMessage("This plot has already been claimed!");
+                                        }
+                                    }
+                                }
                                 if(NewPlot.isValid()){
                                     NewPlotMenu.setOption(1, new ItemStack(Material.ENCHANTED_BOOK), "Confirm and Claim Plot", NewPlot, p, "Plot size: " + -1 + ", " + -1).sendMenu(p);
                                 }else{
@@ -145,7 +182,14 @@ public class MultiBlockHandler implements Listener{
 
                     }
                 }else if(e.getItem().hasItemMeta()){
-
+                    if(e.getItem().getItemMeta().getDisplayName().equalsIgnoreCase("Multi Tool")){
+                        Plot p = Plot.inPlot(e.getPlayer().getLocation());
+                        if(p.getOwner().equals(e.getPlayer())){
+                            
+                        }else{
+                            e.getPlayer().sendMessage("send contracts!");
+                        }
+                    }
                 }
             }
         }
@@ -180,8 +224,62 @@ public class MultiBlockHandler implements Listener{
                         }
                     }
                 }
+            }else if(e.getMenuName().equalsIgnoreCase("Set Plot Type")){
+                Plot p = Plot.inPlot(e.getPlayer().getLocation());
+                PlayerData pd = PlayerData.getData(e.getPlayer());
+                if(e.getName().equalsIgnoreCase("Storeroom")){
+                    pd.getPlots().remove(p);
+                    Storeroom store = new Storeroom(p);
+                    pd.getPlots().add(store);
+                    e.getPlayer().sendMessage("You have assigned this plot to be a Storeroom.");
+                    e.getPlayer().sendMessage("The max capaity of this plot is " + store.getMaxCapacity());
+                    /* if(you dont have the resources in your builders hut){
+                        e.getPlayer().sendMessage("You dont have the needed resources to build this structure fully");
+                    */
+                }else if(e.getName().equalsIgnoreCase("Barracks")){
+                    pd.getPlots().remove(p);
+                    Barracks barracks = new Barracks(p);
+                    pd.getPlots().add(barracks);
+                    e.getPlayer().sendMessage("You have assigned this plot to be a Barracks.");
+                    /* if(you dont have the resources in your builders hut){
+                        e.getPlayer().sendMessage("You dont have the needed resources to build this structure fully");
+                    */
+                }else if(e.getName().equalsIgnoreCase("Training Ground")){
+                    
+                }else if(e.getName().equalsIgnoreCase("Armory")){
+                    
+                }else if(e.getName().equalsIgnoreCase("Blacksmith")){
+                    
+                }else if(e.getName().equalsIgnoreCase("Farm")){
+                    
+                }else if(e.getName().equalsIgnoreCase("Treasury")){
+                    
+                }else if(e.getName().equalsIgnoreCase("Bank")){
+                    
+                }else if(e.getName().equalsIgnoreCase("Stable")){
+                    
+                }else if(e.getName().equalsIgnoreCase("Dungeon")){
+                    
+                }else if(e.getName().equalsIgnoreCase("Marketplace")){
+                    
+                }else if(e.getName().equalsIgnoreCase("Court")){
+                    
+                }else if(e.getName().equalsIgnoreCase("Wall")){
+                    
+                }else if(e.getName().equalsIgnoreCase("Wall with Door")){
+                    
+                }else if(e.getName().equalsIgnoreCase("Corner")){
+                    
+                }else if(e.getName().equalsIgnoreCase("Tower")){
+                    
+                }else if(e.getName().equalsIgnoreCase("Contract")){
+                    
+                }else if(e.getName().equalsIgnoreCase("Demolish")){
+                    
+                }else if(e.getName().equalsIgnoreCase("Erase")){
+                    
+                }
             }
-
         }
     }
     

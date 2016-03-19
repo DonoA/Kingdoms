@@ -20,6 +20,7 @@ package io.dallen.Kingdoms.Handlers.DecayHandler;
 
 import io.dallen.Kingdoms.Handlers.MultiBlock;
 import io.dallen.Kingdoms.Kingdom.Plot;
+import io.dallen.Kingdoms.Util.LogUtil;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -44,7 +45,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  *
  * @author donoa_000
  */
-public class ChangeTracker implements Listener{
+public class ChangeTracker implements Listener{ //Not fully functioning
     
     @Getter
     private static HashMap<Location, SaveBlock> Changes = new HashMap<Location, SaveBlock>();
@@ -97,11 +98,13 @@ public class ChangeTracker implements Listener{
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent e){
         Plot p = Plot.inPlot(e.getBlock().getLocation());
+        LogUtil.printDebug("Block Place called");
+        Block b = e.getBlockPlaced();
         if(p == null){
-            if(Changes.containsKey(e.getBlock().getLocation())){
-                Changes.get(e.getBlock().getLocation()).setBreakDate(new Date(System.currentTimeMillis()));
+            if(Changes.containsKey(b.getLocation())){
+                Changes.get(b.getLocation()).setBreakDate(new Date(System.currentTimeMillis()));
             }else{
-                Changes.put(e.getBlock().getLocation(), new SaveBlock(e.getBlock()));
+                Changes.put(b.getLocation(), new SaveBlock(b));
             }
         }
     }
@@ -109,64 +112,73 @@ public class ChangeTracker implements Listener{
     @EventHandler
     public void onBlockBreak(BlockBreakEvent e){
         Plot p = Plot.inPlot(e.getBlock().getLocation());
-        if(p == null && !(e.getBlock().getType().equals(Material.DIAMOND_ORE) ||
-                          e.getBlock().getType().equals(Material.IRON_ORE))){//TODO add more here
-            if(Changes.containsKey(e.getBlock().getLocation())){
-                Changes.get(e.getBlock().getLocation()).setBreakDate(new Date(System.currentTimeMillis()));
+        LogUtil.printDebug("Block Break called");
+        Block b = e.getBlock();
+        if(p == null){
+            if(Changes.containsKey(b.getLocation())){
+                Changes.get(b.getLocation()).setBreakDate(new Date(System.currentTimeMillis()));
             }else{
-                Changes.put(e.getBlock().getLocation(), new SaveBlock(e.getBlock()));
+                Changes.put(b.getLocation(), new SaveBlock(b));
             }
         }
-        MultiBlock.checkMultiBlock(e, e.getBlock());
+        MultiBlock.checkMultiBlock(e, b);
     }
     
     @EventHandler
     public void onBlockBurn(BlockBurnEvent e){
+        LogUtil.printDebug("Block Burn called");
         Plot p = Plot.inPlot(e.getBlock().getLocation());
+        Block b = e.getBlock();
         if(p == null){
-            if(Changes.containsKey(e.getBlock().getLocation())){
-                Changes.get(e.getBlock().getLocation()).setBreakDate(new Date(System.currentTimeMillis()));
+            if(Changes.containsKey(b.getLocation())){
+                Changes.get(b.getLocation()).setBreakDate(new Date(System.currentTimeMillis()));
             }else{
-                Changes.put(e.getBlock().getLocation(), new SaveBlock(e.getBlock()));
+                Changes.put(b.getLocation(), new SaveBlock(b));
             }
         }
-        MultiBlock.checkMultiBlock(e, e.getBlock());
+        MultiBlock.checkMultiBlock(e, b);
     }
     
     @EventHandler
-    public void onBlockExplode(BlockExplodeEvent e){
+    public void onBlockExplode(BlockExplodeEvent e){//not called
+        LogUtil.printDebug("Block Explode called");
         Plot p = Plot.inPlot(e.getBlock().getLocation());
+        Block b = e.getBlock();
         if(p == null){
-            if(Changes.containsKey(e.getBlock().getLocation())){
-                Changes.get(e.getBlock().getLocation()).setBreakDate(new Date(System.currentTimeMillis()));
+            if(Changes.containsKey(b.getLocation())){
+                Changes.get(b.getLocation()).setBreakDate(new Date(System.currentTimeMillis()));
             }else{
-                Changes.put(e.getBlock().getLocation(), new SaveBlock(e.getBlock()));
+                Changes.put(b.getLocation(), new SaveBlock(b));
             }
         }
-        MultiBlock.checkMultiBlock(e, e.getBlock());
+        MultiBlock.checkMultiBlock(e, b);
     }
     
     @EventHandler
     public void onBlockLeavesDecay(LeavesDecayEvent e){
+        LogUtil.printDebug("Block Leave Decay called");
         Plot p = Plot.inPlot(e.getBlock().getLocation());
+        Block b = e.getBlock();
         if(p == null){
-            if(Changes.containsKey(e.getBlock().getLocation())){
-                Changes.get(e.getBlock().getLocation()).setBreakDate(new Date(System.currentTimeMillis()));
+            if(Changes.containsKey(b.getLocation())){
+                Changes.get(b.getLocation()).setBreakDate(new Date(System.currentTimeMillis()));
             }else{
-                Changes.put(e.getBlock().getLocation(), new SaveBlock(e.getBlock()));
+                Changes.put(b.getLocation(), new SaveBlock(b));
             }
         }
-        MultiBlock.checkMultiBlock(e, e.getBlock());
+        MultiBlock.checkMultiBlock(e, b);
     }
     
     @EventHandler
-    public void onBlockForm(BlockFormEvent e){
+    public void onBlockForm(BlockFormEvent e){//not called
+        LogUtil.printDebug("Block Form called");
         Plot p = Plot.inPlot(e.getBlock().getLocation());
+        Block b = e.getBlock();
         if(p == null){
-            if(Changes.containsKey(e.getBlock().getLocation())){
-                Changes.get(e.getBlock().getLocation()).setBreakDate(new Date(System.currentTimeMillis()));
+            if(Changes.containsKey(b.getLocation())){
+                Changes.get(b.getLocation()).setBreakDate(new Date(System.currentTimeMillis()));
             }else{
-                Changes.put(e.getBlock().getLocation(), new SaveBlock(e.getBlock()));
+                Changes.put(b.getLocation(), new SaveBlock(b));
             }
         }
     }
