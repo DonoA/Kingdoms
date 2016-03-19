@@ -18,11 +18,7 @@
  */
 package io.dallen.Kingdoms.Kingdom.Structures.Types;
 
-import io.dallen.Kingdoms.Kingdom.Municipality;
-import io.dallen.Kingdoms.Kingdom.Structures.Structure;
-import java.awt.Polygon;
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
+import io.dallen.Kingdoms.Kingdom.Plot;
 
 /**
  * Allows the kingdom to imprison those that deserve it
@@ -31,8 +27,20 @@ import org.bukkit.entity.Player;
  */
 public class Dungeon extends Plot{
 
-    public Dungeon(Polygon base, Location cent, Player own, io.dallen.Kingdoms.Kingdom.Kingdom kingdom, Municipality Muicipal) {
-        super(base, cent, own, kingdom, Muicipal);
+    private int capacity;
+    
+    private int security;
+    
+    private int guards;
+    
+    private int cells;
+    
+    private int currentInmates;
+    
+    private int currentGuards;
+    
+    public Dungeon(Plot p) {
+        super(p.getBase(), p.getCenter(), p.getOwner(), p.getMunicipal());
     }
 
 }

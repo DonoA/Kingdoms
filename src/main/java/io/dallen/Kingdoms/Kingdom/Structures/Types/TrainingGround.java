@@ -18,11 +18,7 @@
  */
 package io.dallen.Kingdoms.Kingdom.Structures.Types;
 
-import io.dallen.Kingdoms.Kingdom.Municipality;
-import io.dallen.Kingdoms.Kingdom.Structures.Structure;
-import java.awt.Polygon;
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
+import io.dallen.Kingdoms.Kingdom.Plot;
 
 /**
  * Allows the kingdom to train its NPCs
@@ -30,9 +26,33 @@ import org.bukkit.entity.Player;
  * @author donoa_000
  */
 public class TrainingGround extends Plot{
-
-    public TrainingGround(Polygon base, Location cent, Player own, io.dallen.Kingdoms.Kingdom.Kingdom kingdom, Municipality Muicipal) {
-        super(base, cent, own, kingdom, Muicipal);
+    
+    private int capacity;
+    
+    private TrainerStats Trainers;
+    
+    private TraineeStats Trainees;
+    
+    private int trainingSpeed;
+    
+    private int trainingArea;
+    
+    public TrainingGround(Plot p) {
+        super(p.getBase(), p.getCenter(), p.getOwner(), p.getMunicipal());
+    }
+    
+    private static class TrainerStats{
+        private int Archers;
+        private int Infantry;
+        private int Cavalry;
+        private int Generals;
+    }
+    
+    private static class TraineeStats{
+        private int Archers;
+        private int Infantry;
+        private int Cavalry;
+        private int Generals;
     }
 
 }

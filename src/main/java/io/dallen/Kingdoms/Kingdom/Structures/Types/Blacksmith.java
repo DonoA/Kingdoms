@@ -18,11 +18,10 @@
  */
 package io.dallen.Kingdoms.Kingdom.Structures.Types;
 
-import io.dallen.Kingdoms.Kingdom.Municipality;
-import io.dallen.Kingdoms.Kingdom.Structures.Structure;
-import java.awt.Polygon;
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
+import io.dallen.Kingdoms.Kingdom.Plot;
+import io.dallen.Kingdoms.Kingdom.Vaults.BuildingVault;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * Allows the kingdom to manufacture weapons and armor
@@ -30,10 +29,29 @@ import org.bukkit.entity.Player;
  * @author donoa_000
  */
 public class Blacksmith extends Plot{
+    @Getter
+    private BuildingVault stock;
+    @Getter
+    private int stockCapacity;
+    @Getter
+    private int workerCapacity;
+    @Getter
+    private BlacksmithTools tools;
 
-    public Blacksmith(Polygon base, Location cent, Player own, io.dallen.Kingdoms.Kingdom.Kingdom kingdom, Municipality Muicipal) {
-        super(base, cent, own, kingdom, Muicipal);
+    public Blacksmith(Plot p) {
+        super(p.getBase(), p.getCenter(), p.getOwner(), p.getMunicipal());
     }
-
     
+    @NoArgsConstructor
+    private static class BlacksmithTools{ //holds the levels of the tools in the shop
+        @Getter
+        private int Anvail;
+        @Getter
+        private int Forge;
+        @Getter
+        private int Press;
+        @Getter
+        private int Molder;
+    
+    }
 }

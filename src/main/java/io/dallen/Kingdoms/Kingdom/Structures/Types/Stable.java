@@ -18,11 +18,7 @@
  */
 package io.dallen.Kingdoms.Kingdom.Structures.Types;
 
-import io.dallen.Kingdoms.Kingdom.Municipality;
-import io.dallen.Kingdoms.Kingdom.Structures.Structure;
-import java.awt.Polygon;
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
+import io.dallen.Kingdoms.Kingdom.Plot;
 
 /**
  * Allows the kingdom to train and hold horses
@@ -30,9 +26,17 @@ import org.bukkit.entity.Player;
  * @author donoa_000
  */
 public class Stable extends Plot{
+    
+    private int horseCapacity;
+    
+    private int workerCapacity;
+    
+    private int currentHorses; // may be changed if horses are going to owned personally (which they should be)
+    
+    private int currentWorkers;
 
-    public Stable(Polygon base, Location cent, Player own, io.dallen.Kingdoms.Kingdom.Kingdom kingdom, Municipality Muicipal) {
-        super(base, cent, own, kingdom, Muicipal);
+    public Stable(Plot p) {
+        super(p.getBase(), p.getCenter(), p.getOwner(), p.getMunicipal());
     }
 
 }

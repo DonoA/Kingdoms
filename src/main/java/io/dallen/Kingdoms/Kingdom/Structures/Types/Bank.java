@@ -18,10 +18,10 @@
  */
 package io.dallen.Kingdoms.Kingdom.Structures.Types;
 
-import io.dallen.Kingdoms.Kingdom.Municipality;
-import io.dallen.Kingdoms.Kingdom.Structures.Structure;
-import java.awt.Polygon;
-import org.bukkit.Location;
+import io.dallen.Kingdoms.Kingdom.Plot;
+import io.dallen.Kingdoms.Kingdom.Vaults.BuildingVault;
+import java.util.HashMap;
+import lombok.Getter;
 import org.bukkit.entity.Player;
 
 /**
@@ -30,9 +30,19 @@ import org.bukkit.entity.Player;
  * @author donoa_000
  */
 public class Bank extends Plot{
-
-    public Bank(Polygon base, Location cent, Player own, io.dallen.Kingdoms.Kingdom.Kingdom kingdom, Municipality Muicipal) {
-        super(base, cent, own, kingdom, Muicipal);
+    @Getter
+    private int securityLevel;
+    @Getter
+    private int vaultNumber;
+    @Getter
+    private HashMap<Player, BuildingVault> vaults = new HashMap<Player, BuildingVault>();
+    @Getter
+    private boolean MunicipalBank;
+    @Getter
+    private boolean KingdomBank;
+    
+    public Bank(Plot p) {
+        super(p.getBase(), p.getCenter(), p.getOwner(), p.getMunicipal());
     }
 
 }

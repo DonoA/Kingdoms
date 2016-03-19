@@ -18,13 +18,10 @@
  */
 package io.dallen.Kingdoms.Kingdom.Structures.Types;
 
-import io.dallen.Kingdoms.Kingdom.Kingdom;
-import io.dallen.Kingdoms.Kingdom.Municipality;
 import io.dallen.Kingdoms.Kingdom.Plot;
-import io.dallen.Kingdoms.Kingdom.Structures.Structure;
-import java.awt.Polygon;
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
+import io.dallen.Kingdoms.Kingdom.Vaults.BuildingVault;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * Allows the kingdom to store weapons and armor for its subjects
@@ -33,10 +30,39 @@ import org.bukkit.entity.Player;
  */
 public class Armory extends Plot{
 
-    public Armory(Polygon base, Location cent, Player own, Kingdom kingdom, Municipality Muicipal) {
-        super(base, cent, own, kingdom, Muicipal);
+    @Getter
+    private int maxCapacity;
+    @Getter
+    private int currentCapacity;
+    @Getter
+    private int amountFull;
+    
+    @Getter
+    private int readySpeed;
+    
+    @Getter
+    private WeaponStats stats;
+    
+    @Getter
+    private BuildingVault storage;
+    
+    public Armory(Plot p) {
+        super(p.getBase(), p.getCenter(), p.getOwner(), p.getMunicipal());
     }
 
-    
+    @NoArgsConstructor
+    public static class WeaponStats{
+        @Getter
+        private int infantry;
+        
+        @Getter
+        private int calvalry;
+        
+        @Getter
+        private int archers;
+        
+        @Getter
+        private int other;
+    }
     
 }

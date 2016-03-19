@@ -18,11 +18,7 @@
  */
 package io.dallen.Kingdoms.Kingdom.Structures.Types;
 
-import io.dallen.Kingdoms.Kingdom.Municipality;
-import io.dallen.Kingdoms.Kingdom.Structures.Structure;
-import java.awt.Polygon;
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
+import io.dallen.Kingdoms.Kingdom.Plot;
 
 /**
  * Allows the kingdom to create and maintain crops
@@ -31,8 +27,29 @@ import org.bukkit.entity.Player;
  */
 public class Farm extends Plot{
 
-    public Farm(Polygon base, Location cent, Player own, io.dallen.Kingdoms.Kingdom.Kingdom kingdom, Municipality Muicipal) {
-        super(base, cent, own, kingdom, Muicipal);
+    private int maxFarmLand;
+    
+    private int maxResidents;
+    
+    private int currentFarmLand;
+    
+    private int currentResidents;
+    
+    private int currentlyPlanted;
+    
+    private FoodStats localStock;
+    
+    public Farm(Plot p) {
+        super(p.getBase(), p.getCenter(), p.getOwner(), p.getMunicipal());
+    }
+    
+    private static class FoodStats{
+        
+        private int Wheat;
+        
+        private int Apples;
+        
+        private int Corn;
     }
 
 }

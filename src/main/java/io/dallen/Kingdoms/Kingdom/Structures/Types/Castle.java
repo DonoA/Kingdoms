@@ -18,11 +18,7 @@
  */
 package io.dallen.Kingdoms.Kingdom.Structures.Types;
 
-import io.dallen.Kingdoms.Kingdom.Municipality;
-import io.dallen.Kingdoms.Kingdom.Structures.Structure;
-import java.awt.Polygon;
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
+import io.dallen.Kingdoms.Kingdom.Plot;
 
 /**
  *
@@ -31,9 +27,19 @@ import org.bukkit.entity.Player;
 public class Castle extends Plot{
     
     private int level;
-
-    public Castle(Polygon base, Location cent, Player own, io.dallen.Kingdoms.Kingdom.Kingdom kingdom, Municipality Muicipal) {
-        super(base, cent, own, kingdom, Muicipal);
+    
+    private int guardSize;
+    
+    private int housingSize;
+    
+    private int security;
+    
+    private int currentResidents;
+    
+    private int currentGuards;
+    
+    public Castle(Plot p) {
+        super(p.getBase(), p.getCenter(), p.getOwner(), p.getMunicipal());
     }
     
 }

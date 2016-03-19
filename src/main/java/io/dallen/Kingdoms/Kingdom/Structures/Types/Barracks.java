@@ -19,6 +19,9 @@
 package io.dallen.Kingdoms.Kingdom.Structures.Types;
 
 import io.dallen.Kingdoms.Kingdom.Plot;
+import io.dallen.Kingdoms.Kingdom.Vaults.BuildingVault;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * Allows the kingdom to house its NPCs
@@ -27,11 +30,40 @@ import io.dallen.Kingdoms.Kingdom.Plot;
  */
 public class Barracks extends Plot{
 
-    //Other stats here, plane landing atm
+    @Getter
+    private int maxCapacity;
+    @Getter
+    private int currentCapacity;
+    @Getter
+    private int amountFull;
+    
+    @Getter
+    private int readySpeed;
+    
+    @Getter
+    private PopulationStats people;
     
     public Barracks(Plot p) {
         super(p.getBase(), p.getCenter(), p.getOwner(), p.getMunicipal());
+        maxCapacity = p.getArea() * 100;
+        currentCapacity = 0;
+        amountFull = 0;
+        people = new PopulationStats();
+        readySpeed = 10;
     }
 
+    @NoArgsConstructor
+    public static class PopulationStats{
+        @Getter
+        private int infantry;
         
+        @Getter
+        private int calvalry;
+        
+        @Getter
+        private int archers;
+        
+        @Getter
+        private int other;
+    }
 }

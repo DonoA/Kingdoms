@@ -21,13 +21,11 @@ package io.dallen.Kingdoms.Kingdom.Structures;
 import com.google.common.primitives.Ints;
 import io.dallen.Kingdoms.Kingdom.Kingdom;
 import io.dallen.Kingdoms.Kingdom.Municipality;
-import io.dallen.Kingdoms.Util.LogUtil;
 import java.awt.Point;
 import java.awt.Polygon;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 /**

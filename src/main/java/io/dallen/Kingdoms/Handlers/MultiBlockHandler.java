@@ -21,8 +21,6 @@ package io.dallen.Kingdoms.Handlers;
 import com.google.common.primitives.Ints;
 import io.dallen.Kingdoms.Util.LogUtil;
 import io.dallen.Kingdoms.Kingdom.Plot;
-import io.dallen.Kingdoms.Kingdom.Structures.Types.Barracks;
-import io.dallen.Kingdoms.Kingdom.Structures.Types.Storeroom;
 import io.dallen.Kingdoms.PlayerData;
 import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEvent;
@@ -30,9 +28,13 @@ import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEventHandler;
 import io.dallen.Kingdoms.Util.LocationUtil;
 import java.awt.Point;
 import java.awt.Polygon;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -72,7 +74,7 @@ public class MultiBlockHandler implements Listener{
             setOption(9*0 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Armory", "");
             setOption(9*0 + 5, new ItemStack(Material.ENCHANTED_BOOK), "Blacksmith", "");
             setOption(9*0 + 6, new ItemStack(Material.ENCHANTED_BOOK), "Farm", "");
-            setOption(9*1 + 1, new ItemStack(Material.ENCHANTED_BOOK), "Treasury", "");
+            setOption(9*1 + 1, new ItemStack(Material.ENCHANTED_BOOK), "Builder's Hut", "");
             setOption(9*1 + 2, new ItemStack(Material.ENCHANTED_BOOK), "Bank", "");
             setOption(9*1 + 3, new ItemStack(Material.ENCHANTED_BOOK), "Stable", "");
             setOption(9*1 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Dungeon", "");
@@ -82,7 +84,7 @@ public class MultiBlockHandler implements Listener{
             setOption(9*2 + 3, new ItemStack(Material.ENCHANTED_BOOK), "Wall with Door", "");
             setOption(9*2 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Corner", "");
             setOption(9*2 + 5, new ItemStack(Material.ENCHANTED_BOOK), "Tower", "");
-            setOption(9*3 + 3, new ItemStack(Material.ENCHANTED_BOOK), "Contract", "");
+            setOption(9*3 + 3, new ItemStack(Material.ENCHANTED_BOOK), "Custom Contract", "");
             setOption(9*3 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Demolish", "");
             setOption(9*3 + 5, new ItemStack(Material.ENCHANTED_BOOK), "Erase", "");
         }};
@@ -227,57 +229,31 @@ public class MultiBlockHandler implements Listener{
             }else if(e.getMenuName().equalsIgnoreCase("Set Plot Type")){
                 Plot p = Plot.inPlot(e.getPlayer().getLocation());
                 PlayerData pd = PlayerData.getData(e.getPlayer());
-                if(e.getName().equalsIgnoreCase("Storeroom")){
-                    pd.getPlots().remove(p);
-                    Storeroom store = new Storeroom(p);
-                    pd.getPlots().add(store);
-                    e.getPlayer().sendMessage("You have assigned this plot to be a Storeroom.");
-                    e.getPlayer().sendMessage("The max capaity of this plot is " + store.getMaxCapacity());
-                    /* if(you dont have the resources in your builders hut){
-                        e.getPlayer().sendMessage("You dont have the needed resources to build this structure fully");
-                    */
-                }else if(e.getName().equalsIgnoreCase("Barracks")){
-                    pd.getPlots().remove(p);
-                    Barracks barracks = new Barracks(p);
-                    pd.getPlots().add(barracks);
-                    e.getPlayer().sendMessage("You have assigned this plot to be a Barracks.");
-                    /* if(you dont have the resources in your builders hut){
-                        e.getPlayer().sendMessage("You dont have the needed resources to build this structure fully");
-                    */
-                }else if(e.getName().equalsIgnoreCase("Training Ground")){
-                    
-                }else if(e.getName().equalsIgnoreCase("Armory")){
-                    
-                }else if(e.getName().equalsIgnoreCase("Blacksmith")){
-                    
-                }else if(e.getName().equalsIgnoreCase("Farm")){
-                    
-                }else if(e.getName().equalsIgnoreCase("Treasury")){
-                    
-                }else if(e.getName().equalsIgnoreCase("Bank")){
-                    
-                }else if(e.getName().equalsIgnoreCase("Stable")){
-                    
-                }else if(e.getName().equalsIgnoreCase("Dungeon")){
-                    
-                }else if(e.getName().equalsIgnoreCase("Marketplace")){
-                    
-                }else if(e.getName().equalsIgnoreCase("Court")){
-                    
-                }else if(e.getName().equalsIgnoreCase("Wall")){
-                    
-                }else if(e.getName().equalsIgnoreCase("Wall with Door")){
-                    
-                }else if(e.getName().equalsIgnoreCase("Corner")){
-                    
-                }else if(e.getName().equalsIgnoreCase("Tower")){
-                    
-                }else if(e.getName().equalsIgnoreCase("Contract")){
+                if(e.getName().equalsIgnoreCase("Custom Contract")){
                     
                 }else if(e.getName().equalsIgnoreCase("Demolish")){
                     
                 }else if(e.getName().equalsIgnoreCase("Erase")){
                     
+                }else{
+                    try {
+                        Class structure = Class.forName("io.dallen.Kingdoms.Kingdom.Structures.Types."+e.getName().replace(" ", "").replace("'", ""));
+                        Class[] types = {Plot.class};
+                        Constructor constructor = structure.getConstructor(types);
+                        Plot newPlot = (Plot) constructor.newInstance(p);
+                        pd.getPlots().remove(p);
+                        pd.getPlots().add(newPlot);
+                        e.getPlayer().sendMessage("You have assigned this plot to be a " + e.getName() +".");
+                        if(p.getMunicipal() == null){
+                            e.getPlayer().sendMessage("This building is not part of a municipal, you have no NPCs to help you build it!");
+                        }else if(p.getMunicipal().getStructures().contains(p/*this isnt a thing*/)){
+                            e.getPlayer().sendMessage("You dont have the needed resources to build this structure fully");
+                        }
+                    } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException 
+                            | InvocationTargetException | NoSuchMethodException | SecurityException ex) {
+                        e.getPlayer().sendMessage("Building name not found!");
+                        Logger.getLogger(MultiBlockHandler.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             }
         }

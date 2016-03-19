@@ -32,6 +32,10 @@ public class BuildingVault implements Vault{
     
     @Getter
     private int Size;
+
+    public BuildingVault(int i) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
     @Override
     public void SendToPlayer(Player p){
