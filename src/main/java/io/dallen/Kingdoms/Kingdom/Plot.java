@@ -18,12 +18,14 @@
  */
 package io.dallen.Kingdoms.Kingdom;
 
+import io.dallen.Kingdoms.Kingdom.Structures.Contract;
 import io.dallen.Kingdoms.Kingdom.Structures.Structure;
 import io.dallen.Kingdoms.Util.LocationUtil;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.util.ArrayList;
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -36,6 +38,9 @@ public class Plot extends Structure implements Listener{
     
     @Getter
     private static ArrayList<Plot> allPlots = new ArrayList<Plot>();
+    
+    @Getter
+    private ArrayList<Contract> contracts = new ArrayList<Contract>();
     
     public Plot(Polygon base, Location cent, Player own, Municipality mun) {
         super(base, cent, own, mun);

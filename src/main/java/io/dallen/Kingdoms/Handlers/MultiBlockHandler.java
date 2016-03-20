@@ -21,6 +21,9 @@ package io.dallen.Kingdoms.Handlers;
 import com.google.common.primitives.Ints;
 import io.dallen.Kingdoms.Util.LogUtil;
 import io.dallen.Kingdoms.Kingdom.Plot;
+import io.dallen.Kingdoms.Kingdom.Structures.Contract;
+import io.dallen.Kingdoms.Kingdom.Structures.Structure;
+import io.dallen.Kingdoms.Kingdom.Structures.Types.BuildersHut;
 import io.dallen.Kingdoms.PlayerData;
 import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEvent;
@@ -58,6 +61,8 @@ public class MultiBlockHandler implements Listener{
     private ChestGUI SetPlotType;
     
     private ChestGUI ViewPlotMenu;
+    
+    private ChestGUI EditPlotMenu;
     
     private HashMap<Player, Long> cooldown = new HashMap<Player, Long>();
     
@@ -187,9 +192,20 @@ public class MultiBlockHandler implements Listener{
                     if(e.getItem().getItemMeta().getDisplayName().equalsIgnoreCase("Multi Tool")){
                         Plot p = Plot.inPlot(e.getPlayer().getLocation());
                         if(p.getOwner().equals(e.getPlayer())){
-                            
+                            if(!p.getClass().equals(Plot.class)){
+                                SetPlotType.sendMenu(e.getPlayer());
+                            }else{
+                                EditPlotMenu.sendMenu(e.getPlayer());
+                            }
                         }else{
-                            e.getPlayer().sendMessage("send contracts!");
+                            //this is not well executed atm
+                            //do not call the name of the event, just the data is guarenteed
+                            int loc = 0;
+                            for(Contract ct : p.getContracts()){
+                                ViewPlotMenu.setOption(loc, new ItemStack(Material.ENCHANTED_BOOK), ct.getMessage(), ct.getPay(), ct.getType().getName());
+                                loc++;
+                            }
+                            ViewPlotMenu.sendMenu(e.getPlayer());
                         }
                     }
                 }
@@ -246,7 +262,15 @@ public class MultiBlockHandler implements Listener{
                         e.getPlayer().sendMessage("You have assigned this plot to be a " + e.getName() +".");
                         if(p.getMunicipal() == null){
                             e.getPlayer().sendMessage("This building is not part of a municipal, you have no NPCs to help you build it!");
-                        }else if(p.getMunicipal().getStructures().contains(p/*this isnt a thing*/)){
+                        }else if(p.getMunicipal().getStructures().containsKey(BuildersHut.class) && 
+                                !p.getMunicipal().getStructures().get(BuildersHut.class).isEmpty()){
+                            for(Structure st : p.getMunicipal().getStructures().get(BuildersHut.class)){
+                                BuildersHut hut = (BuildersHut) st;
+                                if(hut.hasMaterials(newPlot.getClass())){
+                                    
+                                    return;
+                                }
+                            }
                             e.getPlayer().sendMessage("You dont have the needed resources to build this structure fully");
                         }
                     } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException 

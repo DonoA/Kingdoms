@@ -47,7 +47,7 @@ public class Kingdom {
     private ArrayList<Municipality> Municipals = new ArrayList<Municipality>();
     
     @Getter
-    private ArrayList<Structure> Structures = new ArrayList<Structure>();
+    private HashMap<Class, ArrayList<Structure>> Structures = new HashMap<Class, ArrayList<Structure>>();
     
     @Getter
     private ArrayList<Player> OnlinePlayers = new ArrayList<Player>();

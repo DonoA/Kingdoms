@@ -16,35 +16,27 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.Kingdom.Structures.Types;
+package io.dallen.Kingdoms.Kingdom.Structures;
 
-import io.dallen.Kingdoms.Kingdom.Plot;
-import io.dallen.Kingdoms.Kingdom.Structures.Structure;
-import io.dallen.Kingdoms.Kingdom.Vaults.BuildingVault;
 import lombok.Getter;
+import org.bukkit.Material;
+import lombok.AllArgsConstructor;
 
 /**
  *
  * @author donoa_000
  */
-public class BuildersHut extends Plot{
+@AllArgsConstructor
+public class Contract {
+    @Getter
+    private String Message; 
     
     @Getter
-    private BuildingVault storage;
-    @Getter
-    private int storageCapacity;
-    @Getter
-    private int workerCapacity;
-    @Getter
-    private int organizationLevel;
+    private Class Type;
     
-    public BuildersHut(Plot p) {
-        super(p.getBase(), p.getCenter(), p.getOwner(), p.getMunicipal());
-    }
+    @Getter
+    private int pay;
     
-    public boolean hasMaterials(Class type){
-        //test if has needed mats
-        return true;
-    }
-    
+    @Getter
+    private Material[] requestedMaterials;
 }

@@ -20,22 +20,27 @@ package io.dallen.Kingdoms.Kingdom;
 
 import io.dallen.Kingdoms.Kingdom.Structures.Structure;
 import java.util.ArrayList;
+import java.util.HashMap;
 import lombok.Getter;
 
 /**
  *
  * @author donoa_000
  */
-public class Municipality {
+public class Municipality {//Village, Town
     
     @Getter
-    private ArrayList<Structure> Structures = new ArrayList<Structure>();
+    private HashMap<Class, ArrayList<Structure>> Structures = new HashMap<Class, ArrayList<Structure>>();
     
     @Getter
     private Structure Center;
     
     public Municipality(Structure center){
         this.Center = center;
+    }
+    
+    public static enum Types{
+        VILLAGE, MANOR, TOWN, CITY, KEEP, CITIDEL
     }
     
 }
