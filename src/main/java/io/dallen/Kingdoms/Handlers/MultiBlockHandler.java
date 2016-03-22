@@ -24,6 +24,7 @@ import io.dallen.Kingdoms.Kingdom.Plot;
 import io.dallen.Kingdoms.Kingdom.Structures.Contract;
 import io.dallen.Kingdoms.Kingdom.Structures.Structure;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.BuildersHut;
+import io.dallen.Kingdoms.Kingdom.Structures.Types.TownHall;
 import io.dallen.Kingdoms.PlayerData;
 import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEvent;
@@ -76,7 +77,7 @@ public class MultiBlockHandler implements Listener{
             setOption(9*0 + 1, new ItemStack(Material.ENCHANTED_BOOK), "Storeroom", "");
             setOption(9*0 + 2, new ItemStack(Material.ENCHANTED_BOOK), "Barracks", "");
             setOption(9*0 + 3, new ItemStack(Material.ENCHANTED_BOOK), "Training Ground", "");
-            setOption(9*0 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Armory", "");
+            setOption(9*0 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Town Hall", "");
             setOption(9*0 + 5, new ItemStack(Material.ENCHANTED_BOOK), "Blacksmith", "");
             setOption(9*0 + 6, new ItemStack(Material.ENCHANTED_BOOK), "Farm", "");
             setOption(9*1 + 1, new ItemStack(Material.ENCHANTED_BOOK), "Builder's Hut", "");
@@ -96,6 +97,11 @@ public class MultiBlockHandler implements Listener{
         
         ViewPlotMenu = new ChestGUI("Plot Info", InventoryType.HOPPER, new MBOptions()) {{
             setOption(2, new ItemStack(Material.ENCHANTED_BOOK), "No current contracts avalible", "");
+        }};
+        
+        EditPlotMenu = new ChestGUI("Edit Plot", InventoryType.HOPPER, new MBOptions()) {{
+            setOption(2, new ItemStack(Material.ENCHANTED_BOOK), "Clear Plot", "");
+            setOption(4, new ItemStack(Material.ENCHANTED_BOOK), "Remove Contract", "");
         }};
     }
     
@@ -195,6 +201,11 @@ public class MultiBlockHandler implements Listener{
                             if(!p.getClass().equals(Plot.class)){
                                 SetPlotType.sendMenu(e.getPlayer());
                             }else{
+                                if(e.getClass().equals(TownHall.class) && p.getMunicipal() == null){
+                                    EditPlotMenu.setOption(3, new ItemStack(Material.ENCHANTED_BOOK), "Create Municipal", "");
+                                }else{
+                                    EditPlotMenu.setOption(3, new ItemStack(Material.AIR), "", "");
+                                }
                                 EditPlotMenu.sendMenu(e.getPlayer());
                             }
                         }else{
@@ -251,11 +262,18 @@ public class MultiBlockHandler implements Listener{
                     
                 }else if(e.getName().equalsIgnoreCase("Erase")){
                     
+                }else if(e.getName().equalsIgnoreCase("Wall")){
+                    
+                }else if(e.getName().equalsIgnoreCase("Wall with Door")){
+                    
+                }else if(e.getName().equalsIgnoreCase("Corner")){
+                    
+                }else if(e.getName().equalsIgnoreCase("Tower")){
+                    
                 }else{
                     try {
                         Class structure = Class.forName("io.dallen.Kingdoms.Kingdom.Structures.Types."+e.getName().replace(" ", "").replace("'", ""));
-                        Class[] types = {Plot.class};
-                        Constructor constructor = structure.getConstructor(types);
+                        Constructor constructor = structure.getConstructor(new Class[] {Plot.class});
                         Plot newPlot = (Plot) constructor.newInstance(p);
                         pd.getPlots().remove(p);
                         pd.getPlots().add(newPlot);
@@ -267,7 +285,7 @@ public class MultiBlockHandler implements Listener{
                             for(Structure st : p.getMunicipal().getStructures().get(BuildersHut.class)){
                                 BuildersHut hut = (BuildersHut) st;
                                 if(hut.hasMaterials(newPlot.getClass())){
-                                    
+                                    e.getPlayer().sendMessage("Your NPCs will start work imediatly");
                                     return;
                                 }
                             }
@@ -279,6 +297,8 @@ public class MultiBlockHandler implements Listener{
                         Logger.getLogger(MultiBlockHandler.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
+            }else if(e.getMenuName().equalsIgnoreCase("Edit Plot")){
+                
             }
         }
     }

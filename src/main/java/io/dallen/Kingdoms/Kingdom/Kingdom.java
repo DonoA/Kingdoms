@@ -19,6 +19,7 @@
 package io.dallen.Kingdoms.Kingdom;
 
 import io.dallen.Kingdoms.Kingdom.Structures.Structure;
+import java.awt.Polygon;
 import java.util.ArrayList;
 import java.util.HashMap;
 import lombok.Getter;
@@ -40,6 +41,9 @@ public class Kingdom {
     
     @Getter
     private String Name;
+    
+    @Getter
+    private Polygon Base;
     
     private ResourceStats Resources;
     

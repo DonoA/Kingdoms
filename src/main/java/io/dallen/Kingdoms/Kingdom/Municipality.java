@@ -19,6 +19,7 @@
 package io.dallen.Kingdoms.Kingdom;
 
 import io.dallen.Kingdoms.Kingdom.Structures.Structure;
+import java.awt.Polygon;
 import java.util.ArrayList;
 import java.util.HashMap;
 import lombok.Getter;
@@ -35,8 +36,15 @@ public class Municipality {//Village, Town
     @Getter
     private Structure Center;
     
+    @Getter
+    private WallSystem walls;
+    
+    @Getter
+    private Polygon Base;
+    
     public Municipality(Structure center){
         this.Center = center;
+        this.walls = new WallSystem(this);
     }
     
     public static enum Types{

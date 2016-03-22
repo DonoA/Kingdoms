@@ -16,32 +16,20 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.Kingdom;
+package io.dallen.Kingdoms.Kingdom.Structures.Types;
 
-import lombok.Getter;
-import lombok.Setter;
+import io.dallen.Kingdoms.Kingdom.Plot;
 
 /**
  *
  * @author donoa_000
  */
-public class WallSystem {
+public class TownHall extends Plot{
     
-    @Getter @Setter
-    private Municipality surrounding;
-
-    WallSystem(Municipality surrounding) {
-        this.surrounding = surrounding;
-    }
-    
-    public void recalculateBase(){
-        
+    public TownHall(Plot p) {
+        super(p.getBase(), p.getCenter(), p.getOwner(), p.getMunicipal());
     }
     
     
-    
-    public enum WallType {
-        WALL, GATE, TOWER, CORNER
-    }
     
 }
