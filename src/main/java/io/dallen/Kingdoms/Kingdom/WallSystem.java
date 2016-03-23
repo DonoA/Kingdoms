@@ -18,30 +18,57 @@
  */
 package io.dallen.Kingdoms.Kingdom;
 
+import io.dallen.Kingdoms.Util.LocationUtil;
+import java.awt.Polygon;
+import java.util.ArrayList;
+import java.util.HashMap;
 import lombok.Getter;
-import lombok.Setter;
 
 /**
  *
  * @author donoa_000
  */
-public class WallSystem {
+public class WallSystem{
     
-    @Getter @Setter
-    private Municipality surrounding;
-
-    WallSystem(Municipality surrounding) {
-        this.surrounding = surrounding;
+    @Getter
+    private HashMap<WallType, ArrayList<Wall>> Parts = new HashMap<WallType, ArrayList<Wall>>();
+    
+    @Getter
+    private Municipality municipal;
+    
+    WallSystem(Municipality m) {
+        this.municipal = m;
     }
     
     public void recalculateBase(){
+        ArrayList<Wall> corners = new ArrayList<Wall>();
+        corners.addAll(Parts.get(WallType.CORNER));
+        corners.addAll(Parts.get(WallType.TOWER));
+        int[] Xs = new int[corners.size()];
+        int[] Zs = new int[corners.size()];
+        int i = 0;
+        for(i = 0; i < corners.size(); i++){
+            Xs[i] = (int) LocationUtil.asPoint(corners.get(i).getCenter()).getX();
+            Zs[i] = (int) LocationUtil.asPoint(corners.get(i).getCenter()).getY();
+            //test that there is some kind of plot connecting this point and the next point
+        }
+        Polygon newBase = new Polygon(Xs, Zs, i);
         
+        municipal.setBase(newBase);
     }
     
-    
-    
-    public enum WallType {
+    public static enum WallType {
         WALL, GATE, TOWER, CORNER
+    }
+    
+    public static class Wall extends Plot{
+        @Getter
+        private WallType type;
+        
+        public Wall(Plot p, WallType type){
+            super(p.getBase(), p.getCenter(), p.getOwner(), p.getMunicipal());
+            this.type = type;
+        }
     }
     
 }

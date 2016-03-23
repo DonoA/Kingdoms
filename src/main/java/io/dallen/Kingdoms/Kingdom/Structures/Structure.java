@@ -21,6 +21,7 @@ package io.dallen.Kingdoms.Kingdom.Structures;
 import com.google.common.primitives.Ints;
 import io.dallen.Kingdoms.Kingdom.Kingdom;
 import io.dallen.Kingdoms.Kingdom.Municipality;
+import io.dallen.Kingdoms.Util.ChestGUI;
 import java.awt.Point;
 import java.awt.Polygon;
 import lombok.Getter;
@@ -54,6 +55,8 @@ public class Structure {
     private Municipality Municipal;
     @Getter @Setter
     private int Area;
+    @Getter
+    private ChestGUI EditPlot;
     
     public Structure(Polygon base, Location cent, Player own, Kingdom kingdom, Municipality municipal){
         this.Center = cent;
@@ -91,5 +94,4 @@ public class Structure {
             }
         }
     }
-    
 }

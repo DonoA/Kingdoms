@@ -63,8 +63,6 @@ public class MultiBlockHandler implements Listener{
     
     private ChestGUI ViewPlotMenu;
     
-    private ChestGUI EditPlotMenu;
-    
     private HashMap<Player, Long> cooldown = new HashMap<Player, Long>();
     
     public MultiBlockHandler(){
@@ -99,10 +97,6 @@ public class MultiBlockHandler implements Listener{
             setOption(2, new ItemStack(Material.ENCHANTED_BOOK), "No current contracts avalible", "");
         }};
         
-        EditPlotMenu = new ChestGUI("Edit Plot", InventoryType.HOPPER, new MBOptions()) {{
-            setOption(2, new ItemStack(Material.ENCHANTED_BOOK), "Clear Plot", "");
-            setOption(4, new ItemStack(Material.ENCHANTED_BOOK), "Remove Contract", "");
-        }};
     }
     
     @EventHandler(priority = EventPriority.MONITOR)
@@ -201,12 +195,7 @@ public class MultiBlockHandler implements Listener{
                             if(!p.getClass().equals(Plot.class)){
                                 SetPlotType.sendMenu(e.getPlayer());
                             }else{
-                                if(e.getClass().equals(TownHall.class) && p.getMunicipal() == null){
-                                    EditPlotMenu.setOption(3, new ItemStack(Material.ENCHANTED_BOOK), "Create Municipal", "");
-                                }else{
-                                    EditPlotMenu.setOption(3, new ItemStack(Material.AIR), "", "");
-                                }
-                                EditPlotMenu.sendMenu(e.getPlayer());
+                                p.getEditPlot().sendMenu(e.getPlayer());
                             }
                         }else{
                             //this is not well executed atm

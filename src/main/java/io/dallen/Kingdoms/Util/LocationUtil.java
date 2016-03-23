@@ -19,6 +19,7 @@
 package io.dallen.Kingdoms.Util;
 
 import java.awt.Point;
+import java.awt.Polygon;
 import org.bukkit.Location;
 import org.bukkit.World;
 

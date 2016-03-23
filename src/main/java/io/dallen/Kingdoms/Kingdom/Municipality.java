@@ -23,6 +23,7 @@ import java.awt.Polygon;
 import java.util.ArrayList;
 import java.util.HashMap;
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
@@ -39,7 +40,7 @@ public class Municipality {//Village, Town
     @Getter
     private WallSystem walls;
     
-    @Getter
+    @Getter @Setter
     private Polygon Base;
     
     public Municipality(Structure center){
