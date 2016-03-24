@@ -58,6 +58,8 @@ public class Structure {
     private int Area;
     @Getter
     private ChestGUI EditPlot;
+    @Getter
+    private long amountBuilt;
     
     public Structure(Polygon base, Location cent, Player own, Kingdom kingdom, Municipality municipal){
         this.Center = cent;
