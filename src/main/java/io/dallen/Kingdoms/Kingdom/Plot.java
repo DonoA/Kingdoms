@@ -43,6 +43,9 @@ public class Plot extends Structure implements Listener{
     @Getter
     private ArrayList<Contract> contracts = new ArrayList<Contract>();
     
+    @Getter @Setter
+    private boolean empty = true;
+    
     public Plot(Polygon base, Location cent, Player own, Municipality mun) {
         super(base, cent, own, mun);
     }
@@ -80,11 +83,13 @@ public class Plot extends Structure implements Listener{
     }
     
     public boolean createMucicpal(){
-        if(super.getKingdom() != null){
+        if(super.getMunicipal() != null){
             return false;
         }
         super.setMunicipal(new Municipality((Structure) this));
+        //find nearest wall town and start from there
         super.getKingdom().getMunicipals().add(super.getMunicipal());
+        
         return true;
     }
     

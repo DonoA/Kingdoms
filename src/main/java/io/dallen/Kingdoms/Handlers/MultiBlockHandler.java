@@ -70,7 +70,7 @@ public class MultiBlockHandler implements Listener{
         NewPlotMenu = new ChestGUI("New Plot", InventoryType.HOPPER, new MBOptions()) {{
             setOption(1, new ItemStack(Material.ENCHANTED_BOOK), "Confirm and Claim Plot", "");
             setOption(3, new ItemStack(Material.ENCHANTED_BOOK), "Cancel Plot Claim", "");
-        }}.registerHandlers();
+        }};
         
         SetPlotType = new ChestGUI("Set Plot Type", 4, new MBOptions()) {{
             setOption(9*0 + 1, new ItemStack(Material.ENCHANTED_BOOK), "Storeroom", "");
@@ -92,11 +92,11 @@ public class MultiBlockHandler implements Listener{
             setOption(9*3 + 3, new ItemStack(Material.ENCHANTED_BOOK), "Custom Contract", "");
             setOption(9*3 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Demolish", "");
             setOption(9*3 + 5, new ItemStack(Material.ENCHANTED_BOOK), "Erase", "");
-        }}.registerHandlers();
+        }};
         
         ViewPlotMenu = new ChestGUI("Plot Info", InventoryType.HOPPER, new MBOptions()) {{
             setOption(2, new ItemStack(Material.ENCHANTED_BOOK), "No current contracts avalible", "");
-        }}.registerHandlers();
+        }};
         
     }
     
@@ -152,7 +152,7 @@ public class MultiBlockHandler implements Listener{
                                             }
                                         }
                                     }
-                                    if(current == null || corners.contains(current)){ // If the test failed to located the shape
+                                    if(current == null /*|| corners.contains(last)*/){ // If the test failed to located the shape
                                         p.sendMessage("Could not calculate plot");
                                         return;
                                     }
@@ -178,10 +178,11 @@ public class MultiBlockHandler implements Listener{
                                         }else{
                                             p.sendMessage("This plot has already been claimed!");
                                         }
+                                        return;
                                     }
                                 }
                                 if(NewPlot.isValid()){
-                                    NewPlotMenu.setOption(1, new ItemStack(Material.ENCHANTED_BOOK), "Confirm and Claim Plot", NewPlot, p, "Plot size: " + -1 + ", " + -1).sendMenu(p);
+                                    NewPlotMenu.setOption(1, new ItemStack(Material.ENCHANTED_BOOK), "Confirm and Claim Plot", NewPlot, "Plot size: " + -1 + ", " + -1).sendMenu(p);
                                 }else{
                                     p.sendMessage("Invalid Plot");
                                 }
@@ -192,11 +193,14 @@ public class MultiBlockHandler implements Listener{
                 }else if(e.getItem().hasItemMeta()){
                     if(e.getItem().getItemMeta().getDisplayName().equalsIgnoreCase("Multi Tool")){
                         Plot p = Plot.inPlot(e.getPlayer().getLocation());
+                        if(p==null){
+                            return;
+                        }
                         if(p.getOwner().equals(e.getPlayer())){
-                            if(!p.getClass().equals(Plot.class)){
+                            if(p.isEmpty()){
                                 SetPlotType.sendMenu(e.getPlayer());
                             }else{
-                                p.getEditPlot().sendMenu(e.getPlayer());
+                                p.sendEditMenu(e.getPlayer());
                             }
                         }else{
                             //this is not well executed atm
@@ -229,13 +233,9 @@ public class MultiBlockHandler implements Listener{
                     final Polygon bounds = p.getBase();
                     int Xmax = Ints.max(bounds.xpoints);
                     int Zmax = Ints.max(bounds.ypoints);
-                    LogUtil.printDebug(Arrays.toString(bounds.xpoints));
-                    LogUtil.printDebug("size " + Xmax + ", " + Zmax + " to " + Ints.min(bounds.xpoints) + ", " + Ints.min(bounds.ypoints));
                     for(int x = Ints.min(bounds.xpoints); x <= Xmax; x++){
                         for(int z = Ints.min(bounds.ypoints); z <= Zmax; z++){
-                            LogUtil.printDebug("try " + new Point(x,z).toString());
                             if(bounds.contains(new Point(x,z)) || (bounds.contains(new Point(x-1,z)) || bounds.contains(new Point(x,z-1)) || bounds.contains(new Point(x-1,z-1)))){
-                                LogUtil.printDebug("setting " + new Point(x,z).toString());
                                 Location l = new Location(p.getCenter().getWorld(), x, p.getCenter().getBlockY()-1, z);
                                 l.getBlock().setType(Material.DIRT);
                                 l.getBlock().setData((byte) 1);
@@ -251,7 +251,7 @@ public class MultiBlockHandler implements Listener{
                 }else if(e.getName().equalsIgnoreCase("Demolish")){
                     
                 }else if(e.getName().equalsIgnoreCase("Erase")){
-                    
+//                    newPlot.setEmpty(true);
                 }else if(e.getName().equalsIgnoreCase("Wall")){
                     
                 }else if(e.getName().equalsIgnoreCase("Wall with Door")){
@@ -265,6 +265,9 @@ public class MultiBlockHandler implements Listener{
                         Class structure = Class.forName("io.dallen.Kingdoms.Kingdom.Structures.Types."+e.getName().replace(" ", "").replace("'", ""));
                         Constructor constructor = structure.getConstructor(new Class[] {Plot.class});
                         Plot newPlot = (Plot) constructor.newInstance(p);
+                        newPlot.setEmpty(false);
+                        Plot.getAllPlots().remove(p);
+                        Plot.getAllPlots().add(newPlot);
                         pd.getPlots().remove(p);
                         pd.getPlots().add(newPlot);
                         e.getPlayer().sendMessage("You have assigned this plot to be a " + e.getName() +".");

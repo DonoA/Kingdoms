@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 donoa_000.
+ * Copyright 2016 Donovan Allen
  * 
  * This file is part of Kingdoms for the Morphics Network.
  * 
@@ -14,6 +14,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ *
  */
 package io.dallen.Kingdoms;
 
@@ -83,7 +85,7 @@ public class GameTicks{
                     }
                 }
                 try {
-                    Thread.sleep(10000);
+                    Thread.sleep(10000);//poorly coded game tick :/
                 } catch (InterruptedException ex) {
                     Logger.getLogger(GameTicks.class.getName()).log(Level.SEVERE, null, ex);
                 }

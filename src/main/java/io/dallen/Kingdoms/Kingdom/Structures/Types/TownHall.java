@@ -20,6 +20,12 @@
 package io.dallen.Kingdoms.Kingdom.Structures.Types;
 
 import io.dallen.Kingdoms.Kingdom.Plot;
+import static io.dallen.Kingdoms.Kingdom.Structures.Structure.EditPlot;
+import io.dallen.Kingdoms.Util.ChestGUI;
+import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEventHandler;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 /**
  *
@@ -27,10 +33,30 @@ import io.dallen.Kingdoms.Kingdom.Plot;
  */
 public class TownHall extends Plot{
     
-    public TownHall(Plot p) {
+    static{
+        EditPlot.setName("Town Hall");
+        EditPlot.setHandler(new MenuHandler());
+    }
+    
+    public TownHall(Plot p){
         super(p.getBase(), p.getCenter(), p.getOwner(), p.getMunicipal());
     }
     
+    @Override
+    public void sendEditMenu(Player p){
+        EditPlot.setOption(4, new ItemStack(Material.ENCHANTED_BOOK), "Create Municipal", this);
+        super.sendEditMenu(p);
+    }
     
+    public static class MenuHandler implements OptionClickEventHandler{
+        
+        @Override
+        public void onOptionClick(ChestGUI.OptionClickEvent e){
+            if(e.getName().equalsIgnoreCase("Create Municipal")){
+                Plot p = (Plot) e.getData();
+                p.createMucicpal();
+            }
+        }
+    }
     
 }

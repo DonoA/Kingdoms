@@ -21,7 +21,12 @@ package io.dallen.Kingdoms.Kingdom.Structures.Types;
 
 import io.dallen.Kingdoms.Kingdom.Plot;
 import io.dallen.Kingdoms.Util.ChestGUI;
+import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEvent;
+import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEventHandler;
 import lombok.Getter;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * Allows the kingdom to create and maintain crops
@@ -42,11 +47,14 @@ public class Farm extends Plot{
     
     private FoodStats localStock;
     
-//    @Getter
-//    private ChestGUI EditPlot = new ChestGUI("Farm", 2, this);
-    
     public Farm(Plot p) {
         super(p.getBase(), p.getCenter(), p.getOwner(), p.getMunicipal());
+    }
+    
+    @Override
+    public void sendEditMenu(Player p){
+        EditPlot.setOption(1, new ItemStack(Material.ENCHANTED_BOOK), "option1");
+        super.sendEditMenu(p);
     }
     
     private static class FoodStats{
@@ -57,5 +65,13 @@ public class Farm extends Plot{
         
         private int Corn;
     }
-
+    
+    public static class MenuHandler implements OptionClickEventHandler{
+        
+        @Override
+        public void onOptionClick(OptionClickEvent e){
+            e.getPlayer().sendMessage("Default option called");
+        }
+    }
+    
 }

@@ -23,18 +23,22 @@ import com.google.common.primitives.Ints;
 import io.dallen.Kingdoms.Kingdom.Kingdom;
 import io.dallen.Kingdoms.Kingdom.Municipality;
 import io.dallen.Kingdoms.Util.ChestGUI;
+import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEvent;
+import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEventHandler;
 import java.awt.Point;
 import java.awt.Polygon;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 /**
  *
  * @author donoa_000
  */
-public class Structure {
+public class Structure{
     
     @Getter @Setter
     private int Width; // X
@@ -56,10 +60,21 @@ public class Structure {
     private Municipality Municipal;
     @Getter @Setter
     private int Area;
-    @Getter
-    private ChestGUI EditPlot;
+    @Getter @Setter
+    private int Rank;
+    @Getter @Setter
+    private int maxRank;
+    
+    public static ChestGUI EditPlot;
     @Getter
     private long amountBuilt;
+    
+    static {
+        EditPlot = new ChestGUI("Edit Plot Default", 2, new MenuHandler()){{
+            setOption(1, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
+            setOption(2, new ItemStack(Material.ENCHANTED_BOOK), "Upgrade");
+        }};
+    }
     
     public Structure(Polygon base, Location cent, Player own, Kingdom kingdom, Municipality municipal){
         this.Center = cent;
@@ -68,6 +83,7 @@ public class Structure {
         this.Municipal = municipal;
         this.Base = base;
         setArea();
+        
     }
     
     public Structure(Polygon base, Location cent, Player own, Municipality municipal){
@@ -86,6 +102,14 @@ public class Structure {
         setArea();
     }
     
+    /*
+     * This method MUST compile the needed menu for sending and place the relevent options in the data slots (so they are player specific)
+     * as it turns out handling menus from the server side is terrible
+     */
+    public void sendEditMenu(Player p){
+        EditPlot.sendMenu(p);
+    }
+    
     private void setArea(){
         int Xmax = Ints.max(Base.xpoints);
         int Zmax = Ints.max(Base.ypoints);
@@ -95,6 +119,14 @@ public class Structure {
                     Area++;
                 }
             }
+        }
+    }
+    
+    public static class MenuHandler implements OptionClickEventHandler{
+        
+        @Override
+        public void onOptionClick(OptionClickEvent e){
+            e.getPlayer().sendMessage("Default option called");
         }
     }
 }
