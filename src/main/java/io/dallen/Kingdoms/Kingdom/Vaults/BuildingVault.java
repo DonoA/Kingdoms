@@ -34,8 +34,8 @@ public class BuildingVault implements Vault{
     @Getter
     private int Size;
 
-    public BuildingVault(int i) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public BuildingVault(int size) {
+        this.Size = size;
     }
     
     @Override

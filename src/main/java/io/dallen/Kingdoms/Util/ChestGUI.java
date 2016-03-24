@@ -20,6 +20,7 @@
 package io.dallen.Kingdoms.Util;
 
 import io.dallen.Kingdoms.Main;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import lombok.Getter;
@@ -41,6 +42,8 @@ import org.bukkit.inventory.meta.ItemMeta;
  */
 public class ChestGUI implements Listener{
     
+    private static ArrayList<String> registered = new ArrayList<String>();
+    
     private String name;
     private int size;
     private InventoryType type;
@@ -61,7 +64,6 @@ public class ChestGUI implements Listener{
         optionData = new HashMap<String, Object[]>() {{
             put("all", new Object[s]);
         }};
-        Main.getPlugin().getServer().getPluginManager().registerEvents(this, Main.getPlugin());
     }
     
     public ChestGUI(String name, int size, OptionClickEventHandler handler){
@@ -75,7 +77,11 @@ public class ChestGUI implements Listener{
             put("all", new Object[s]);
         }};
         this.handler = handler;
+    }
+    
+    public ChestGUI registerHandlers(){
         Main.getPlugin().getServer().getPluginManager().registerEvents(this, Main.getPlugin());
+        return this;
     }
    
     public ChestGUI setOption(int pos, ItemStack icon, String name, String... info){

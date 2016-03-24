@@ -21,6 +21,7 @@ package io.dallen.Kingdoms.Kingdom.Vaults;
 
 import lombok.Getter;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 /**
  *
@@ -33,6 +34,8 @@ public class PlayerVault implements Vault{
     @Getter
     private int Size;
     
+    private ItemStack[] storage;
+    
     @Override
     public void SendToPlayer(Player p){
         
@@ -40,7 +43,14 @@ public class PlayerVault implements Vault{
     
     @Override
     public boolean CanOpen(Player p){
-        return true;
+        return p.equals(Owner);
+    }
+    
+    
+    public PlayerVault(Player p, int size){
+        this.Size = size;
+        this.Owner = p;
+        this.storage = new ItemStack[size];
     }
     
 }

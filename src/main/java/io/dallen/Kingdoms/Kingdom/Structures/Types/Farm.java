@@ -20,6 +20,8 @@
 package io.dallen.Kingdoms.Kingdom.Structures.Types;
 
 import io.dallen.Kingdoms.Kingdom.Plot;
+import io.dallen.Kingdoms.Util.ChestGUI;
+import lombok.Getter;
 
 /**
  * Allows the kingdom to create and maintain crops
@@ -39,6 +41,9 @@ public class Farm extends Plot{
     private int currentlyPlanted;
     
     private FoodStats localStock;
+    
+//    @Getter
+//    private ChestGUI EditPlot = new ChestGUI("Farm", 2, this);
     
     public Farm(Plot p) {
         super(p.getBase(), p.getCenter(), p.getOwner(), p.getMunicipal());

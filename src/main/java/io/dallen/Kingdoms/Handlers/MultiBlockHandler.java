@@ -70,7 +70,7 @@ public class MultiBlockHandler implements Listener{
         NewPlotMenu = new ChestGUI("New Plot", InventoryType.HOPPER, new MBOptions()) {{
             setOption(1, new ItemStack(Material.ENCHANTED_BOOK), "Confirm and Claim Plot", "");
             setOption(3, new ItemStack(Material.ENCHANTED_BOOK), "Cancel Plot Claim", "");
-        }};
+        }}.registerHandlers();
         
         SetPlotType = new ChestGUI("Set Plot Type", 4, new MBOptions()) {{
             setOption(9*0 + 1, new ItemStack(Material.ENCHANTED_BOOK), "Storeroom", "");
@@ -92,11 +92,11 @@ public class MultiBlockHandler implements Listener{
             setOption(9*3 + 3, new ItemStack(Material.ENCHANTED_BOOK), "Custom Contract", "");
             setOption(9*3 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Demolish", "");
             setOption(9*3 + 5, new ItemStack(Material.ENCHANTED_BOOK), "Erase", "");
-        }};
+        }}.registerHandlers();
         
         ViewPlotMenu = new ChestGUI("Plot Info", InventoryType.HOPPER, new MBOptions()) {{
             setOption(2, new ItemStack(Material.ENCHANTED_BOOK), "No current contracts avalible", "");
-        }};
+        }}.registerHandlers();
         
     }
     

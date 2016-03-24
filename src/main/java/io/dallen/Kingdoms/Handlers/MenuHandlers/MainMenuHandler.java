@@ -59,7 +59,7 @@ public class MainMenuHandler implements CommandExecutor, OptionClickEventHandler
             setOption(1*9 + 6, new ItemStack(Material.ENCHANTED_BOOK), "Server Selector", "");
             setOption(1*9 + 7, new ItemStack(Material.ENCHANTED_BOOK), "Vault", "");
             setOption(2*9, new ItemStack(Material.WORKBENCH), "Main Menu", "");
-        }};
+        }}.registerHandlers();
         MainMenu = new ChestGUI("Main Menu", 3, this) {{
             setOption(1*9 + 2, new ItemStack(Material.ENCHANTED_BOOK), "Textures", "");
             setOption(1*9 + 3, new ItemStack(Material.ENCHANTED_BOOK), "Disconnect", "");
@@ -68,7 +68,7 @@ public class MainMenuHandler implements CommandExecutor, OptionClickEventHandler
             setOption(1*9 + 6, new ItemStack(Material.ENCHANTED_BOOK), "Website", "");
             setOption(2*9, new ItemStack(Material.ARROW), "Back", "");
             setOption(3*9-1, new ItemStack(Material.BED), "Home Menu", "");
-        }};
+        }}.registerHandlers();
         EncyclopediaMenu = new ChestGUI("Encyclopedia", 3, this) {{
             setOption(1*9 + 2, new ItemStack(Material.ENCHANTED_BOOK), "Kingdoms", "");
             setOption(1*9 + 3, new ItemStack(Material.ENCHANTED_BOOK), "Roles", "");
@@ -77,7 +77,7 @@ public class MainMenuHandler implements CommandExecutor, OptionClickEventHandler
             setOption(1*9 + 6, new ItemStack(Material.ENCHANTED_BOOK), "Biomes", "");
             setOption(2*9, new ItemStack(Material.ARROW), "Back", "");
             setOption(3*9-1, new ItemStack(Material.BED), "Home Menu", "");
-        }};
+        }}.registerHandlers();
         PlotMenu = new ChestGUI("Plot Menu", 3, this) {{
             setOption(1*9 + 2, new ItemStack(Material.ENCHANTED_BOOK), "Claim", "");
             setOption(1*9 + 3, new ItemStack(Material.ENCHANTED_BOOK), "Expand", "");
@@ -86,7 +86,7 @@ public class MainMenuHandler implements CommandExecutor, OptionClickEventHandler
             setOption(1*9 + 6, new ItemStack(Material.ENCHANTED_BOOK), "Destroy", "");
             setOption(2*9, new ItemStack(Material.ARROW), "Back", "");
             setOption(3*9-1, new ItemStack(Material.BED), "Home Menu", "");
-        }};
+        }}.registerHandlers();
         ManagementMenu = new ChestGUI("Management Menu", 3, this) {{
             setOption(1*9 + 2, new ItemStack(Material.ENCHANTED_BOOK), "", "");
             setOption(1*9 + 3, new ItemStack(Material.ENCHANTED_BOOK), "", "");
@@ -95,7 +95,7 @@ public class MainMenuHandler implements CommandExecutor, OptionClickEventHandler
             setOption(1*9 + 6, new ItemStack(Material.ENCHANTED_BOOK), "", "");
             setOption(2*9, new ItemStack(Material.ARROW), "Back", "");
             setOption(3*9-1, new ItemStack(Material.BED), "Home Menu", "");
-        }};
+        }}.registerHandlers();
         PlayerMenu = new ChestGUI("Player Menu", 3, this) {{
             setOption(1*9 + 2, new ItemStack(Material.ENCHANTED_BOOK), "Stats", "");
             setOption(1*9 + 3, new ItemStack(Material.ENCHANTED_BOOK), "Level", "");
@@ -104,7 +104,7 @@ public class MainMenuHandler implements CommandExecutor, OptionClickEventHandler
             setOption(1*9 + 6, new ItemStack(Material.ENCHANTED_BOOK), "Nickname", "");
             setOption(2*9, new ItemStack(Material.ARROW), "Back", "");
             setOption(3*9-1, new ItemStack(Material.BED), "Home Menu", "");
-        }};
+        }}.registerHandlers();
         ServerMenu = new ChestGUI("Server Selector", 3, this) {{
             setOption(1*9 + 2, new ItemStack(Material.ENCHANTED_BOOK), "", "");
             setOption(1*9 + 3, new ItemStack(Material.ENCHANTED_BOOK), "", "");
@@ -113,7 +113,7 @@ public class MainMenuHandler implements CommandExecutor, OptionClickEventHandler
             setOption(1*9 + 6, new ItemStack(Material.ENCHANTED_BOOK), "", "");
             setOption(2*9, new ItemStack(Material.ARROW), "Back", "");
             setOption(3*9-1, new ItemStack(Material.BED), "Home Menu", "");
-        }};
+        }}.registerHandlers();
     }
     
     @Override
