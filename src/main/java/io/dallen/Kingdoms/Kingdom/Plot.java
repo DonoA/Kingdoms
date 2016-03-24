@@ -19,8 +19,11 @@
  */
 package io.dallen.Kingdoms.Kingdom;
 
+import io.dallen.Kingdoms.Util.LogUtil;
 import io.dallen.Kingdoms.Kingdom.Structures.Contract;
 import io.dallen.Kingdoms.Kingdom.Structures.Structure;
+import io.dallen.Kingdoms.Kingdom.WallSystem.Wall;
+import io.dallen.Kingdoms.Kingdom.WallSystem.WallType;
 import io.dallen.Kingdoms.Util.LocationUtil;
 import java.awt.Point;
 import java.awt.Polygon;
@@ -87,9 +90,20 @@ public class Plot extends Structure implements Listener{
             return false;
         }
         super.setMunicipal(new Municipality((Structure) this));
-        //find nearest wall town and start from there
-        super.getKingdom().getMunicipals().add(super.getMunicipal());
-        
+        for(Plot p : Plot.getAllPlots()){
+            if(p instanceof Wall){
+                Wall w = (Wall) p;
+                if(w.getCenter().distance(getCenter()) < 50){
+                    super.getMunicipal().getWalls().getParts().get(w.getType()).add(w);
+                }
+            }
+        }
+        boolean found = super.getMunicipal().getWalls().recalculateBase();
+        LogUtil.printDebug((found ? "calculated municipal base" : "could not calculate municipal base"));
+        for(int i = 0; i<super.getMunicipal().getBase().npoints; i++){
+            LogUtil.printDebug(super.getMunicipal().getBase().xpoints[i] + ", " + super.getMunicipal().getBase().ypoints[i]);
+        }
+//        super.getKingdom().getMunicipals().add(super.getMunicipal());
         return true;
     }
     

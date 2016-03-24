@@ -26,6 +26,9 @@ import io.dallen.Kingdoms.Kingdom.Structures.Contract;
 import io.dallen.Kingdoms.Kingdom.Structures.Structure;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.BuildersHut;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.TownHall;
+import io.dallen.Kingdoms.Kingdom.WallSystem;
+import io.dallen.Kingdoms.Kingdom.WallSystem.Wall;
+import io.dallen.Kingdoms.Kingdom.WallSystem.WallType;
 import io.dallen.Kingdoms.PlayerData;
 import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEvent;
@@ -253,13 +256,145 @@ public class MultiBlockHandler implements Listener{
                 }else if(e.getName().equalsIgnoreCase("Erase")){
 //                    newPlot.setEmpty(true);
                 }else if(e.getName().equalsIgnoreCase("Wall")){
-                    
+                    Wall newWall = new Wall(p, WallType.WALL);
+                    newWall.setEmpty(false);
+                    Plot.getAllPlots().remove(p);
+                    Plot.getAllPlots().add(newWall);
+                    pd.getPlots().remove(p);
+                    pd.getPlots().add(newWall);
+                    if(p.getMunicipal() != null){
+                        p.getMunicipal().getWalls().getParts().get(WallType.WALL).add(newWall);
+                    }
+                    e.getPlayer().sendMessage("You have assigned this plot to be a wall segments.");
+                    if(p.getMunicipal() == null){
+                        e.getPlayer().sendMessage("This building is not part of a municipal, you have no NPCs to help you build it!");
+                    }else if(p.getMunicipal().getStructures().containsKey(BuildersHut.class) && 
+                            !p.getMunicipal().getStructures().get(BuildersHut.class).isEmpty()){
+                        for(Structure st : p.getMunicipal().getStructures().get(BuildersHut.class)){
+                            BuildersHut hut = (BuildersHut) st;
+                            if(hut.hasMaterials(newWall.getClass())){
+                                e.getPlayer().sendMessage("Your NPCs will start work imediatly");
+                                return;
+                            }
+                        }
+                        e.getPlayer().sendMessage("You dont have the needed resources to build this structure fully");
+                    }
+                    final Polygon bounds = p.getBase();
+                    int Xmax = Ints.max(bounds.xpoints);
+                    int Zmax = Ints.max(bounds.ypoints);
+                    for(int x = Ints.min(bounds.xpoints); x <= Xmax; x++){
+                        for(int z = Ints.min(bounds.ypoints); z <= Zmax; z++){
+                            if(bounds.contains(new Point(x,z)) || (bounds.contains(new Point(x-1,z)) || bounds.contains(new Point(x,z-1)) || bounds.contains(new Point(x-1,z-1)))){
+                                Location l = new Location(p.getCenter().getWorld(), x, p.getCenter().getBlockY()-1, z);
+                                l.getBlock().setType(Material.COBBLESTONE);
+                            }
+                        }
+                    }
                 }else if(e.getName().equalsIgnoreCase("Wall with Door")){
-                    
+                    Wall newWall = new Wall(p, WallType.GATE);
+                    newWall.setEmpty(false);
+                    Plot.getAllPlots().remove(p);
+                    Plot.getAllPlots().add(newWall);
+                    pd.getPlots().remove(p);
+                    pd.getPlots().add(newWall);
+                    if(p.getMunicipal() != null){
+                        p.getMunicipal().getWalls().getParts().get(WallType.GATE).add(newWall);
+                    }
+                    e.getPlayer().sendMessage("You have assigned this plot to be a wall segments.");
+                    if(p.getMunicipal() == null){
+                        e.getPlayer().sendMessage("This building is not part of a municipal, you have no NPCs to help you build it!");
+                    }else if(p.getMunicipal().getStructures().containsKey(BuildersHut.class) && 
+                            !p.getMunicipal().getStructures().get(BuildersHut.class).isEmpty()){
+                        for(Structure st : p.getMunicipal().getStructures().get(BuildersHut.class)){
+                            BuildersHut hut = (BuildersHut) st;
+                            if(hut.hasMaterials(newWall.getClass())){
+                                e.getPlayer().sendMessage("Your NPCs will start work imediatly");
+                                return;
+                            }
+                        }
+                        e.getPlayer().sendMessage("You dont have the needed resources to build this structure fully");
+                    }
+                    final Polygon bounds = p.getBase();
+                    int Xmax = Ints.max(bounds.xpoints);
+                    int Zmax = Ints.max(bounds.ypoints);
+                    for(int x = Ints.min(bounds.xpoints); x <= Xmax; x++){
+                        for(int z = Ints.min(bounds.ypoints); z <= Zmax; z++){
+                            if(bounds.contains(new Point(x,z)) || (bounds.contains(new Point(x-1,z)) || bounds.contains(new Point(x,z-1)) || bounds.contains(new Point(x-1,z-1)))){
+                                Location l = new Location(p.getCenter().getWorld(), x, p.getCenter().getBlockY()-1, z);
+                                l.getBlock().setType(Material.PRISMARINE);
+                            }
+                        }
+                    }
                 }else if(e.getName().equalsIgnoreCase("Corner")){
-                    
+                    Wall newWall = new Wall(p, WallType.CORNER);
+                    newWall.setEmpty(false);
+                    Plot.getAllPlots().remove(p);
+                    Plot.getAllPlots().add(newWall);
+                    pd.getPlots().remove(p);
+                    pd.getPlots().add(newWall);
+                    if(p.getMunicipal() != null){
+                        p.getMunicipal().getWalls().getParts().get(WallType.CORNER).add(newWall);
+                    }
+                    e.getPlayer().sendMessage("You have assigned this plot to be a wall segments.");
+                    if(p.getMunicipal() == null){
+                        e.getPlayer().sendMessage("This building is not part of a municipal, you have no NPCs to help you build it!");
+                    }else if(p.getMunicipal().getStructures().containsKey(BuildersHut.class) && 
+                            !p.getMunicipal().getStructures().get(BuildersHut.class).isEmpty()){
+                        for(Structure st : p.getMunicipal().getStructures().get(BuildersHut.class)){
+                            BuildersHut hut = (BuildersHut) st;
+                            if(hut.hasMaterials(newWall.getClass())){
+                                e.getPlayer().sendMessage("Your NPCs will start work imediatly");
+                                return;
+                            }
+                        }
+                        e.getPlayer().sendMessage("You dont have the needed resources to build this structure fully");
+                    }
+                    final Polygon bounds = p.getBase();
+                    int Xmax = Ints.max(bounds.xpoints);
+                    int Zmax = Ints.max(bounds.ypoints);
+                    for(int x = Ints.min(bounds.xpoints); x <= Xmax; x++){
+                        for(int z = Ints.min(bounds.ypoints); z <= Zmax; z++){
+                            if(bounds.contains(new Point(x,z)) || (bounds.contains(new Point(x-1,z)) || bounds.contains(new Point(x,z-1)) || bounds.contains(new Point(x-1,z-1)))){
+                                Location l = new Location(p.getCenter().getWorld(), x, p.getCenter().getBlockY()-1, z);
+                                l.getBlock().setType(Material.SMOOTH_BRICK);
+                            }
+                        }
+                    }
                 }else if(e.getName().equalsIgnoreCase("Tower")){
-                    
+                    Wall newWall = new Wall(p, WallType.TOWER);
+                    newWall.setEmpty(false);
+                    Plot.getAllPlots().remove(p);
+                    Plot.getAllPlots().add(newWall);
+                    pd.getPlots().remove(p);
+                    pd.getPlots().add(newWall);
+                    if(p.getMunicipal() != null){
+                        p.getMunicipal().getWalls().getParts().get(WallType.TOWER).add(newWall);
+                    }
+                    e.getPlayer().sendMessage("You have assigned this plot to be a wall segments.");
+                    if(p.getMunicipal() == null){
+                        e.getPlayer().sendMessage("This building is not part of a municipal, you have no NPCs to help you build it!");
+                    }else if(p.getMunicipal().getStructures().containsKey(BuildersHut.class) && 
+                            !p.getMunicipal().getStructures().get(BuildersHut.class).isEmpty()){
+                        for(Structure st : p.getMunicipal().getStructures().get(BuildersHut.class)){
+                            BuildersHut hut = (BuildersHut) st;
+                            if(hut.hasMaterials(newWall.getClass())){
+                                e.getPlayer().sendMessage("Your NPCs will start work imediatly");
+                                return;
+                            }
+                        }
+                        e.getPlayer().sendMessage("You dont have the needed resources to build this structure fully");
+                    }
+                    final Polygon bounds = p.getBase();
+                    int Xmax = Ints.max(bounds.xpoints);
+                    int Zmax = Ints.max(bounds.ypoints);
+                    for(int x = Ints.min(bounds.xpoints); x <= Xmax; x++){
+                        for(int z = Ints.min(bounds.ypoints); z <= Zmax; z++){
+                            if(bounds.contains(new Point(x,z)) || (bounds.contains(new Point(x-1,z)) || bounds.contains(new Point(x,z-1)) || bounds.contains(new Point(x-1,z-1)))){
+                                Location l = new Location(p.getCenter().getWorld(), x, p.getCenter().getBlockY()-1, z);
+                                l.getBlock().setType(Material.BRICK);
+                            }
+                        }
+                    }
                 }else{
                     try {
                         Class structure = Class.forName("io.dallen.Kingdoms.Kingdom.Structures.Types."+e.getName().replace(" ", "").replace("'", ""));

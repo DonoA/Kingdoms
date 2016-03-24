@@ -19,10 +19,15 @@
  */
 package io.dallen.Kingdoms.Kingdom.Structures.Types;
 
+import com.google.common.primitives.Ints;
 import io.dallen.Kingdoms.Kingdom.Plot;
-import static io.dallen.Kingdoms.Kingdom.Structures.Structure.EditPlot;
+import io.dallen.Kingdoms.Kingdom.WallSystem.Wall;
 import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEventHandler;
+import java.awt.Point;
+import java.awt.Polygon;
+import java.util.ArrayList;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -55,6 +60,21 @@ public class TownHall extends Plot{
             if(e.getName().equalsIgnoreCase("Create Municipal")){
                 Plot p = (Plot) e.getData();
                 p.createMucicpal();
+                for(ArrayList<Wall> wList : p.getMunicipal().getWalls().getParts().values()){
+                    for(Wall w : wList){
+                        final Polygon bounds = w.getBase();
+                        int Xmax = Ints.max(bounds.xpoints);
+                        int Zmax = Ints.max(bounds.ypoints);
+                        for(int x = Ints.min(bounds.xpoints); x <= Xmax; x++){
+                            for(int z = Ints.min(bounds.ypoints); z <= Zmax; z++){
+                                if(bounds.contains(new Point(x,z)) || (bounds.contains(new Point(x-1,z)) || bounds.contains(new Point(x,z-1)) || bounds.contains(new Point(x-1,z-1)))){
+                                    Location l = new Location(p.getCenter().getWorld(), x, p.getCenter().getBlockY()-1, z);
+                                    l.getBlock().setType(Material.EMERALD_BLOCK);
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }

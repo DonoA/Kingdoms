@@ -41,6 +41,10 @@ public class WallSystem{
     
     WallSystem(Municipality m) {
         this.municipal = m;
+        Parts.put(WallType.WALL, new ArrayList<Wall>());
+        Parts.put(WallType.CORNER, new ArrayList<Wall>());
+        Parts.put(WallType.GATE, new ArrayList<Wall>());
+        Parts.put(WallType.TOWER, new ArrayList<Wall>());
     }
     
     public boolean recalculateBase(){//Should be called async if possible
@@ -53,33 +57,33 @@ public class WallSystem{
         for(i = 0; i < corners.size(); i++){
             Xs[i] = (int) LocationUtil.asPoint(corners.get(i).getCenter()).getX();
             Zs[i] = (int) LocationUtil.asPoint(corners.get(i).getCenter()).getY();
-            boolean found = false;
-            if(i+1<corners.size()){
-                Point a = LocationUtil.asPoint(corners.get(i).getCenter());
-                Point b = LocationUtil.asPoint(corners.get(i+1).getCenter());
-                if(a.getX() == b.getX()){//If the Xs are the same, change Z
-                    for(int z = (int) a.getY(); z<b.getY() && !found; z++){
-                        Location l = new Location(corners.get(i).getCenter().getWorld(), a.getX(), corners.get(i).getCenter().getBlockY(), z);
-                        Plot p = Plot.inPlot(l);
-                        if(p instanceof Wall){
-                            found = true;
-                        }
-                    }
-                }else if(a.getY() == b.getY()){//If the Zs are the same, change X
-                    for(int x = (int) a.getX(); x<b.getX(); x++){
-                        Location l = new Location(corners.get(i).getCenter().getWorld(), x, corners.get(i).getCenter().getBlockY(), a.getY());
-                        Plot p = Plot.inPlot(l);
-                        if(p instanceof Wall){
-                            found = true;
-                        }
-                    }
-                }
-            }else{
-                found = true;
-            }
-            if(!found){
-                return false;
-            }
+//            boolean found = false;
+//            if(i+1<corners.size()){
+//                Point a = LocationUtil.asPoint(corners.get(i).getCenter());
+//                Point b = LocationUtil.asPoint(corners.get(i+1).getCenter());
+//                if(a.getX() == b.getX()){//If the Xs are the same, change Z
+//                    for(int z = (int) a.getY(); z<b.getY() && !found; z++){
+//                        Location l = new Location(corners.get(i).getCenter().getWorld(), a.getX(), corners.get(i).getCenter().getBlockY(), z);
+//                        Plot p = Plot.inPlot(l);
+//                        if(p instanceof Wall){
+//                            found = true;
+//                        }
+//                    }
+//                }else if(a.getY() == b.getY()){//If the Zs are the same, change X
+//                    for(int x = (int) a.getX(); x<b.getX(); x++){
+//                        Location l = new Location(corners.get(i).getCenter().getWorld(), x, corners.get(i).getCenter().getBlockY(), a.getY());
+//                        Plot p = Plot.inPlot(l);
+//                        if(p instanceof Wall){
+//                            found = true;
+//                        }
+//                    }
+//                }
+//            }else{
+//                found = true;
+//            }
+//            if(!found){
+//                return false;
+//            }
         }
         Polygon newBase = new Polygon(Xs, Zs, i);
         municipal.setBase(newBase);

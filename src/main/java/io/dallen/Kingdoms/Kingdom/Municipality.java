@@ -44,12 +44,16 @@ public class Municipality {//Village, Town
     @Getter @Setter
     private Polygon Base;
     
+    @Getter
+    private MunicipalTypes type;
+    
     public Municipality(Structure center){
         this.Center = center;
         this.walls = new WallSystem(this);
+        this.type = MunicipalTypes.VILLAGE;
     }
     
-    public static enum Types{
+    public static enum MunicipalTypes{
         VILLAGE, MANOR, TOWN, CITY, KEEP, CITIDEL
     }
     
