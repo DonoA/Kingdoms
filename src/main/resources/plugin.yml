@@ -152,3 +152,8 @@ commands:
     usage: |
             /is <player>
             /is <role>
+  fillplot:
+    description: debug command
+    usage: |
+            /is <player>
+            /is <role>

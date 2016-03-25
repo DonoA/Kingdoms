@@ -24,6 +24,7 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import io.dallen.Kingdoms.Handlers.JoinLeaveHandler;
 import io.dallen.Kingdoms.Commands.AdminCommands;
+import io.dallen.Kingdoms.Commands.DebugCommands;
 import io.dallen.Kingdoms.Commands.GeneralCommands;
 import io.dallen.Kingdoms.Commands.ModerationCommands;
 import io.dallen.Kingdoms.Handlers.DecayHandler.ChangeTracker;
@@ -95,6 +96,8 @@ public class Main extends JavaPlugin {
                 GeneralCommands general = new GeneralCommands();
                 AdminCommands admin = new AdminCommands();
                 MainMenuHandler mmh = new MainMenuHandler();
+                DebugCommands dbg = new DebugCommands();
+                Main.getPlugin().getCommand("fillplot").setExecutor(dbg);
                 Main.getPlugin().getCommand("menu").setExecutor(mmh);
                 Main.getPlugin().getCommand("crash").setExecutor(admin);
                 Main.getPlugin().getCommand("strack").setExecutor(admin);
@@ -136,11 +139,7 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(mbh, this);
         Bukkit.getPluginManager().registerEvents(new JoinLeaveHandler(), this);
         Bukkit.getScheduler().scheduleSyncDelayedTask(this, onServerLoad);
-        try {
-            NBTmanager.loadData(new File(this.getDataFolder() + DBmanager.getFileSep() + "generic.schematic"));
-        } catch (IOException | DataFormatException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        
         RedisManager RM = new RedisManager();
     }
     

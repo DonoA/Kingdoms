@@ -19,6 +19,8 @@
  */
 package io.dallen.Kingdoms.Kingdom.Structures;
 
+import io.dallen.Kingdoms.Util.LogUtil;
+import java.util.Arrays;
 import lombok.Getter;
 import org.bukkit.Material;
 
@@ -27,21 +29,28 @@ import org.bukkit.Material;
  * @author donoa_000
  */
 public class Blueprint {
+    @Getter
     private int len;
+    @Getter
     private int wid;
+    @Getter
     private int high;
     
-    private BlueBlock[][][] blocks;
+    @Getter
+    private BlueBlock[][][] blocks; //X Y Z
     
-    public Blueprint(int l, int w, int h, byte[] b, byte[] d){
+    public Blueprint(int l, int w, int h, short[] b, byte[] d){
+        LogUtil.printDebug(Arrays.toString(b));
         this.len = l;
         this.wid = w;
         this.high = h;
-        blocks = new BlueBlock[l][w][h];
-        for(int i = 0; i < this.len; i++){
-            for(int j = 0; j < this.wid; j++){
-                for(int k = 0; k < this.high; k++){
-                    blocks[i][j][k] = new BlueBlock(b[i+j+k], d[i+j+k]);
+        blocks = new BlueBlock[w][h][l];
+        int currentOffset = 0;
+        for(int y = 0; y < this.high; y++){
+            for(int z = 0; z < this.len; z++){
+                for(int x = 0; x < this.wid; x++){
+                    blocks[x][y][z] = new BlueBlock(b[currentOffset], d[currentOffset]);
+                    currentOffset++;
                 }
             }
         }
@@ -63,7 +72,7 @@ public class Blueprint {
         @Getter
         private byte Data;
         
-        public BlueBlock(byte b, byte d){
+        public BlueBlock(short b, byte d){
             Block = Material.getMaterial(b);
             Data = d;
         }

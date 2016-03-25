@@ -103,7 +103,6 @@ public class Plot extends Structure implements Listener{
         for(int i = 0; i<super.getMunicipal().getBase().npoints; i++){
             LogUtil.printDebug(super.getMunicipal().getBase().xpoints[i] + ", " + super.getMunicipal().getBase().ypoints[i]);
         }
-//        super.getKingdom().getMunicipals().add(super.getMunicipal());
         return true;
     }
     

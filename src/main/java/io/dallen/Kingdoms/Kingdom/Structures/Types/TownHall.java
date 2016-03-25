@@ -49,7 +49,11 @@ public class TownHall extends Plot{
     
     @Override
     public void sendEditMenu(Player p){
-        EditPlot.setOption(4, new ItemStack(Material.ENCHANTED_BOOK), "Create Municipal", this);
+        if(super.getMunicipal() == null){
+            EditPlot.setOption(4, new ItemStack(Material.ENCHANTED_BOOK), "Create Municipal", this);
+        }else if(super.getKingdom() == null){
+            EditPlot.setOption(4, new ItemStack(Material.ENCHANTED_BOOK), "Create Kingdom", this);
+        }
         super.sendEditMenu(p);
     }
     
@@ -75,6 +79,9 @@ public class TownHall extends Plot{
                         }
                     }
                 }
+            }else if(e.getName().equalsIgnoreCase("Create Kingdom")){
+                Plot p = (Plot) e.getData();
+                p.getMunicipal().createKingdom();
             }
         }
     }

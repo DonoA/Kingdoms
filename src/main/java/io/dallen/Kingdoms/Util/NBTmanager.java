@@ -1,20 +1,9 @@
-/*
- * Copyright 2016 Donovan Allen
- *
- * This file is part of Kingdoms for the Morphics Network.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/**
  * 
+ * This file is unlicensed so as not to conflict with the existing
+ * WorldEdit copyright held by sk89q <http://www.sk89q.com> and
+ * the WorldEdit team and contributors who wrote most of the code
+ * found within this file
  * 
  */
 package io.dallen.Kingdoms.Util;
@@ -46,12 +35,16 @@ import org.bukkit.util.Vector;
  */
 public class NBTmanager {
     
+    //Width = X direction
+    //Length = Z direction
+    //Height = Y direction
+
+    //Starts at smallest x y and z
+    //Starts in X direction, then Z, then Y
+    
     public static Blueprint loadData(File f) throws IOException, DataFormatException {
         FileInputStream stream = new FileInputStream(f);
         NBTInputStream nbtStream = new NBTInputStream(new GZIPInputStream(stream));
-
-        Vector origin = new Vector();
-        Vector offset = new Vector();
 
         // Schematic tag
         Tag rootTag = nbtStream.readTag();
@@ -72,23 +65,6 @@ public class NBTmanager {
         short width = getChildTag(schematic, "Width", ShortTag.class).getValue();
         short length = getChildTag(schematic, "Length", ShortTag.class).getValue();
         short height = getChildTag(schematic, "Height", ShortTag.class).getValue();
-        try {
-            int originX = getChildTag(schematic, "WEOriginX", IntTag.class).getValue();
-            int originY = getChildTag(schematic, "WEOriginY", IntTag.class).getValue();
-            int originZ = getChildTag(schematic, "WEOriginZ", IntTag.class).getValue();
-            origin = new Vector(originX, originY, originZ);
-        } catch (DataFormatException e) {
-            // No origin data
-        }
-
-        try {
-            int offsetX = getChildTag(schematic, "WEOffsetX", IntTag.class).getValue();
-            int offsetY = getChildTag(schematic, "WEOffsetY", IntTag.class).getValue();
-            int offsetZ = getChildTag(schematic, "WEOffsetZ", IntTag.class).getValue();
-            offset = new Vector(offsetX, offsetY, offsetZ);
-        } catch (DataFormatException e) {
-            // No offset data
-        }
 
         // Check type of Schematic
         String materials = getChildTag(schematic, "Materials", StringTag.class).getValue();
@@ -156,7 +132,7 @@ public class NBTmanager {
             BlockVector vec = new BlockVector(x, y, z);
             tileEntitiesMap.put(vec, values);
         }
-        return null;
+        return new Blueprint(length, width, height, blocks, blockData);
     }
 
     /**

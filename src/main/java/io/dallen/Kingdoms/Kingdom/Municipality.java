@@ -47,14 +47,22 @@ public class Municipality {//Village, Town
     @Getter
     private MunicipalTypes type;
     
+    @Getter
+    private Kingdom kingdom;
+    
     public Municipality(Structure center){
         this.Center = center;
         this.walls = new WallSystem(this);
         this.type = MunicipalTypes.VILLAGE;
     }
     
+    public void createKingdom(){
+        kingdom = new Kingdom();
+    }
+    
     public static enum MunicipalTypes{
         VILLAGE, MANOR, TOWN, CITY, KEEP, CITIDEL
     }
+    
     
 }
