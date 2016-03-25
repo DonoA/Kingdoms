@@ -29,6 +29,8 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
+import lombok.Setter;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -49,16 +51,7 @@ public class DebugCommands implements CommandExecutor{
                 Plot p = Plot.inPlot(((Player) sender).getLocation());
                 Location startCorner = new Location(p.getCenter().getWorld(), p.getCenter().getX() - building.getWid()/2, 
                         p.getCenter().getBlockY(), p.getCenter().getBlockZ() - building.getLen()/2);
-                for(int y = 0; y < building.getHigh(); y++){
-                    for(int z = 0; z < building.getLen(); z++){
-                        for(int x = 0; x < building.getWid(); x++){
-                            Location nLoc = startCorner.clone().add(x,y,z);
-                            nLoc.getBlock().setType(building.getBlocks()[x][y][z].getBlock(), false);
-                            nLoc.getBlock().setData(building.getBlocks()[x][y][z].getData(), false);
-                            
-                        }
-                }
-        }
+                Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.getPlugin(), new buildTask(building, startCorner), 5, 5);
             } catch (IOException | DataFormatException ex) {
                 Logger.getLogger(DebugCommands.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -66,4 +59,53 @@ public class DebugCommands implements CommandExecutor{
         return true;
     }
     
+    public static class buildTask implements Runnable{
+        
+        private int x = 0;
+        
+        private int y = 0; 
+        
+        private int z = 0;
+        
+        private Blueprint Building;
+        
+        private Location startCorner;
+        
+        private boolean running = true;
+        
+        public buildTask(Blueprint building, Location start){
+            this.Building = building;
+            this.startCorner = start;
+        }
+        
+        @Override
+        public void run(){ // this does not work 100% for even demension object
+            if(running){
+                if(x < Building.getWid()){
+                    Location nLoc = startCorner.clone().add(x,y,z);
+                    nLoc.getBlock().setType(Building.getBlocks()[x][y][z].getBlock(), false);
+                    nLoc.getBlock().setData(Building.getBlocks()[x][y][z].getData(), false);
+                    x++;
+                }else{
+                    x = 0;
+                    if(z < Building.getLen() - 1){ //this is a bit strange
+                        Location nLoc = startCorner.clone().add(x,y,z);
+                        nLoc.getBlock().setType(Building.getBlocks()[x][y][z].getBlock(), false);
+                        nLoc.getBlock().setData(Building.getBlocks()[x][y][z].getData(), false);
+                        z++;
+                    }else{
+                        z = 0;
+                        if(y < Building.getHigh()){
+                            Location nLoc = startCorner.clone().add(x,y,z);
+                            nLoc.getBlock().setType(Building.getBlocks()[x][y][z].getBlock(), false);
+                            nLoc.getBlock().setData(Building.getBlocks()[x][y][z].getData(), false);
+                            y++;
+                        }else{
+                            running = false;
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

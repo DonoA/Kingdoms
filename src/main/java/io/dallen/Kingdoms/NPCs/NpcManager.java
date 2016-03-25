@@ -40,4 +40,6 @@ public class NpcManager {
     public void CreateNPCs(){
         
     }
+    
+    
 }
