@@ -36,10 +36,6 @@
                   <shadedPattern>libs.com.fasterxml</shadedPattern>
                 </relocation>
                 <relocation>
-                  <pattern>com.comphenix.protocol</pattern>
-                  <shadedPattern>libs.com.comphenix.protocol</shadedPattern>
-                </relocation>
-                <relocation>
                   <pattern>com.lambdaworks.redis</pattern>
                   <shadedPattern>libs.com.lambdaworks.redis</shadedPattern>
                 </relocation>
@@ -49,6 +45,7 @@
                   <exclude>org.projectlombok:lombok</exclude>
                   <exclude>org.spigotmc:spigot-api</exclude>
                   <exclude>net.citizensnpcs:citizensapi</exclude>
+                  <exclude>com.comphenix.protocol:ProtocolLib</exclude>
                 </excludes>
               </artifactSet>
             </configuration>
@@ -150,6 +147,12 @@
       <artifactId>citizensapi</artifactId>
       <version>2.0.14-SNAPSHOT</version>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.comphenix.protocol</groupId>
+      <artifactId>ProtocolLib</artifactId>
+      <version>3.6.5</version>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>

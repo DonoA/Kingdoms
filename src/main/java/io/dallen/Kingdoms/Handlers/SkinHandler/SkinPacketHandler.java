@@ -28,6 +28,7 @@ import com.comphenix.protocol.wrappers.PlayerInfoData;
 import com.comphenix.protocol.wrappers.WrappedGameProfile;
 import com.comphenix.protocol.wrappers.WrappedSignedProperty;
 import io.dallen.Kingdoms.Main;
+import io.dallen.Kingdoms.Util.LogUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import java.lang.reflect.InvocationTargetException;
@@ -71,7 +72,7 @@ public class SkinPacketHandler implements Runnable{
     
     @Override
     public void run(){
-        WrappedGameProfile profile = WrappedGameProfile.fromPlayer(null);
+        WrappedGameProfile profile = WrappedGameProfile.fromOfflinePlayer(Bukkit.getOfflinePlayer("Notch"));
         Object handle = profile.getHandle();
         Object sessionService = getSessionService();
         try{
@@ -84,7 +85,7 @@ public class SkinPacketHandler implements Runnable{
         profile = WrappedGameProfile.fromHandle(handle);
         properties = profile.getProperties().get("textures");
         if(properties == null){
-//            SkinChanger.this.getLogger().warning("Failed to load the skin, player skins won't be affected by this plugin (Yes, that's bad).");
+            LogUtil.printErr("Failed to load the skin, player skins won't be affected by this plugin (Yes, that's bad).");
         }
     }
         

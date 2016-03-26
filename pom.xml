@@ -45,23 +45,16 @@
                                     <shadedPattern>libs.com.fasterxml</shadedPattern>
                                 </relocation>
                                 <relocation>
-                                    <pattern>com.comphenix.protocol</pattern>
-                                    <shadedPattern>libs.com.comphenix.protocol</shadedPattern>
-                                </relocation>
-                                <relocation>
                                     <pattern>com.lambdaworks.redis</pattern>
                                     <shadedPattern>libs.com.lambdaworks.redis</shadedPattern>
                                 </relocation>
-<!--                                <relocation>
-                                    <pattern>net.citizensnpcs</pattern>
-                                    <shadedPattern>libs.net.citizensnpcs</shadedPattern>
-                                </relocation>-->
                             </relocations>
                             <artifactSet>
                                 <excludes>
                                     <exclude>org.projectlombok:lombok</exclude>
                                     <exclude>org.spigotmc:spigot-api</exclude>
                                     <exclude>net.citizensnpcs:citizensapi</exclude>
+                                    <exclude>com.comphenix.protocol:ProtocolLib</exclude>
                                 </excludes>
                             </artifactSet>
                         </configuration>

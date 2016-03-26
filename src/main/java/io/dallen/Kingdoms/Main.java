@@ -77,16 +77,24 @@ public class Main extends JavaPlugin {
     
     @Override
     public void onLoad() {
-        SkinPacketHandler SkinHandler = new SkinPacketHandler();
-        protocolManager = ProtocolLibrary.getProtocolManager();
-        protocolManager.addPacketListener(SkinHandler.getAdapter());
-        Bukkit.getScheduler().runTaskAsynchronously(this, SkinHandler);
+        Plugin = this;
     }
 
     @Getter
     private static Runnable onServerLoad = new Runnable(){ //put normal onEnable code here
             @Override
             public void run(){
+                protocolManager = ProtocolLibrary.getProtocolManager();
+                SkinPacketHandler SkinHandler = new SkinPacketHandler();
+                if(protocolManager == null){
+                    LogUtil.printDebug("protocol null!!");
+                }
+                if(SkinHandler == null){
+                    LogUtil.printDebug("skins null!!");
+                }
+                protocolManager.addPacketListener(SkinHandler.getAdapter());
+                Bukkit.getScheduler().runTaskAsynchronously(Main.getPlugin(), SkinHandler);
+        
                 if((Main.getPlugin().getServer().getPluginManager().getPlugin("Citizens") == null) || 
                     (!Main.getPlugin().getServer().getPluginManager().getPlugin("Citizens").isEnabled())){
                     LogUtil.printErr("Citizens 2 not found!");
@@ -136,6 +144,7 @@ public class Main extends JavaPlugin {
     @Override
     public void onEnable(){ //Called pre-server enable
         Plugin = this;
+        
         this.saveDefaultConfig();
         World mainworld = Bukkit.getWorld(this.getConfig().getString("MainWorld"));
         Overworld = new KingdomTerrainGeneration(mainworld);
@@ -143,8 +152,7 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(mbh, this);
         Bukkit.getPluginManager().registerEvents(new JoinLeaveHandler(), this);
         Bukkit.getScheduler().scheduleSyncDelayedTask(this, onServerLoad);
-        
-        RedisManager RM = new RedisManager();
+//        RedisManager RM = new RedisManager();
     }
     
     @Override
