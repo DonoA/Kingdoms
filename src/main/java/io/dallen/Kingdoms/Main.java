@@ -37,6 +37,7 @@ import io.dallen.Kingdoms.Terrain.KingdomTerrainGeneration;
 import io.dallen.Kingdoms.Util.DBmanager;
 import io.dallen.Kingdoms.Util.LogUtil;
 import io.dallen.Kingdoms.Commands.MuteCommand;
+import io.dallen.Kingdoms.Handlers.SkinHandler.SkinPacketHandler;
 import io.dallen.Kingdoms.Util.NBTmanager;
 import io.dallen.Kingdoms.Util.RedisManager;
 import java.io.File;
@@ -76,7 +77,10 @@ public class Main extends JavaPlugin {
     
     @Override
     public void onLoad() {
+        SkinPacketHandler SkinHandler = new SkinPacketHandler();
         protocolManager = ProtocolLibrary.getProtocolManager();
+        protocolManager.addPacketListener(SkinHandler.getAdapter());
+        Bukkit.getScheduler().runTaskAsynchronously(this, SkinHandler);
     }
 
     @Getter

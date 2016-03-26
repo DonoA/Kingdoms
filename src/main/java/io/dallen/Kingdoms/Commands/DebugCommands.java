@@ -30,11 +30,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
 import lombok.Setter;
+import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 /**
@@ -71,9 +73,13 @@ public class DebugCommands implements CommandExecutor{
         
         private Location startCorner;
         
+        private NPC Builder;
+        
         private boolean running = true;
         
         public buildTask(Blueprint building, Location start){
+            Builder = Main.getNPCs().getNPCreg().createNPC(EntityType.PLAYER, "Fireinferno13");
+            Builder.spawn(start);
             this.Building = building;
             this.startCorner = start;
         }
@@ -85,6 +91,7 @@ public class DebugCommands implements CommandExecutor{
                     Location nLoc = startCorner.clone().add(x,y,z);
                     nLoc.getBlock().setType(Building.getBlocks()[x][y][z].getBlock(), false);
                     nLoc.getBlock().setData(Building.getBlocks()[x][y][z].getData(), false);
+                    Builder.getNavigator().setTarget(nLoc.add(0, 1, 0));
                     x++;
                 }else{
                     x = 0;
@@ -92,6 +99,7 @@ public class DebugCommands implements CommandExecutor{
                         Location nLoc = startCorner.clone().add(x,y,z);
                         nLoc.getBlock().setType(Building.getBlocks()[x][y][z].getBlock(), false);
                         nLoc.getBlock().setData(Building.getBlocks()[x][y][z].getData(), false);
+                        Builder.getNavigator().setTarget(nLoc.add(0, 1, 0));
                         z++;
                     }else{
                         z = 0;
@@ -99,6 +107,7 @@ public class DebugCommands implements CommandExecutor{
                             Location nLoc = startCorner.clone().add(x,y,z);
                             nLoc.getBlock().setType(Building.getBlocks()[x][y][z].getBlock(), false);
                             nLoc.getBlock().setData(Building.getBlocks()[x][y][z].getData(), false);
+                            Builder.getNavigator().setTarget(nLoc.add(0, 1, 0));
                             y++;
                         }else{
                             running = false;
