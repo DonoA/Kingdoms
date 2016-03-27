@@ -106,9 +106,14 @@ public class ModerationCommands implements CommandExecutor{
                 if(sender instanceof Player){
                     Player p = (Player) sender;
                     if(cmd.getName().equalsIgnoreCase("invspy") && args.length > 0){
-
+                        if(Bukkit.getPlayer(args[0]) != null){
+                            Player plr = Bukkit.getPlayer(args[0]);
+                            p.openInventory(plr.getInventory());
+                        }else{
+                            p.sendMessage("Player not found");
+                        }
                     }else if(cmd.getName().equalsIgnoreCase("vanish")){
-
+                        //vanish
                     }
                 }
             }

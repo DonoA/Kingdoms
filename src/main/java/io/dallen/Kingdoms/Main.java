@@ -70,6 +70,9 @@ public class Main extends JavaPlugin {
     private static ProtocolManager protocolManager;
     
     @Getter
+    private static SkinPacketHandler skinHandler;
+    
+    @Getter
     private static Runtime runtime = Runtime.getRuntime();
     
     @Getter
@@ -86,15 +89,9 @@ public class Main extends JavaPlugin {
             public void run(){
                 protocolManager = ProtocolLibrary.getProtocolManager();
                 SkinPacketHandler SkinHandler = new SkinPacketHandler();
-                if(protocolManager == null){
-                    LogUtil.printDebug("protocol null!!");
-                }
-                if(SkinHandler == null){
-                    LogUtil.printDebug("skins null!!");
-                }
                 protocolManager.addPacketListener(SkinHandler.getAdapter());
                 Bukkit.getScheduler().runTaskAsynchronously(Main.getPlugin(), SkinHandler);
-        
+                skinHandler = SkinHandler;
                 if((Main.getPlugin().getServer().getPluginManager().getPlugin("Citizens") == null) || 
                     (!Main.getPlugin().getServer().getPluginManager().getPlugin("Citizens").isEnabled())){
                     LogUtil.printErr("Citizens 2 not found!");
@@ -110,6 +107,7 @@ public class Main extends JavaPlugin {
                 MainMenuHandler mmh = new MainMenuHandler();
                 DebugCommands dbg = new DebugCommands();
                 Main.getPlugin().getCommand("fillplot").setExecutor(dbg);
+                Main.getPlugin().getCommand("setskins").setExecutor(dbg);
                 Main.getPlugin().getCommand("menu").setExecutor(mmh);
                 Main.getPlugin().getCommand("crash").setExecutor(admin);
                 Main.getPlugin().getCommand("strack").setExecutor(admin);
@@ -130,7 +128,6 @@ public class Main extends JavaPlugin {
                 Main.getPlugin().getCommand("invspy").setExecutor(moderation);
                 Main.getPlugin().getCommand("fjail").setExecutor(moderation);
                 Main.getPlugin().getCommand("vanish").setExecutor(moderation);
-                Main.getPlugin().getCommand("fjail").setExecutor(moderation);
                 Main.getPlugin().getCommand("uuid").setExecutor(moderation);
                 Main.getPlugin().getCommand("broadcast").setExecutor(moderation);
                 Main.getPlugin().getCommand("kingdom").setExecutor(new KingdomCommands());

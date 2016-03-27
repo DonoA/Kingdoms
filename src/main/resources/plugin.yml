@@ -157,3 +157,8 @@ commands:
     usage: |
             /is <player>
             /is <role>
+  setskins:
+    description: debug command
+    usage: |
+            /is <player>
+            /is <role>

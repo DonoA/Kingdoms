@@ -27,15 +27,26 @@ import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.comphenix.protocol.wrappers.PlayerInfoData;
 import com.comphenix.protocol.wrappers.WrappedGameProfile;
 import com.comphenix.protocol.wrappers.WrappedSignedProperty;
+import io.dallen.Kingdoms.Util.DBmanager;
 import io.dallen.Kingdoms.Main;
 import io.dallen.Kingdoms.Util.LogUtil;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import io.netty.handler.codec.base64.Base64;
+import java.io.IOException;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
@@ -46,6 +57,10 @@ public class SkinPacketHandler implements Runnable{
     @Getter
     private PacketAdapter adapter;
     
+    @Getter @Setter
+    private String skin = "Dinnerbone";
+    
+    @Getter
     private volatile Collection<WrappedSignedProperty> properties;
 
     public SkinPacketHandler(){
@@ -72,7 +87,10 @@ public class SkinPacketHandler implements Runnable{
     
     @Override
     public void run(){
-        WrappedGameProfile profile = WrappedGameProfile.fromOfflinePlayer(Bukkit.getOfflinePlayer("Notch"));
+//        if(!Bukkit.getOnlineMode()){
+//            return;
+//        }
+        WrappedGameProfile profile = WrappedGameProfile.fromOfflinePlayer(Bukkit.getOfflinePlayer(skin));
         Object handle = profile.getHandle();
         Object sessionService = getSessionService();
         try{
@@ -84,8 +102,26 @@ public class SkinPacketHandler implements Runnable{
         }
         profile = WrappedGameProfile.fromHandle(handle);
         properties = profile.getProperties().get("textures");
+        WrappedSignedProperty textureProperty = (WrappedSignedProperty) properties.toArray()[0];
+        String textures = textureProperty.getValue();
+        String decodedProfile = Base64.decode(Unpooled.copiedBuffer(textures.getBytes())).toString(Charset.defaultCharset());
+        decodedProfile = decodedProfile.replace("SKIN", "skin").replace("CAPE", "cape");
+        try {
+            LogUtil.printDebug(decodedProfile);
+            SkinTexture texture = DBmanager.getJSonParser().readValue(decodedProfile, SkinTexture.class);
+//            texture.getTextures().getCape().setUrl("http://textures.minecraft.net/texture/eec3cabfaeed5dafe61c6546297e853a547c39ec238d7c44bf4eb4a49dc1f2c0");
+            texture.setSignatureRequired(false);
+            textures = Base64.encode(Unpooled.copiedBuffer(DBmanager.getJSonParser().writeValueAsString(texture).replace("skin", "SKIN").replace("cape", "CAPE").getBytes())).toString(Charset.defaultCharset());
+            textures = textures.replace("\n", "");
+            LogUtil.printDebug(textures);
+            LogUtil.printDebug(textureProperty.getSignature());
+            properties.clear();
+            properties.add(new WrappedSignedProperty(textureProperty.getName(), textures, textureProperty.getSignature()));
+        } catch (IOException ex) {
+            Logger.getLogger(SkinPacketHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
         if(properties == null){
-            LogUtil.printErr("Failed to load the skin, player skins won't be affected by this plugin (Yes, that's bad).");
+            LogUtil.printErr("Failed to load the skin, player skins won't be affected.");
         }
     }
         
@@ -101,7 +137,7 @@ public class SkinPacketHandler implements Runnable{
         }catch (Exception ex){
             throw new IllegalStateException("An error occurred while trying to get the session service", ex);
         }
-        throw new IllegalStateException("No session service found :o");
+        throw new IllegalStateException("No session service found");
     }
 
     private Method getFillMethod(Object sessionService){
@@ -110,6 +146,6 @@ public class SkinPacketHandler implements Runnable{
                 return m;
             }
         }
-        throw new IllegalStateException("No fillProfileProperties method found in the session service :o");
+        throw new IllegalStateException("No fillProfileProperties method found in the session service");
     }
 }

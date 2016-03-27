@@ -22,10 +22,15 @@ package io.dallen.Kingdoms.Commands;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketContainer;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.dallen.Kingdoms.Kingdom.Kingdom;
 import io.dallen.Kingdoms.Main;
+import io.dallen.Kingdoms.Util.DBmanager;
+import io.dallen.Kingdoms.Util.LogUtil;
 import io.dallen.Kingdoms.Util.PermissionManager;
 import java.lang.reflect.InvocationTargetException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -74,9 +79,7 @@ public class AdminCommands implements CommandExecutor{
                     Player p = Bukkit.getPlayer(args[0]);
                     PacketContainer CrashPacket = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.RESPAWN, false);
 
-                    CrashPacket.getIntegers().write(0, 0);
-                    CrashPacket.getBytes().write(1, (byte) 0).write(2, (byte) 0);
-                    CrashPacket.getStrings().write(3, "default");
+                    
                     try {
                         ProtocolLibrary.getProtocolManager().sendServerPacket(p, CrashPacket);
                     } catch (InvocationTargetException e) {

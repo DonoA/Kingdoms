@@ -19,6 +19,8 @@
  */
 package io.dallen.Kingdoms.Commands;
 
+import com.comphenix.protocol.wrappers.WrappedSignedProperty;
+import io.dallen.Kingdoms.Util.LogUtil;
 import io.dallen.Kingdoms.Kingdom.Plot;
 import io.dallen.Kingdoms.Kingdom.Structures.Blueprint;
 import io.dallen.Kingdoms.Main;
@@ -38,6 +40,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 /**
  *
@@ -51,12 +54,19 @@ public class DebugCommands implements CommandExecutor{
             try {
                 Blueprint building = NBTmanager.loadData(new File(Main.getPlugin().getDataFolder() + DBmanager.getFileSep() + args[0] + ".schematic"));
                 Plot p = Plot.inPlot(((Player) sender).getLocation());
-                Location startCorner = new Location(p.getCenter().getWorld(), p.getCenter().getX() - building.getWid()/2, 
-                        p.getCenter().getBlockY(), p.getCenter().getBlockZ() - building.getLen()/2);
-                Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.getPlugin(), new buildTask(building, startCorner), 5, 5);
+                Location startCorner = new Location(p.getCenter().getWorld(), p.getCenter().getX() - building.getWid()/2  + (building.getWid() % 2 == 0 ? 1 : 0), 
+                        p.getCenter().getBlockY(), p.getCenter().getBlockZ() - building.getLen()/2 + (building.getLen() % 2 == 0 ? 1 : 0));
+                Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.getPlugin(), new buildTask(building, startCorner), Integer.parseInt(args[1]), Integer.parseInt(args[1]));
             } catch (IOException | DataFormatException ex) {
                 Logger.getLogger(DebugCommands.class.getName()).log(Level.SEVERE, null, ex);
             }
+        }else if(cmd.getName().equalsIgnoreCase("setskins")){
+            for(WrappedSignedProperty p : Main.getSkinHandler().getProperties()){
+                LogUtil.printDebug(p.getName());
+                LogUtil.printDebug(p.getValue());
+            }
+            Main.getSkinHandler().setSkin(args[0]);
+            Bukkit.getScheduler().runTaskAsynchronously(Main.getPlugin(), Main.getSkinHandler());
         }
         return true;
     }
@@ -78,7 +88,7 @@ public class DebugCommands implements CommandExecutor{
         private boolean running = true;
         
         public buildTask(Blueprint building, Location start){
-            Builder = Main.getNPCs().getNPCreg().createNPC(EntityType.PLAYER, "Fireinferno13");
+            Builder = Main.getNPCs().getNPCreg().createNPC(EntityType.PLAYER, "BingRazer");
             Builder.spawn(start);
             this.Building = building;
             this.startCorner = start;
@@ -87,27 +97,27 @@ public class DebugCommands implements CommandExecutor{
         @Override
         public void run(){ // this does not work 100% for even demension object
             if(running){
-                if(x < Building.getWid()){
+                if(x < Building.getWid() - (Building.getWid() % 2 == 0 ? 1 : 0)){
                     Location nLoc = startCorner.clone().add(x,y,z);
                     nLoc.getBlock().setType(Building.getBlocks()[x][y][z].getBlock(), false);
                     nLoc.getBlock().setData(Building.getBlocks()[x][y][z].getData(), false);
-                    Builder.getNavigator().setTarget(nLoc.add(0, 1, 0));
+                    Builder.teleport(nLoc.add(0, 1, 0), PlayerTeleportEvent.TeleportCause.PLUGIN);
                     x++;
                 }else{
                     x = 0;
-                    if(z < Building.getLen() - 1){ //this is a bit strange
+                    if(z < Building.getLen() - (Building.getLen() % 2 == 0 ? 1 : 0)){
                         Location nLoc = startCorner.clone().add(x,y,z);
                         nLoc.getBlock().setType(Building.getBlocks()[x][y][z].getBlock(), false);
                         nLoc.getBlock().setData(Building.getBlocks()[x][y][z].getData(), false);
-                        Builder.getNavigator().setTarget(nLoc.add(0, 1, 0));
+                        Builder.teleport(nLoc.add(0, 1, 0), PlayerTeleportEvent.TeleportCause.PLUGIN);
                         z++;
                     }else{
                         z = 0;
-                        if(y < Building.getHigh()){
+                        if(y < Building.getHigh() - (Building.getHigh() % 2 == 0 ? 1 : 0)){
                             Location nLoc = startCorner.clone().add(x,y,z);
                             nLoc.getBlock().setType(Building.getBlocks()[x][y][z].getBlock(), false);
                             nLoc.getBlock().setData(Building.getBlocks()[x][y][z].getData(), false);
-                            Builder.getNavigator().setTarget(nLoc.add(0, 1, 0));
+                            Builder.teleport(nLoc.add(0, 1, 0), PlayerTeleportEvent.TeleportCause.PLUGIN);
                             y++;
                         }else{
                             running = false;
