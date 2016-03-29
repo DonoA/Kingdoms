@@ -152,13 +152,13 @@ commands:
     usage: |
             /is <player>
             /is <role>
+  loadschem:
+    description: moves schematics from World Edit to this plugin
+    usage: |
+           /loadschem
   fillplot:
     description: debug command
-    usage: |
-            /is <player>
-            /is <role>
+    usage: /<command>
   setskins:
     description: debug command
-    usage: |
-            /is <player>
-            /is <role>
+    usage: /<command>

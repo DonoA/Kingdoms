@@ -110,6 +110,7 @@ public class Main extends JavaPlugin {
                 Main.getPlugin().getCommand("setskins").setExecutor(dbg);
                 Main.getPlugin().getCommand("menu").setExecutor(mmh);
                 Main.getPlugin().getCommand("crash").setExecutor(admin);
+                Main.getPlugin().getCommand("loadschem").setExecutor(admin);
                 Main.getPlugin().getCommand("strack").setExecutor(admin);
                 Main.getPlugin().getCommand("message").setExecutor(general);
                 Main.getPlugin().getCommand("reply").setExecutor(general);

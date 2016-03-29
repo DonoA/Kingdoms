@@ -19,8 +19,6 @@
  */
 package io.dallen.Kingdoms.Handlers.SkinHandler;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.netty.buffer.UnpooledUnsafeDirectByteBuf;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
