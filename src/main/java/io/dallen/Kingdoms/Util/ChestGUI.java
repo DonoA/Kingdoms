@@ -34,6 +34,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -85,13 +86,13 @@ public class ChestGUI implements Listener{
    
     public ChestGUI setOption(int pos, ItemStack icon, String name, String... info){
         optionNames[pos] = name;
-        optionIcons[pos] = setItemNameAndLore(icon, name, info);
+        optionIcons[pos] = ItemUtil.setItemNameAndLore(icon, name, info);
         return this;
     }
     
     public ChestGUI setOption(int pos, ItemStack icon, String name, Object data, String... info){
         optionNames[pos] = name;
-        optionIcons[pos] = setItemNameAndLore(icon, name, info);
+        optionIcons[pos] = ItemUtil.setItemNameAndLore(icon, name, info);
         optionData[pos] = data;
         return this;
     }
@@ -221,13 +222,4 @@ public class ChestGUI implements Listener{
             this.data = data;
         }
     }
-    
-    private ItemStack setItemNameAndLore(ItemStack item, String name, String[] lore){
-        ItemMeta im = item.getItemMeta();
-            im.setDisplayName(name);
-            im.setLore(Arrays.asList(lore));
-        item.setItemMeta(im);
-        return item;
-    }
-    
 }

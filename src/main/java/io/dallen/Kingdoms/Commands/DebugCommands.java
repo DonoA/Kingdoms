@@ -35,6 +35,7 @@ import lombok.Setter;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -56,6 +57,21 @@ public class DebugCommands implements CommandExecutor{
                 Plot p = Plot.inPlot(((Player) sender).getLocation());
                 Location startCorner = new Location(p.getCenter().getWorld(), p.getCenter().getX() - building.getWid()/2  + (building.getWid() % 2 == 0 ? 1 : 0), 
                         p.getCenter().getBlockY(), p.getCenter().getBlockZ() - building.getLen()/2 + (building.getLen() % 2 == 0 ? 1 : 0));
+                for(int y = 0; y < building.getHigh(); y++){
+                    for(int z = 0; z < building.getLen(); z++){
+                        for(int x = 0; x < building.getWid(); x++){
+                            Location nLoc = startCorner.clone().add(x,y,z);
+                            Material covMat = building.getBlocks()[x][y][z].getBlock();
+                            if(covMat.name().contains("STAIRS")){
+                                covMat = Material.QUARTZ_STAIRS;
+                            }else{
+                                covMat = Material.QUARTZ_BLOCK;
+                            }
+                            nLoc.getBlock().setType(covMat, false);
+                            nLoc.getBlock().setData(building.getBlocks()[x][y][z].getData(), false);
+                        }
+                    }
+                }
                 Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.getPlugin(), new buildTask(building, startCorner), Integer.parseInt(args[1]), Integer.parseInt(args[1]));
             } catch (IOException | DataFormatException ex) {
                 Logger.getLogger(DebugCommands.class.getName()).log(Level.SEVERE, null, ex);

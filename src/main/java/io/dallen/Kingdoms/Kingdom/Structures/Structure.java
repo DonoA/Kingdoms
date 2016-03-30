@@ -20,6 +20,7 @@
 package io.dallen.Kingdoms.Kingdom.Structures;
 
 import com.google.common.primitives.Ints;
+import io.dallen.Kingdoms.Handlers.MultiBlockHandler;
 import io.dallen.Kingdoms.Kingdom.Kingdom;
 import io.dallen.Kingdoms.Kingdom.Municipality;
 import io.dallen.Kingdoms.Util.ChestGUI;
@@ -73,6 +74,7 @@ public class Structure{
         EditPlot = new ChestGUI("Edit Plot Default", 2, new MenuHandler()){{
             setOption(1, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
             setOption(2, new ItemStack(Material.ENCHANTED_BOOK), "Upgrade");
+            setOption(3, new ItemStack(Material.ENCHANTED_BOOK), "Build");
         }};
     }
     
@@ -126,7 +128,11 @@ public class Structure{
         
         @Override
         public void onOptionClick(OptionClickEvent e){
-            e.getPlayer().sendMessage("Default option called");
+            if(e.getName().equalsIgnoreCase("Build")){
+                MultiBlockHandler.getOptionHandler().onOptionClick(e);
+            }else{
+                e.getPlayer().sendMessage("Default option called");
+            }
         }
     }
 }

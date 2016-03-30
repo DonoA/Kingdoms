@@ -43,6 +43,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -52,6 +53,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -69,13 +71,19 @@ public class MultiBlockHandler implements Listener{
     
     private HashMap<Player, Long> cooldown = new HashMap<Player, Long>();
     
+    @Getter
+    private static MBOptions optionHandler;
+    
+    private HashMap<String, stringInput> openInputs = new HashMap<String, stringInput>();
+    
     public MultiBlockHandler(){
-        NewPlotMenu = new ChestGUI("New Plot", InventoryType.HOPPER, new MBOptions()) {{
+        optionHandler = new MBOptions();
+        NewPlotMenu = new ChestGUI("New Plot", InventoryType.HOPPER, optionHandler) {{
             setOption(1, new ItemStack(Material.ENCHANTED_BOOK), "Confirm and Claim Plot", "");
             setOption(3, new ItemStack(Material.ENCHANTED_BOOK), "Cancel Plot Claim", "");
         }};
         
-        SetPlotType = new ChestGUI("Set Plot Type", 4, new MBOptions()) {{
+        SetPlotType = new ChestGUI("Set Plot Type", 4, optionHandler) {{
             setOption(9*0 + 1, new ItemStack(Material.ENCHANTED_BOOK), "Storeroom", "");
             setOption(9*0 + 2, new ItemStack(Material.ENCHANTED_BOOK), "Barracks", "");
             setOption(9*0 + 3, new ItemStack(Material.ENCHANTED_BOOK), "Training Ground", "");
@@ -97,7 +105,7 @@ public class MultiBlockHandler implements Listener{
             setOption(9*3 + 5, new ItemStack(Material.ENCHANTED_BOOK), "Erase", "");
         }};
         
-        ViewPlotMenu = new ChestGUI("Plot Info", InventoryType.HOPPER, new MBOptions()) {{
+        ViewPlotMenu = new ChestGUI("Plot Info", InventoryType.HOPPER, optionHandler) {{
             setOption(2, new ItemStack(Material.ENCHANTED_BOOK), "No current contracts avalible", "");
         }};
         
@@ -221,7 +229,18 @@ public class MultiBlockHandler implements Listener{
         }
     }
     
-    private static class MBOptions implements OptionClickEventHandler{
+    @EventHandler
+    public void onChat(AsyncPlayerChatEvent e){
+        if(openInputs.containsKey(e.getPlayer().getName())){
+            
+        }
+    }
+    
+    public static class stringInput{
+        private String name;
+    }
+    
+    public static class MBOptions implements OptionClickEventHandler{
     
         @Override
         public void onOptionClick(OptionClickEvent e){
@@ -425,7 +444,7 @@ public class MultiBlockHandler implements Listener{
                         Logger.getLogger(MultiBlockHandler.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-            }else if(e.getMenuName().equalsIgnoreCase("Edit Plot")){
+            }else if(e.getMenuName().equalsIgnoreCase("Edit Plot Default")){
                 
             }
         }
