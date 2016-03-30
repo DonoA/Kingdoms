@@ -90,8 +90,6 @@ public class AdminCommands implements CommandExecutor{
 //                    CrashPacket.getDifficulties().write(0, EnumWrappers.Difficulty.EASY);
 //                    CrashPacket.getGameModes().write(0, NativeGameMode.SPECTATOR);
 //                    CrashPacket.getWorldTypeModifier().write(0, WorldType.NORMAL);
-                    
-                    
                     try {
                         ProtocolLibrary.getProtocolManager().sendServerPacket(p, CrashPacket);
                     } catch (InvocationTargetException e) {
@@ -100,7 +98,7 @@ public class AdminCommands implements CommandExecutor{
                 }else{
                     sender.sendMessage("Player not found!");
                 }
-            }else if(cmd.getName().equalsIgnoreCase("loadshem") && args.length > 0){
+            }else if(cmd.getName().equalsIgnoreCase("loadschem") && args.length > 0){
                 if((Main.getPlugin().getServer().getPluginManager().getPlugin("WorldEdit") == null) || 
                     (!Main.getPlugin().getServer().getPluginManager().getPlugin("WorldEdit").isEnabled())){
                     sender.sendMessage("World Edit not found!");
@@ -131,9 +129,11 @@ public class AdminCommands implements CommandExecutor{
                     } catch (IOException ex) {
                         Logger.getLogger(AdminCommands.class.getName()).log(Level.SEVERE, null, ex);
                     }
+                    sender.sendMessage("File moved");
                 }else{
                     sender.sendMessage("Schematic not found!");
                 }
+                return true;
             }
             return false;
         }else{

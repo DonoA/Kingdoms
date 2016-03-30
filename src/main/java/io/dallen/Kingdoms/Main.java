@@ -99,15 +99,19 @@ public class Main extends JavaPlugin {
                     Main.getPlugin().getServer().getPluginManager().disablePlugin(Main.getPlugin());
                     return;
                 }
-                changes = new ChangeTracker(Plugin);
+                if(Main.getPlugin().getConfig().getBoolean("decay")){
+                    changes = new ChangeTracker(Plugin);
+                }
                 NPCs = new NpcManager();
                 ModerationCommands moderation = new ModerationCommands();
                 GeneralCommands general = new GeneralCommands();
                 AdminCommands admin = new AdminCommands();
                 MainMenuHandler mmh = new MainMenuHandler();
-                DebugCommands dbg = new DebugCommands();
-                Main.getPlugin().getCommand("fillplot").setExecutor(dbg);
-                Main.getPlugin().getCommand("setskins").setExecutor(dbg);
+                if(Main.getPlugin().getConfig().getBoolean("debug")){
+                    DebugCommands dbg = new DebugCommands();
+                    Main.getPlugin().getCommand("fillplot").setExecutor(dbg);
+                    Main.getPlugin().getCommand("setskins").setExecutor(dbg);
+                }
                 Main.getPlugin().getCommand("menu").setExecutor(mmh);
                 Main.getPlugin().getCommand("crash").setExecutor(admin);
                 Main.getPlugin().getCommand("loadschem").setExecutor(admin);
@@ -142,7 +146,6 @@ public class Main extends JavaPlugin {
     @Override
     public void onEnable(){ //Called pre-server enable
         Plugin = this;
-        
         this.saveDefaultConfig();
         World mainworld = Bukkit.getWorld(this.getConfig().getString("MainWorld"));
         Overworld = new KingdomTerrainGeneration(mainworld);

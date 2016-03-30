@@ -1,1 +1,3 @@
 MainWorld: World
+debug: true
+decay: false

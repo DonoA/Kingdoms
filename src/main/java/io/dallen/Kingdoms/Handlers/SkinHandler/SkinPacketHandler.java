@@ -110,7 +110,7 @@ public class SkinPacketHandler implements Runnable{
             LogUtil.printDebug(decodedProfile);
             SkinTexture texture = DBmanager.getJSonParser().readValue(decodedProfile, SkinTexture.class);
 //            texture.getTextures().getCape().setUrl("http://textures.minecraft.net/texture/eec3cabfaeed5dafe61c6546297e853a547c39ec238d7c44bf4eb4a49dc1f2c0");
-            texture.setSignatureRequired(false);
+//            texture.setSignatureRequired(false);
             textures = Base64.encode(Unpooled.copiedBuffer(DBmanager.getJSonParser().writeValueAsString(texture).replace("skin", "SKIN").replace("cape", "CAPE").getBytes())).toString(Charset.defaultCharset());
             textures = textures.replace("\n", "");
             LogUtil.printDebug(textures);

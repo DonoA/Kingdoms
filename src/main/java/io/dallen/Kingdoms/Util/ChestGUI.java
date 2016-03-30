@@ -131,6 +131,8 @@ public class ChestGUI implements Listener{
         if((!cooldown.containsKey(event.getWhoClicked().getName())) || 
             (cooldown.containsKey(event.getWhoClicked().getName()) && cooldown.get(event.getWhoClicked().getName()) < System.currentTimeMillis() - 500)){
             cooldown.put(event.getWhoClicked().getName(), System.currentTimeMillis());
+            if(!openMenus.containsKey(event.getWhoClicked().getName()))
+                return;
             MenuInstance menu = openMenus.get(event.getWhoClicked().getName());
             if(event.getInventory().getTitle().equals(menu.name)){
                 event.setCancelled(true);
@@ -157,7 +159,7 @@ public class ChestGUI implements Listener{
                     }
                 }
             }
-            openMenus.remove((Player) event.getWhoClicked());
+            openMenus.remove(event.getWhoClicked().getName());
         }
     }
     

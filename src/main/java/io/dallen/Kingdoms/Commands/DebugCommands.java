@@ -95,8 +95,9 @@ public class DebugCommands implements CommandExecutor{
         }
         
         @Override
-        public void run(){ // this does not work 100% for even demension object
+        public void run(){
             if(running){
+                LogUtil.printDebug(x + ", " + y + ", " + z);
                 if(x < Building.getWid() - (Building.getWid() % 2 == 0 ? 1 : 0)){
                     Location nLoc = startCorner.clone().add(x,y,z);
                     nLoc.getBlock().setType(Building.getBlocks()[x][y][z].getBlock(), false);
@@ -105,7 +106,7 @@ public class DebugCommands implements CommandExecutor{
                     x++;
                 }else{
                     x = 0;
-                    if(z < Building.getLen() - (Building.getLen() % 2 == 0 ? 1 : 0)){
+                    if(z < Building.getLen() - 1){ // this is a bit strange, it seems to work tho
                         Location nLoc = startCorner.clone().add(x,y,z);
                         nLoc.getBlock().setType(Building.getBlocks()[x][y][z].getBlock(), false);
                         nLoc.getBlock().setData(Building.getBlocks()[x][y][z].getData(), false);
