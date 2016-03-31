@@ -87,9 +87,6 @@ public class SkinPacketHandler implements Runnable{
     
     @Override
     public void run(){
-//        if(!Bukkit.getOnlineMode()){
-//            return;
-//        }
         WrappedGameProfile profile = WrappedGameProfile.fromOfflinePlayer(Bukkit.getOfflinePlayer(skin));
         Object handle = profile.getHandle();
         Object sessionService = getSessionService();
@@ -113,8 +110,6 @@ public class SkinPacketHandler implements Runnable{
 //            texture.setSignatureRequired(false);
             textures = Base64.encode(Unpooled.copiedBuffer(DBmanager.getJSonParser().writeValueAsString(texture).replace("skin", "SKIN").replace("cape", "CAPE").getBytes())).toString(Charset.defaultCharset());
             textures = textures.replace("\n", "");
-            LogUtil.printDebug(textures);
-            LogUtil.printDebug(textureProperty.getSignature());
             properties.clear();
             properties.add(new WrappedSignedProperty(textureProperty.getName(), textures, textureProperty.getSignature()));
         } catch (IOException ex) {

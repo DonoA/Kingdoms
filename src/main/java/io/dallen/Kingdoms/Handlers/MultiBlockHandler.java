@@ -20,8 +20,10 @@
 package io.dallen.Kingdoms.Handlers;
 
 import com.google.common.primitives.Ints;
+import io.dallen.Kingdoms.Commands.DebugCommands;
 import io.dallen.Kingdoms.Util.LogUtil;
 import io.dallen.Kingdoms.Kingdom.Plot;
+import io.dallen.Kingdoms.Kingdom.Structures.Blueprint;
 import io.dallen.Kingdoms.Kingdom.Structures.Contract;
 import io.dallen.Kingdoms.Kingdom.Structures.Structure;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.BuildersHut;
@@ -29,13 +31,19 @@ import io.dallen.Kingdoms.Kingdom.Structures.Types.TownHall;
 import io.dallen.Kingdoms.Kingdom.WallSystem;
 import io.dallen.Kingdoms.Kingdom.WallSystem.Wall;
 import io.dallen.Kingdoms.Kingdom.WallSystem.WallType;
+import io.dallen.Kingdoms.Main;
 import io.dallen.Kingdoms.PlayerData;
 import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEvent;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEventHandler;
+import io.dallen.Kingdoms.Util.DBmanager;
+import io.dallen.Kingdoms.Util.ItemUtil;
 import io.dallen.Kingdoms.Util.LocationUtil;
+import io.dallen.Kingdoms.Util.NBTmanager;
 import java.awt.Point;
 import java.awt.Polygon;
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -43,10 +51,16 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.DataFormatException;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import net.citizensnpcs.api.npc.NPC;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -55,6 +69,8 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -74,7 +90,9 @@ public class MultiBlockHandler implements Listener{
     @Getter
     private static MBOptions optionHandler;
     
-    private HashMap<String, stringInput> openInputs = new HashMap<String, stringInput>();
+    private static HashMap<String, StringInput> openInputs = new HashMap<String, StringInput>();
+    
+    private static HashMap<String, BuildFrame> openBuilds = new HashMap<String, BuildFrame>();
     
     public MultiBlockHandler(){
         optionHandler = new MBOptions();
@@ -223,21 +241,88 @@ public class MultiBlockHandler implements Listener{
                             }
                             ViewPlotMenu.sendMenu(e.getPlayer());
                         }
+                    }else if(e.getItem().getItemMeta().getDisplayName().equalsIgnoreCase("Start Build")){
+                        Blueprint building = openBuilds.get(e.getPlayer().getName()).getBlueprint();
+                        Plot p = openBuilds.get(e.getPlayer().getName()).getPlot();
+                        Location startCorner = new Location(p.getCenter().getWorld(), p.getCenter().getX() - building.getWid()/2  + (building.getWid() % 2 == 0 ? 1 : 0),
+                            p.getCenter().getBlockY(), p.getCenter().getBlockZ() - building.getLen()/2 + (building.getLen() % 2 == 0 ? 1 : 0));
+                        for(int y = 0; y < building.getHigh(); y++){
+                            for(int z = 0; z < building.getLen(); z++){
+                                for(int x = 0; x < building.getWid(); x++){
+                                    Location nLoc = startCorner.clone().add(x,y,z);
+                                    if(!nLoc.getBlock().getType().equals(Material.AIR)){
+                                        nLoc.getBlock().setType(Material.AIR, false);
+                                    }
+                                }
+                            }
+                        }
+                        BuildTask buildTask = new BuildTask(building, startCorner, openBuilds.get(e.getPlayer().getName()).getSpeed());
+                        openBuilds.remove(e.getPlayer().getName());
                     }
                 }
             }
         }
     }
     
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onChat(AsyncPlayerChatEvent e){
         if(openInputs.containsKey(e.getPlayer().getName())){
-            
+            e.setCancelled(true);
+            if(openInputs.get(e.getPlayer().getName()).getName().equalsIgnoreCase("buildConst")){
+                try {
+                    String[] args = e.getMessage().split(" ");
+                    Blueprint building = NBTmanager.loadData(new File(Main.getPlugin().getDataFolder() + DBmanager.getFileSep() + args[0] + ".schematic"));
+                    Plot p = (Plot) openInputs.get(e.getPlayer().getName()).getData();
+                    Location startCorner = new Location(p.getCenter().getWorld(), p.getCenter().getX() - building.getWid()/2  + (building.getWid() % 2 == 0 ? 1 : 0),
+                            p.getCenter().getBlockY(), p.getCenter().getBlockZ() - building.getLen()/2 + (building.getLen() % 2 == 0 ? 1 : 0));
+                    for(int y = 0; y < building.getHigh(); y++){
+                        for(int z = 0; z < building.getLen(); z++){
+                            for(int x = 0; x < building.getWid(); x++){
+                                Location nLoc = startCorner.clone().add(x,y,z);
+                                Material covMat = building.getBlocks()[x][y][z].getBlock();
+                                if(covMat.name().contains("STAIRS")){
+                                    covMat = Material.QUARTZ_STAIRS;
+                                }else{
+                                    covMat = Material.QUARTZ_BLOCK;
+                                }
+                                nLoc.getBlock().setType(covMat, false);
+                                nLoc.getBlock().setData(building.getBlocks()[x][y][z].getData(), false);
+                            }
+                        }
+                    }
+                    Inventory hotbar =  Bukkit.createInventory(e.getPlayer(), 9);
+                    e.getPlayer().getInventory().setItemInMainHand(ItemUtil.setItemNameAndLore(Material.WATCH, "Start Build"));
+//                    e.getPlayer().getInventory().get put hotbar here so the building can be rotated
+                    BuildFrame frame = new BuildFrame(building, p, hotbar, Integer.parseInt(args[1]));
+                    openBuilds.put(e.getPlayer().getName(), frame);
+                    openInputs.remove(e.getPlayer().getName());
+                } catch (IOException ex) {
+                    Logger.getLogger(MultiBlockHandler.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (DataFormatException ex) {
+                    Logger.getLogger(MultiBlockHandler.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
         }
     }
     
-    public static class stringInput{
+    @AllArgsConstructor
+    public static class StringInput{
+        @Getter
         private String name;
+        @Getter
+        private Object data;
+    }
+    
+    @AllArgsConstructor
+    public static class BuildFrame{
+        @Getter
+        private Blueprint Blueprint;
+        @Getter
+        private Plot plot;
+        @Getter
+        private Inventory hotbar;
+        @Getter
+        private int speed;
     }
     
     public static class MBOptions implements OptionClickEventHandler{
@@ -445,9 +530,70 @@ public class MultiBlockHandler implements Listener{
                     }
                 }
             }else if(e.getMenuName().equalsIgnoreCase("Edit Plot Default")){
-                
+                e.getPlayer().sendMessage("To start a building contruction type the schematic name and tick in chat");
+                Plot p = Plot.inPlot(e.getPlayer().getLocation());
+                StringInput in = new StringInput("buildConst", p);
+                openInputs.put(e.getPlayer().getName(), in);
             }
         }
     }
     
+    public static class BuildTask implements Runnable{
+        
+        private int x = 0;
+        
+        private int y = 0; 
+        
+        private int z = 0;
+        
+        private Blueprint Building;
+        
+        private Location startCorner;
+        
+        private NPC Builder;
+        
+        private boolean running = true;
+        
+        public BuildTask(Blueprint building, Location start, int speed){
+            Builder = Main.getNPCs().getNPCreg().createNPC(EntityType.PLAYER, "BingRazer");
+            Builder.spawn(start);
+            this.Building = building;
+            this.startCorner = start;
+            Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.getPlugin(), this, speed, speed);
+        }
+        
+        @Override
+        public void run(){
+            if(running){
+                LogUtil.printDebug(x + ", " + y + ", " + z);
+                if(x < Building.getWid() - (Building.getWid() % 2 == 0 ? 1 : 0)){
+                    Location nLoc = startCorner.clone().add(x,y,z);
+                    nLoc.getBlock().setType(Building.getBlocks()[x][y][z].getBlock(), false);
+                    nLoc.getBlock().setData(Building.getBlocks()[x][y][z].getData(), false);
+                    Builder.teleport(nLoc.add(0, 1, 0), PlayerTeleportEvent.TeleportCause.PLUGIN);
+                    x++;
+                }else{
+                    x = 0;
+                    if(z < Building.getLen() - 1){ // this is a bit strange, it seems to work tho
+                        Location nLoc = startCorner.clone().add(x,y,z);
+                        nLoc.getBlock().setType(Building.getBlocks()[x][y][z].getBlock(), false);
+                        nLoc.getBlock().setData(Building.getBlocks()[x][y][z].getData(), false);
+                        Builder.teleport(nLoc.add(0, 1, 0), PlayerTeleportEvent.TeleportCause.PLUGIN);
+                        z++;
+                    }else{
+                        z = 0;
+                        if(y < Building.getHigh() - (Building.getHigh() % 2 == 0 ? 1 : 0)){
+                            Location nLoc = startCorner.clone().add(x,y,z);
+                            nLoc.getBlock().setType(Building.getBlocks()[x][y][z].getBlock(), false);
+                            nLoc.getBlock().setData(Building.getBlocks()[x][y][z].getData(), false);
+                            Builder.teleport(nLoc.add(0, 1, 0), PlayerTeleportEvent.TeleportCause.PLUGIN);
+                            y++;
+                        }else{
+                            running = false;
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

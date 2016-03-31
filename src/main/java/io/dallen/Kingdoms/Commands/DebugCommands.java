@@ -52,96 +52,13 @@ public class DebugCommands implements CommandExecutor{
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
         if(cmd.getName().equalsIgnoreCase("fillplot")){
-            try {
-                Blueprint building = NBTmanager.loadData(new File(Main.getPlugin().getDataFolder() + DBmanager.getFileSep() + args[0] + ".schematic"));
-                Plot p = Plot.inPlot(((Player) sender).getLocation());
-                Location startCorner = new Location(p.getCenter().getWorld(), p.getCenter().getX() - building.getWid()/2  + (building.getWid() % 2 == 0 ? 1 : 0), 
-                        p.getCenter().getBlockY(), p.getCenter().getBlockZ() - building.getLen()/2 + (building.getLen() % 2 == 0 ? 1 : 0));
-                for(int y = 0; y < building.getHigh(); y++){
-                    for(int z = 0; z < building.getLen(); z++){
-                        for(int x = 0; x < building.getWid(); x++){
-                            Location nLoc = startCorner.clone().add(x,y,z);
-                            Material covMat = building.getBlocks()[x][y][z].getBlock();
-                            if(covMat.name().contains("STAIRS")){
-                                covMat = Material.QUARTZ_STAIRS;
-                            }else{
-                                covMat = Material.QUARTZ_BLOCK;
-                            }
-                            nLoc.getBlock().setType(covMat, false);
-                            nLoc.getBlock().setData(building.getBlocks()[x][y][z].getData(), false);
-                        }
-                    }
-                }
-                Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.getPlugin(), new buildTask(building, startCorner), Integer.parseInt(args[1]), Integer.parseInt(args[1]));
-            } catch (IOException | DataFormatException ex) {
-                Logger.getLogger(DebugCommands.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            
         }else if(cmd.getName().equalsIgnoreCase("setskins")){
-            for(WrappedSignedProperty p : Main.getSkinHandler().getProperties()){
-                LogUtil.printDebug(p.getName());
-                LogUtil.printDebug(p.getValue());
-            }
             Main.getSkinHandler().setSkin(args[0]);
             Bukkit.getScheduler().runTaskAsynchronously(Main.getPlugin(), Main.getSkinHandler());
         }
         return true;
     }
     
-    public static class buildTask implements Runnable{
-        
-        private int x = 0;
-        
-        private int y = 0; 
-        
-        private int z = 0;
-        
-        private Blueprint Building;
-        
-        private Location startCorner;
-        
-        private NPC Builder;
-        
-        private boolean running = true;
-        
-        public buildTask(Blueprint building, Location start){
-            Builder = Main.getNPCs().getNPCreg().createNPC(EntityType.PLAYER, "BingRazer");
-            Builder.spawn(start);
-            this.Building = building;
-            this.startCorner = start;
-        }
-        
-        @Override
-        public void run(){
-            if(running){
-                LogUtil.printDebug(x + ", " + y + ", " + z);
-                if(x < Building.getWid() - (Building.getWid() % 2 == 0 ? 1 : 0)){
-                    Location nLoc = startCorner.clone().add(x,y,z);
-                    nLoc.getBlock().setType(Building.getBlocks()[x][y][z].getBlock(), false);
-                    nLoc.getBlock().setData(Building.getBlocks()[x][y][z].getData(), false);
-                    Builder.teleport(nLoc.add(0, 1, 0), PlayerTeleportEvent.TeleportCause.PLUGIN);
-                    x++;
-                }else{
-                    x = 0;
-                    if(z < Building.getLen() - 1){ // this is a bit strange, it seems to work tho
-                        Location nLoc = startCorner.clone().add(x,y,z);
-                        nLoc.getBlock().setType(Building.getBlocks()[x][y][z].getBlock(), false);
-                        nLoc.getBlock().setData(Building.getBlocks()[x][y][z].getData(), false);
-                        Builder.teleport(nLoc.add(0, 1, 0), PlayerTeleportEvent.TeleportCause.PLUGIN);
-                        z++;
-                    }else{
-                        z = 0;
-                        if(y < Building.getHigh() - (Building.getHigh() % 2 == 0 ? 1 : 0)){
-                            Location nLoc = startCorner.clone().add(x,y,z);
-                            nLoc.getBlock().setType(Building.getBlocks()[x][y][z].getBlock(), false);
-                            nLoc.getBlock().setData(Building.getBlocks()[x][y][z].getData(), false);
-                            Builder.teleport(nLoc.add(0, 1, 0), PlayerTeleportEvent.TeleportCause.PLUGIN);
-                            y++;
-                        }else{
-                            running = false;
-                        }
-                    }
-                }
-            }
-        }
-    }
+    
 }

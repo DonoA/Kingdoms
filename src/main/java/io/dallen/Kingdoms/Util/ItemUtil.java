@@ -30,13 +30,6 @@ import org.bukkit.inventory.meta.ItemMeta;
  */
 public class ItemUtil {
     
-    public static ItemStack setItemName(ItemStack item, String name){
-        ItemMeta im = item.getItemMeta();
-        im.setDisplayName(name);
-        item.setItemMeta(im);
-        return item;
-    }
-    
     public static ItemStack setItemNameAndLore(ItemStack item, String name, String[] lore){
         ItemMeta im = item.getItemMeta();
         im.setDisplayName(name);
