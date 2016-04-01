@@ -20,15 +20,12 @@
 package io.dallen.Kingdoms.Handlers;
 
 import com.google.common.primitives.Ints;
-import io.dallen.Kingdoms.Commands.DebugCommands;
 import io.dallen.Kingdoms.Util.LogUtil;
 import io.dallen.Kingdoms.Kingdom.Plot;
 import io.dallen.Kingdoms.Kingdom.Structures.Blueprint;
 import io.dallen.Kingdoms.Kingdom.Structures.Contract;
 import io.dallen.Kingdoms.Kingdom.Structures.Structure;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.BuildersHut;
-import io.dallen.Kingdoms.Kingdom.Structures.Types.TownHall;
-import io.dallen.Kingdoms.Kingdom.WallSystem;
 import io.dallen.Kingdoms.Kingdom.WallSystem.Wall;
 import io.dallen.Kingdoms.Kingdom.WallSystem.WallType;
 import io.dallen.Kingdoms.Main;
@@ -59,7 +56,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -90,8 +86,10 @@ public class MultiBlockHandler implements Listener{
     @Getter
     private static MBOptions optionHandler;
     
+    @Getter
     private static HashMap<String, StringInput> openInputs = new HashMap<String, StringInput>();
     
+    @Getter
     private static HashMap<String, BuildFrame> openBuilds = new HashMap<String, BuildFrame>();
     
     public MultiBlockHandler(){
