@@ -24,6 +24,7 @@ import io.dallen.Kingdoms.Util.LogUtil;
 import io.dallen.Kingdoms.Kingdom.Plot;
 import io.dallen.Kingdoms.Kingdom.Structures.Blueprint;
 import io.dallen.Kingdoms.Kingdom.Structures.Contract;
+import io.dallen.Kingdoms.Kingdom.Structures.Storage;
 import io.dallen.Kingdoms.Kingdom.Structures.Structure;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.BuildersHut;
 import io.dallen.Kingdoms.Kingdom.WallSystem.Wall;
@@ -129,93 +130,100 @@ public class MultiBlockHandler implements Listener{
     
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerInteract(PlayerInteractEvent e){
-        if(e.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
-            if((!cooldown.containsKey(e.getPlayer())) || 
-               (cooldown.containsKey(e.getPlayer()) && cooldown.get(e.getPlayer()) < System.currentTimeMillis() - 500)){
-                cooldown.put(e.getPlayer(), System.currentTimeMillis());
+        if((!cooldown.containsKey(e.getPlayer())) || 
+              (cooldown.containsKey(e.getPlayer()) && cooldown.get(e.getPlayer()) < System.currentTimeMillis() - 500)){
+               cooldown.put(e.getPlayer(), System.currentTimeMillis());
+            if(e.hasBlock() && e.getClickedBlock().getType().equals(Material.CHEST)){
+                 Plot p = Plot.inPlot(e.getClickedBlock().getLocation());
+                 if(p != null && p instanceof Storage){
+                     Storage s = (Storage) p;
+                     s.interact(e);
+                 }
+             }
+            if(e.getAction().equals(Action.RIGHT_CLICK_BLOCK) || e.getAction().equals(Action.RIGHT_CLICK_AIR)){
                 if(!e.hasItem()){
-                    Block b = e.getClickedBlock();
-                    if(b.getType().equals(Material.REDSTONE_TORCH_ON)){ // TESTING: REDSTONE_TORCH_ON
-                
-                        final Location l = b.getLocation();
-                        final Player p = e.getPlayer();
-                        p.sendMessage("Calculating Plot...");
-                        new Thread(new Runnable(){
-                            @Override
-                            public void run(){ // Calculate redstone torch plot
-                                ArrayList<Point> corners = new ArrayList<Point>();
-                                Point start = LocationUtil.asPoint(l);
-                                corners.add(start);
-                                //Redstone direction check needs to be first
-                                boolean complete = false;
-                                boolean direction = true;//true:X, false:Z
-                                //Start with X direction
-                                //Then check Z
-                                //continue until the found point is also the start point
-                                Point last; // the last confirmed point
-                                Point current = start; // the current point being delt with
-                                while(!complete){
-                                    last = current; // cycle points
-                                    current = null;
-                                    for(int i = 1; i<64 && current == null; i++){
-                                        Location neg = new Location(l.getWorld(), (direction ? last.getX() - i : last.getX()), l.getBlockY(), (!direction ? last.getY() - i : last.getY())); // the point in the negative direction
-                                        Location pos = new Location(l.getWorld(), (direction ? last.getX() + i : last.getX()), l.getBlockY(), (!direction ? last.getY() + i : last.getY())); // the point in the positive direction
-                                        if(neg.getBlock().getType().equals(Material.REDSTONE_TORCH_ON)){ // Test in the negative direction
-                                            current = LocationUtil.asPoint(neg);
-                                            if(current.equals(start)){// If the found point is the start point
-                                                complete = true;
-                                            }
-                                        }
-                                        if(pos.getBlock().getType().equals(Material.REDSTONE_TORCH_ON)){
-                                            if(current != null){ // If a point has already been found
-                                                p.sendMessage("Plot cannot be deturmined, please use the redstone dust method");
-                                                return;
-                                            }
-                                            if(!complete){ // If the loop is complete
-                                                current = new Point(pos.getBlockX(), pos.getBlockZ());
-                                                if(current.equals(start)){
+                    if(e.hasBlock()){
+                        Block b = e.getClickedBlock();
+                        if(b.getType().equals(Material.REDSTONE_TORCH_ON)){ // TESTING: REDSTONE_TORCH_ON
+                            final Location l = b.getLocation();
+                            final Player p = e.getPlayer();
+                            p.sendMessage("Calculating Plot...");
+                            new Thread(new Runnable(){
+                                @Override
+                                public void run(){ // Calculate redstone torch plot
+                                    ArrayList<Point> corners = new ArrayList<Point>();
+                                    Point start = LocationUtil.asPoint(l);
+                                    corners.add(start);
+                                    //Redstone direction check needs to be first
+                                    boolean complete = false;
+                                    boolean direction = true;//true:X, false:Z
+                                    //Start with X direction
+                                    //Then check Z
+                                    //continue until the found point is also the start point
+                                    Point last; // the last confirmed point
+                                    Point current = start; // the current point being delt with
+                                    while(!complete){
+                                        last = current; // cycle points
+                                        current = null;
+                                        for(int i = 1; i<64 && current == null; i++){
+                                            Location neg = new Location(l.getWorld(), (direction ? last.getX() - i : last.getX()), l.getBlockY(), (!direction ? last.getY() - i : last.getY())); // the point in the negative direction
+                                            Location pos = new Location(l.getWorld(), (direction ? last.getX() + i : last.getX()), l.getBlockY(), (!direction ? last.getY() + i : last.getY())); // the point in the positive direction
+                                            if(neg.getBlock().getType().equals(Material.REDSTONE_TORCH_ON)){ // Test in the negative direction
+                                                current = LocationUtil.asPoint(neg);
+                                                if(current.equals(start)){// If the found point is the start point
                                                     complete = true;
                                                 }
                                             }
+                                            if(pos.getBlock().getType().equals(Material.REDSTONE_TORCH_ON)){
+                                                if(current != null){ // If a point has already been found
+                                                    p.sendMessage("Plot cannot be deturmined, please use the redstone dust method");
+                                                    return;
+                                                }
+                                                if(!complete){ // If the loop is complete
+                                                    current = new Point(pos.getBlockX(), pos.getBlockZ());
+                                                    if(current.equals(start)){
+                                                        complete = true;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        if(current == null /*|| corners.contains(last)*/){ // If the test failed to located the shape
+                                            p.sendMessage("Could not calculate plot");
+                                            return;
+                                        }
+                                        if(!complete){//dont add the start point into the list again
+                                            corners.add(current);
+                                        }
+                                        direction = !direction;
+                                    }
+                                    LogUtil.printDebug(Arrays.toString(corners.toArray()));
+                                    int[] Xs = new int[corners.size()];
+                                    int[] Zs = new int[corners.size()];
+                                    int i = 0;
+                                    for(Point p : corners){
+                                        Xs[i] = (int) p.getX();
+                                        Zs[i] = (int) p.getY();
+                                        i++;
+                                    }
+                                    Plot NewPlot = new Plot(new Polygon(Xs, Zs, corners.size()), LocationUtil.asLocation(LocationUtil.calcCenter(corners.toArray(new Point[1])), l.getWorld(), l.getBlockY()), p, null);
+                                    for(Plot plot : Plot.getAllPlots()){
+                                        if(plot.getCenter().equals(NewPlot.getCenter())){
+                                            if(plot.getOwner().equals(p)){
+                                                p.sendMessage("You already own this plot!");
+                                            }else{
+                                                p.sendMessage("This plot has already been claimed!");
+                                            }
+                                            return;
                                         }
                                     }
-                                    if(current == null /*|| corners.contains(last)*/){ // If the test failed to located the shape
-                                        p.sendMessage("Could not calculate plot");
-                                        return;
-                                    }
-                                    if(!complete){//dont add the start point into the list again
-                                        corners.add(current);
-                                    }
-                                    direction = !direction;
-                                }
-                                LogUtil.printDebug(Arrays.toString(corners.toArray()));
-                                int[] Xs = new int[corners.size()];
-                                int[] Zs = new int[corners.size()];
-                                int i = 0;
-                                for(Point p : corners){
-                                    Xs[i] = (int) p.getX();
-                                    Zs[i] = (int) p.getY();
-                                    i++;
-                                }
-                                Plot NewPlot = new Plot(new Polygon(Xs, Zs, corners.size()), LocationUtil.asLocation(LocationUtil.calcCenter(corners.toArray(new Point[1])), l.getWorld(), l.getBlockY()), p, null);
-                                for(Plot plot : Plot.getAllPlots()){
-                                    if(plot.getCenter().equals(NewPlot.getCenter())){
-                                        if(plot.getOwner().equals(p)){
-                                            p.sendMessage("You already own this plot!");
-                                        }else{
-                                            p.sendMessage("This plot has already been claimed!");
-                                        }
-                                        return;
+                                    if(NewPlot.isValid()){
+                                        NewPlotMenu.setOption(1, new ItemStack(Material.ENCHANTED_BOOK), "Confirm and Claim Plot", NewPlot, "Plot size: " + -1 + ", " + -1).sendMenu(p);
+                                    }else{
+                                        p.sendMessage("Invalid Plot");
                                     }
                                 }
-                                if(NewPlot.isValid()){
-                                    NewPlotMenu.setOption(1, new ItemStack(Material.ENCHANTED_BOOK), "Confirm and Claim Plot", NewPlot, "Plot size: " + -1 + ", " + -1).sendMenu(p);
-                                }else{
-                                    p.sendMessage("Invalid Plot");
-                                }
-                            }
-                        }).start();
-
+                            }).start();
+                        }
                     }
                 }else if(e.getItem().hasItemMeta()){
                     if(e.getItem().getItemMeta().getDisplayName().equalsIgnoreCase("Multi Tool")){
@@ -230,8 +238,6 @@ public class MultiBlockHandler implements Listener{
                                 p.sendEditMenu(e.getPlayer());
                             }
                         }else{
-                            //this is not well executed atm
-                            //do not call the name of the event, just the data is guarenteed
                             int loc = 0;
                             for(Contract ct : p.getContracts()){
                                 ViewPlotMenu.setOption(loc, new ItemStack(Material.ENCHANTED_BOOK), ct.getMessage(), ct.getPay(), ct.getType().getName());
@@ -356,7 +362,8 @@ public class MultiBlockHandler implements Listener{
                 }else if(e.getName().equalsIgnoreCase("Demolish")){
                     
                 }else if(e.getName().equalsIgnoreCase("Erase")){
-//                    newPlot.setEmpty(true);
+//                    Plot newPlot = new Plot()
+                    p.setEmpty(true);
                 }else if(e.getName().equalsIgnoreCase("Wall")){
                     Wall newWall = new Wall(p, WallType.WALL);
                     newWall.setEmpty(false);

@@ -33,6 +33,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.inventory.Inventory;
@@ -97,6 +98,13 @@ public class ChestGUI implements Listener{
         return this;
     }
     
+    public ChestGUI clearOptions(){
+        optionNames = new String[this.size];
+        optionIcons = new ItemStack[this.size];
+        optionData = new Object[this.size];
+        return this;
+    }
+    
     public void sendMenu(Player player){
         Inventory inventory = null;
         if(type.equals(InventoryType.CHEST)){
@@ -115,8 +123,8 @@ public class ChestGUI implements Listener{
             }
         }
         final MenuInstance menu = new MenuInstance(this);
-        openMenus.put(player.getName(), menu);
         player.openInventory(inventory);
+        openMenus.put(player.getName(), menu);
     }
    
     public void destroy(){
@@ -125,6 +133,13 @@ public class ChestGUI implements Listener{
         optionNames = null;
         optionIcons = null;
         optionData = null;
+    }
+    
+    @EventHandler
+    public void onInventoryOpen(InventoryOpenEvent e){
+        if(openMenus.containsKey(e.getPlayer().getName())){
+            openMenus.remove(e.getPlayer().getName());
+        }
     }
     
     @EventHandler

@@ -38,7 +38,7 @@ public class DebugCommands implements CommandExecutor{
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
         if(cmd.getName().equalsIgnoreCase("fillplot")){
             Player plr = (Player) sender;
-            plr.sendMessage("To start a building contruction type the schematic name and tick in chat");
+            plr.sendMessage("To start a building contruction type the schematic name and build speed in chat");
             Plot p = Plot.inPlot(plr.getLocation());
             MultiBlockHandler.StringInput in = new MultiBlockHandler.StringInput("buildConst", p);
             MultiBlockHandler.getOpenInputs().put(plr.getName(), in);

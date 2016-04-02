@@ -27,11 +27,11 @@ import org.bukkit.entity.Player;
  */
 public interface Vault {
     
-    public void SendToPlayer(Player p);
+    public boolean SendToPlayer(Player p);
     
     public boolean CanOpen(Player p);
     
-    public int getSize();
+    public double getSize();
     
     public Object getOwner();
     

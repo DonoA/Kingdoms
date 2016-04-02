@@ -32,13 +32,13 @@ public class PlayerVault implements Vault{
     private Player Owner;
     
     @Getter
-    private int Size;
+    private double Size;
     
     private ItemStack[] storage;
     
     @Override
-    public void SendToPlayer(Player p){
-        
+    public boolean SendToPlayer(Player p){
+        return true;
     }
     
     @Override
