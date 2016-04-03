@@ -24,9 +24,12 @@ import io.dallen.Kingdoms.Handlers.Party;
 import io.dallen.Kingdoms.Kingdom.Plot;
 import io.dallen.Kingdoms.Kingdom.Roles.Role;
 import io.dallen.Kingdoms.Commands.MuteCommand.MuteClass;
+import io.dallen.Kingdoms.Kingdom.Kingdom;
+import io.dallen.Kingdoms.Kingdom.Municipality;
 import io.dallen.Kingdoms.Kingdom.Vaults.PlayerVault;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -46,7 +49,10 @@ public class PlayerData {
     private Role Role;
     
     @Getter @Setter
-    private String Kingdom;
+    private Kingdom Kingdom;
+    
+    @Getter @Setter
+    private Municipality Municipal;
     
     @Getter @Setter
     private PlayerVault Vault;
@@ -65,11 +71,6 @@ public class PlayerData {
     
     @Getter
     private ArrayList<Plot> Plots = new ArrayList<Plot>();
-    
-    @Override
-    public String toString(){
-        return Kingdom;//need to add JSON here
-    }
     
     public static PlayerData getData(Player p){
         if(PlayerDat.containsKey(p)){

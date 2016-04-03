@@ -20,36 +20,56 @@
 package io.dallen.Kingdoms.Kingdom.Structures.Types;
 
 import io.dallen.Kingdoms.Kingdom.Plot;
+import io.dallen.Kingdoms.Kingdom.Structures.Storage;
 import io.dallen.Kingdoms.Kingdom.Vaults.BuildingVault;
+import io.dallen.Kingdoms.Wrappers.MaterialWrapper;
 import lombok.Getter;
 import lombok.Setter;
+import net.citizensnpcs.api.npc.NPC;
+import org.bukkit.Material;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 /**
  * Allows the kingdom to store raw and refined materials
  * 
  * @author donoa_000
  */
-public class Storeroom extends Plot{
+public class Storeroom extends Plot implements Storage{
     @Getter
     private int maxCapacity;
     @Getter
-    private int currentCapacity;
-    @Getter
-    private int amountFull;
-    
-    @Getter
-    private ResourceStats stats;
-    
-    @Getter
-    private BuildingVault storage;
+    private BuildingVault Storage;
     
     public Storeroom(Plot p) {
         super(p);
         maxCapacity = p.getArea() * 100;
-        currentCapacity = 0;
-        amountFull = 0;
-        stats = new ResourceStats();
-        storage = new BuildingVault(0);
+        Storage = new BuildingVault(maxCapacity, maxCapacity*64, this);
+    }
+    
+    @Override
+    public void interact(PlayerInteractEvent e){
+        if(e.getClickedBlock().getType().equals(Material.CHEST)){
+            if(e.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
+                if(Storage.CanOpen(e.getPlayer())){
+                    Storage.SendToPlayer(e.getPlayer());
+                }
+            }else if(e.getAction().equals(Action.LEFT_CLICK_BLOCK)){
+                if(e.hasItem() && this.hasSpace()){
+                    Storage.getContents()[Storage.getFullSlots()] = new MaterialWrapper(e.getItem());
+                }
+            }
+        }
+    }
+    
+    @Override
+    public boolean hasSpace(){
+        return Storage.getFullSlots() < Storage.getUniqueSize() && Storage.getAmountFull() < Storage.getCapacity();
+    }
+    
+    @Override
+    public boolean supplyNPC(NPC npc){
+        return true;
     }
     
     private static class ResourceStats{

@@ -31,7 +31,11 @@ public interface Vault {
     
     public boolean CanOpen(Player p);
     
-    public double getSize();
+    public double getUniqueSize();
+    
+    public int getCapacity();
+    
+    public int getAmountFull();
     
     public Object getOwner();
     

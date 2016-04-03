@@ -23,6 +23,7 @@ import io.dallen.Kingdoms.Kingdom.Structures.Structure;
 import java.awt.Polygon;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.entity.Player;
@@ -32,9 +33,6 @@ import org.bukkit.entity.Player;
  * @author donoa_000
  */
 public class Kingdom {
-    
-    @Getter
-    private static HashMap<String, Kingdom> Kingdoms = new HashMap<String, Kingdom>();
     
     private String Leader;
     

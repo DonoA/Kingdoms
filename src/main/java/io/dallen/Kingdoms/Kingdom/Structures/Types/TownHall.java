@@ -20,6 +20,7 @@
 package io.dallen.Kingdoms.Kingdom.Structures.Types;
 
 import com.google.common.primitives.Ints;
+import io.dallen.Kingdoms.Kingdom.Municipality;
 import io.dallen.Kingdoms.Kingdom.Plot;
 import io.dallen.Kingdoms.Kingdom.WallSystem;
 import io.dallen.Kingdoms.Kingdom.WallSystem.Wall;
@@ -128,7 +129,7 @@ public class TownHall extends Plot{
                                 }
                             }
                             if(current == null /*|| corners.contains(last)*/){ // If the test failed to located the shape
-                                p.sendMessage("Could not calculate plot");
+                                p.sendMessage("could not calculate municipal base");
                                 return;
                             }
                             if(!complete){//dont add the start point into the list again
@@ -146,19 +147,11 @@ public class TownHall extends Plot{
                             i++;
                         }
                         th.createMucicpal();
-                        for(ArrayList<Wall> wList : th.getMunicipal().getWalls().getParts().values()){
-                            for(Wall w : wList){
-                                final Polygon bounds = w.getBase();
-                                int Xmax = Ints.max(bounds.xpoints);
-                                int Zmax = Ints.max(bounds.ypoints);
-                                for(int x = Ints.min(bounds.xpoints); x <= Xmax; x++){
-                                    for(int z = Ints.min(bounds.ypoints); z <= Zmax; z++){
-                                        if(bounds.contains(new Point(x,z)) || (bounds.contains(new Point(x-1,z)) || bounds.contains(new Point(x,z-1)) || bounds.contains(new Point(x-1,z-1)))){
-                                            Location l = new Location(th.getCenter().getWorld(), x, th.getCenter().getBlockY()-1, z);
-                                            l.getBlock().setType(Material.EMERALD_BLOCK);
-                                        }
-                                    }
-                                }
+                        LogUtil.printDebug((th.getMunicipal() != null ? "calculated municipal base" : "could not calculate municipal base"));
+                        Municipality newMunicipal = th.getMunicipal();
+                        for(Plot p : Plot.getAllPlots()){
+                            if(newMunicipal.getBase().intersects(p.getBase().getBounds2D())){
+                                newMunicipal.getStructures().get(p.getClass()).add(p);
                             }
                         }
                     }

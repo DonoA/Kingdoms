@@ -58,7 +58,7 @@ public class ChatHandler implements Listener, CommandExecutor{
                     }
                    break;
                 case 1: //Faction
-                    Kingdom f = Kingdom.getKingdoms().get(PlayerData.getPlayerDat().get(e.getPlayer()).getKingdom());
+                    Kingdom f = PlayerData.getPlayerDat().get(e.getPlayer()).getKingdom();
                     e.setFormat(e.getFormat().replace("%c", f.getName()));
                     e.getRecipients().clear();
                     e.getRecipients().addAll(f.getOnlinePlayers());

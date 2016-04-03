@@ -56,8 +56,8 @@ public class GeneralCommands implements CommandExecutor{
                     }
                 }else{
                     PlayerData pd = PlayerData.getData(p);
-                    if(Kingdom.getKingdoms().get(pd.getKingdom()) != null){
-                        Kingdom.getKingdoms().get(pd.getKingdom()).getOnlinePlayers();
+                    if(pd.getKingdom() != null){
+                        pd.getKingdom().getOnlinePlayers();
                     }
                 }
             }else{

@@ -44,6 +44,9 @@ public class Plot extends Structure implements Listener{
     private static ArrayList<Plot> allPlots = new ArrayList<Plot>();
     
     @Getter
+    private static ArrayList<Plot> nonMunicipalPlots = new ArrayList<Plot>();//TODO make this var used
+    
+    @Getter
     private ArrayList<Contract> contracts = new ArrayList<Contract>();
     
     @Getter @Setter
@@ -90,19 +93,6 @@ public class Plot extends Structure implements Listener{
             return false;
         }
         super.setMunicipal(new Municipality((Structure) this));
-        for(Plot p : Plot.getAllPlots()){
-            if(p instanceof Wall){
-                Wall w = (Wall) p;
-                if(w.getCenter().distance(getCenter()) < 50){
-                    super.getMunicipal().getWalls().getParts().get(w.getType()).add(w);
-                }
-            }
-        }
-        boolean found = super.getMunicipal().getWalls().recalculateBase();
-        LogUtil.printDebug((found ? "calculated municipal base" : "could not calculate municipal base"));
-        for(int i = 0; i<super.getMunicipal().getBase().npoints; i++){
-            LogUtil.printDebug(super.getMunicipal().getBase().xpoints[i] + ", " + super.getMunicipal().getBase().ypoints[i]);
-        }
         return true;
     }
     

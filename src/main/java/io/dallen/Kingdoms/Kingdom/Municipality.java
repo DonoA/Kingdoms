@@ -20,9 +20,25 @@
 package io.dallen.Kingdoms.Kingdom;
 
 import io.dallen.Kingdoms.Kingdom.Structures.Structure;
+import io.dallen.Kingdoms.Kingdom.Structures.Types.Armory;
+import io.dallen.Kingdoms.Kingdom.Structures.Types.Bank;
+import io.dallen.Kingdoms.Kingdom.Structures.Types.Barracks;
+import io.dallen.Kingdoms.Kingdom.Structures.Types.Blacksmith;
+import io.dallen.Kingdoms.Kingdom.Structures.Types.BuildersHut;
+import io.dallen.Kingdoms.Kingdom.Structures.Types.Castle;
+import io.dallen.Kingdoms.Kingdom.Structures.Types.Dungeon;
+import io.dallen.Kingdoms.Kingdom.Structures.Types.Farm;
+import io.dallen.Kingdoms.Kingdom.Structures.Types.Marketplace;
+import io.dallen.Kingdoms.Kingdom.Structures.Types.Stable;
+import io.dallen.Kingdoms.Kingdom.Structures.Types.Storeroom;
+import io.dallen.Kingdoms.Kingdom.Structures.Types.TownHall;
+import io.dallen.Kingdoms.Kingdom.Structures.Types.TrainingGround;
 import java.awt.Polygon;
+import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -30,7 +46,7 @@ import lombok.Setter;
  *
  * @author donoa_000
  */
-public class Municipality {//Village, Town
+public class Municipality {
     
     @Getter
     private HashMap<Class, ArrayList<Structure>> Structures = new HashMap<Class, ArrayList<Structure>>();
@@ -44,6 +60,9 @@ public class Municipality {//Village, Town
     @Getter @Setter
     private Polygon Base;
     
+    @Getter @Setter
+    private Ellipse2D Influence;
+    
     @Getter
     private MunicipalTypes type;
     
@@ -53,7 +72,20 @@ public class Municipality {//Village, Town
     public Municipality(Structure center){
         this.Center = center;
         this.walls = new WallSystem(this);
-        this.type = MunicipalTypes.VILLAGE;
+        this.type = MunicipalTypes.MANOR;
+        Structures.put(Armory.class, new ArrayList<Structure>());
+        Structures.put(Bank.class, new ArrayList<Structure>());
+        Structures.put(Barracks.class, new ArrayList<Structure>());
+        Structures.put(Blacksmith.class, new ArrayList<Structure>());
+        Structures.put(BuildersHut.class, new ArrayList<Structure>());
+        Structures.put(Castle.class, new ArrayList<Structure>());
+        Structures.put(Dungeon.class, new ArrayList<Structure>());
+        Structures.put(Farm.class, new ArrayList<Structure>());
+        Structures.put(Marketplace.class, new ArrayList<Structure>());
+        Structures.put(Stable.class, new ArrayList<Structure>());
+        Structures.put(Storeroom.class, new ArrayList<Structure>());
+        Structures.put(TownHall.class, new ArrayList<Structure>(Arrays.asList(new Structure[] {center})));
+        Structures.put(TrainingGround.class, new ArrayList<Structure>());
     }
     
     public void createKingdom(){

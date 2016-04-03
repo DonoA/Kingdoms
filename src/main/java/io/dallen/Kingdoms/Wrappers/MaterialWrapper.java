@@ -46,6 +46,10 @@ public class MaterialWrapper {
         this.StackSize = number;
     }
     
+    public void addToStack(int amount){
+        StackSize += amount;
+    }
+    
     public ItemStack asBukkitItem(){
         ItemStack is = new ItemStack(Material);
         is.setAmount((StackSize > 64 ? 64 : StackSize));

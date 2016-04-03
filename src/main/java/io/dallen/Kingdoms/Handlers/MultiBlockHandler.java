@@ -133,13 +133,13 @@ public class MultiBlockHandler implements Listener{
         if((!cooldown.containsKey(e.getPlayer())) || 
               (cooldown.containsKey(e.getPlayer()) && cooldown.get(e.getPlayer()) < System.currentTimeMillis() - 500)){
                cooldown.put(e.getPlayer(), System.currentTimeMillis());
-            if(e.hasBlock() && e.getClickedBlock().getType().equals(Material.CHEST)){
-                 Plot p = Plot.inPlot(e.getClickedBlock().getLocation());
-                 if(p != null && p instanceof Storage){
-                     Storage s = (Storage) p;
-                     s.interact(e);
-                 }
-             }
+            if(e.hasBlock()){
+                Plot p = Plot.inPlot(e.getClickedBlock().getLocation());
+                if(p != null && p instanceof Storage){
+                    Storage s = (Storage) p;
+                    s.interact(e);
+                }
+            }
             if(e.getAction().equals(Action.RIGHT_CLICK_BLOCK) || e.getAction().equals(Action.RIGHT_CLICK_AIR)){
                 if(!e.hasItem()){
                     if(e.hasBlock()){

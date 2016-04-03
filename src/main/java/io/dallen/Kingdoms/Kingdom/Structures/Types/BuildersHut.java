@@ -27,6 +27,7 @@ import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Wrappers.MaterialWrapper;
 import lombok.Getter;
 import net.citizensnpcs.api.npc.NPC;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -46,6 +47,7 @@ public class BuildersHut extends Plot implements Storage{
     
     public BuildersHut(Plot p) {
         super(p.getBase(), p.getCenter(), p.getOwner(), p.getMunicipal());
+        Storage = new BuildingVault(30, 30 * 100, this);
     }
     
     public boolean hasMaterials(Class type){
@@ -55,23 +57,26 @@ public class BuildersHut extends Plot implements Storage{
     
     @Override
     public void interact(PlayerInteractEvent e){
-        if(e.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
-            
-        }else if(e.getAction().equals(Action.LEFT_CLICK_BLOCK)){
-            if(e.hasItem() && this.hasSpace()){
-                Storage.getContents()[Storage.getFullSlots()] = new MaterialWrapper(e.getItem());
+        if(e.getClickedBlock().getType().equals(Material.CHEST)){
+            if(e.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
+                if(Storage.CanOpen(e.getPlayer())){
+                    Storage.SendToPlayer(e.getPlayer());
+                }
+            }else if(e.getAction().equals(Action.LEFT_CLICK_BLOCK)){
+                if(e.hasItem() && this.hasSpace()){
+                    Storage.getContents()[Storage.getFullSlots()] = new MaterialWrapper(e.getItem());
+                }
             }
         }
     }
     
     @Override
     public boolean hasSpace(){
-        return Storage.getFullSlots() < Storage.getSize();
+        return Storage.getFullSlots() < Storage.getUniqueSize() && Storage.getAmountFull() < Storage.getCapacity();
     }
     
     @Override
     public boolean supplyNPC(NPC npc){
         return true;
     }
-    
 }

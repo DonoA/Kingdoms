@@ -20,10 +20,14 @@
 package io.dallen.Kingdoms.Kingdom.Vaults;
 
 import io.dallen.Kingdoms.Kingdom.Structures.Structure;
+import io.dallen.Kingdoms.Main;
+import io.dallen.Kingdoms.PlayerData;
 import io.dallen.Kingdoms.Wrappers.MaterialWrapper;
+import java.awt.Polygon;
 import java.util.HashMap;
 import lombok.Getter;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -37,22 +41,36 @@ import org.bukkit.inventory.ItemStack;
  *
  * @author donoa_000
  */
-public class BuildingVault implements Vault{
+public class BuildingVault implements Vault{ // Will start pile from center and add blocks outward
     @Getter
     private Structure owner;
     
     @Getter
-    private double size;
+    private double uniqueSize;
     
     @Getter
     private int fullSlots;
     
     @Getter
+    private int capacity;
+    
+    @Getter
+    private int amountFull;
+    
+    @Getter
+    private Polygon floorPlan;
+    
+    @Getter
     private MaterialWrapper[] contents;
     
-    public BuildingVault(int size) {
-        this.size = size;
-        contents = new MaterialWrapper[size];
+    @Getter
+    private ResourcePile pile;
+    
+    public BuildingVault(int uniqueSize, int capacity, Structure owner) {
+        this.owner = owner;
+        this.uniqueSize = uniqueSize;
+        this.capacity = capacity;
+        contents = new MaterialWrapper[uniqueSize];
     }
     
     @Override
@@ -60,7 +78,7 @@ public class BuildingVault implements Vault{
         if(InvenHandler.openVaults.containsKey(p.getName())){
             return false;
         }else{
-            Inventory inv = Bukkit.createInventory(p, (int) Math.ceil(size/9)*9, "Building Inventory");
+            Inventory inv = Bukkit.createInventory(p, (int) Math.ceil(uniqueSize/9)*9, "Building Inventory");
             for(MaterialWrapper m : contents){
                 inv.addItem(m.asBukkitItem());
             }
@@ -72,13 +90,23 @@ public class BuildingVault implements Vault{
     
     @Override
     public boolean CanOpen(Player p){
-        return true;
+        if(owner.getMunicipal() != null && PlayerData.getData(p) != null){
+            PlayerData pd = PlayerData.getData(p);
+            if(pd.getMunicipal().equals(owner.getMunicipal())){
+                return true;
+            }
+        }else{
+            if(owner.getOwner().equals(p)){
+                return true;
+            }
+        }
+        return false;
     }
     
     public void removeItem(int slot){
         contents[slot] = null;
        for(int i = slot; i < fullSlots; i++){
-           if(i + 1 >= size){
+           if(i + 1 >= uniqueSize){
                contents[i] = null;
            }else{
                contents[i] = contents[i+1];
@@ -88,8 +116,18 @@ public class BuildingVault implements Vault{
     }
     
     public void addItem(ItemStack is){
-        if(fullSlots < size){
-            contents[fullSlots] = new MaterialWrapper(is);
+        if(fullSlots < uniqueSize && amountFull < capacity){
+            boolean added = false;
+            for(MaterialWrapper mw : contents) {
+                if(mw.getMaterial().equals(is.getType())) {
+                    mw.addToStack(is.getAmount());
+                    added = true;
+                }
+            }
+            if(!added){
+                contents[fullSlots] = new MaterialWrapper(is);
+            }
+            
         }
     }
     
@@ -122,6 +160,76 @@ public class BuildingVault implements Vault{
             if(openVaults.containsKey(e.getPlayer().getName())){
                 openVaults.remove(e.getPlayer().getName());
             }
+        }
+    }
+    
+    public static class ResourcePile{
+        
+        @Getter
+        private Location startLoc;
+        @Getter
+        private double dist = 0;
+        @Getter
+        private double angleA = 0;
+        @Getter
+        private double angleB = 0;
+        
+        public ResourcePile(Location start){
+            this.startLoc = start;
+        }
+        
+        public void addBlock(){
+            new Thread(new Runnable(){
+                @Override
+                public void run(){
+                    Location sugLoc = startLoc.clone().add(dist*Math.sin(Math.toRadians(angleA)), dist*Math.sin(Math.toRadians(angleB)), dist*Math.cos(Math.toRadians(angleA)));
+                    while(!sugLoc.getBlock().getType().equals(Material.AIR)){
+                        angleA++;
+                        if(angleA >= 360){
+                            angleB++;
+                            angleA = 0;
+                        }
+                        if(angleB >= 180){
+                            angleB = 0;
+                            dist++;
+                        }
+                    }
+                    final Location bloc = sugLoc.clone();
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), new Runnable(){
+                        @Override
+                        public void run(){
+                            bloc.getBlock().setType(Material.LAPIS_BLOCK);
+                        }
+                    });
+                }
+            }).start();
+        }
+        
+        public void removeBlock(){
+            new Thread(new Runnable(){
+                @Override
+                public void run(){
+                    Location sugLoc = startLoc.clone().add(dist*Math.sin(Math.toRadians(angleA)), dist*Math.sin(Math.toRadians(angleB)), dist*Math.cos(Math.toRadians(angleA)));
+                    while(!sugLoc.getBlock().getType().equals(Material.LAPIS_BLOCK)){
+                        angleA--;
+                        if(angleA <= 0){
+                            angleB--;
+                            angleA = 360;
+                        }
+                        if(angleB <= 0){
+                            angleB = 180;
+                            dist--;
+                        }
+                    }
+                    final Location bloc = sugLoc.clone();
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), new Runnable(){
+                        @Override
+                        public void run(){
+                            bloc.getBlock().setType(Material.AIR);
+                        }
+                    });
+                }
+            }).start();
         }
     }
 }

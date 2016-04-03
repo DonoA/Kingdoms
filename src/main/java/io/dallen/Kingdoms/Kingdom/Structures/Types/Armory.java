@@ -20,16 +20,22 @@
 package io.dallen.Kingdoms.Kingdom.Structures.Types;
 
 import io.dallen.Kingdoms.Kingdom.Plot;
+import io.dallen.Kingdoms.Kingdom.Structures.Storage;
 import io.dallen.Kingdoms.Kingdom.Vaults.BuildingVault;
+import io.dallen.Kingdoms.Wrappers.MaterialWrapper;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import net.citizensnpcs.api.npc.NPC;
+import org.bukkit.Material;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 /**
  * Allows the kingdom to store weapons and armor for its subjects
  * 
  * @author donoa_000
  */
-public class Armory extends Plot{
+public class Armory extends Plot implements Storage{
 
     @Getter
     private int maxCapacity;
@@ -45,10 +51,36 @@ public class Armory extends Plot{
     private WeaponStats stats;
     
     @Getter
-    private BuildingVault storage;
+    private BuildingVault Storage;
     
     public Armory(Plot p) {
         super(p.getBase(), p.getCenter(), p.getOwner(), p.getMunicipal());
+        Storage = new BuildingVault(18,18*64, this);
+    }
+    
+    @Override
+    public void interact(PlayerInteractEvent e){
+        if(e.getClickedBlock().getType().equals(Material.CHEST)){
+            if(e.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
+                if(Storage.CanOpen(e.getPlayer())){
+                    Storage.SendToPlayer(e.getPlayer());
+                }
+            }else if(e.getAction().equals(Action.LEFT_CLICK_BLOCK)){
+                if(e.hasItem() && this.hasSpace()){
+                    Storage.getContents()[Storage.getFullSlots()] = new MaterialWrapper(e.getItem());
+                }
+            }
+        }
+    }
+    
+    @Override
+    public boolean hasSpace(){
+        return Storage.getFullSlots() < Storage.getUniqueSize() && Storage.getAmountFull() < Storage.getCapacity();
+    }
+    
+    @Override
+    public boolean supplyNPC(NPC npc){
+        return true;
     }
 
     @NoArgsConstructor

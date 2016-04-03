@@ -63,7 +63,7 @@ public class GameTicks{
         @Override
         public void run(){
             while(true){
-                for(Kingdom k : Kingdom.getKingdoms().values()){
+                for(Kingdom k : Main.getKingdoms()){
                     //recalculate population
 
                     //spawn attacking mobs

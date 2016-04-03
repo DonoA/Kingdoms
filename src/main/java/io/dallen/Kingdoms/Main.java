@@ -38,10 +38,13 @@ import io.dallen.Kingdoms.Util.DBmanager;
 import io.dallen.Kingdoms.Util.LogUtil;
 import io.dallen.Kingdoms.Commands.MuteCommand;
 import io.dallen.Kingdoms.Handlers.SkinHandler.SkinPacketHandler;
+import io.dallen.Kingdoms.Kingdom.Kingdom;
+import io.dallen.Kingdoms.Kingdom.Municipality;
 import io.dallen.Kingdoms.Util.NBTmanager;
 import io.dallen.Kingdoms.Util.RedisManager;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
@@ -68,6 +71,12 @@ public class Main extends JavaPlugin {
     
     @Getter
     private static ProtocolManager protocolManager;
+    
+    @Getter
+    private static ArrayList<Kingdom> Kingdoms = new ArrayList<Kingdom>();
+    
+    @Getter
+    private static ArrayList<Municipality> Municipals = new ArrayList<Municipality>();
     
     @Getter
     private static SkinPacketHandler skinHandler;

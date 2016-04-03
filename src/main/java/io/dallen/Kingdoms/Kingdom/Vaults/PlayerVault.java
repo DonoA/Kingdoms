@@ -32,7 +32,16 @@ public class PlayerVault implements Vault{
     private Player Owner;
     
     @Getter
-    private double Size;
+    private double uniqueSize;
+    
+    @Getter
+    private int fullSlots;
+    
+    @Getter
+    private int capacity;
+    
+    @Getter
+    private int amountFull;
     
     private ItemStack[] storage;
     
@@ -48,7 +57,7 @@ public class PlayerVault implements Vault{
     
     
     public PlayerVault(Player p, int size){
-        this.Size = size;
+        this.uniqueSize = size;
         this.Owner = p;
         this.storage = new ItemStack[size];
     }
