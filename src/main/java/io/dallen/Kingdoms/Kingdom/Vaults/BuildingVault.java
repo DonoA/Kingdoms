@@ -75,17 +75,15 @@ public class BuildingVault implements Vault{ // Will start pile from center and 
     
     @Override
     public boolean SendToPlayer(Player p){
-        if(InvenHandler.openVaults.containsKey(p.getName())){
-            return false;
-        }else{
-            Inventory inv = Bukkit.createInventory(p, (int) Math.ceil(uniqueSize/9)*9, "Building Inventory");
-            for(MaterialWrapper m : contents){
+        Inventory inv = Bukkit.createInventory(p, (int) Math.ceil(uniqueSize/9)*9, "Building Inventory");
+        for(MaterialWrapper m : contents){
+            if(m != null){
                 inv.addItem(m.asBukkitItem());
             }
-            InvenHandler.openVaults.put(p.getName(), this);
-            p.openInventory(inv);
         }
-        return true;
+        InvenHandler.openVaults.put(p.getName(), this);
+        p.openInventory(inv);
+        return false;
     }
     
     @Override
@@ -119,7 +117,7 @@ public class BuildingVault implements Vault{ // Will start pile from center and 
         if(fullSlots < uniqueSize && amountFull < capacity){
             boolean added = false;
             for(MaterialWrapper mw : contents) {
-                if(mw.getMaterial().equals(is.getType())) {
+                if(mw != null && mw.getMaterial().equals(is.getType())) {
                     mw.addToStack(is.getAmount());
                     added = true;
                 }
@@ -127,7 +125,7 @@ public class BuildingVault implements Vault{ // Will start pile from center and 
             if(!added){
                 contents[fullSlots] = new MaterialWrapper(is);
             }
-            
+            fullSlots++;
         }
     }
     
@@ -168,7 +166,7 @@ public class BuildingVault implements Vault{ // Will start pile from center and 
         @Getter
         private Location startLoc;
         @Getter
-        private double dist = 0;
+        private double dist = 0.5;
         @Getter
         private double angleA = 0;
         @Getter

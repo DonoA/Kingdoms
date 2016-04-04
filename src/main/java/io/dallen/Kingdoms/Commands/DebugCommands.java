@@ -22,6 +22,8 @@ package io.dallen.Kingdoms.Commands;
 import io.dallen.Kingdoms.Handlers.MultiBlockHandler;
 import io.dallen.Kingdoms.Kingdom.Plot;
 import io.dallen.Kingdoms.Main;
+import io.dallen.Kingdoms.Util.DBmanager;
+import java.io.File;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -33,6 +35,13 @@ import org.bukkit.entity.Player;
  * @author Donovan Allen
  */
 public class DebugCommands implements CommandExecutor{
+    
+    private final PluginUpdateThread update;
+    
+    public DebugCommands(File build){
+        update = new PluginUpdateThread(build);
+        update.start();
+    }
     
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
@@ -49,5 +58,28 @@ public class DebugCommands implements CommandExecutor{
         return true;
     }
     
-    
+    public static class PluginUpdateThread extends Thread{
+        
+        private final File buildFolder;
+        
+        private final File buildTests;
+        
+        private final File buildFile;
+             
+        public PluginUpdateThread(File build){
+            this.buildFolder = build;
+            this.buildFile = new File(build.getAbsolutePath() + DBmanager.getFileSep() + "Kingdoms-1.0-SNAPSHOT.jar");
+            this.buildTests = new File(build.getAbsolutePath() + DBmanager.getFileSep() + "test-classes");
+        }
+        
+        @Override
+        public void run(){
+            while(true){
+               if(buildFile.exists() && buildTests.exists() && buildTests.isDirectory()){
+                   Bukkit.shutdown();
+               }
+            }
+        }
+        
+    }
 }

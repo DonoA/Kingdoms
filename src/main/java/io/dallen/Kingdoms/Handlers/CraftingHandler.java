@@ -46,12 +46,11 @@ public class CraftingHandler implements Listener{
         
         ItemStack MultiTool = ItemUtil.setItemNameAndLore(Material.WATCH, "Multi Tool", "Used for managing plots");
         ShapedRecipe mTool = new ShapedRecipe(MultiTool);
-        mTool.shape("IiI","*S*","*C*");
+        mTool.shape("IiI"," S "," C ");
         mTool.setIngredient('I', Material.IRON_BLOCK);
         mTool.setIngredient('i', Material.IRON_INGOT);
         mTool.setIngredient('S', Material.STICK);
         mTool.setIngredient('C', Material.WATCH);
-        mTool.setIngredient('*', Material.AIR);
         p.getServer().addRecipe(mTool);
         
         Bukkit.getPluginManager().registerEvents(this, p);

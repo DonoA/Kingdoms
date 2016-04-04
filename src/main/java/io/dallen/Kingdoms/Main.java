@@ -37,9 +37,11 @@ import io.dallen.Kingdoms.Terrain.KingdomTerrainGeneration;
 import io.dallen.Kingdoms.Util.DBmanager;
 import io.dallen.Kingdoms.Util.LogUtil;
 import io.dallen.Kingdoms.Commands.MuteCommand;
+import io.dallen.Kingdoms.Handlers.CraftingHandler;
 import io.dallen.Kingdoms.Handlers.SkinHandler.SkinPacketHandler;
 import io.dallen.Kingdoms.Kingdom.Kingdom;
 import io.dallen.Kingdoms.Kingdom.Municipality;
+import io.dallen.Kingdoms.Kingdom.Vaults.BuildingVault.InvenHandler;
 import io.dallen.Kingdoms.Util.NBTmanager;
 import io.dallen.Kingdoms.Util.RedisManager;
 import java.io.File;
@@ -101,6 +103,7 @@ public class Main extends JavaPlugin {
                 protocolManager.addPacketListener(SkinHandler.getAdapter());
                 Bukkit.getScheduler().runTaskAsynchronously(Main.getPlugin(), SkinHandler);
                 skinHandler = SkinHandler;
+                CraftingHandler crafting = new CraftingHandler(Main.getPlugin());
                 if((Main.getPlugin().getServer().getPluginManager().getPlugin("Citizens") == null) || 
                     (!Main.getPlugin().getServer().getPluginManager().getPlugin("Citizens").isEnabled())){
                     LogUtil.printErr("Citizens 2 not found!");
@@ -116,8 +119,8 @@ public class Main extends JavaPlugin {
                 GeneralCommands general = new GeneralCommands();
                 AdminCommands admin = new AdminCommands();
                 MainMenuHandler mmh = new MainMenuHandler();
-                if(Main.getPlugin().getConfig().getBoolean("debug")){
-                    DebugCommands dbg = new DebugCommands();
+                if(Main.getPlugin().getConfig().getBoolean("debug.enabled")){
+                    DebugCommands dbg = new DebugCommands(new File(Main.getPlugin().getConfig().getString("debug.buildfolder")));
                     Main.getPlugin().getCommand("fillplot").setExecutor(dbg);
                     Main.getPlugin().getCommand("setskins").setExecutor(dbg);
                 }
@@ -161,6 +164,7 @@ public class Main extends JavaPlugin {
         MultiBlockHandler mbh = new MultiBlockHandler();
         Bukkit.getPluginManager().registerEvents(mbh, this);
         Bukkit.getPluginManager().registerEvents(new JoinLeaveHandler(), this);
+        Bukkit.getPluginManager().registerEvents(new InvenHandler(), this);
         Bukkit.getScheduler().scheduleSyncDelayedTask(this, onServerLoad);
 //        RedisManager RM = new RedisManager();
     }

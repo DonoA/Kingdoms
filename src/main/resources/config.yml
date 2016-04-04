@@ -1,3 +1,5 @@
 MainWorld: World
-debug: true
+debug:
+  enabled: true
+  buildfolder: C:\Users\donoa_000\Documents\Projects\Kingdoms\target
 decay: false

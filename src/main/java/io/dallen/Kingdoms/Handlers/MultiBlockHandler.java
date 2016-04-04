@@ -128,7 +128,7 @@ public class MultiBlockHandler implements Listener{
         
     }
     
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerInteract(PlayerInteractEvent e){
         if((!cooldown.containsKey(e.getPlayer())) || 
               (cooldown.containsKey(e.getPlayer()) && cooldown.get(e.getPlayer()) < System.currentTimeMillis() - 500)){
@@ -137,7 +137,7 @@ public class MultiBlockHandler implements Listener{
                 Plot p = Plot.inPlot(e.getClickedBlock().getLocation());
                 if(p != null && p instanceof Storage){
                     Storage s = (Storage) p;
-                    s.interact(e);
+                    e.setCancelled(s.interact(e));
                 }
             }
             if(e.getAction().equals(Action.RIGHT_CLICK_BLOCK) || e.getAction().equals(Action.RIGHT_CLICK_AIR)){
@@ -269,42 +269,48 @@ public class MultiBlockHandler implements Listener{
     }
     
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onChat(AsyncPlayerChatEvent e){
-        if(openInputs.containsKey(e.getPlayer().getName())){
-            e.setCancelled(true);
-            if(openInputs.get(e.getPlayer().getName()).getName().equalsIgnoreCase("buildConst")){
-                try {
-                    String[] args = e.getMessage().split(" ");
-                    Blueprint building = NBTmanager.loadData(new File(Main.getPlugin().getDataFolder() + DBmanager.getFileSep() + args[0] + ".schematic"));
-                    Plot p = (Plot) openInputs.get(e.getPlayer().getName()).getData();
-                    Location startCorner = new Location(p.getCenter().getWorld(), p.getCenter().getX() - building.getWid()/2  + (building.getWid() % 2 == 0 ? 1 : 0),
-                            p.getCenter().getBlockY(), p.getCenter().getBlockZ() - building.getLen()/2 + (building.getLen() % 2 == 0 ? 1 : 0));
-                    for(int y = 0; y < building.getHigh(); y++){
-                        for(int z = 0; z < building.getLen(); z++){
-                            for(int x = 0; x < building.getWid(); x++){
-                                Location nLoc = startCorner.clone().add(x,y,z);
-                                Material covMat = building.getBlocks()[x][y][z].getBlock();
-                                if(covMat.name().contains("STAIRS")){
-                                    covMat = Material.QUARTZ_STAIRS;
-                                }else{
-                                    covMat = Material.QUARTZ_BLOCK;
+    public void onChat(AsyncPlayerChatEvent ev){
+        if(openInputs.containsKey(ev.getPlayer().getName())){
+            ev.setCancelled(true);
+            if(openInputs.get(ev.getPlayer().getName()).getName().equalsIgnoreCase("buildConst")){
+                final AsyncPlayerChatEvent e = ev;
+                Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), new Runnable(){
+                   @Override
+                   public void run(){
+                       try {
+                            String[] args = e.getMessage().split(" ");
+                            Blueprint building = NBTmanager.loadData(new File(Main.getPlugin().getDataFolder() + DBmanager.getFileSep() + args[0] + ".schematic"));
+                            Plot p = (Plot) openInputs.get(e.getPlayer().getName()).getData();
+                            Location startCorner = new Location(p.getCenter().getWorld(), p.getCenter().getX() - building.getWid()/2  + (building.getWid() % 2 == 0 ? 1 : 0),
+                                    p.getCenter().getBlockY(), p.getCenter().getBlockZ() - building.getLen()/2 + (building.getLen() % 2 == 0 ? 1 : 0));
+                            for(int y = 0; y < building.getHigh(); y++){
+                                for(int z = 0; z < building.getLen(); z++){
+                                    for(int x = 0; x < building.getWid(); x++){
+                                        Location nLoc = startCorner.clone().add(x,y,z);
+                                        Material covMat = building.getBlocks()[x][y][z].getBlock();
+                                        if(covMat.name().contains("STAIRS")){
+                                            covMat = Material.QUARTZ_STAIRS;
+                                        }else if(!covMat.equals(Material.AIR)){
+                                            covMat = Material.QUARTZ_BLOCK;
+                                        }
+                                        nLoc.getBlock().setType(covMat, false);
+                                        nLoc.getBlock().setData(building.getBlocks()[x][y][z].getData(), false);
+                                    }
                                 }
-                                nLoc.getBlock().setType(covMat, false);
-                                nLoc.getBlock().setData(building.getBlocks()[x][y][z].getData(), false);
                             }
+                            Inventory hotbar =  Bukkit.createInventory(e.getPlayer(), 9);
+                            e.getPlayer().getInventory().setItemInMainHand(ItemUtil.setItemNameAndLore(Material.WATCH, "Start Build"));
+        //                    e.getPlayer().getInventory().get put hotbar here so the building can be rotated
+                            BuildFrame frame = new BuildFrame(building, p, hotbar, Integer.parseInt(args[1]));
+                            openBuilds.put(e.getPlayer().getName(), frame);
+                            openInputs.remove(e.getPlayer().getName());
+                        } catch (IOException ex) {
+                            Logger.getLogger(MultiBlockHandler.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (DataFormatException ex) {
+                            Logger.getLogger(MultiBlockHandler.class.getName()).log(Level.SEVERE, null, ex);
                         }
-                    }
-                    Inventory hotbar =  Bukkit.createInventory(e.getPlayer(), 9);
-                    e.getPlayer().getInventory().setItemInMainHand(ItemUtil.setItemNameAndLore(Material.WATCH, "Start Build"));
-//                    e.getPlayer().getInventory().get put hotbar here so the building can be rotated
-                    BuildFrame frame = new BuildFrame(building, p, hotbar, Integer.parseInt(args[1]));
-                    openBuilds.put(e.getPlayer().getName(), frame);
-                    openInputs.remove(e.getPlayer().getName());
-                } catch (IOException ex) {
-                    Logger.getLogger(MultiBlockHandler.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (DataFormatException ex) {
-                    Logger.getLogger(MultiBlockHandler.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                   } 
+                });
             }
         }
     }

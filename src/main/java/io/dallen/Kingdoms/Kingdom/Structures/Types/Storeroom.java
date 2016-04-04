@@ -48,18 +48,21 @@ public class Storeroom extends Plot implements Storage{
     }
     
     @Override
-    public void interact(PlayerInteractEvent e){
+    public boolean interact(PlayerInteractEvent e){
         if(e.getClickedBlock().getType().equals(Material.CHEST)){
             if(e.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
                 if(Storage.CanOpen(e.getPlayer())){
                     Storage.SendToPlayer(e.getPlayer());
+                    return true;
                 }
             }else if(e.getAction().equals(Action.LEFT_CLICK_BLOCK)){
                 if(e.hasItem() && this.hasSpace()){
                     Storage.getContents()[Storage.getFullSlots()] = new MaterialWrapper(e.getItem());
+                    return true;
                 }
             }
         }
+        return false;
     }
     
     @Override

@@ -32,7 +32,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 public interface Storage{
     public BuildingVault getStorage();
     
-    public void interact(PlayerInteractEvent e);
+    public boolean interact(PlayerInteractEvent e);
     
     public boolean hasSpace();
     

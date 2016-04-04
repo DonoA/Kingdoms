@@ -74,6 +74,7 @@ public class Structure{
         EditPlot = new ChestGUI("Edit Plot Default", 2, new MenuHandler()){{
             setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
             setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Upgrade");
+            setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
         }};
     }
     
