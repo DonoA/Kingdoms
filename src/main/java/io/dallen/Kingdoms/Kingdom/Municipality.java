@@ -107,11 +107,16 @@ public class Municipality {
     }
     
     public static Municipality inMunicipal(Location l){
+        Municipality curr = null;
+        Date oldDate = new Date(System.currentTimeMillis());
         for(Municipality m : allMunicipals){
             if(m.getBase().contains(LocationUtil.asPoint(l))){
-                return m;
+                if(m.getCreation().before(oldDate)){
+                    oldDate = m.getCreation();
+                    curr = m;
+                }
             }
         }
-        return null;
+        return curr;
     }
 }
