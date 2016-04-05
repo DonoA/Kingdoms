@@ -33,20 +33,26 @@ import io.dallen.Kingdoms.Kingdom.Structures.Types.Stable;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.Storeroom;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.TownHall;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.TrainingGround;
+import io.dallen.Kingdoms.Util.LocationUtil;
 import java.awt.Polygon;
 import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.Location;
 
 /**
  *
  * @author donoa_000
  */
 public class Municipality {
+    
+    @Getter
+    private static ArrayList<Municipality> allMunicipals = new ArrayList<Municipality>();
     
     @Getter
     private HashMap<Class, ArrayList<Structure>> Structures = new HashMap<Class, ArrayList<Structure>>();
@@ -69,10 +75,14 @@ public class Municipality {
     @Getter
     private Kingdom kingdom;
     
+    @Getter
+    private Date creation;
+    
     public Municipality(Structure center){
         this.Center = center;
         this.walls = new WallSystem(this);
         this.type = MunicipalTypes.MANOR;
+        this.creation = new Date(System.currentTimeMillis());
         Structures.put(Armory.class, new ArrayList<Structure>());
         Structures.put(Bank.class, new ArrayList<Structure>());
         Structures.put(Barracks.class, new ArrayList<Structure>());
@@ -96,5 +106,12 @@ public class Municipality {
         VILLAGE, MANOR, TOWN, CITY, KEEP, CITIDEL
     }
     
-    
+    public static Municipality inMunicipal(Location l){
+        for(Municipality m : allMunicipals){
+            if(m.getBase().contains(LocationUtil.asPoint(l))){
+                return m;
+            }
+        }
+        return null;
+    }
 }

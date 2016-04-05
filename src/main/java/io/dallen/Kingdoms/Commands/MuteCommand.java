@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -91,6 +92,7 @@ public class MuteCommand implements CommandExecutor{
         return true;
     }
     
+    @NoArgsConstructor
     public static class MuteClass {
         
         @Getter @Setter

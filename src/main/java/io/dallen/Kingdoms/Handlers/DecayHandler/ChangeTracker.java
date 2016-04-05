@@ -107,6 +107,10 @@ public class ChangeTracker implements Listener{ //Not fully functioning
             }else{
                 Changes.put(b.getLocation(), new SaveBlock(b));
             }
+        }else{
+            if(!p.canBuild(e.getPlayer())){
+                e.setCancelled(true);
+            }
         }
     }
     
@@ -120,6 +124,10 @@ public class ChangeTracker implements Listener{ //Not fully functioning
                 Changes.get(b.getLocation()).setBreakDate(new Date(System.currentTimeMillis()));
             }else{
                 Changes.put(b.getLocation(), new SaveBlock(b));
+            }
+        }else{
+            if(!p.canBuild(e.getPlayer())){
+                e.setCancelled(true);
             }
         }
         MultiBlock.checkMultiBlock(e, b);
@@ -136,6 +144,8 @@ public class ChangeTracker implements Listener{ //Not fully functioning
             }else{
                 Changes.put(b.getLocation(), new SaveBlock(b));
             }
+        }else{
+            e.setCancelled(true);
         }
         MultiBlock.checkMultiBlock(e, b);
     }
@@ -151,6 +161,8 @@ public class ChangeTracker implements Listener{ //Not fully functioning
             }else{
                 Changes.put(b.getLocation(), new SaveBlock(b));
             }
+        }else{
+            e.setCancelled(true);
         }
         MultiBlock.checkMultiBlock(e, b);
     }

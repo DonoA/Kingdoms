@@ -24,6 +24,7 @@ import io.dallen.Kingdoms.Kingdom.Structures.Contract;
 import io.dallen.Kingdoms.Kingdom.Structures.Structure;
 import io.dallen.Kingdoms.Kingdom.WallSystem.Wall;
 import io.dallen.Kingdoms.Kingdom.WallSystem.WallType;
+import io.dallen.Kingdoms.PlayerData;
 import io.dallen.Kingdoms.Util.LocationUtil;
 import java.awt.Point;
 import java.awt.Polygon;
@@ -94,6 +95,10 @@ public class Plot extends Structure implements Listener{
         }
         super.setMunicipal(new Municipality((Structure) this));
         return true;
+    }
+    
+    public boolean canBuild(Player p){
+        return super.getOwner().equals(p);
     }
     
 }

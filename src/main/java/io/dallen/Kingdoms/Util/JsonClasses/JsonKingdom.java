@@ -1,14 +1,14 @@
 /*
- * Copyright 2016 Donovan Allen
- *
+ * Copyright 2016 Donovan Allen.
+ * 
  * This file is part of Kingdoms for the Morphics Network.
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,45 +17,37 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.Kingdom;
+package io.dallen.Kingdoms.Util.JsonClasses;
 
-import io.dallen.Kingdoms.Kingdom.Structures.Structure;
-import java.awt.Polygon;
-import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.bukkit.entity.Player;
 
 /**
  *
- * @author donoa_000
+ * @author Donovan Allen
  */
-public class Kingdom {
+@NoArgsConstructor
+public class JsonKingdom {
     
+    @Getter @Setter
     private String Leader;
     
+    @Getter @Setter
     private int CapitolID;
     
-    @Getter
+    @Getter @Setter
     private String Name;
     
-    @Getter
-    private ArrayList<Ellipse2D> Base;
+    @Getter @Setter
+    private ArrayList<JsonEllipse> Base;
     
+    @Getter @Setter
     private ResourceStats Resources;
     
-    @Getter
-    private ArrayList<Municipality> Municipals = new ArrayList<Municipality>();
-    
-    @Getter
-    private HashMap<Class, ArrayList<Structure>> Structures = new HashMap<Class, ArrayList<Structure>>();
-    
-    @Getter
-    private ArrayList<Player> OnlinePlayers = new ArrayList<Player>();
+    @Getter @Setter
+    private ArrayList<String> Municipals;
     
     @NoArgsConstructor
     private static class ResourceStats{

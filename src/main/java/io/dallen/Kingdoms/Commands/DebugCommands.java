@@ -36,11 +36,13 @@ import org.bukkit.entity.Player;
  */
 public class DebugCommands implements CommandExecutor{
     
-    private final PluginUpdateThread update;
+    private PluginUpdateThread update;
     
     public DebugCommands(File build){
-        update = new PluginUpdateThread(build);
-        update.start();
+        if(Main.getPlugin().getConfig().getBoolean("debug.autorestart")){
+            update = new PluginUpdateThread(build);
+            update.start();
+        }
     }
     
     @Override
