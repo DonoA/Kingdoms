@@ -128,6 +128,8 @@ public class MultiBlockHandler implements Listener{
         
     }
     
+    
+    
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerInteract(PlayerInteractEvent e){
         if((!cooldown.containsKey(e.getPlayer())) || 
@@ -135,9 +137,20 @@ public class MultiBlockHandler implements Listener{
                cooldown.put(e.getPlayer(), System.currentTimeMillis());
             if(e.hasBlock()){
                 Plot p = Plot.inPlot(e.getClickedBlock().getLocation());
-                if(p != null && p instanceof Storage){
-                    Storage s = (Storage) p;
-                    e.setCancelled(s.interact(e));
+                if(p != null){
+                    if(p instanceof Storage){
+                        Storage s = (Storage) p;
+                        e.setCancelled(s.interact(e));
+                    }
+                    if(p instanceof Wall && e.hasItem() && e.getAction().equals(Action.LEFT_CLICK_BLOCK)){
+                        e.setCancelled(true);
+                        Wall w = (Wall) p;
+                        if(e.getItem().getType().name().contains("PICKAXE")){
+                            w.damage();
+                        }else if(e.getItem().getType().equals(Material.DIAMOND_HOE)){
+                            w.repair();
+                        }
+                    }
                 }
             }
             if(e.getAction().equals(Action.RIGHT_CLICK_BLOCK) || e.getAction().equals(Action.RIGHT_CLICK_AIR)){

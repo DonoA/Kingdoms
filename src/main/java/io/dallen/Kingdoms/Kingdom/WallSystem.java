@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import lombok.Getter;
 import org.bukkit.Location;
+import org.bukkit.boss.BossBar;
+import org.bukkit.entity.Player;
 
 /**
  *
@@ -95,12 +97,27 @@ public class WallSystem{
     }
     
     public static class Wall extends Plot{
+        
+        @Getter
+        private ArrayList<Player> currInteracters = new ArrayList<Player>();
+        
+        @Getter
+        private BossBar damageBar;
+        
         @Getter
         private WallType type;
         
         public Wall(Plot p, WallType type){
             super(p.getBase(), p.getCenter(), p.getOwner(), p.getMunicipal());
             this.type = type;
+        }
+        
+        public void damage(){
+            
+        }
+        
+        public void repair(){
+            
         }
     }
     
