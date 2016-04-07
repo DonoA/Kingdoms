@@ -17,15 +17,24 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.Util.JsonClasses;
-
-import lombok.NoArgsConstructor;
+package io.dallen.Kingdoms.Storage;
 
 /**
  *
  * @author Donovan Allen
  */
-@NoArgsConstructor
-public class JsonEllipse {
+public class SaveTypes {
     
+    public static interface JsonType{
+        
+        public <T extends Saveable> T toJavaObject();
+        
+        public static interface NativeType{
+            public <T> T toJavaObject();
+        }
+    }
+    
+    public static interface Saveable{
+        public <T extends JsonType> T toJsonObject();
+    }
 }

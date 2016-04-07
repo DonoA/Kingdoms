@@ -17,15 +17,21 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.Util.JsonClasses;
+package io.dallen.Kingdoms.Storage.JsonClasses;
 
-import lombok.NoArgsConstructor;
+import io.dallen.Kingdoms.Kingdom.Vaults.BuildingVault;
+import io.dallen.Kingdoms.Kingdom.Vaults.PlayerVault;
+import io.dallen.Kingdoms.Storage.SaveTypes;
 
 /**
  *
  * @author Donovan Allen
  */
-@NoArgsConstructor
-public class JsonWallSystem {
+public class JsonBuildingVault implements SaveTypes.JsonType{
+    
+    @Override
+    public BuildingVault toJavaObject(){
+        throw new UnsupportedOperationException();
+    }
     
 }

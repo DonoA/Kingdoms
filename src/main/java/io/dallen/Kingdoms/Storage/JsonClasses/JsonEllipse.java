@@ -17,12 +17,23 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.Util.JsonClasses;
+package io.dallen.Kingdoms.Storage.JsonClasses;
+
+import io.dallen.Kingdoms.Storage.PlayerData;
+import io.dallen.Kingdoms.Storage.SaveTypes;
+import java.awt.geom.Ellipse2D;
+import lombok.NoArgsConstructor;
 
 /**
  *
  * @author Donovan Allen
  */
-public class JsonPolygon {
+@NoArgsConstructor
+public class JsonEllipse implements SaveTypes.JsonType.NativeType{
+    
+    @Override
+    public Ellipse2D toJavaObject(){
+        throw new UnsupportedOperationException("Not supported for LeatherArmorMeta");
+    }
     
 }

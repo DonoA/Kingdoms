@@ -18,8 +18,10 @@
  * 
  */
 
-package io.dallen.Kingdoms.Util.JsonClasses;
+package io.dallen.Kingdoms.Storage.JsonClasses;
 
+import io.dallen.Kingdoms.Storage.PlayerData;
+import io.dallen.Kingdoms.Storage.SaveTypes;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.Getter;
@@ -33,7 +35,7 @@ import org.bukkit.inventory.meta.ItemMeta;
  * @author Donovan Allen
  */
 @NoArgsConstructor
-public class JsonEnchantmentMeta {
+public class JsonEnchantmentMeta implements SaveTypes.JsonType.NativeType{
     
     @Getter @Setter
     private HashMap<String, Integer> enchants = new HashMap();
@@ -42,5 +44,10 @@ public class JsonEnchantmentMeta {
         for (Map.Entry<Enchantment, Integer> entry : meta.getEnchants().entrySet()) {
             enchants.put(entry.getKey().getName(), entry.getValue());
         }
+    }
+    
+    @Override
+    public Object toJavaObject(){
+        throw new UnsupportedOperationException("Not supported for EnchantmentMeta");
     }
 }

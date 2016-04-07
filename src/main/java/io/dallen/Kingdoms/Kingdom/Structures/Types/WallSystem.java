@@ -17,15 +17,17 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.Kingdom;
+package io.dallen.Kingdoms.Kingdom.Structures.Types;
 
+import io.dallen.Kingdoms.Kingdom.Municipality;
+import io.dallen.Kingdoms.Kingdom.Plot;
+import io.dallen.Kingdoms.Storage.JsonClasses.JsonWallSystem;
+import io.dallen.Kingdoms.Storage.SaveTypes;
 import io.dallen.Kingdoms.Util.LocationUtil;
-import java.awt.Point;
 import java.awt.Polygon;
 import java.util.ArrayList;
 import java.util.HashMap;
 import lombok.Getter;
-import org.bukkit.Location;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 
@@ -33,7 +35,9 @@ import org.bukkit.entity.Player;
  *
  * @author donoa_000
  */
-public class WallSystem{
+public class WallSystem implements SaveTypes.Saveable{
+    
+    
     
     @Getter
     private HashMap<WallType, ArrayList<Wall>> Parts = new HashMap<WallType, ArrayList<Wall>>();
@@ -59,37 +63,14 @@ public class WallSystem{
         for(i = 0; i < corners.size(); i++){
             Xs[i] = (int) LocationUtil.asPoint(corners.get(i).getCenter()).getX();
             Zs[i] = (int) LocationUtil.asPoint(corners.get(i).getCenter()).getY();
-//            boolean found = false;
-//            if(i+1<corners.size()){
-//                Point a = LocationUtil.asPoint(corners.get(i).getCenter());
-//                Point b = LocationUtil.asPoint(corners.get(i+1).getCenter());
-//                if(a.getX() == b.getX()){//If the Xs are the same, change Z
-//                    for(int z = (int) a.getY(); z<b.getY() && !found; z++){
-//                        Location l = new Location(corners.get(i).getCenter().getWorld(), a.getX(), corners.get(i).getCenter().getBlockY(), z);
-//                        Plot p = Plot.inPlot(l);
-//                        if(p instanceof Wall){
-//                            found = true;
-//                        }
-//                    }
-//                }else if(a.getY() == b.getY()){//If the Zs are the same, change X
-//                    for(int x = (int) a.getX(); x<b.getX(); x++){
-//                        Location l = new Location(corners.get(i).getCenter().getWorld(), x, corners.get(i).getCenter().getBlockY(), a.getY());
-//                        Plot p = Plot.inPlot(l);
-//                        if(p instanceof Wall){
-//                            found = true;
-//                        }
-//                    }
-//                }
-//            }else{
-//                found = true;
-//            }
-//            if(!found){
-//                return false;
-//            }
         }
         Polygon newBase = new Polygon(Xs, Zs, i);
         municipal.setBase(newBase);
         return true;
+    }
+    
+    public JsonWallSystem toJsonObject(){
+        throw new UnsupportedOperationException();
     }
     
     public static enum WallType {
@@ -97,6 +78,8 @@ public class WallSystem{
     }
     
     public static class Wall extends Plot{
+        @Getter
+        private static ArrayList<String> damageBars = new ArrayList<String>();
         
         @Getter
         private ArrayList<Player> currInteracters = new ArrayList<Player>();
@@ -113,11 +96,11 @@ public class WallSystem{
         }
         
         public void damage(){
-            
+            damageBar.setProgress(damageBar.getProgress()-1);
         }
         
         public void repair(){
-            
+            damageBar.setProgress(damageBar.getProgress()+1);
         }
     }
     

@@ -20,7 +20,7 @@
 package io.dallen.Kingdoms.Commands;
 
 import io.dallen.Kingdoms.Kingdom.Kingdom;
-import io.dallen.Kingdoms.PlayerData;
+import io.dallen.Kingdoms.Storage.PlayerData;
 import io.dallen.Kingdoms.Util.PermissionManager;
 import java.util.ArrayList;
 import java.util.Arrays;

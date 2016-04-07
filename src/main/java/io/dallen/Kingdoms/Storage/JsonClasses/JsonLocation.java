@@ -18,8 +18,11 @@
  * 
  */
 
-package io.dallen.Kingdoms.Util.JsonClasses;
+package io.dallen.Kingdoms.Storage.JsonClasses;
 
+import io.dallen.Kingdoms.Kingdom.Municipality;
+import io.dallen.Kingdoms.Storage.PlayerData;
+import io.dallen.Kingdoms.Storage.SaveTypes;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -31,7 +34,7 @@ import org.bukkit.Location;
  * @author Donovan Allen
  */
 @NoArgsConstructor
-public class JsonLocation {
+public class JsonLocation implements SaveTypes.JsonType.NativeType{
     @Getter @Setter
     private double x;
     @Getter @Setter
@@ -58,7 +61,8 @@ public class JsonLocation {
      * Get a bukkit copy of this object
      * @return  A bukkit Location object of this object
      */
-    public Location toLocation() {
+    @Override
+    public Location toJavaObject(){
         return new Location(Bukkit.getWorld(world), x, y, z, yaw, pitch);
     }
 }

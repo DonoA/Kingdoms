@@ -17,41 +17,22 @@
  * 
  * 
  */
+package io.dallen.Kingdoms.Storage.JsonClasses;
 
-package io.dallen.Kingdoms.Util.JsonClasses;
-
-import java.util.List;
-import lombok.Getter;
+import io.dallen.Kingdoms.Kingdom.Vaults.PlayerVault;
+import io.dallen.Kingdoms.Storage.SaveTypes;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.bukkit.inventory.meta.BookMeta;
 
 /**
  *
  * @author Donovan Allen
  */
 @NoArgsConstructor
-public class JsonBookMeta {
+public class JsonPlayerVault implements SaveTypes.JsonType{
     
-    @Getter
-    @Setter
-    private String author;
-    @Getter
-    @Setter
-    private List<String> pages;
-    @Getter
-    @Setter
-    private String title;
-    @Getter
-    @Setter
-    private List<String> lore;
-
-    public JsonBookMeta(BookMeta meta) {
-        this.author = meta.getAuthor();
-        this.pages = meta.getPages();
-        this.title = meta.getTitle();
-        if (meta.hasLore()) {
-            this.lore = meta.getLore();
-        }
+    @Override
+    public PlayerVault toJavaObject(){
+        throw new UnsupportedOperationException();
     }
+    
 }

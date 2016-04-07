@@ -17,46 +17,22 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.Util.JsonClasses;
+package io.dallen.Kingdoms.Storage.JsonClasses;
 
-import io.dallen.Kingdoms.Kingdom.Municipality.MunicipalTypes;
 import io.dallen.Kingdoms.Kingdom.Structures.Structure;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import lombok.Getter;
+import io.dallen.Kingdoms.Storage.SaveTypes;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /**
  *
  * @author Donovan Allen
  */
 @NoArgsConstructor
-public class JsonMunicipality {
+public class JsonStructure implements SaveTypes.JsonType{
     
-    @Getter @Setter
-    private HashMap<String, ArrayList<Structure>> Structures;
-    
-    @Getter @Setter
-    private JsonStructure Center;
-    
-    @Getter @Setter
-    private JsonWallSystem walls;
-    
-    @Getter @Setter
-    private JsonPolygon Base;
-    
-    @Getter @Setter
-    private JsonEllipse Influence;
-    
-    @Getter @Setter
-    private MunicipalTypes type;
-    
-    @Getter @Setter
-    private String kingdom;
-    
-    @Getter @Setter
-    private Date creation;
+    @Override
+    public Structure toJavaObject(){
+        throw new UnsupportedOperationException();
+    }
     
 }

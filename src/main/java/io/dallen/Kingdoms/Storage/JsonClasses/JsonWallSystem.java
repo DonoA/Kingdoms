@@ -17,15 +17,22 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.Util;
+package io.dallen.Kingdoms.Storage.JsonClasses;
+
+import io.dallen.Kingdoms.Kingdom.Structures.Types.WallSystem;
+import io.dallen.Kingdoms.Storage.PlayerData;
+import io.dallen.Kingdoms.Storage.SaveTypes;
+import lombok.NoArgsConstructor;
 
 /**
- * This class is made for the exclusive purpose of helping to 
- * convert objects to JSON And back into normal objects
- * All methods should be static
- * 
+ *
  * @author Donovan Allen
  */
-public class JsonSterilizer {
+@NoArgsConstructor
+public class JsonWallSystem implements SaveTypes.JsonType{
     
+    @Override
+    public WallSystem toJavaObject(){
+        throw new UnsupportedOperationException();
+    }
 }

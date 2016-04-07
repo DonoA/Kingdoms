@@ -24,7 +24,7 @@ import io.dallen.Kingdoms.Kingdom.Structures.Storage;
 import io.dallen.Kingdoms.Kingdom.Structures.Structure;
 import io.dallen.Kingdoms.Kingdom.Vaults.BuildingVault;
 import io.dallen.Kingdoms.Util.ChestGUI;
-import io.dallen.Kingdoms.Wrappers.MaterialWrapper;
+import io.dallen.Kingdoms.Storage.MaterialWrapper;
 import lombok.Getter;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Material;

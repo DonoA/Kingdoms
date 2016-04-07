@@ -20,7 +20,7 @@
 package io.dallen.Kingdoms.Handlers;
 
 import io.dallen.Kingdoms.Kingdom.Kingdom;
-import io.dallen.Kingdoms.PlayerData;
+import io.dallen.Kingdoms.Storage.PlayerData;
 import io.dallen.Kingdoms.Commands.MuteCommand;
 import io.dallen.Kingdoms.Util.TimeUtil;
 import java.util.Date;

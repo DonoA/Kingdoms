@@ -17,7 +17,7 @@
  * 
  * 
  */
-package io.dallen.Kingdoms;
+package io.dallen.Kingdoms.Storage;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.dallen.Kingdoms.Handlers.Party;
@@ -27,12 +27,15 @@ import io.dallen.Kingdoms.Commands.MuteCommand.MuteClass;
 import io.dallen.Kingdoms.Kingdom.Kingdom;
 import io.dallen.Kingdoms.Kingdom.Municipality;
 import io.dallen.Kingdoms.Kingdom.Vaults.PlayerVault;
+import io.dallen.Kingdoms.Storage.JsonClasses.JsonLocation;
+import io.dallen.Kingdoms.Storage.JsonClasses.JsonPlayerData;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -41,7 +44,7 @@ import org.bukkit.entity.Player;
  * @author donoa_000
  */
 @NoArgsConstructor
-public class PlayerData {
+public class PlayerData implements SaveTypes.Saveable{
     @Getter
     private static HashMap<Player, PlayerData> PlayerDat = new HashMap<Player, PlayerData>();
     
@@ -86,5 +89,21 @@ public class PlayerData {
         return Party.getParties().get(PartyID);
     }
     
+    @Override
+    public JsonPlayerData toJsonObject(){
+        JsonPlayerData jpd = new JsonPlayerData();
+        jpd.setKingdom(Kingdom != null ? Kingdom.getKingdomID() : -1);
+        jpd.setMight(Might);
+        jpd.setMunicipal(Municipal != null ? Municipal.getMunicipalID() : -1);
+        jpd.setMuted(muted);
+        jpd.setRole(Role != null ? Role.getRoleName() : null);
+        if(Spawn != null){
+            jpd.setSpawn(new JsonLocation(Spawn));
+        }else{
+            jpd.setSpawn(new JsonLocation(Bukkit.getWorlds().get(0).getSpawnLocation()));
+        }
+        jpd.setVault(Vault.toJsonObject());
+        return jpd;
+    }
     
 }

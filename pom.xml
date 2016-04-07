@@ -85,6 +85,10 @@
             <id>sk89q-repo</id>
             <url>http://maven.sk89q.com/artifactory/repo/</url>
         </repository>
+        <repository>
+            <id>confuser-repo</id>
+            <url>http://ci.frostcast.net/plugin/repository/everything</url>
+        </repository>
     </repositories>
     <dependencies>
         <!--Spigot-API-->
@@ -100,6 +104,20 @@
             <artifactId>spigot-api</artifactId>
             <version>1.9-R0.1-SNAPSHOT</version>
             <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+        <!--  Gson: Java to Json conversion -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.6.2</version>
+            <scope>compile</scope>
+        </dependency>
+        <!--  BarAPI for boss bars for boss health and structure health -->
+        <dependency>
+            <groupId>me.confuser</groupId>
+            <artifactId>BarAPI</artifactId>
+            <version>3.0</version>
             <scope>provided</scope>
         </dependency>
         <!-- Redis -->

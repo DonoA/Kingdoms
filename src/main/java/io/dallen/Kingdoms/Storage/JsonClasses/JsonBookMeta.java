@@ -18,35 +18,47 @@
  * 
  */
 
-package io.dallen.Kingdoms.Util.JsonClasses;
+package io.dallen.Kingdoms.Storage.JsonClasses;
 
+import io.dallen.Kingdoms.Storage.SaveTypes;
 import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.inventory.meta.BookMeta;
 
 /**
  *
  * @author Donovan Allen
  */
 @NoArgsConstructor
-public class JsonLeatherArmorMeta {
+public class JsonBookMeta implements SaveTypes.JsonType.NativeType{
     
-    @Getter @Setter
-    private int rgb;
-    @Getter @Setter
-    private String displayName;
-    @Getter @Setter
+    @Getter
+    @Setter
+    private String author;
+    @Getter
+    @Setter
+    private List<String> pages;
+    @Getter
+    @Setter
+    private String title;
+    @Getter
+    @Setter
     private List<String> lore;
 
-    public JsonLeatherArmorMeta(LeatherArmorMeta meta) {
-        this.rgb = meta.getColor().asRGB();
-        if (meta.hasDisplayName()) {
-            this.displayName = meta.getDisplayName();
-        }
+    public JsonBookMeta(BookMeta meta) {
+        this.author = meta.getAuthor();
+        this.pages = meta.getPages();
+        this.title = meta.getTitle();
         if (meta.hasLore()) {
             this.lore = meta.getLore();
         }
     }
+    
+    @Override
+    public Object toJavaObject(){
+        throw new UnsupportedOperationException("Not supported for EnchantmentMeta");
+    }
+    
 }

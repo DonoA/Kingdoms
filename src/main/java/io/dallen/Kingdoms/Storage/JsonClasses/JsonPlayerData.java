@@ -17,9 +17,11 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.Util.JsonClasses;
+package io.dallen.Kingdoms.Storage.JsonClasses;
 
 import io.dallen.Kingdoms.Commands.MuteCommand.MuteClass;
+import io.dallen.Kingdoms.Storage.PlayerData;
+import io.dallen.Kingdoms.Storage.SaveTypes;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -29,15 +31,15 @@ import lombok.Setter;
  * @author Donovan Allen
  */
 @NoArgsConstructor
-public class JsonPlayerData {
+public class JsonPlayerData implements SaveTypes.JsonType{
     @Getter @Setter
     private String Role;
     
     @Getter @Setter
-    private String Kingdom;
+    private int Kingdom;
     
     @Getter @Setter
-    private String Municipal;
+    private int Municipal;
     
     @Getter @Setter
     private JsonPlayerVault Vault;
@@ -50,4 +52,14 @@ public class JsonPlayerData {
     
     @Getter @Setter
     private MuteClass muted;
+    
+    @Override
+    public PlayerData toJavaObject(){//Must load Kingdoms and plots and things first
+        PlayerData pd = new PlayerData();
+        pd.setMight(Might);
+        pd.setMuted(muted);
+        pd.setSpawn(Spawn.toJavaObject());
+        pd.setVault(Vault.toJavaObject());
+        return pd;
+    }
 }

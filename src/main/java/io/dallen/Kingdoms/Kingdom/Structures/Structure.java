@@ -23,6 +23,9 @@ import com.google.common.primitives.Ints;
 import io.dallen.Kingdoms.Handlers.MultiBlockHandler;
 import io.dallen.Kingdoms.Kingdom.Kingdom;
 import io.dallen.Kingdoms.Kingdom.Municipality;
+import io.dallen.Kingdoms.Storage.JsonClasses.JsonMunicipality;
+import io.dallen.Kingdoms.Storage.JsonClasses.JsonStructure;
+import io.dallen.Kingdoms.Storage.SaveTypes;
 import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEvent;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEventHandler;
@@ -39,7 +42,7 @@ import org.bukkit.inventory.ItemStack;
  *
  * @author donoa_000
  */
-public class Structure{
+public class Structure implements SaveTypes.Saveable{
     
     @Getter @Setter
     private int Width; // X
@@ -122,6 +125,10 @@ public class Structure{
                 }
             }
         }
+    }
+    
+    public JsonStructure toJsonObject(){
+        throw new UnsupportedOperationException();
     }
     
     public static class MenuHandler implements OptionClickEventHandler{

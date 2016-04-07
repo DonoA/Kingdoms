@@ -35,4 +35,7 @@ public abstract class Role {
     @Getter
     private int Renoun;
     
+    @Getter
+    private String roleName;
+    
 }

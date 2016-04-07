@@ -17,15 +17,20 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.Util.JsonClasses;
+package io.dallen.Kingdoms.Storage.JsonClasses;
 
-import lombok.NoArgsConstructor;
+import io.dallen.Kingdoms.Storage.SaveTypes;
+import java.awt.Polygon;
 
 /**
  *
  * @author Donovan Allen
  */
-@NoArgsConstructor
-public class JsonStructure {
+public class JsonPolygon implements SaveTypes.JsonType.NativeType{
+    
+    @Override
+    public Polygon toJavaObject(){
+        throw new UnsupportedOperationException();
+    }
     
 }

@@ -17,8 +17,11 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.Util.JsonClasses;
+package io.dallen.Kingdoms.Storage.JsonClasses;
 
+import io.dallen.Kingdoms.Kingdom.Kingdom;
+import io.dallen.Kingdoms.Storage.PlayerData;
+import io.dallen.Kingdoms.Storage.SaveTypes;
 import java.util.ArrayList;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,7 +32,7 @@ import lombok.Setter;
  * @author Donovan Allen
  */
 @NoArgsConstructor
-public class JsonKingdom {
+public class JsonKingdom implements SaveTypes.JsonType{
     
     @Getter @Setter
     private String Leader;
@@ -48,6 +51,11 @@ public class JsonKingdom {
     
     @Getter @Setter
     private ArrayList<String> Municipals;
+    
+    @Override
+    public Kingdom toJavaObject(){
+        throw new UnsupportedOperationException("Not supported for LeatherArmorMeta");
+    }
     
     @NoArgsConstructor
     private static class ResourceStats{

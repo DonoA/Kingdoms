@@ -19,7 +19,7 @@
  */
 package io.dallen.Kingdoms.Handlers;
 
-import io.dallen.Kingdoms.PlayerData;
+import io.dallen.Kingdoms.Storage.PlayerData;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;

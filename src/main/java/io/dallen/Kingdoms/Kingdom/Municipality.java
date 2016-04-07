@@ -19,6 +19,7 @@
  */
 package io.dallen.Kingdoms.Kingdom;
 
+import io.dallen.Kingdoms.Kingdom.Structures.Types.WallSystem;
 import io.dallen.Kingdoms.Kingdom.Structures.Structure;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.Armory;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.Bank;
@@ -33,6 +34,8 @@ import io.dallen.Kingdoms.Kingdom.Structures.Types.Stable;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.Storeroom;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.TownHall;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.TrainingGround;
+import io.dallen.Kingdoms.Storage.JsonClasses.JsonMunicipality;
+import io.dallen.Kingdoms.Storage.SaveTypes;
 import io.dallen.Kingdoms.Util.LocationUtil;
 import java.awt.Polygon;
 import java.awt.geom.Ellipse2D;
@@ -49,7 +52,12 @@ import org.bukkit.Location;
  *
  * @author donoa_000
  */
-public class Municipality {
+public class Municipality implements SaveTypes.Saveable{
+    
+    private static int currID;
+    
+    @Getter
+    private int MunicipalID;
     
     @Getter
     private static ArrayList<Municipality> allMunicipals = new ArrayList<Municipality>();
@@ -118,5 +126,9 @@ public class Municipality {
             }
         }
         return curr;
+    }
+    
+    public JsonMunicipality toJsonObject(){
+        throw new UnsupportedOperationException();
     }
 }

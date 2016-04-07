@@ -21,8 +21,11 @@ package io.dallen.Kingdoms.Kingdom.Vaults;
 
 import io.dallen.Kingdoms.Kingdom.Structures.Structure;
 import io.dallen.Kingdoms.Main;
-import io.dallen.Kingdoms.PlayerData;
-import io.dallen.Kingdoms.Wrappers.MaterialWrapper;
+import io.dallen.Kingdoms.Storage.JsonClasses.JsonBuildingVault;
+import io.dallen.Kingdoms.Storage.JsonClasses.JsonMunicipality;
+import io.dallen.Kingdoms.Storage.PlayerData;
+import io.dallen.Kingdoms.Storage.MaterialWrapper;
+import io.dallen.Kingdoms.Storage.SaveTypes;
 import java.awt.Polygon;
 import java.util.HashMap;
 import lombok.Getter;
@@ -41,7 +44,7 @@ import org.bukkit.inventory.ItemStack;
  *
  * @author donoa_000
  */
-public class BuildingVault implements Vault{ // Will start pile from center and add blocks outward
+public class BuildingVault implements Vault, SaveTypes.Saveable{ // Will start pile from center and add blocks outward
     @Getter
     private Structure owner;
     
@@ -127,6 +130,10 @@ public class BuildingVault implements Vault{ // Will start pile from center and 
             }
             fullSlots++;
         }
+    }
+    
+    public JsonBuildingVault toJsonObject(){
+        throw new UnsupportedOperationException();
     }
     
     public static class InvenHandler implements Listener{

@@ -17,7 +17,7 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.Wrappers;
+package io.dallen.Kingdoms.Storage;
 
 import lombok.Getter;
 import org.bukkit.Material;

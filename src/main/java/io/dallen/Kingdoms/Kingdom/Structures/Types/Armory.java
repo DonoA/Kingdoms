@@ -22,7 +22,7 @@ package io.dallen.Kingdoms.Kingdom.Structures.Types;
 import io.dallen.Kingdoms.Kingdom.Plot;
 import io.dallen.Kingdoms.Kingdom.Structures.Storage;
 import io.dallen.Kingdoms.Kingdom.Vaults.BuildingVault;
-import io.dallen.Kingdoms.Wrappers.MaterialWrapper;
+import io.dallen.Kingdoms.Storage.MaterialWrapper;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import net.citizensnpcs.api.npc.NPC;

@@ -2,7 +2,7 @@ name: ${project.artifactId}
 main: ${project.groupId}.${project.artifactId}.Main
 version: ${project.version}
 author: Dallen/Donovan Allen
-depend: [Citizens, ProtocolLib]
+depend: [Citizens, ProtocolLib, BarAPI]
 load: STARTUP
 commands:
   Kingdom:

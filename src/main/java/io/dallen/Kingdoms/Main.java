@@ -43,7 +43,7 @@ import io.dallen.Kingdoms.Kingdom.Kingdom;
 import io.dallen.Kingdoms.Kingdom.Municipality;
 import io.dallen.Kingdoms.Kingdom.Vaults.BuildingVault.InvenHandler;
 import io.dallen.Kingdoms.Util.NBTmanager;
-import io.dallen.Kingdoms.Util.RedisManager;
+import io.dallen.Kingdoms.Storage.RedisManager;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;

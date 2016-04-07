@@ -27,10 +27,11 @@ import io.dallen.Kingdoms.Kingdom.Structures.Contract;
 import io.dallen.Kingdoms.Kingdom.Structures.Storage;
 import io.dallen.Kingdoms.Kingdom.Structures.Structure;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.BuildersHut;
-import io.dallen.Kingdoms.Kingdom.WallSystem.Wall;
-import io.dallen.Kingdoms.Kingdom.WallSystem.WallType;
+import io.dallen.Kingdoms.Kingdom.Structures.Types.WallSystem;
+import io.dallen.Kingdoms.Kingdom.Structures.Types.WallSystem.Wall;
+import io.dallen.Kingdoms.Kingdom.Structures.Types.WallSystem.WallType;
 import io.dallen.Kingdoms.Main;
-import io.dallen.Kingdoms.PlayerData;
+import io.dallen.Kingdoms.Storage.PlayerData;
 import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEvent;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEventHandler;
@@ -66,6 +67,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -128,7 +130,27 @@ public class MultiBlockHandler implements Listener{
         
     }
     
-    
+    @EventHandler
+    public void onMove(PlayerMoveEvent e){
+        if(WallSystem.Wall.getDamageBars().contains(e.getPlayer().getName())){
+            final PlayerMoveEvent ev = e;
+            new Thread(new Runnable(){
+                @Override
+                public void run(){
+                    for(Plot p : Plot.getAllPlots()){
+                        if(p instanceof Wall){
+                            Wall w = (Wall) p;
+                            if(w.getCurrInteracters().contains(ev.getPlayer()) && ev.getTo().distance(w.getCenter()) > 20){
+                                w.getCurrInteracters().remove(ev.getPlayer());
+                                WallSystem.Wall.getDamageBars().remove(ev.getPlayer().getName());
+                                w.getDamageBar().removePlayer(ev.getPlayer());
+                            }
+                        }
+                    }
+                }
+            }).start();
+        }
+    }
     
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerInteract(PlayerInteractEvent e){
@@ -146,8 +168,22 @@ public class MultiBlockHandler implements Listener{
                         e.setCancelled(true);
                         Wall w = (Wall) p;
                         if(e.getItem().getType().name().contains("PICKAXE")){
+                            if(!w.getCurrInteracters().contains(e.getPlayer())){
+                                w.getCurrInteracters().add(e.getPlayer());
+                                if(!WallSystem.Wall.getDamageBars().contains(e.getPlayer().getName())){
+                                    WallSystem.Wall.getDamageBars().add(e.getPlayer().getName());
+                                }
+                                w.getDamageBar().addPlayer(e.getPlayer());
+                            }
                             w.damage();
                         }else if(e.getItem().getType().equals(Material.DIAMOND_HOE)){
+                            if(!w.getCurrInteracters().contains(e.getPlayer())){
+                                w.getCurrInteracters().add(e.getPlayer());
+                                if(!WallSystem.Wall.getDamageBars().contains(e.getPlayer().getName())){
+                                    WallSystem.Wall.getDamageBars().add(e.getPlayer().getName());
+                                }
+                                w.getDamageBar().addPlayer(e.getPlayer());
+                            }
                             w.repair();
                         }
                     }

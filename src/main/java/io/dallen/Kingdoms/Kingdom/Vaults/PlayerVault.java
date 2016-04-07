@@ -19,6 +19,9 @@
  */
 package io.dallen.Kingdoms.Kingdom.Vaults;
 
+import io.dallen.Kingdoms.Storage.JsonClasses.JsonPlayerData;
+import io.dallen.Kingdoms.Storage.JsonClasses.JsonPlayerVault;
+import io.dallen.Kingdoms.Storage.SaveTypes;
 import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -27,7 +30,7 @@ import org.bukkit.inventory.ItemStack;
  *
  * @author donoa_000
  */
-public class PlayerVault implements Vault{
+public class PlayerVault implements Vault, SaveTypes.Saveable{
     @Getter
     private Player Owner;
     
@@ -62,4 +65,8 @@ public class PlayerVault implements Vault{
         this.storage = new ItemStack[size];
     }
     
+    @Override
+    public JsonPlayerVault toJsonObject(){
+        throw new UnsupportedOperationException();
+    }
 }

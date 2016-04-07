@@ -20,6 +20,9 @@
 package io.dallen.Kingdoms.Kingdom;
 
 import io.dallen.Kingdoms.Kingdom.Structures.Structure;
+import io.dallen.Kingdoms.Storage.JsonClasses.JsonKingdom;
+import io.dallen.Kingdoms.Storage.JsonClasses.JsonPlayerData;
+import io.dallen.Kingdoms.Storage.SaveTypes;
 import java.awt.Polygon;
 import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
@@ -34,11 +37,17 @@ import org.bukkit.entity.Player;
  *
  * @author donoa_000
  */
-public class Kingdom {
+public class Kingdom implements SaveTypes.Saveable{
+    
+    private static int currID;
     
     private String Leader;
     
-    private int CapitolID;
+    @Getter
+    private int KingdomID;
+    
+    @Getter
+    private Structure CapitolID;
     
     @Getter
     private String Name;
@@ -56,6 +65,11 @@ public class Kingdom {
     
     @Getter
     private ArrayList<Player> OnlinePlayers = new ArrayList<Player>();
+    
+    @Override
+    public JsonKingdom toJsonObject(){
+        throw new UnsupportedOperationException();
+    }
     
     @NoArgsConstructor
     private static class ResourceStats{
