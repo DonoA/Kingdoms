@@ -45,7 +45,7 @@ public class WallSystem implements SaveTypes.Saveable{
     @Getter
     private Municipality municipal;
     
-    WallSystem(Municipality m) {
+    public WallSystem(Municipality m) {
         this.municipal = m;
         Parts.put(WallType.WALL, new ArrayList<Wall>());
         Parts.put(WallType.CORNER, new ArrayList<Wall>());

@@ -86,10 +86,6 @@ public class AdminCommands implements CommandExecutor{
                 if(Bukkit.getPlayer(args[0]) != null){
                     Player p = Bukkit.getPlayer(args[0]);
                     PacketContainer CrashPacket = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.RESPAWN, false);
-//                    CrashPacket.getIntegers().write(0, 3);
-//                    CrashPacket.getDifficulties().write(0, EnumWrappers.Difficulty.EASY);
-//                    CrashPacket.getGameModes().write(0, NativeGameMode.SPECTATOR);
-//                    CrashPacket.getWorldTypeModifier().write(0, WorldType.NORMAL);
                     try {
                         ProtocolLibrary.getProtocolManager().sendServerPacket(p, CrashPacket);
                     } catch (InvocationTargetException e) {
