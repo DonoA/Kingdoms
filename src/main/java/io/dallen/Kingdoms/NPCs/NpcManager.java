@@ -19,7 +19,9 @@
  */
 package io.dallen.Kingdoms.NPCs;
 
+import io.dallen.Kingdoms.Kingdom.Structures.Types.TrainingGround.SoldierType;
 import io.dallen.Kingdoms.NPCs.Traits.Builder;
+import io.dallen.Kingdoms.NPCs.Traits.Soldier;
 import lombok.Getter;
 import lombok.Setter;
 import net.citizensnpcs.api.CitizensAPI;
@@ -50,5 +52,25 @@ public class NpcManager {
         Builder.spawn(spawn);
         Builder.addTrait(new Builder());
         return Builder;
+    }
+    
+    public NPC spawnSoldier(String user, Location spawn, SoldierType type){
+        NPC Soldier = NPCReg.createNPC(EntityType.PLAYER, user);
+        Soldier.spawn(spawn);
+        switch(type){
+            case ARCHER:
+                Soldier.addTrait(new Soldier.Archer());
+                break;
+            case INFANTRY:
+                Soldier.addTrait(new Soldier.Infantry());
+                break;
+            case CAVALRY:
+                Soldier.addTrait(new Soldier.Cavalry());
+                break;
+            case GENERAL:
+                Soldier.addTrait(new Soldier.General());
+                break;
+        }
+        return Soldier;
     }
 }

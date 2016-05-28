@@ -84,7 +84,7 @@ public class TownHall extends Plot{
                             }
                         }
                         if(startWall == null){
-                            p.sendMessage("Could not calculate plot");
+                            p.sendMessage("Could not calculate municipal");
                             return;
                         }
                         ArrayList<Wall> corners = new ArrayList<Wall>();

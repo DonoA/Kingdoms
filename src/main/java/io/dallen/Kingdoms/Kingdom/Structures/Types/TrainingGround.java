@@ -20,6 +20,11 @@
 package io.dallen.Kingdoms.Kingdom.Structures.Types;
 
 import io.dallen.Kingdoms.Kingdom.Plot;
+import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEvent;
+import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEventHandler;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * Allows the kingdom to train its NPCs
@@ -38,6 +43,11 @@ public class TrainingGround extends Plot{
     
     private int trainingArea;
     
+    static{
+        EditPlot.setName("Training Grounds");
+        EditPlot.setHandler(new MenuHandler());
+    }
+    
     public TrainingGround(Plot p) {
         super(p.getBase(), p.getCenter(), p.getOwner(), p.getMunicipal());
     }
@@ -55,5 +65,58 @@ public class TrainingGround extends Plot{
         private int Cavalry;
         private int Generals;
     }
-
+    
+    public static enum SoldierType{
+        ARCHER, INFANTRY, CAVALRY, GENERAL
+    }
+    
+    public void trainArcher(int number){
+        this.Trainees.Archers += number;
+        
+    }
+    
+    public void trainInfantry(int number){
+        this.Trainees.Infantry += number;
+        
+    }
+    
+    public void trainCavalry(int number){
+        this.Trainees.Cavalry += number;
+        
+    }
+    
+    public void trainGeneral(int number){
+        this.Trainees.Generals += number;
+        
+    }
+    
+    @Override
+    public void sendEditMenu(Player p){
+        if(super.getMunicipal() == null){
+            EditPlot.setOption(2, new ItemStack(Material.ENCHANTED_BOOK), "Train Archer");
+            EditPlot.setOption(3, new ItemStack(Material.ENCHANTED_BOOK), "Train Infantry");
+            EditPlot.setOption(4, new ItemStack(Material.ENCHANTED_BOOK), "Train Cavalry");
+            EditPlot.setOption(5, new ItemStack(Material.ENCHANTED_BOOK), "Train General");
+        }
+        super.sendEditMenu(p);
+    }
+    
+    public static class MenuHandler implements OptionClickEventHandler{
+        
+        @Override
+        public void onOptionClick(OptionClickEvent e){
+            if(e.getMenuName().equalsIgnoreCase("Training Grounds")){
+                TrainingGround grounds = (TrainingGround) e.getMenuData();
+                if(e.getName().equalsIgnoreCase("Train Archer")){
+                    grounds.trainArcher(1);
+                }else if(e.getName().equalsIgnoreCase("Train Infantry")){
+                    grounds.trainInfantry(1);
+                }else if(e.getName().equalsIgnoreCase("Train Cavalry")){
+                    grounds.trainCavalry(1);
+                }else if(e.getName().equalsIgnoreCase("Train General")){
+                    grounds.trainGeneral(1);
+                }
+            }
+        }
+    }
 }
