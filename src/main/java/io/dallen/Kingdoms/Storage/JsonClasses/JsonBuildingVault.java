@@ -22,12 +22,52 @@ package io.dallen.Kingdoms.Storage.JsonClasses;
 import io.dallen.Kingdoms.Kingdom.Vaults.BuildingVault;
 import io.dallen.Kingdoms.Kingdom.Vaults.PlayerVault;
 import io.dallen.Kingdoms.Storage.SaveTypes;
+import lombok.Getter;
 
 /**
  *
  * @author Donovan Allen
  */
 public class JsonBuildingVault implements SaveTypes.JsonType{
+    @Getter
+    private JsonStructure owner;
+    
+    @Getter
+    private double uniqueSize;
+    
+    @Getter
+    private int fullSlots;
+    
+    @Getter
+    private int capacity;
+    
+    @Getter
+    private int amountFull;
+    
+    @Getter
+    private JsonPolygon floorPlan;
+    
+    @Getter
+    private JsonItemStack[] contents;
+    
+    @Getter
+    private JsonResourcePile pile;
+    
+    public static class JsonResourcePile implements SaveTypes.JsonType{
+        @Getter
+        private JsonLocation startLoc;
+        @Getter
+        private double dist = 0.5;
+        @Getter
+        private double angleA = 0;
+        @Getter
+        private double angleB = 0;
+        
+        @Override
+        public BuildingVault.ResourcePile toJavaObject(){
+            throw new UnsupportedOperationException();
+        }
+    }
     
     @Override
     public BuildingVault toJavaObject(){

@@ -42,7 +42,7 @@ public class KingdomCommands implements CommandExecutor{
     public boolean onCommand(CommandSender sender, Command cmd, String lbl, String[] args){
         Player p = (Player) sender;
         if(args[0].equalsIgnoreCase("spawn")){
-            npc = Main.getNPCs().getNPCreg().createNPC(EntityType.PLAYER, "Dallen");
+            npc = Main.getNPCs().getNPCReg().createNPC(EntityType.PLAYER, "Dallen");
             npc.spawn(Bukkit.getWorlds().get(0).getSpawnLocation());
         }else if(args[0].equalsIgnoreCase("target")){
             npc.getNavigator().setTarget(p.getLocation());

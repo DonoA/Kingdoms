@@ -17,28 +17,12 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.Storage.JsonClasses;
-
-import io.dallen.Kingdoms.Storage.PlayerData;
-import io.dallen.Kingdoms.Storage.SaveTypes;
-import java.awt.geom.Ellipse2D;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+package io.dallen.Kingdoms.Handlers.MagicHandler;
 
 /**
  *
  * @author Donovan Allen
  */
-@NoArgsConstructor
-public class JsonEllipse implements SaveTypes.JsonType.NativeType{
-    @Getter
-    private double length;
-    @Getter
-    private double width;
-    
-    @Override
-    public Ellipse2D toJavaObject(){
-        throw new UnsupportedOperationException("Not supported for LeatherArmorMeta");
-    }
+public class BlockPlaceHandler {
     
 }

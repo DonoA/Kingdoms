@@ -42,6 +42,7 @@ import io.dallen.Kingdoms.Handlers.SkinHandler.SkinPacketHandler;
 import io.dallen.Kingdoms.Kingdom.Kingdom;
 import io.dallen.Kingdoms.Kingdom.Municipality;
 import io.dallen.Kingdoms.Kingdom.Vaults.BuildingVault.InvenHandler;
+import io.dallen.Kingdoms.NPCs.Traits.Builder;
 import io.dallen.Kingdoms.Util.NBTmanager;
 import io.dallen.Kingdoms.Storage.RedisManager;
 import java.io.File;
@@ -52,6 +53,8 @@ import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
 import lombok.Getter;
 import lombok.Setter;
+import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.trait.TraitInfo;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -115,6 +118,7 @@ public class Main extends JavaPlugin {
                     changes = new ChangeTracker(Plugin);
                 }
                 NPCs = new NpcManager();
+                CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(Builder.class));
                 ModerationCommands moderation = new ModerationCommands();
                 GeneralCommands general = new GeneralCommands();
                 AdminCommands admin = new AdminCommands();

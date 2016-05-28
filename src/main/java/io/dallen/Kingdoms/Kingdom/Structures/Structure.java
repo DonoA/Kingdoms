@@ -20,9 +20,11 @@
 package io.dallen.Kingdoms.Kingdom.Structures;
 
 import com.google.common.primitives.Ints;
+import io.dallen.Kingdoms.Handlers.BuildingHandler;
 import io.dallen.Kingdoms.Handlers.MultiBlockHandler;
 import io.dallen.Kingdoms.Kingdom.Kingdom;
 import io.dallen.Kingdoms.Kingdom.Municipality;
+import io.dallen.Kingdoms.Kingdom.Structures.Types.BuildersHut;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonMunicipality;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonStructure;
 import io.dallen.Kingdoms.Storage.SaveTypes;
@@ -70,6 +72,8 @@ public class Structure implements SaveTypes.Saveable{
     private int maxRank;
     
     public static ChestGUI EditPlot;
+    public static ChestGUI BuildMenu;
+    
     @Getter
     private long amountBuilt;
     
@@ -78,6 +82,11 @@ public class Structure implements SaveTypes.Saveable{
             setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
             setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Upgrade");
             setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
+        }};
+        BuildMenu = new ChestGUI("Build Options", 2, new MenuHandler()){{
+            setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Default Wall 1");
+            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Default Wall 2");
+            setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Other");
         }};
     }
     
@@ -112,7 +121,17 @@ public class Structure implements SaveTypes.Saveable{
      * as it turns out handling menus from the server side is terrible
      */
     public void sendEditMenu(Player p){
+        EditPlot.setMenuData(this);
         EditPlot.sendMenu(p);
+    }
+    
+    /*
+     * This method MUST compile the needed menu for sending and place the relevent options in the data slots (so they are player specific)
+     * as it turns out handling menus from the server side is terrible
+     */
+    public void sendBuildMenu(Player p){
+        BuildMenu.setMenuData(this);
+        BuildMenu.sendMenu(p);
     }
     
     private void setArea(){
@@ -135,10 +154,26 @@ public class Structure implements SaveTypes.Saveable{
         
         @Override
         public void onOptionClick(OptionClickEvent e){
-            if(e.getName().equalsIgnoreCase("Build")){
-                MultiBlockHandler.getOptionHandler().onOptionClick(e);
-            }else{
-                e.getPlayer().sendMessage("Default option called");
+            if(e.getMenuName().equalsIgnoreCase("Build Options")){
+                if(e.getName().equalsIgnoreCase("Other")){
+                    BuildingHandler.getBuildChestHandler().onOptionClick(e);
+                }else{
+                    e.getPlayer().sendMessage("Default option called");
+                }
+            }else if(e.getMenuName().equalsIgnoreCase("Edit Plot Default")){
+                if(e.getName().equalsIgnoreCase("Build")){
+                    if(((Structure) e.getMenuData()).getMunicipal() != null && 
+                        !((Structure) e.getMenuData()).getMunicipal().getStructures().get(BuildersHut.class).isEmpty()){
+                        BuildMenu.setMenuData(this);
+                        e.setNext(BuildMenu);
+                    }else{
+                        e.getPlayer().sendMessage("You have no NPCs to build this!");
+                    }
+                }else if(e.getName().equalsIgnoreCase("Erase")){
+                    e.getPlayer().sendMessage("Default option called");
+                }else if(e.getName().equalsIgnoreCase("Demolish")){
+                    e.getPlayer().sendMessage("Default option called");
+                }
             }
         }
     }

@@ -168,7 +168,7 @@ public class BuildingVault implements Vault, SaveTypes.Saveable{ // Will start p
         }
     }
     
-    public static class ResourcePile{
+    public static class ResourcePile implements SaveTypes.Saveable{
         
         @Getter
         private Location startLoc;
@@ -181,6 +181,11 @@ public class BuildingVault implements Vault, SaveTypes.Saveable{ // Will start p
         
         public ResourcePile(Location start){
             this.startLoc = start;
+        }
+        
+        @Override
+        public JsonBuildingVault toJsonObject(){
+            throw new UnsupportedOperationException();
         }
         
         public void addBlock(){

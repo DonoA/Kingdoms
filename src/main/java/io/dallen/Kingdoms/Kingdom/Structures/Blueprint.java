@@ -56,15 +56,31 @@ public class Blueprint {
         }
     }
     
-    public Blueprint Rotate(int angle){
-        return this;
+    public void Rotate(int angle){//THIS does not account for stair blocks or other attached things atm
+        BlueBlock[][][] ret = new BlueBlock[this.wid][blocks[0].length][this.len];
+        if(angle == 90){
+            for(int y = 0; y < this.high; y++){
+                for (int z = 0; z < this.len; z++) {
+                    for (int x = 0; x < this.wid; x++) {
+                        ret[x][y][this.len-1-z] = blocks[z][y][x];
+                    }
+                }
+            }
+        }else if(angle == -90){//I really hope these work, they are hot off StackOverflow
+            for(int y = 0; y < this.high; y++){
+                for (int z = 0; z < this.len; z++) {
+                    for (int x = 0; x < this.wid; x++) {
+                        ret[this.wid-1-x][y][z] = blocks[z][y][x];
+                    }
+                }
+            }
+        }
+        this.blocks = ret;
     }
     
     public Blueprint replace(BlueBlock find, BlueBlock replace){
         return this;
     }
-    
-    
     
     public static class BlueBlock{
         @Getter

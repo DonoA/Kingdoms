@@ -19,10 +19,14 @@
  */
 package io.dallen.Kingdoms.NPCs;
 
+import io.dallen.Kingdoms.NPCs.Traits.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.npc.NPCRegistry;
+import org.bukkit.Location;
+import org.bukkit.entity.EntityType;
 
 /**
  *
@@ -31,15 +35,20 @@ import net.citizensnpcs.api.npc.NPCRegistry;
 public class NpcManager {
     
     @Getter @Setter
-    private NPCRegistry NPCreg;
+    private NPCRegistry NPCReg;
     
     public NpcManager(){
-        NPCreg = CitizensAPI.getNPCRegistry();
+        NPCReg = CitizensAPI.getNPCRegistry();
     }
     
     public void CreateNPCs(){
         
     }
     
-    
+    public NPC spawnBuilder(String user, Location spawn){
+        NPC Builder = NPCReg.createNPC(EntityType.PLAYER, user);
+        Builder.spawn(spawn);
+        Builder.addTrait(new Builder());
+        return Builder;
+    }
 }

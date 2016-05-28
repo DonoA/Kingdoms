@@ -19,7 +19,7 @@
  */
 package io.dallen.Kingdoms.Commands;
 
-import io.dallen.Kingdoms.Handlers.MultiBlockHandler;
+import io.dallen.Kingdoms.Handlers.BuildingHandler;
 import io.dallen.Kingdoms.Kingdom.Plot;
 import io.dallen.Kingdoms.Main;
 import io.dallen.Kingdoms.Util.DBmanager;
@@ -51,8 +51,8 @@ public class DebugCommands implements CommandExecutor{
             Player plr = (Player) sender;
             plr.sendMessage("To start a building contruction type the schematic name and build speed in chat");
             Plot p = Plot.inPlot(plr.getLocation());
-            MultiBlockHandler.StringInput in = new MultiBlockHandler.StringInput("buildConst", p);
-            MultiBlockHandler.getOpenInputs().put(plr.getName(), in);
+            BuildingHandler.StringInput in = new BuildingHandler.StringInput("buildConst", p);
+            BuildingHandler.getOpenInputs().put(plr.getName(), in);
         }else if(cmd.getName().equalsIgnoreCase("setskins")){
             Main.getSkinHandler().setSkin(args[0]);
             Bukkit.getScheduler().runTaskAsynchronously(Main.getPlugin(), Main.getSkinHandler());

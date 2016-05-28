@@ -1,14 +1,14 @@
 /*
- * Copyright 2016 Donovan Allen
- *
+ * Copyright 2016 Donovan Allen.
+ * 
  * This file is part of Kingdoms for the Morphics Network.
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,41 +20,31 @@
 package io.dallen.Kingdoms.Util;
 
 import io.dallen.Kingdoms.Main;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.inventory.Inventory;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 /**
  *
- * @author donoa_000
+ * @author Donovan Allen
  */
-public class ChestGUI implements Listener{
+public class HotbarMenu implements Listener{
     
-    private static HashMap<String, MenuInstance> openMenus = new HashMap<String, MenuInstance>();
+    private static HashMap<String, HotbarInstance> openMenus = new HashMap<String, HotbarInstance>();
     
     private static HashMap<String, Long> cooldown = new HashMap<String, Long>();
     @Setter
     private String name;
-    @Setter
-    private int size;
-    @Setter
-    private InventoryType type;
     @Setter
     private OptionClickEventHandler handler;
     @Setter
@@ -64,69 +54,52 @@ public class ChestGUI implements Listener{
     private ItemStack[] optionIcons;
     private Object[] optionData;
     
-    public ChestGUI(String name, InventoryType type, OptionClickEventHandler handler){
-        this.type = type;
+    public HotbarMenu(String name, OptionClickEventHandler handler){
         this.name = name;
         this.handler = handler;
-        this.size = type.getDefaultSize();
-        optionNames = new String[this.size];
-        optionIcons = new ItemStack[this.size];
-        optionData = new Object[this.size];
+        optionNames = new String[9];
+        optionIcons = new ItemStack[9];
+        optionData = new Object[9];
+        optionNames[8] = "Cancel";
+        optionIcons[8] = ItemUtil.setItemNameAndLore(Material.BARRIER, "Cancel");
         Main.getPlugin().getServer().getPluginManager().registerEvents(this, Main.getPlugin());
     }
     
-    public ChestGUI(String name, int size, OptionClickEventHandler handler){
-        this.type = InventoryType.CHEST;
-        this.name = name;
-        this.size = size*9;
-        optionNames = new String[this.size];
-        optionIcons = new ItemStack[this.size];
-        final int s = this.size;
-        optionData = new Object[this.size];
-        this.handler = handler;
-        Main.getPlugin().getServer().getPluginManager().registerEvents(this, Main.getPlugin());
-    }
-   
-    public ChestGUI setOption(int pos, ItemStack icon, String name, String... info){
+    public HotbarMenu setOption(int pos, ItemStack icon, String name, String... info){
         optionNames[pos] = name;
         optionIcons[pos] = ItemUtil.setItemNameAndLore(icon, name, info);
         return this;
     }
     
-    public ChestGUI setOption(int pos, ItemStack icon, String name, Object data, String... info){
+    public HotbarMenu setOption(int pos, ItemStack icon, String name, Object data, String... info){
         optionNames[pos] = name;
         optionIcons[pos] = ItemUtil.setItemNameAndLore(icon, name, info);
         optionData[pos] = data;
         return this;
     }
     
-    public ChestGUI clearOptions(){
-        optionNames = new String[this.size];
-        optionIcons = new ItemStack[this.size];
-        optionData = new Object[this.size];
+    public HotbarMenu clearOptions(){
+        optionNames = new String[9];
+        optionIcons = new ItemStack[9];
+        optionData = new Object[9];
+        optionNames[8] = "Cancel";
+        optionIcons[8] = ItemUtil.setItemNameAndLore(Material.BARRIER, "Cancel");
         return this;
     }
     
     public void sendMenu(Player player){
-        Inventory inventory = null;
-        if(type.equals(InventoryType.CHEST)){
-            inventory = Bukkit.createInventory(player, size, name);
-            for (int i = 0; i < optionIcons.length; i++){
-                if (optionIcons[i] != null){
-                    inventory.setItem(i, optionIcons[i]);
-                }
-            }
-        }else{
-            inventory = Bukkit.createInventory(player, type, name);
-            for (int i = 0; i < optionIcons.length; i++){
-                if (optionIcons[i] != null){
-                    inventory.setItem(i, optionIcons[i]);
-                }
-            }
+        ItemStack[] saveBar = new ItemStack[9];
+        for(int i = 36; i <= 44; i++){
+            saveBar[i-36] = player.getInventory().getItem(i);
+            player.getInventory().setItem(i, optionIcons[i-36]);
         }
-        final MenuInstance menu = new MenuInstance(this);
-        player.openInventory(inventory);
+        final HotbarInstance menu = new HotbarInstance(this);
+        menu.setPlayerOldHotbar(saveBar);
         openMenus.put(player.getName(), menu);
+    }
+    
+    public static void closeMenu(Player player){
+        openMenus.remove(player.getName());
     }
    
     public void destroy(){
@@ -140,26 +113,31 @@ public class ChestGUI implements Listener{
     @EventHandler
     public void onInventoryOpen(InventoryOpenEvent e){
         if(openMenus.containsKey(e.getPlayer().getName())){
-            openMenus.remove(e.getPlayer().getName());
+            e.setCancelled(true);
+            e.getPlayer().sendMessage("You cannot open your inventory in this menu!");
         }
     }
     
     @EventHandler
-    public void onInventoryClick(InventoryClickEvent event){
-        if((!cooldown.containsKey(event.getWhoClicked().getName())) || 
-            (cooldown.containsKey(event.getWhoClicked().getName()) && cooldown.get(event.getWhoClicked().getName()) < System.currentTimeMillis() - 500)){
-            cooldown.put(event.getWhoClicked().getName(), System.currentTimeMillis());
-            if(!openMenus.containsKey(event.getWhoClicked().getName()))
+    public void onPlayerInteract(PlayerInteractEvent event){
+        if((!cooldown.containsKey(event.getPlayer().getName())) || 
+            (cooldown.containsKey(event.getPlayer().getName()) && cooldown.get(event.getPlayer().getName()) < System.currentTimeMillis() - 500)){
+            cooldown.put(event.getPlayer().getName(), System.currentTimeMillis());
+            if(!openMenus.containsKey(event.getPlayer().getName()))
                 return;
-            MenuInstance menu = openMenus.get(event.getWhoClicked().getName());
-            if(event.getInventory().getTitle().equals(menu.name)){
+            if(event.getAction().equals(Action.RIGHT_CLICK_AIR) && event.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
+                HotbarInstance menu = openMenus.get(event.getPlayer().getName());
                 event.setCancelled(true);
-                int slot = event.getRawSlot();
-                if(slot >= 0 && slot < menu.size && menu.optionNames[slot] != null){
-                    OptionClickEvent e = new OptionClickEvent((Player) event.getWhoClicked(), slot, menu.optionData[slot], menu.optionNames[slot], menu.name, menu.menuData);
+                int slot = event.getPlayer().getInventory().getHeldItemSlot();
+                if(slot >= 0 && slot < 9 && menu.optionNames[slot] != null){
+                    if(menu.optionNames[slot].equalsIgnoreCase("Cancel")){
+                        HotbarMenu.closeMenu(event.getPlayer());
+                        return;
+                    }
+                    OptionClickEvent e = new OptionClickEvent(event.getPlayer(), slot, menu.optionData[slot], menu.optionNames[slot], menu.name, menu.menuData);
                     menu.handler.onOptionClick(e);
                     if(e.isClose()){
-                        final Player p = (Player) event.getWhoClicked();
+                        final Player p = (Player) event.getPlayer();
                         final OptionClickEvent ev = e;
                         Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), new Runnable(){
                             @Override
@@ -167,7 +145,7 @@ public class ChestGUI implements Listener{
                                 if(ev.getNext() != null){
                                     ev.getNext().sendMenu(p);
                                 }else{
-                                    p.closeInventory();
+                                    HotbarMenu.closeMenu(p);
                                 }
                             }
                         }, 1);
@@ -176,26 +154,24 @@ public class ChestGUI implements Listener{
                         destroy();
                     }
                 }
+                HotbarMenu.closeMenu(event.getPlayer());
             }
-            openMenus.remove(event.getWhoClicked().getName());
         }
     }
     
-    /**
-     * Its between this and using virtual clients, This is more complex than I can work out atm Sry future me.
-     */
-    public static class MenuInstance{
+    public static class HotbarInstance{
         private String name;
-        private int size;
         private OptionClickEventHandler handler;
         private String[] optionNames;
         private ItemStack[] optionIcons;
         private Object[] optionData;
         private Object menuData;
         
-        public MenuInstance(ChestGUI menu){
+        @Getter @Setter
+        private ItemStack[] playerOldHotbar;
+        
+        public HotbarInstance(HotbarMenu menu){
             this.name = menu.name;
-            this.size = menu.size;
             this.handler = menu.handler;
             this.optionData = menu.optionData;
             this.optionNames = menu.optionNames;
@@ -225,7 +201,7 @@ public class ChestGUI implements Listener{
         private boolean close;
         
         @Getter @Setter
-        private ChestGUI next;
+        private HotbarMenu next;
         
         @Getter @Setter
         private boolean destroy;
