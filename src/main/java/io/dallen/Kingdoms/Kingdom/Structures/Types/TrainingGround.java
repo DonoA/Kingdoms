@@ -101,22 +101,4 @@ public class TrainingGround extends Plot{
         super.sendEditMenu(p);
     }
     
-    public static class MenuHandler implements OptionClickEventHandler{
-        
-        @Override
-        public void onOptionClick(OptionClickEvent e){
-            if(e.getMenuName().equalsIgnoreCase("Training Grounds")){
-                TrainingGround grounds = (TrainingGround) e.getMenuData();
-                if(e.getName().equalsIgnoreCase("Train Archer")){
-                    grounds.trainArcher(1);
-                }else if(e.getName().equalsIgnoreCase("Train Infantry")){
-                    grounds.trainInfantry(1);
-                }else if(e.getName().equalsIgnoreCase("Train Cavalry")){
-                    grounds.trainCavalry(1);
-                }else if(e.getName().equalsIgnoreCase("Train General")){
-                    grounds.trainGeneral(1);
-                }
-            }
-        }
-    }
 }

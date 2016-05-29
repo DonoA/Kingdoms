@@ -51,7 +51,7 @@ public class Soldier{
     }
     
     public static class Infantry extends Trait{
-
+        
         public Infantry(){
             super("Infantry");
         }

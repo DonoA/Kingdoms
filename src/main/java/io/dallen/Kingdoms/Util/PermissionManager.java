@@ -38,4 +38,7 @@ public class PermissionManager {
     @Getter
     private static final Permission modPermission = new Permission("kingdom.mod", PermissionDefault.OP);
     
+    @Getter
+    private static final Permission buildPermission = new Permission("kingdom.build", PermissionDefault.OP);
+    
 }

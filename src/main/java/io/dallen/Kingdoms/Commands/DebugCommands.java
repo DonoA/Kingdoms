@@ -24,11 +24,18 @@ import io.dallen.Kingdoms.Kingdom.Plot;
 import io.dallen.Kingdoms.Main;
 import io.dallen.Kingdoms.Util.DBmanager;
 import java.io.File;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.material.RedstoneWire;
+import net.minecraft.server.v1_9_R1.BlockRedstoneWire;
 
 /**
  *
@@ -56,6 +63,16 @@ public class DebugCommands implements CommandExecutor{
         }else if(cmd.getName().equalsIgnoreCase("setskins")){
             Main.getSkinHandler().setSkin(args[0]);
             Bukkit.getScheduler().runTaskAsynchronously(Main.getPlugin(), Main.getSkinHandler());
+        }else if(cmd.getName().equalsIgnoreCase("bd")){
+            Block r =  ((Player)sender).getTargetBlock((Set<Material>) null, 8);
+            BlockRedstoneWire wire = (BlockRedstoneWire) r;
+            try {
+                Class<?> NMSEnumRedstoneWireConnection = Class.forName("net.minecraft.server.v1_9_R1.BlockRedstoneWire.EnumRedstoneWireConnection");
+//                wire.getBlockData().set(BlockRedstoneWire.NORTH, BlockRedstoneWire.EnumRedstoneWireConnection.UP);//THIS WILL NOT FUNCTION WITHOUT A CRACKED JAR
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(DebugCommands.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
         }
         return true;
     }

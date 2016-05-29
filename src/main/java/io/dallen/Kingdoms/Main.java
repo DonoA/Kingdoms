@@ -37,7 +37,9 @@ import io.dallen.Kingdoms.Terrain.KingdomTerrainGeneration;
 import io.dallen.Kingdoms.Util.DBmanager;
 import io.dallen.Kingdoms.Util.LogUtil;
 import io.dallen.Kingdoms.Commands.MuteCommand;
+import io.dallen.Kingdoms.Handlers.BuildingHandler;
 import io.dallen.Kingdoms.Handlers.CraftingHandler;
+import io.dallen.Kingdoms.Handlers.DebugHandler;
 import io.dallen.Kingdoms.Handlers.SkinHandler.SkinPacketHandler;
 import io.dallen.Kingdoms.Kingdom.Kingdom;
 import io.dallen.Kingdoms.Kingdom.Municipality;
@@ -92,6 +94,9 @@ public class Main extends JavaPlugin {
     @Getter
     private static ChangeTracker changes;
     
+    @Getter @Setter
+    private static boolean TickStopped = false;
+    
     @Override
     public void onLoad() {
         Plugin = this;
@@ -118,7 +123,7 @@ public class Main extends JavaPlugin {
                     changes = new ChangeTracker(Plugin);
                 }
                 NPCs = new NpcManager();
-                CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(Builder.class));
+//                CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(Builder.class));
                 ModerationCommands moderation = new ModerationCommands();
                 GeneralCommands general = new GeneralCommands();
                 AdminCommands admin = new AdminCommands();
@@ -127,6 +132,7 @@ public class Main extends JavaPlugin {
                     DebugCommands dbg = new DebugCommands(new File(Main.getPlugin().getConfig().getString("debug.buildfolder")));
                     Main.getPlugin().getCommand("fillplot").setExecutor(dbg);
                     Main.getPlugin().getCommand("setskins").setExecutor(dbg);
+                    Main.getPlugin().getCommand("bd").setExecutor(dbg);
                 }
                 Main.getPlugin().getCommand("menu").setExecutor(mmh);
                 Main.getPlugin().getCommand("crash").setExecutor(admin);
@@ -169,7 +175,10 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(mbh, this);
         Bukkit.getPluginManager().registerEvents(new JoinLeaveHandler(), this);
         Bukkit.getPluginManager().registerEvents(new InvenHandler(), this);
+        Bukkit.getPluginManager().registerEvents(new BuildingHandler(), this);
+        Bukkit.getPluginManager().registerEvents(new DebugHandler(), this);
         Bukkit.getScheduler().scheduleSyncDelayedTask(this, onServerLoad);
+        
 //        RedisManager RM = new RedisManager();
     }
     

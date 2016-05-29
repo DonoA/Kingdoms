@@ -21,10 +21,9 @@ package io.dallen.Kingdoms.Kingdom.Structures.Types;
 
 import io.dallen.Kingdoms.Kingdom.Plot;
 import io.dallen.Kingdoms.Kingdom.Structures.Storage;
-import io.dallen.Kingdoms.Kingdom.Structures.Structure;
 import io.dallen.Kingdoms.Kingdom.Vaults.BuildingVault;
+import io.dallen.Kingdoms.Main;
 import io.dallen.Kingdoms.Util.ChestGUI;
-import io.dallen.Kingdoms.Storage.MaterialWrapper;
 import lombok.Getter;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Material;
@@ -45,6 +44,11 @@ public class BuildersHut extends Plot implements Storage{
     private int workerCapacity;
     @Getter
     private static ChestGUI EditPlot;
+    
+    static{
+        EditPlot.setName("Builder's Hut");
+        EditPlot.setHandler(new MenuHandler());
+    }
     
     public BuildersHut(Plot p) {
         super(p.getBase(), p.getCenter(), p.getOwner(), p.getMunicipal());
@@ -83,5 +87,24 @@ public class BuildersHut extends Plot implements Storage{
     @Override
     public boolean supplyNPC(NPC npc){
         return true;
+    }
+    
+    @Override
+    public void sendEditMenu(Player p){
+        EditPlot.setOption(4, new ItemStack(Material.ENCHANTED_BOOK), "Train Builder", this);
+        super.sendEditMenu(p);
+    }
+    
+    public static class MenuHandler implements ChestGUI.OptionClickEventHandler{
+        
+        @Override
+        public void onOptionClick(ChestGUI.OptionClickEvent e){
+            if(e.getMenuName().equalsIgnoreCase("Builder's Hut")){
+                BuildersHut hut = (BuildersHut) e.getMenuData();
+                if(e.getName().equalsIgnoreCase("Train Builder")){
+                    Main.getNPCs().spawnBuilder("Dallen", hut.getCenter());
+                }
+            }
+        }
     }
 }

@@ -52,8 +52,11 @@ public class Kingdom implements SaveTypes.Saveable{
     @Getter
     private String Name;
     
-    @Getter
-    private ArrayList<Ellipse2D> Base;
+//    @Getter
+//    private ArrayList<Ellipse2D> Base;
+    
+    @Getter @Setter
+    private Ellipse2D Influence;
     
     private ResourceStats Resources;
     

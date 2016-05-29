@@ -91,7 +91,15 @@
         </repository>
     </repositories>
     <dependencies>
-        <!--Spigot-API-->
+        <!-- CraftBukkit -->
+        <dependency>
+            <groupId>org.bukkit</groupId>
+            <artifactId>craftbukkit</artifactId>
+            <version>1.9-R0.1-SNAPSHOT</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+        <!-- Spigot-API -->
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
@@ -117,7 +125,7 @@
         <dependency>
             <groupId>me.confuser</groupId>
             <artifactId>BarAPI</artifactId>
-            <version>3.0</version>
+            <version>3.4</version>
             <scope>provided</scope>
         </dependency>
         <!-- Redis -->

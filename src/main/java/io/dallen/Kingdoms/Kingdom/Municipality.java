@@ -34,16 +34,15 @@ import io.dallen.Kingdoms.Kingdom.Structures.Types.Stable;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.Storeroom;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.TownHall;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.TrainingGround;
+import io.dallen.Kingdoms.Kingdom.Structures.Types.WallSystem.Wall;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonMunicipality;
 import io.dallen.Kingdoms.Storage.SaveTypes;
 import io.dallen.Kingdoms.Util.LocationUtil;
 import java.awt.Polygon;
 import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Location;
@@ -60,10 +59,10 @@ public class Municipality implements SaveTypes.Saveable{
     private int MunicipalID;
     
     @Getter
-    private static ArrayList<Municipality> allMunicipals = new ArrayList<Municipality>();
+    private final static ArrayList<Municipality> allMunicipals = new ArrayList<Municipality>();
     
     @Getter
-    private HashMap<Class, ArrayList<Structure>> Structures = new HashMap<Class, ArrayList<Structure>>();
+    private final HashMap<Class, ArrayList<Structure>> Structures = new HashMap<Class, ArrayList<Structure>>();
     
     @Getter
     private Structure Center;
@@ -86,24 +85,24 @@ public class Municipality implements SaveTypes.Saveable{
     @Getter
     private Date creation;
     
+    @Getter @Setter
+    private Location influenceCenter;
+    
+    @Getter
+    private final static Class[] StructureClasses = new Class[] {Armory.class, Bank.class, Barracks.class, Blacksmith.class, 
+                                                                BuildersHut.class, Castle.class, Dungeon.class, Farm.class, 
+                                                                Marketplace.class, Stable.class, Storeroom.class, TownHall.class, 
+                                                                TrainingGround.class};
+    
     public Municipality(Structure center){
         this.Center = center;
         this.walls = new WallSystem(this);
         this.type = MunicipalTypes.MANOR;
         this.creation = new Date(System.currentTimeMillis());
-        Structures.put(Armory.class, new ArrayList<Structure>());
-        Structures.put(Bank.class, new ArrayList<Structure>());
-        Structures.put(Barracks.class, new ArrayList<Structure>());
-        Structures.put(Blacksmith.class, new ArrayList<Structure>());
-        Structures.put(BuildersHut.class, new ArrayList<Structure>());
-        Structures.put(Castle.class, new ArrayList<Structure>());
-        Structures.put(Dungeon.class, new ArrayList<Structure>());
-        Structures.put(Farm.class, new ArrayList<Structure>());
-        Structures.put(Marketplace.class, new ArrayList<Structure>());
-        Structures.put(Stable.class, new ArrayList<Structure>());
-        Structures.put(Storeroom.class, new ArrayList<Structure>());
-        Structures.put(TownHall.class, new ArrayList<Structure>(Arrays.asList(new Structure[] {center})));
-        Structures.put(TrainingGround.class, new ArrayList<Structure>());
+        for(Class c : StructureClasses){
+            Structures.put(c, new ArrayList<Structure>());
+        }
+        Structures.get(TownHall.class).add(center);
     }
     
     public void createKingdom(){
@@ -128,6 +127,20 @@ public class Municipality implements SaveTypes.Saveable{
         return curr;
     }
     
+    public void addStructure(Structure s){
+        if(s instanceof Wall){
+            Wall w = (Wall) s;
+            walls.getParts().get(w.getType()).add(w);
+        }
+        for(Class c : StructureClasses){
+            if(s.getClass().isAssignableFrom(c)){
+                Structures.get(c).add(s);
+                return;
+            }
+        }
+    }
+    
+    @Override
     public JsonMunicipality toJsonObject(){
         throw new UnsupportedOperationException();
     }

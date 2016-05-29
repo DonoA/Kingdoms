@@ -73,8 +73,8 @@ public class BuildingHandler implements Listener{
         BuildHotbarHandler = new BuildHotbarOptions();
         RotateMenu = new HotbarMenu("RotateBuildMenu", BuildHotbarHandler){{
             setOption(5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
-            setOption(4*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Rotate Clockwise");
-            setOption(6*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Rotate Counter Clockwise");
+            setOption(6, new ItemStack(Material.ENCHANTED_BOOK), "Rotate Clockwise");
+            setOption(4, new ItemStack(Material.ENCHANTED_BOOK), "Rotate Counter Clockwise");
         }};
     }
     
