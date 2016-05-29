@@ -72,9 +72,9 @@ public class BuildingHandler implements Listener{
         BuildChestHandler = new BuildChestOptions();
         BuildHotbarHandler = new BuildHotbarOptions();
         RotateMenu = new HotbarMenu("RotateBuildMenu", BuildHotbarHandler){{
-            setOption(5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
-            setOption(6, new ItemStack(Material.ENCHANTED_BOOK), "Rotate Clockwise");
-            setOption(4, new ItemStack(Material.ENCHANTED_BOOK), "Rotate Counter Clockwise");
+            setOption(4, new ItemStack(Material.ENCHANTED_BOOK), "Build");
+            setOption(5, new ItemStack(Material.ENCHANTED_BOOK), "Rotate Clockwise");
+            setOption(3, new ItemStack(Material.ENCHANTED_BOOK), "Rotate Counter Clockwise");
         }};
     }
     
@@ -82,7 +82,7 @@ public class BuildingHandler implements Listener{
     
         @Override
         public void onOptionClick(ChestGUI.OptionClickEvent e){
-            if(e.getMenuName().equalsIgnoreCase("Build Menu")){
+            if(e.getMenuName().equalsIgnoreCase("Build Options")){
                 Structure s = (Structure) e.getMenuData();
                 if(e.getName().equalsIgnoreCase("Other")){
                     e.getPlayer().sendMessage("To start a building contruction type the schematic name and tick in chat");
@@ -98,6 +98,7 @@ public class BuildingHandler implements Listener{
         
         @Override
         public void onOptionClick(HotbarMenu.OptionClickEvent e){
+            e.getPlayer().sendMessage("option called");
             if(e.getName().equalsIgnoreCase("Start Build")){
                 Blueprint building = openBuilds.get(e.getPlayer().getName()).getBlueprint();
                 Plot p = openBuilds.get(e.getPlayer().getName()).getPlot();

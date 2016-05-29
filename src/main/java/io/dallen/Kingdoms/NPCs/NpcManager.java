@@ -50,7 +50,7 @@ public class NpcManager {
     public NPC spawnBuilder(String user, Location spawn){
         NPC Builder = NPCReg.createNPC(EntityType.PLAYER, user);
         Builder.spawn(spawn);
-        Builder.addTrait(new Builder());
+//        Builder.addTrait(new Builder());
         return Builder;
     }
     

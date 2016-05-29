@@ -131,10 +131,12 @@ public class Municipality implements SaveTypes.Saveable{
         if(s instanceof Wall){
             Wall w = (Wall) s;
             walls.getParts().get(w.getType()).add(w);
+            w.setMunicipal(this);
         }
         for(Class c : StructureClasses){
             if(s.getClass().isAssignableFrom(c)){
                 Structures.get(c).add(s);
+                s.setMunicipal(this);
                 return;
             }
         }

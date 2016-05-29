@@ -121,8 +121,7 @@ public class Structure implements SaveTypes.Saveable{
      * as it turns out handling menus from the server side is terrible
      */
     public void sendEditMenu(Player p){
-        EditPlot.setMenuData(this);
-        EditPlot.sendMenu(p);
+        throw new UnsupportedOperationException();
     }
     
     /*
@@ -164,7 +163,7 @@ public class Structure implements SaveTypes.Saveable{
                 if(e.getName().equalsIgnoreCase("Build")){
                     if(((Structure) e.getMenuData()).getMunicipal() != null && 
                         !((Structure) e.getMenuData()).getMunicipal().getStructures().get(BuildersHut.class).isEmpty()){
-                        BuildMenu.setMenuData(this);
+                        BuildMenu.setMenuData(e.getMenuData());
                         e.setNext(BuildMenu);
                     }else{
                         e.getPlayer().sendMessage("You have no NPCs to build this!");

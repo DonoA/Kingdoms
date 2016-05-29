@@ -89,9 +89,9 @@ public class HotbarMenu implements Listener{
     
     public void sendMenu(Player player){
         ItemStack[] saveBar = new ItemStack[9];
-        for(int i = 36; i <= 44; i++){
-            saveBar[i-36] = player.getInventory().getItem(i);
-            player.getInventory().setItem(i, optionIcons[i-36]);
+        for(int i = 0; i <= 8; i++){
+            saveBar[i] = player.getInventory().getItem(i);
+            player.getInventory().setItem(i, optionIcons[i]);
         }
         final HotbarInstance menu = new HotbarInstance(this);
         menu.setPlayerOldHotbar(saveBar);
@@ -125,7 +125,7 @@ public class HotbarMenu implements Listener{
             cooldown.put(event.getPlayer().getName(), System.currentTimeMillis());
             if(!openMenus.containsKey(event.getPlayer().getName()))
                 return;
-            if(event.getAction().equals(Action.RIGHT_CLICK_AIR) && event.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
+            if(event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
                 HotbarInstance menu = openMenus.get(event.getPlayer().getName());
                 event.setCancelled(true);
                 int slot = event.getPlayer().getInventory().getHeldItemSlot();

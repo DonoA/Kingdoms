@@ -21,9 +21,12 @@ package io.dallen.Kingdoms.Kingdom.Structures.Types;
 
 import io.dallen.Kingdoms.Kingdom.Plot;
 import io.dallen.Kingdoms.Kingdom.Structures.Storage;
+import io.dallen.Kingdoms.Kingdom.Structures.Structure;
+import static io.dallen.Kingdoms.Kingdom.Structures.Structure.BuildMenu;
 import io.dallen.Kingdoms.Kingdom.Vaults.BuildingVault;
 import io.dallen.Kingdoms.Main;
 import io.dallen.Kingdoms.Util.ChestGUI;
+import io.dallen.Kingdoms.Util.LogUtil;
 import lombok.Getter;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Material;
@@ -46,8 +49,11 @@ public class BuildersHut extends Plot implements Storage{
     private static ChestGUI EditPlot;
     
     static{
-        EditPlot.setName("Builder's Hut");
-        EditPlot.setHandler(new MenuHandler());
+        EditPlot = new ChestGUI("Builders Hut", 2, new MenuHandler()){{
+            setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
+            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Upgrade");
+            setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
+        }};
     }
     
     public BuildersHut(Plot p) {
@@ -89,10 +95,10 @@ public class BuildersHut extends Plot implements Storage{
         return true;
     }
     
-    @Override
     public void sendEditMenu(Player p){
         EditPlot.setOption(4, new ItemStack(Material.ENCHANTED_BOOK), "Train Builder", this);
-        super.sendEditMenu(p);
+        EditPlot.setMenuData(this);
+        EditPlot.sendMenu(p);
     }
     
     public static class MenuHandler implements ChestGUI.OptionClickEventHandler{
@@ -102,7 +108,21 @@ public class BuildersHut extends Plot implements Storage{
             if(e.getMenuName().equalsIgnoreCase("Builder's Hut")){
                 BuildersHut hut = (BuildersHut) e.getMenuData();
                 if(e.getName().equalsIgnoreCase("Train Builder")){
-                    Main.getNPCs().spawnBuilder("Dallen", hut.getCenter());
+                    Main.getNPCs().spawnBuilder("Dallen", e.getPlayer().getLocation());
+                }else if(e.getName().equalsIgnoreCase("Build")){
+                    LogUtil.printDebug(((Structure) e.getMenuData()).getMunicipal());
+                    LogUtil.printDebug(((Structure) e.getMenuData()).getMunicipal().getStructures().toString());
+                    if(((Structure) e.getMenuData()).getMunicipal() != null && 
+                        !((Structure) e.getMenuData()).getMunicipal().getStructures().get(BuildersHut.class).isEmpty()){
+                        BuildMenu.setMenuData(e.getMenuData());
+                        e.setNext(BuildMenu);
+                    }else{
+                        e.getPlayer().sendMessage("You have no NPCs to build this!");
+                    }
+                }else if(e.getName().equalsIgnoreCase("Erase")){
+                    e.getPlayer().sendMessage("Default option called");
+                }else if(e.getName().equalsIgnoreCase("Demolish")){
+                    e.getPlayer().sendMessage("Default option called");
                 }
             }
         }

@@ -21,9 +21,14 @@ package io.dallen.Kingdoms.Kingdom.Structures.Types;
 
 import io.dallen.Kingdoms.Kingdom.Municipality;
 import io.dallen.Kingdoms.Kingdom.Plot;
+import io.dallen.Kingdoms.Kingdom.Structures.Structure;
+import static io.dallen.Kingdoms.Kingdom.Structures.Structure.BuildMenu;
+import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEvent;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEventHandler;
+import io.dallen.Kingdoms.Util.LogUtil;
 import java.awt.geom.Ellipse2D;
+import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -34,9 +39,15 @@ import org.bukkit.inventory.ItemStack;
  */
 public class TownHall extends Plot{
     
+    @Getter
+    private static ChestGUI EditPlot;
+    
     static{
-        EditPlot.setName("Town Hall");
-        EditPlot.setHandler(new MenuHandler());
+        EditPlot = new ChestGUI("TownHall", 2, new MenuHandler()){{
+            setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
+            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Upgrade");
+            setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
+        }};
     }
     
     public TownHall(Plot p){
@@ -45,12 +56,18 @@ public class TownHall extends Plot{
     
     @Override
     public void sendEditMenu(Player p){
+        ChestGUI menu = new ChestGUI("TownHall", 2, new MenuHandler()){{
+            setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
+            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Upgrade");
+            setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
+        }};
         if(super.getMunicipal() == null){
             EditPlot.setOption(4, new ItemStack(Material.ENCHANTED_BOOK), "Create Municipal", this);
         }else if(super.getKingdom() == null){
             EditPlot.setOption(4, new ItemStack(Material.ENCHANTED_BOOK), "Create Kingdom", this);
         }
-        super.sendEditMenu(p);
+        EditPlot.setMenuData(this);
+        EditPlot.sendMenu(p);
     }
     
     public static class MenuHandler implements OptionClickEventHandler{
@@ -61,13 +78,16 @@ public class TownHall extends Plot{
                 final Plot th = (Plot) e.getData();
                 th.createMucicpal();
                 th.getMunicipal().setInfluence(new Ellipse2D.Double(th.getCenter().getBlockX(), th.getCenter().getBlockZ(), 50, 50));
+                th.getMunicipal().setInfluenceCenter(th.getCenter());
                 e.getPlayer().sendMessage("Municipal Created!");
                 e.getPlayer().sendMessage("Adding Structures");
+                final Player plr = e.getPlayer();
                 new Thread(new Runnable(){
                     @Override
                     public void run(){
                         for(Plot p : Plot.getAllPlots()){
-                            if(p.getMunicipal() == null && th.getMunicipal().getInfluence().intersects(p.getBase().getBounds())){
+                            if(p.getMunicipal() == null/* && th.getMunicipal().getInfluence().intersects(p.getBase().getBounds())*/){
+                                plr.sendMessage("Added a plot to the municipal");
                                 th.getMunicipal().addStructure(p);
                             }
                         }
@@ -91,6 +111,20 @@ public class TownHall extends Plot{
                         }
                     }
                 }).start();
+            }else if(e.getName().equalsIgnoreCase("Build")){
+                LogUtil.printDebug(((Structure) e.getMenuData()).getMunicipal());
+                LogUtil.printDebug(((Structure) e.getMenuData()).getMunicipal().getStructures().toString());
+                if(((Structure) e.getMenuData()).getMunicipal() != null && 
+                    !((Structure) e.getMenuData()).getMunicipal().getStructures().get(BuildersHut.class).isEmpty()){
+                    BuildMenu.setMenuData(e.getMenuData());
+                    e.setNext(BuildMenu);
+                }else{
+                    e.getPlayer().sendMessage("You have no NPCs to build this!");
+                }
+            }else if(e.getName().equalsIgnoreCase("Erase")){
+                e.getPlayer().sendMessage("Default option called");
+            }else if(e.getName().equalsIgnoreCase("Demolish")){
+                e.getPlayer().sendMessage("Default option called");
             }
         }
     }

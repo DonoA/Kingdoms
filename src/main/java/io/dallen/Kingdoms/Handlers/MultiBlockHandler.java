@@ -20,6 +20,7 @@
 package io.dallen.Kingdoms.Handlers;
 
 import com.google.common.primitives.Ints;
+import io.dallen.Kingdoms.Kingdom.Municipality;
 import io.dallen.Kingdoms.Util.LogUtil;
 import io.dallen.Kingdoms.Kingdom.Plot;
 import io.dallen.Kingdoms.Kingdom.Structures.Contract;
@@ -40,6 +41,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -179,6 +181,7 @@ public class MultiBlockHandler implements Listener{
                             new Thread(new Runnable(){
                                 @Override
                                 public void run(){ // Calculate redstone torch plot
+                                    long Start = System.currentTimeMillis();
                                     ArrayList<Point> corners = new ArrayList<Point>();
                                     Point start = LocationUtil.asPoint(l);
                                     corners.add(start);
@@ -215,7 +218,7 @@ public class MultiBlockHandler implements Listener{
                                                 }
                                             }
                                         }
-                                        if(current == null /*|| corners.contains(last)*/){ // If the test failed to located the shape
+                                        if(current == null || Start + 1000 < System.currentTimeMillis()){ // If the test failed to located the shape
                                             p.sendMessage("Could not calculate plot");
                                             return;
                                         }
@@ -233,7 +236,9 @@ public class MultiBlockHandler implements Listener{
                                         Zs[i] = (int) p.getY();
                                         i++;
                                     }
-                                    Plot NewPlot = new Plot(new Polygon(Xs, Zs, corners.size()), LocationUtil.asLocation(LocationUtil.calcCenter(corners.toArray(new Point[1])), l.getWorld(), l.getBlockY()), p, null);
+                                    Plot NewPlot = new Plot(new Polygon(Xs, Zs, corners.size()), 
+                                            LocationUtil.asLocation(LocationUtil.calcCenter(corners.toArray(new Point[corners.size()])), 
+                                            l.getWorld(), l.getBlockY()), p, null);
                                     for(Plot plot : Plot.getAllPlots()){
                                         if(plot.getCenter().equals(NewPlot.getCenter())){
                                             if(plot.getOwner().equals(p)){
@@ -305,6 +310,11 @@ public class MultiBlockHandler implements Listener{
                                 l.getBlock().setType(Material.DIRT);
                                 l.getBlock().setData((byte) 1);
                             }
+                        }
+                    }
+                    for(Municipality m : Municipality.getAllMunicipals()){
+                        if(m.getInfluence().intersects(p.getBase().getBounds2D())){
+                            p.setMunicipal(m);
                         }
                     }
                 }
@@ -463,13 +473,15 @@ public class MultiBlockHandler implements Listener{
                         Class structure = Class.forName("io.dallen.Kingdoms.Kingdom.Structures.Types."+e.getName().replace(" ", "").replace("'", ""));
                         Constructor constructor = structure.getConstructor(new Class[] {Plot.class});
                         Plot newPlot = (Plot) constructor.newInstance(p);
+                        if(newPlot.getMunicipal() != null){
+                            newPlot.getMunicipal().addStructure(newPlot);
+                        }
                         newPlot.setEmpty(false);
                         Plot.getAllPlots().remove(p);
                         Plot.getAllPlots().add(newPlot);
                         pd.getPlots().remove(p);
                         pd.getPlots().add(newPlot);
                         e.getPlayer().sendMessage("You have assigned this plot to be a " + e.getName() +".");
-                        
                     } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException 
                             | InvocationTargetException | NoSuchMethodException | SecurityException ex) {
                         e.getPlayer().sendMessage("Building name not found!");

@@ -20,8 +20,11 @@
 package io.dallen.Kingdoms.Kingdom.Structures.Types;
 
 import io.dallen.Kingdoms.Kingdom.Plot;
-import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEvent;
-import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEventHandler;
+import io.dallen.Kingdoms.Kingdom.Structures.Structure;
+import static io.dallen.Kingdoms.Kingdom.Structures.Structure.BuildMenu;
+import io.dallen.Kingdoms.Util.ChestGUI;
+import io.dallen.Kingdoms.Util.LogUtil;
+import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -43,9 +46,15 @@ public class TrainingGround extends Plot{
     
     private int trainingArea;
     
+    @Getter
+    private static ChestGUI EditPlot;
+
     static{
-        EditPlot.setName("Training Grounds");
-        EditPlot.setHandler(new MenuHandler());
+        EditPlot = new ChestGUI("Training Ground", 2, new MenuHandler()){{
+            setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
+            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Upgrade");
+            setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
+        }};
     }
     
     public TrainingGround(Plot p) {
@@ -98,7 +107,31 @@ public class TrainingGround extends Plot{
             EditPlot.setOption(4, new ItemStack(Material.ENCHANTED_BOOK), "Train Cavalry");
             EditPlot.setOption(5, new ItemStack(Material.ENCHANTED_BOOK), "Train General");
         }
-        super.sendEditMenu(p);
+        EditPlot.setMenuData(this);
+        EditPlot.sendMenu(p);
     }
     
+    public static class MenuHandler implements ChestGUI.OptionClickEventHandler{
+
+        @Override
+        public void onOptionClick(ChestGUI.OptionClickEvent e){
+            if(e.getMenuName().equalsIgnoreCase("Wall")){
+                if(e.getName().equalsIgnoreCase("Build")){
+                    LogUtil.printDebug(((Structure) e.getMenuData()).getMunicipal());
+                    LogUtil.printDebug(((Structure) e.getMenuData()).getMunicipal().getStructures().toString());
+                    if(((Structure) e.getMenuData()).getMunicipal() != null && 
+                        !((Structure) e.getMenuData()).getMunicipal().getStructures().get(BuildersHut.class).isEmpty()){
+                        BuildMenu.setMenuData(e.getMenuData());
+                        e.setNext(BuildMenu);
+                    }else{
+                        e.getPlayer().sendMessage("You have no NPCs to build this!");
+                    }
+                }else if(e.getName().equalsIgnoreCase("Erase")){
+                    e.getPlayer().sendMessage("Default option called");
+                }else if(e.getName().equalsIgnoreCase("Demolish")){
+                    e.getPlayer().sendMessage("Default option called");
+                }
+            }
+        }
+    }
 }

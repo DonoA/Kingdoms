@@ -54,7 +54,8 @@ public class Farm extends Plot{
     @Override
     public void sendEditMenu(Player p){
         EditPlot.setOption(1, new ItemStack(Material.ENCHANTED_BOOK), "option1");
-        super.sendEditMenu(p);
+        EditPlot.setMenuData(this);
+        EditPlot.sendMenu(p);
     }
     
     private static class FoodStats{

@@ -46,7 +46,7 @@ public class DebugCommands implements CommandExecutor{
     private PluginUpdateThread update;
     
     public DebugCommands(File build){
-        if(Main.getPlugin().getConfig().getBoolean("debug.autorestart")){
+        if(Main.getPlugin().getConfig().getBoolean("debug.autoupdate")){
             update = new PluginUpdateThread(build);
             update.start();
         }
@@ -95,6 +95,11 @@ public class DebugCommands implements CommandExecutor{
         public void run(){
             while(true){
                if(buildFile.exists() && buildTests.exists() && buildTests.isDirectory()){
+                   try {
+                       Thread.sleep(100);
+                   } catch (InterruptedException ex) {
+                       Logger.getLogger(DebugCommands.class.getName()).log(Level.SEVERE, null, ex);
+                   }
                    Bukkit.shutdown();
                }
             }

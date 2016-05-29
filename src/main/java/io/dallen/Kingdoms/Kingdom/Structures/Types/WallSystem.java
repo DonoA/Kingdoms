@@ -21,15 +21,22 @@ package io.dallen.Kingdoms.Kingdom.Structures.Types;
 
 import io.dallen.Kingdoms.Kingdom.Municipality;
 import io.dallen.Kingdoms.Kingdom.Plot;
+import io.dallen.Kingdoms.Kingdom.Structures.Structure;
+import static io.dallen.Kingdoms.Kingdom.Structures.Structure.BuildMenu;
+import io.dallen.Kingdoms.Main;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonWallSystem;
 import io.dallen.Kingdoms.Storage.SaveTypes;
+import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.LocationUtil;
+import io.dallen.Kingdoms.Util.LogUtil;
 import java.awt.Polygon;
 import java.util.ArrayList;
 import java.util.HashMap;
 import lombok.Getter;
+import org.bukkit.Material;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 /**
  *
@@ -90,6 +97,17 @@ public class WallSystem implements SaveTypes.Saveable{
         @Getter
         private WallType type;
         
+        @Getter
+        private static ChestGUI EditPlot;
+
+        static{
+            EditPlot = new ChestGUI("Wall", 2, new MenuHandler()){{
+                setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
+                setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Upgrade");
+                setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
+            }};
+        }
+        
         public Wall(Plot p, WallType type){
             super(p.getBase(), p.getCenter(), p.getOwner(), p.getMunicipal());
             this.type = type;
@@ -101,6 +119,37 @@ public class WallSystem implements SaveTypes.Saveable{
         
         public void repair(){
             damageBar.setProgress(damageBar.getProgress()+1);
+        }
+        
+        @Override
+        public void sendEditMenu(Player p){
+            EditPlot.setOption(4, new ItemStack(Material.ENCHANTED_BOOK), "Train Builder", this);
+            EditPlot.setMenuData(this);
+            EditPlot.sendMenu(p);
+        }
+
+        public static class MenuHandler implements ChestGUI.OptionClickEventHandler{
+
+            @Override
+            public void onOptionClick(ChestGUI.OptionClickEvent e){
+                if(e.getMenuName().equalsIgnoreCase("Wall")){
+                    if(e.getName().equalsIgnoreCase("Build")){
+                        LogUtil.printDebug(((Structure) e.getMenuData()).getMunicipal());
+                        LogUtil.printDebug(((Structure) e.getMenuData()).getMunicipal().getStructures().toString());
+                        if(((Structure) e.getMenuData()).getMunicipal() != null && 
+                            !((Structure) e.getMenuData()).getMunicipal().getStructures().get(BuildersHut.class).isEmpty()){
+                            BuildMenu.setMenuData(e.getMenuData());
+                            e.setNext(BuildMenu);
+                        }else{
+                            e.getPlayer().sendMessage("You have no NPCs to build this!");
+                        }
+                    }else if(e.getName().equalsIgnoreCase("Erase")){
+                        e.getPlayer().sendMessage("Default option called");
+                    }else if(e.getName().equalsIgnoreCase("Demolish")){
+                        e.getPlayer().sendMessage("Default option called");
+                    }
+                }
+            }
         }
     }
     

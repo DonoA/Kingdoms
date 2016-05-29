@@ -97,13 +97,13 @@ public class SkinPacketHandler implements Runnable{
             ex.printStackTrace();
             return;
         }
-        profile = WrappedGameProfile.fromHandle(handle);
-        properties = profile.getProperties().get("textures");
-        WrappedSignedProperty textureProperty = (WrappedSignedProperty) properties.toArray()[0];
-        String textures = textureProperty.getValue();
-        String decodedProfile = Base64.decode(Unpooled.copiedBuffer(textures.getBytes())).toString(Charset.defaultCharset());
-        decodedProfile = decodedProfile.replace("SKIN", "skin").replace("CAPE", "cape");
         try {
+            profile = WrappedGameProfile.fromHandle(handle);
+            properties = profile.getProperties().get("textures");
+            WrappedSignedProperty textureProperty = (WrappedSignedProperty) properties.toArray()[0];
+            String textures = textureProperty.getValue();
+            String decodedProfile = Base64.decode(Unpooled.copiedBuffer(textures.getBytes())).toString(Charset.defaultCharset());
+            decodedProfile = decodedProfile.replace("SKIN", "skin").replace("CAPE", "cape");
             LogUtil.printDebug(decodedProfile);
             SkinTexture texture = DBmanager.getJSonParser().readValue(decodedProfile, SkinTexture.class);
 //            texture.getTextures().getCape().setUrl("http://textures.minecraft.net/texture/eec3cabfaeed5dafe61c6546297e853a547c39ec238d7c44bf4eb4a49dc1f2c0");
@@ -112,8 +112,8 @@ public class SkinPacketHandler implements Runnable{
             textures = textures.replace("\n", "");
             properties.clear();
             properties.add(new WrappedSignedProperty(textureProperty.getName(), textures, textureProperty.getSignature()));
-        } catch (IOException ex) {
-            Logger.getLogger(SkinPacketHandler.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            LogUtil.printErr("Failed to load the skin, player skins won't be affected.");
         }
         if(properties == null){
             LogUtil.printErr("Failed to load the skin, player skins won't be affected.");
