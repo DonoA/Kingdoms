@@ -19,6 +19,7 @@
  */
 package io.dallen.Kingdoms.Handlers;
 
+import io.dallen.Kingdoms.Util.PermissionManager;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -33,7 +34,8 @@ public class WaterHandler implements Listener{
     
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent e){
-        if(e.getAction().equals(Action.RIGHT_CLICK_BLOCK) && e.getItem()!=null){
+        if(e.getAction().equals(Action.RIGHT_CLICK_BLOCK) && e.getItem()!=null && 
+                !e.getPlayer().hasPermission(PermissionManager.getBuildPermission())){
             if(e.getItem().getType().equals(Material.WATER_BUCKET)){
                 e.setCancelled(true);
                 e.getItem().setType(Material.BUCKET);

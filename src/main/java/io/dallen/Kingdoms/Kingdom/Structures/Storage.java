@@ -20,9 +20,7 @@
 package io.dallen.Kingdoms.Kingdom.Structures;
 
 import io.dallen.Kingdoms.Kingdom.Vaults.BuildingVault;
-import io.dallen.Kingdoms.Storage.MaterialWrapper;
 import net.citizensnpcs.api.npc.NPC;
-import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 /**

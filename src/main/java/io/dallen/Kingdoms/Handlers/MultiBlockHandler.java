@@ -141,10 +141,6 @@ public class MultiBlockHandler implements Listener{
             if(e.hasBlock()){
                 Plot p = Plot.inPlot(e.getClickedBlock().getLocation());
                 if(p != null){
-                    if(p instanceof Storage){
-                        Storage s = (Storage) p;
-                        e.setCancelled(s.interact(e));
-                    }
                     if(p instanceof Wall && e.hasItem() && e.getAction().equals(Action.LEFT_CLICK_BLOCK)){
                         e.setCancelled(true);
                         Wall w = (Wall) p;
