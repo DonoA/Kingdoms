@@ -235,9 +235,6 @@ public class MultiBlockHandler implements Listener{
                                     Plot NewPlot = new Plot(new Polygon(Xs, Zs, corners.size()), 
                                             LocationUtil.asLocation(LocationUtil.calcCenter(corners.toArray(new Point[corners.size()])), 
                                             l.getWorld(), l.getBlockY()), p, null);
-                                    LogUtil.printDebug(LocationUtil.calcCenter(corners.toArray(new Point[corners.size()])));
-                                    p.sendMessage(LocationUtil.calcCenter(corners.toArray(new Point[corners.size()])).toString());
-                                    p.sendMessage(String.valueOf(l.getBlockY()));
                                     for(Plot plot : Plot.getAllPlots()){
                                         if(plot.getCenter().equals(NewPlot.getCenter())){
                                             if(plot.getOwner().equals(p)){
@@ -251,6 +248,7 @@ public class MultiBlockHandler implements Listener{
                                     for(Municipality m : Municipality.getAllMunicipals()){
                                         if(m.getInfluence().contains(LocationUtil.asPoint(NewPlot.getCenter()))){
                                             NewPlot.setMunicipal(m);
+                                            m.addStructure(NewPlot);
                                         }
                                     }
                                     if(NewPlot.isValid()){

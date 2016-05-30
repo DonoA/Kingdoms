@@ -19,6 +19,7 @@
  */
 package io.dallen.Kingdoms.Kingdom.Structures.Types;
 
+import com.google.common.primitives.Ints;
 import io.dallen.Kingdoms.Kingdom.Municipality;
 import io.dallen.Kingdoms.Kingdom.Plot;
 import io.dallen.Kingdoms.Kingdom.Structures.Structure;
@@ -26,9 +27,14 @@ import static io.dallen.Kingdoms.Kingdom.Structures.Structure.BuildMenu;
 import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEvent;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEventHandler;
+import io.dallen.Kingdoms.Util.LocationUtil;
 import io.dallen.Kingdoms.Util.LogUtil;
+import java.awt.Point;
+import java.awt.Polygon;
+import java.awt.Rectangle;
 import java.awt.geom.Ellipse2D;
 import lombok.Getter;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -56,11 +62,6 @@ public class TownHall extends Plot{
     
     @Override
     public void sendEditMenu(Player p){
-        ChestGUI menu = new ChestGUI("TownHall", 2, new MenuHandler()){{
-            setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
-            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Upgrade");
-            setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
-        }};
         if(super.getMunicipal() == null){
             EditPlot.setOption(4, new ItemStack(Material.ENCHANTED_BOOK), "Create Municipal", this);
         }else if(super.getKingdom() == null){
@@ -77,7 +78,20 @@ public class TownHall extends Plot{
             if(e.getName().equalsIgnoreCase("Create Municipal")){
                 final Plot th = (Plot) e.getData();
                 th.createMucicpal();
-                th.getMunicipal().setInfluence(new Ellipse2D.Double(th.getCenter().getBlockX(), th.getCenter().getBlockZ(), 50, 50));
+                th.getMunicipal().setInfluence(new Ellipse2D.Double(th.getCenter().getBlockX()-50, th.getCenter().getBlockZ()-50, 100, 100));
+//                e.getPlayer().teleport(th.getCenter());
+//                final Ellipse2D cic = th.getMunicipal().getInfluence();
+//                final Rectangle bounds = th.getMunicipal().getInfluence().getBounds();
+//                int Xmax = (int) bounds.getMaxX();
+//                int Zmax = (int) bounds.getMaxY();
+//                for(int x = (int) bounds.getMinX(); x <= Xmax; x++){
+//                    for(int z = (int) bounds.getMinY(); z <= Zmax; z++){
+//                        if(cic.contains(new Point(x,z)) || (cic.contains(new Point(x-1,z)) || cic.contains(new Point(x,z-1)) || cic.contains(new Point(x-1,z-1)))){
+//                            Location l = new Location(th.getCenter().getWorld(), x, th.getCenter().getBlockY()-1, z);
+//                            l.getBlock().setType(Material.DIAMOND_BLOCK);
+//                        }
+//                    }
+//                }
                 th.getMunicipal().setInfluenceCenter(th.getCenter());
                 e.getPlayer().sendMessage("Municipal Created!");
                 e.getPlayer().sendMessage("Adding Structures");
@@ -86,7 +100,7 @@ public class TownHall extends Plot{
                     @Override
                     public void run(){
                         for(Plot p : Plot.getAllPlots()){
-                            if(p.getMunicipal() == null/* && th.getMunicipal().getInfluence().intersects(p.getBase().getBounds())*/){
+                            if(p.getMunicipal() == null && th.getMunicipal().getInfluence().contains(LocationUtil.asPoint(p.getCenter()))){
                                 plr.sendMessage("Added a plot to the municipal");
                                 th.getMunicipal().addStructure(p);
                             }
@@ -123,8 +137,10 @@ public class TownHall extends Plot{
                 }
             }else if(e.getName().equalsIgnoreCase("Erase")){
                 e.getPlayer().sendMessage("Default option called");
+                
             }else if(e.getName().equalsIgnoreCase("Demolish")){
                 e.getPlayer().sendMessage("Default option called");
+                e.getPlayer().teleport(((Structure) e.getMenuData()).getCenter());
             }
         }
     }

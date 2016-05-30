@@ -34,7 +34,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.material.RedstoneWire;
 import net.minecraft.server.v1_9_R1.BlockRedstoneWire;
 
 /**
@@ -61,8 +60,13 @@ public class DebugCommands implements CommandExecutor{
             BuildingHandler.StringInput in = new BuildingHandler.StringInput("buildConst", p);
             BuildingHandler.getOpenInputs().put(plr.getName(), in);
         }else if(cmd.getName().equalsIgnoreCase("setskins")){
-            Main.getSkinHandler().setSkin(args[0]);
-            Bukkit.getScheduler().runTaskAsynchronously(Main.getPlugin(), Main.getSkinHandler());
+            if(args[0].equalsIgnoreCase("default")){
+                Main.getSkinHandler().setRunning(false);
+            }else{
+                Main.getSkinHandler().setRunning(true);
+                Main.getSkinHandler().setSkin(args[0]);
+                Bukkit.getScheduler().runTaskAsynchronously(Main.getPlugin(), Main.getSkinHandler());
+            }
         }else if(cmd.getName().equalsIgnoreCase("bd")){
             Block r =  ((Player)sender).getTargetBlock((Set<Material>) null, 8);
             BlockRedstoneWire wire = (BlockRedstoneWire) r;

@@ -22,6 +22,7 @@ package io.dallen.Kingdoms.Kingdom.Structures.Types;
 import io.dallen.Kingdoms.Kingdom.Plot;
 import io.dallen.Kingdoms.Kingdom.Structures.Structure;
 import static io.dallen.Kingdoms.Kingdom.Structures.Structure.BuildMenu;
+import io.dallen.Kingdoms.Main;
 import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.LogUtil;
 import lombok.Getter;
@@ -115,10 +116,17 @@ public class TrainingGround extends Plot{
 
         @Override
         public void onOptionClick(ChestGUI.OptionClickEvent e){
-            if(e.getMenuName().equalsIgnoreCase("Wall")){
-                if(e.getName().equalsIgnoreCase("Build")){
-                    LogUtil.printDebug(((Structure) e.getMenuData()).getMunicipal());
-                    LogUtil.printDebug(((Structure) e.getMenuData()).getMunicipal().getStructures().toString());
+            if(e.getMenuName().equalsIgnoreCase("Training Ground")){
+                TrainingGround trg = (TrainingGround) e.getMenuData();
+                if(e.getName().equalsIgnoreCase("Train Archer")){
+                    Main.getNPCs().spawnSoldier("Dallen", trg.getCenter(), SoldierType.ARCHER);
+                }else if(e.getName().equalsIgnoreCase("Train Infantry")){
+                    Main.getNPCs().spawnSoldier("Dallen", trg.getCenter(), SoldierType.INFANTRY);
+                }else if(e.getName().equalsIgnoreCase("Train Cavalry")){
+                    Main.getNPCs().spawnSoldier("Dallen", trg.getCenter(), SoldierType.CAVALRY);
+                }else if(e.getName().equalsIgnoreCase("Train General")){
+                    Main.getNPCs().spawnSoldier("Dallen", trg.getCenter(), SoldierType.GENERAL);
+                }else if(e.getName().equalsIgnoreCase("Build")){
                     if(((Structure) e.getMenuData()).getMunicipal() != null && 
                         !((Structure) e.getMenuData()).getMunicipal().getStructures().get(BuildersHut.class).isEmpty()){
                         BuildMenu.setMenuData(e.getMenuData());

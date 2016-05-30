@@ -95,6 +95,7 @@ public class BuildersHut extends Plot implements Storage{
         return true;
     }
     
+    @Override
     public void sendEditMenu(Player p){
         EditPlot.setOption(4, new ItemStack(Material.ENCHANTED_BOOK), "Train Builder", this);
         EditPlot.setMenuData(this);
@@ -105,13 +106,11 @@ public class BuildersHut extends Plot implements Storage{
         
         @Override
         public void onOptionClick(ChestGUI.OptionClickEvent e){
-            if(e.getMenuName().equalsIgnoreCase("Builder's Hut")){
+            if(e.getMenuName().equalsIgnoreCase("Builders Hut")){
                 BuildersHut hut = (BuildersHut) e.getMenuData();
                 if(e.getName().equalsIgnoreCase("Train Builder")){
-                    Main.getNPCs().spawnBuilder("Dallen", e.getPlayer().getLocation());
+                    Main.getNPCs().spawnBuilder("Dallen", hut.getCenter());
                 }else if(e.getName().equalsIgnoreCase("Build")){
-                    LogUtil.printDebug(((Structure) e.getMenuData()).getMunicipal());
-                    LogUtil.printDebug(((Structure) e.getMenuData()).getMunicipal().getStructures().toString());
                     if(((Structure) e.getMenuData()).getMunicipal() != null && 
                         !((Structure) e.getMenuData()).getMunicipal().getStructures().get(BuildersHut.class).isEmpty()){
                         BuildMenu.setMenuData(e.getMenuData());
@@ -123,6 +122,7 @@ public class BuildersHut extends Plot implements Storage{
                     e.getPlayer().sendMessage("Default option called");
                 }else if(e.getName().equalsIgnoreCase("Demolish")){
                     e.getPlayer().sendMessage("Default option called");
+                    e.getPlayer().teleport(((Structure) e.getMenuData()).getCenter());
                 }
             }
         }

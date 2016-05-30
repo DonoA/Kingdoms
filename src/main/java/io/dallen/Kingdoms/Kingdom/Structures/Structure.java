@@ -170,6 +170,7 @@ public class Structure implements SaveTypes.Saveable{
                     }
                 }else if(e.getName().equalsIgnoreCase("Erase")){
                     e.getPlayer().sendMessage("Default option called");
+                    e.getPlayer().teleport(((Structure) e.getMenuData()).getCenter());
                 }else if(e.getName().equalsIgnoreCase("Demolish")){
                     e.getPlayer().sendMessage("Default option called");
                 }

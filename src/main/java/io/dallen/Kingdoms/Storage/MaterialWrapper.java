@@ -20,6 +20,7 @@
 package io.dallen.Kingdoms.Storage;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -30,7 +31,7 @@ import org.bukkit.inventory.ItemStack;
 public class MaterialWrapper {
     @Getter
     private int StackSize;
-    @Getter
+    @Getter @Setter
     private Material Material;
     @Getter
     private byte Data;
@@ -48,6 +49,10 @@ public class MaterialWrapper {
     
     public void addToStack(int amount){
         StackSize += amount;
+    }
+    
+    public void removeFromStack(int amount){
+        StackSize -= amount;
     }
     
     public ItemStack asBukkitItem(){

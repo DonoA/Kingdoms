@@ -60,6 +60,9 @@ public class SkinPacketHandler implements Runnable{
     @Getter @Setter
     private String skin = "Dinnerbone";
     
+    @Getter @Setter
+    private boolean running = false;
+    
     @Getter
     private volatile Collection<WrappedSignedProperty> properties;
 
@@ -68,6 +71,9 @@ public class SkinPacketHandler implements Runnable{
             @Override
             public void onPacketSending(PacketEvent event){
                 if(properties == null){
+                    return;
+                }
+                if(!running){
                     return;
                 }
                 PacketContainer packet = event.getPacket();

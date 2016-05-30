@@ -21,9 +21,11 @@ package io.dallen.Kingdoms.Handlers;
 
 import io.dallen.Kingdoms.Kingdom.Plot;
 import io.dallen.Kingdoms.Kingdom.Structures.Storage;
+import io.dallen.Kingdoms.Storage.MaterialWrapper;
 import java.util.ArrayList;
 import java.util.HashMap;
 import lombok.Getter;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -31,7 +33,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 
 /**
  *
@@ -60,20 +65,47 @@ public class StorageHandler implements Listener{
     @Getter
     private static HashMap<Player, Storage> openStorages = new HashMap<Player, Storage>();
     
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onInventoryClick(InventoryClickEvent event){//NEED TO HANDLE MOVE_TO_OTHER_INVENTORY //ALSO THE DROP AND PICKUP THING
         if((!cooldown.containsKey((Player) event.getWhoClicked())) || 
             (cooldown.containsKey((Player) event.getWhoClicked()) && 
-             cooldown.get((Player) event.getWhoClicked()) < System.currentTimeMillis() - 500)){
+             cooldown.get((Player) event.getWhoClicked()) < System.currentTimeMillis() - 100)){
             cooldown.put((Player) event.getWhoClicked(), System.currentTimeMillis());
-            //NEED TO CHECK SLOTS HERE
             if(event.getInventory().getName().equalsIgnoreCase("Building Inventory")){
-                if(remove.contains(event.getAction())){
-                    Storage s = openStorages.get((Player) event.getWhoClicked());
-                    //REMOVE THEM
-                }else if(add.contains(event.getAction())){
-                    Storage s = openStorages.get((Player) event.getWhoClicked());
-                    //ADD THEM
+                //NEED TO HANDLE SHIFT CLICKS
+                Storage s = openStorages.get((Player) event.getWhoClicked());
+                if(event.getSlot() >= 0 && event.getSlot() < (int) Math.ceil(s.getStorage().getUniqueSize()/9)*9){
+                    event.setCancelled(true);
+                    if(remove.contains(event.getAction())){
+                        ItemStack removeStack = event.getCurrentItem();
+                        event.setCursor(removeStack);
+                        s.getStorage().removeItem(removeStack);
+                        MaterialWrapper mw = s.getStorage().getMaterial(removeStack.getType());
+                        if(!mw.getMaterial().equals(Material.AIR)){
+                            if(mw.getStackSize() > 64)
+                                removeStack.setAmount(64);
+                            else
+                                removeStack.setAmount(mw.getStackSize());
+                        }
+                        
+                    }else if(add.contains(event.getAction())){
+                        ItemStack insertStack = event.getCursor();
+                        if(s.getStorage().getFullSlots() < s.getStorage().getUniqueSize()){
+                            event.getCursor().setType(Material.AIR);
+                            if(s.getStorage().addItem(insertStack)){
+                                if(event.getInventory().getItem(s.getStorage().getFullSlots()-1).getType().equals(Material.AIR)){
+                                    event.getInventory().setItem(s.getStorage().getFullSlots()-1, insertStack);
+                                    MaterialWrapper mw = s.getStorage().getMaterial(insertStack.getType());
+                                    if(!mw.getMaterial().equals(Material.AIR)){
+                                        if(mw.getStackSize() > 64)
+                                            insertStack.setAmount(64);
+                                        else
+                                            insertStack.setAmount(mw.getStackSize());
+                                    }
+                                } 
+                            }
+                        }
+                    }
                 }
             }
         }

@@ -84,7 +84,7 @@ public class BuildingVault implements Vault, SaveTypes.Saveable{ // Will start p
                 inv.addItem(m.asBukkitItem());
             }
         }
-        InvenHandler.openVaults.put(p.getName(), this);
+//        InvenHandler.openVaults.put(p.getName(), this);
         p.openInventory(inv);
         return false;
     }
@@ -103,20 +103,32 @@ public class BuildingVault implements Vault, SaveTypes.Saveable{ // Will start p
         }
         return false;
     }
-    
-    public void removeItem(int slot){
-        contents[slot] = null;
-       for(int i = slot; i < fullSlots; i++){
-           if(i + 1 >= uniqueSize){
-               contents[i] = null;
-           }else{
-               contents[i] = contents[i+1];
-           }
-       }
-       fullSlots--;
+    /**
+     * 
+     * @param is the stack to be removed0
+     * @return if all of that material was removed
+     */
+    public boolean removeItem(ItemStack is){
+        for(MaterialWrapper mw : contents) {
+            if(mw != null && mw.getMaterial().equals(is.getType())) {
+                mw.removeFromStack(is.getAmount());
+                if(mw.getStackSize() <= 0){
+                    mw.setMaterial(Material.AIR);
+                    fullSlots--;
+                    return true;
+                }
+                return false;
+            }
+        }
+        return true;
     }
     
-    public void addItem(ItemStack is){
+    /**
+     * 
+     * @param is the stack to be added
+     * @return if it was a new stack
+     */
+    public boolean addItem(ItemStack is){
         if(fullSlots < uniqueSize && amountFull < capacity){
             boolean added = false;
             for(MaterialWrapper mw : contents) {
@@ -127,46 +139,57 @@ public class BuildingVault implements Vault, SaveTypes.Saveable{ // Will start p
             }
             if(!added){
                 contents[fullSlots] = new MaterialWrapper(is);
+                fullSlots++;
+                return true;
             }
-            fullSlots++;
         }
+        return false;
+    }
+    
+    public MaterialWrapper getMaterial(Material mat){
+        for(MaterialWrapper mw : contents){
+            if(mw.getMaterial().equals(mat)){
+                return mw;
+            }
+        }
+        return null;
     }
     
     public JsonBuildingVault toJsonObject(){
         throw new UnsupportedOperationException();
     }
     
-    public static class InvenHandler implements Listener{
-        
-        private static HashMap<String, BuildingVault> openVaults = new HashMap<String, BuildingVault>();
-        
-        @EventHandler
-        public void onInventoryClick(InventoryClickEvent e){
-            if(openVaults.containsKey(e.getWhoClicked().getName())){
-                BuildingVault v = openVaults.get(e.getWhoClicked().getName());
-                if(e.getCursor() != null){
-                    v.addItem(e.getCursor());
-                    e.getWhoClicked().closeInventory();
-                    v.SendToPlayer((Player) e.getWhoClicked());
-                }else{
-                    if(v.getContents()[e.getSlot()].getStackSize() > 64){
-                        e.getInventory().setItem(e.getSlot(), v.getContents()[e.getSlot()].asBukkitItem());
-                    }else{
-                        v.removeItem(e.getSlot());
-                        e.getWhoClicked().closeInventory();
-                        v.SendToPlayer((Player) e.getWhoClicked());
-                    }
-                }
-            }
-        }
-        
-        @EventHandler
-        public void onInventoryOpen(InventoryOpenEvent e){
-            if(openVaults.containsKey(e.getPlayer().getName())){
-                openVaults.remove(e.getPlayer().getName());
-            }
-        }
-    }
+//    public static class InvenHandler implements Listener{
+//        
+//        private static HashMap<String, BuildingVault> openVaults = new HashMap<String, BuildingVault>();
+//        
+//        @EventHandler
+//        public void onInventoryClick(InventoryClickEvent e){
+//            if(openVaults.containsKey(e.getWhoClicked().getName())){
+//                BuildingVault v = openVaults.get(e.getWhoClicked().getName());
+//                if(e.getCursor() != null){
+//                    v.addItem(e.getCursor());
+//                    e.getWhoClicked().closeInventory();
+//                    v.SendToPlayer((Player) e.getWhoClicked());
+//                }else{
+//                    if(v.getContents()[e.getSlot()].getStackSize() > 64){
+//                        e.getInventory().setItem(e.getSlot(), v.getContents()[e.getSlot()].asBukkitItem());
+//                    }else{
+//                        v.removeItem(e.getSlot());
+//                        e.getWhoClicked().closeInventory();
+//                        v.SendToPlayer((Player) e.getWhoClicked());
+//                    }
+//                }
+//            }
+//        }
+//        
+//        @EventHandler
+//        public void onInventoryOpen(InventoryOpenEvent e){
+//            if(openVaults.containsKey(e.getPlayer().getName())){
+//                openVaults.remove(e.getPlayer().getName());
+//            }
+//        }
+//    }
     
     public static class ResourcePile implements SaveTypes.Saveable{
         

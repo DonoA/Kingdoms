@@ -28,6 +28,7 @@ import io.dallen.Kingdoms.NPCs.Traits.Builder;
 import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.DBmanager;
 import io.dallen.Kingdoms.Util.HotbarMenu;
+import io.dallen.Kingdoms.Util.LocationUtil;
 import io.dallen.Kingdoms.Util.LogUtil;
 import io.dallen.Kingdoms.Util.NBTmanager;
 import java.io.File;
@@ -271,7 +272,8 @@ public class BuildingHandler implements Listener{
         private int step = 64;
         
         public BuildTask(Blueprint building, Location start, int speed, BuildersHut BuildHut){
-            Builder = Main.getNPCs().spawnBuilder("BingRazor", start.clone().add(10, 0, 10));
+            LogUtil.printDebug(LocationUtil.asPoint(BuildHut.getCenter()));
+            Builder = Main.getNPCs().spawnBuilder("BingRazor", BuildHut.getCenter());
             Builder.getNavigator().setTarget(start);
             this.Building = building;
             this.startCorner = start;
@@ -281,39 +283,44 @@ public class BuildingHandler implements Listener{
         
         @Override
         public void run(){
-            if(running && !Builder.getNavigator().isNavigating()){
-                if(step == 0){
-                    Builder.getTrait(Builder.class).getSupplies(startCorner);
-                    step = 64;
-                }
-//                step--;
-//                LogUtil.printDebug(x + ", " + y + ", " + z);
-                if(x < Building.getWid() - (Building.getWid() % 2 == 0 ? 1 : 0)){
-                    Location nLoc = startCorner.clone().add(x,y,z);
-                    nLoc.getBlock().setType(Building.getBlocks()[x][y][z].getBlock(), false);
-                    nLoc.getBlock().setData(Building.getBlocks()[x][y][z].getData(), false);
-                    Builder.teleport(nLoc.add(0, 1, 0), PlayerTeleportEvent.TeleportCause.PLUGIN);
-                    x++;
-                }else{
-                    x = 0;
-                    if(z < Building.getLen() - 1){ // this is a bit strange, it seems to work tho
+            if(!Builder.getNavigator().isNavigating()){
+                if(running){
+                    if(step == 0){
+                        Builder.getTrait(Builder.class).getSupplies(startCorner);
+                        step = 64;
+                    }
+    //                step--;
+    //                LogUtil.printDebug(x + ", " + y + ", " + z);
+                    if(x < Building.getWid() - (Building.getWid() % 2 == 0 ? 1 : 0)){
                         Location nLoc = startCorner.clone().add(x,y,z);
                         nLoc.getBlock().setType(Building.getBlocks()[x][y][z].getBlock(), false);
                         nLoc.getBlock().setData(Building.getBlocks()[x][y][z].getData(), false);
                         Builder.teleport(nLoc.add(0, 1, 0), PlayerTeleportEvent.TeleportCause.PLUGIN);
-                        z++;
+                        x++;
                     }else{
-                        z = 0;
-                        if(y < Building.getHigh() - (Building.getHigh() % 2 == 0 ? 1 : 0)){
+                        x = 0;
+                        if(z < Building.getLen() - 1){ // this is a bit strange, it seems to work tho
                             Location nLoc = startCorner.clone().add(x,y,z);
                             nLoc.getBlock().setType(Building.getBlocks()[x][y][z].getBlock(), false);
                             nLoc.getBlock().setData(Building.getBlocks()[x][y][z].getData(), false);
                             Builder.teleport(nLoc.add(0, 1, 0), PlayerTeleportEvent.TeleportCause.PLUGIN);
-                            y++;
+                            z++;
                         }else{
-                            running = false;
+                            z = 0;
+                            if(y < Building.getHigh() - (Building.getHigh() % 2 == 0 ? 1 : 0)){
+                                Location nLoc = startCorner.clone().add(x,y,z);
+                                nLoc.getBlock().setType(Building.getBlocks()[x][y][z].getBlock(), false);
+                                nLoc.getBlock().setData(Building.getBlocks()[x][y][z].getData(), false);
+                                Builder.teleport(nLoc.add(0, 1, 0), PlayerTeleportEvent.TeleportCause.PLUGIN);
+                                y++;
+                            }else{
+                                Builder.getNavigator().setTarget(BuildHut.getCenter());
+                                running = false;
+                            }
                         }
                     }
+                }else{
+                    Builder.despawn();
                 }
             }
         }

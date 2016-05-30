@@ -34,31 +34,22 @@ import io.dallen.Kingdoms.Handlers.Party;
 import io.dallen.Kingdoms.Handlers.MenuHandlers.MainMenuHandler;
 import io.dallen.Kingdoms.Handlers.MultiBlockHandler;
 import io.dallen.Kingdoms.Terrain.KingdomTerrainGeneration;
-import io.dallen.Kingdoms.Util.DBmanager;
 import io.dallen.Kingdoms.Util.LogUtil;
 import io.dallen.Kingdoms.Commands.MuteCommand;
 import io.dallen.Kingdoms.Handlers.BuildingHandler;
 import io.dallen.Kingdoms.Handlers.CraftingHandler;
-import io.dallen.Kingdoms.Handlers.DebugHandler;
 import io.dallen.Kingdoms.Handlers.PlotProtectionHandler;
 import io.dallen.Kingdoms.Handlers.SkinHandler.SkinPacketHandler;
+import io.dallen.Kingdoms.Handlers.StorageHandler;
 import io.dallen.Kingdoms.Handlers.WaterHandler;
 import io.dallen.Kingdoms.Kingdom.Kingdom;
 import io.dallen.Kingdoms.Kingdom.Municipality;
-import io.dallen.Kingdoms.Kingdom.Vaults.BuildingVault.InvenHandler;
 import io.dallen.Kingdoms.NPCs.Traits.Builder;
-import io.dallen.Kingdoms.Util.NBTmanager;
-import io.dallen.Kingdoms.Storage.RedisManager;
+import io.dallen.Kingdoms.NPCs.Traits.Soldier;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.zip.DataFormatException;
 import lombok.Getter;
 import lombok.Setter;
-import net.citizensnpcs.api.CitizensAPI;
-import net.citizensnpcs.api.trait.TraitInfo;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -172,6 +163,10 @@ public class Main extends JavaPlugin {
             @Override
             public void run(){
                 net.citizensnpcs.api.CitizensAPI.getTraitFactory().registerTrait(net.citizensnpcs.api.trait.TraitInfo.create(Builder.class));
+                net.citizensnpcs.api.CitizensAPI.getTraitFactory().registerTrait(net.citizensnpcs.api.trait.TraitInfo.create(Soldier.Archer.class));
+                net.citizensnpcs.api.CitizensAPI.getTraitFactory().registerTrait(net.citizensnpcs.api.trait.TraitInfo.create(Soldier.Cavalry.class));
+                net.citizensnpcs.api.CitizensAPI.getTraitFactory().registerTrait(net.citizensnpcs.api.trait.TraitInfo.create(Soldier.General.class));
+                net.citizensnpcs.api.CitizensAPI.getTraitFactory().registerTrait(net.citizensnpcs.api.trait.TraitInfo.create(Soldier.Infantry.class));
             }
         };
     
@@ -185,7 +180,7 @@ public class Main extends JavaPlugin {
         MultiBlockHandler mbh = new MultiBlockHandler();
         Bukkit.getPluginManager().registerEvents(mbh, this);
         Bukkit.getPluginManager().registerEvents(new JoinLeaveHandler(), this);
-        Bukkit.getPluginManager().registerEvents(new InvenHandler(), this);
+        Bukkit.getPluginManager().registerEvents(new StorageHandler(), this);
         Bukkit.getPluginManager().registerEvents(new BuildingHandler(), this);
         Bukkit.getPluginManager().registerEvents(new WaterHandler(), this);
         Bukkit.getPluginManager().registerEvents(new PlotProtectionHandler(), this);
