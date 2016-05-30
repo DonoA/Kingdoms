@@ -30,21 +30,14 @@ import com.comphenix.protocol.wrappers.WrappedSignedProperty;
 import io.dallen.Kingdoms.Util.DBmanager;
 import io.dallen.Kingdoms.Main;
 import io.dallen.Kingdoms.Util.LogUtil;
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.base64.Base64;
-import java.io.IOException;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -99,8 +92,8 @@ public class SkinPacketHandler implements Runnable{
         try{
             Method method = getFillMethod(sessionService);
             method.invoke(sessionService, handle, true);
-        }catch (IllegalAccessException | InvocationTargetException ex){
-            ex.printStackTrace();
+        }catch (Exception ex){
+            LogUtil.printErr("Mojang are dicks about requests! Skins wont work");
             return;
         }
         try {
