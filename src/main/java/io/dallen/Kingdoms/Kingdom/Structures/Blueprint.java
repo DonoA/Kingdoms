@@ -57,25 +57,45 @@ public class Blueprint {
     }
     
     public void Rotate(int angle){//THIS does not account for stair blocks or other attached things atm
-        BlueBlock[][][] ret = new BlueBlock[this.wid][blocks[0].length][this.len];
+        BlueBlock[][][] ret = new BlueBlock[this.wid][this.high][this.len];
         if(angle == 90){
-            for(int y = 0; y < this.high; y++){
-                for (int z = 0; z < this.len; z++) {
-                    for (int x = 0; x < this.wid; x++) {
-                        ret[x][y][this.len-1-z] = blocks[z][y][x];
+            final int M = blocks.length;
+            final int N = blocks[0][0].length;
+            printMatrix(blocks);
+            ret = new BlueBlock[N][this.high][M];
+            for (int r = 0; r < M; r++) {
+                for (int c = 0; c < N; c++) {
+                    for(int y = 0; y < this.high; y++){
+                        ret[c][y][M-1-r] = blocks[r][y][c];
                     }
                 }
             }
+            printMatrix(ret);
         }else if(angle == -90){//I really hope these work, they are hot off StackOverflow
-            for(int y = 0; y < this.high; y++){
-                for (int z = 0; z < this.len; z++) {
-                    for (int x = 0; x < this.wid; x++) {
-                        ret[this.wid-1-x][y][z] = blocks[z][y][x];
+            final int M = blocks.length;
+            final int N = blocks[0][0].length;
+            printMatrix(blocks);
+            ret = new BlueBlock[N][this.high][M];
+            for (int r = 0; r < M; r++) {
+                for (int c = 0; c < N; c++) {
+                    for(int y = 0; y < this.high; y++){
+                        ret[N-1-c][y][r] = blocks[r][y][c];
                     }
                 }
             }
+            printMatrix(ret);
         }
         this.blocks = ret;
+        this.wid = ret.length;
+        this.high = ret[0].length;
+        this.len = ret[0][0].length;
+    }
+    
+    static void printMatrix(BlueBlock[][][] mat) {
+        System.out.println("Matrix = ");
+        for (BlueBlock[][] row : mat) {
+            System.out.println(Arrays.toString(row[0]));
+        }
     }
     
     public Blueprint replace(BlueBlock find, BlueBlock replace){
@@ -91,6 +111,11 @@ public class Blueprint {
         public BlueBlock(short b, byte d){
             Block = Material.getMaterial(b);
             Data = d;
+        }
+        
+        @Override
+        public String toString(){
+            return String.valueOf(Block.getId());
         }
     }
 }

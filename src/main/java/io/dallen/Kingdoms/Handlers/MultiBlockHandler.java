@@ -207,7 +207,7 @@ public class MultiBlockHandler implements Listener{
                                             }
                                             if(pos.getBlock().getType().equals(Material.REDSTONE_TORCH_ON)){
                                                 if(current != null){ // If a point has already been found
-                                                    p.sendMessage("Plot cannot be deturmined, please use the redstone dust method");
+                                                    p.sendMessage("Plot cannot be determined, please use the redstone dust method");
                                                     return;
                                                 }
                                                 if(!complete){ // If the loop is complete
@@ -239,6 +239,9 @@ public class MultiBlockHandler implements Listener{
                                     Plot NewPlot = new Plot(new Polygon(Xs, Zs, corners.size()), 
                                             LocationUtil.asLocation(LocationUtil.calcCenter(corners.toArray(new Point[corners.size()])), 
                                             l.getWorld(), l.getBlockY()), p, null);
+                                    LogUtil.printDebug(LocationUtil.calcCenter(corners.toArray(new Point[corners.size()])));
+                                    p.sendMessage(LocationUtil.calcCenter(corners.toArray(new Point[corners.size()])).toString());
+                                    p.sendMessage(String.valueOf(l.getBlockY()));
                                     for(Plot plot : Plot.getAllPlots()){
                                         if(plot.getCenter().equals(NewPlot.getCenter())){
                                             if(plot.getOwner().equals(p)){
@@ -247,6 +250,11 @@ public class MultiBlockHandler implements Listener{
                                                 p.sendMessage("This plot has already been claimed!");
                                             }
                                             return;
+                                        }
+                                    }
+                                    for(Municipality m : Municipality.getAllMunicipals()){
+                                        if(m.getInfluence().contains(LocationUtil.asPoint(NewPlot.getCenter()))){
+                                            NewPlot.setMunicipal(m);
                                         }
                                     }
                                     if(NewPlot.isValid()){

@@ -54,7 +54,7 @@ public class Structure implements SaveTypes.Saveable{
     private int Length; // Z
     @Getter @Setter
     private Polygon Base; // Z
-    @Getter @Setter
+    @Getter
     private Location Center;
     @Getter @Setter
     private int ID;
@@ -78,11 +78,11 @@ public class Structure implements SaveTypes.Saveable{
     private long amountBuilt;
     
     static {
-        EditPlot = new ChestGUI("Edit Plot Default", 2, new MenuHandler()){{
-            setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
-            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Upgrade");
-            setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
-        }};
+//        EditPlot = new ChestGUI("Edit Plot Default", 2, new MenuHandler()){{
+//            setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
+//            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Upgrade");
+//            setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
+//        }};
         BuildMenu = new ChestGUI("Build Options", 2, new MenuHandler()){{
             setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Default Wall 1");
             setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Default Wall 2");

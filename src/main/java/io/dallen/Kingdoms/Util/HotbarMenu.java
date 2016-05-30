@@ -61,7 +61,7 @@ public class HotbarMenu implements Listener{
         optionIcons = new ItemStack[9];
         optionData = new Object[9];
         optionNames[8] = "Cancel";
-        optionIcons[8] = ItemUtil.setItemNameAndLore(Material.BARRIER, "Cancel");
+        optionIcons[8] = ItemUtil.setItemNameAndLore(Material.ENCHANTED_BOOK, "Cancel");
         Main.getPlugin().getServer().getPluginManager().registerEvents(this, Main.getPlugin());
     }
     
@@ -83,7 +83,7 @@ public class HotbarMenu implements Listener{
         optionIcons = new ItemStack[9];
         optionData = new Object[9];
         optionNames[8] = "Cancel";
-        optionIcons[8] = ItemUtil.setItemNameAndLore(Material.BARRIER, "Cancel");
+        optionIcons[8] = ItemUtil.setItemNameAndLore(Material.ENCHANTED_BOOK, "Cancel");
         return this;
     }
     
@@ -99,6 +99,10 @@ public class HotbarMenu implements Listener{
     }
     
     public static void closeMenu(Player player){
+        ItemStack[] hotbar =  openMenus.get(player.getName()).getPlayerOldHotbar();
+        for(int i = 0; i <= 8; i++){
+            player.getInventory().setItem(i, hotbar[i]);
+        }
         openMenus.remove(player.getName());
     }
    
@@ -129,13 +133,15 @@ public class HotbarMenu implements Listener{
                 HotbarInstance menu = openMenus.get(event.getPlayer().getName());
                 event.setCancelled(true);
                 int slot = event.getPlayer().getInventory().getHeldItemSlot();
+                LogUtil.printDebug("slot:" + slot);
                 if(slot >= 0 && slot < 9 && menu.optionNames[slot] != null){
-                    if(menu.optionNames[slot].equalsIgnoreCase("Cancel")){
-                        HotbarMenu.closeMenu(event.getPlayer());
-                        return;
-                    }
                     OptionClickEvent e = new OptionClickEvent(event.getPlayer(), slot, menu.optionData[slot], menu.optionNames[slot], menu.name, menu.menuData);
+                    if(menu.optionNames[slot].equalsIgnoreCase("Cancel")){
+                        event.getPlayer().sendMessage("Canceled");
+                        e.setClose(true);
+                    }
                     menu.handler.onOptionClick(e);
+                    LogUtil.printDebug("event called");
                     if(e.isClose()){
                         final Player p = (Player) event.getPlayer();
                         final OptionClickEvent ev = e;
@@ -143,7 +149,8 @@ public class HotbarMenu implements Listener{
                             @Override
                             public void run(){
                                 if(ev.getNext() != null){
-                                    ev.getNext().sendMenu(p);
+                                    throw new UnsupportedOperationException();
+//                                    ev.getNext().sendMenu(p);
                                 }else{
                                     HotbarMenu.closeMenu(p);
                                 }
@@ -154,7 +161,6 @@ public class HotbarMenu implements Listener{
                         destroy();
                     }
                 }
-                HotbarMenu.closeMenu(event.getPlayer());
             }
         }
     }

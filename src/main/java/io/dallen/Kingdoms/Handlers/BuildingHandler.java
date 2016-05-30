@@ -28,6 +28,7 @@ import io.dallen.Kingdoms.NPCs.Traits.Builder;
 import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.DBmanager;
 import io.dallen.Kingdoms.Util.HotbarMenu;
+import io.dallen.Kingdoms.Util.LogUtil;
 import io.dallen.Kingdoms.Util.NBTmanager;
 import java.io.File;
 import java.io.IOException;
@@ -98,8 +99,8 @@ public class BuildingHandler implements Listener{
         
         @Override
         public void onOptionClick(HotbarMenu.OptionClickEvent e){
-            e.getPlayer().sendMessage("option called");
-            if(e.getName().equalsIgnoreCase("Start Build")){
+            LogUtil.printDebug("Hotbar event called");
+            if(e.getName().equalsIgnoreCase("Build")){
                 Blueprint building = openBuilds.get(e.getPlayer().getName()).getBlueprint();
                 Plot p = openBuilds.get(e.getPlayer().getName()).getPlot();
                 BuildersHut BuildHut = (BuildersHut) p.getMunicipal().getStructures().get(BuildersHut.class).get(0);
@@ -118,10 +119,21 @@ public class BuildingHandler implements Listener{
                 BuildTask buildTask = new BuildTask(building, startCorner, openBuilds.get(e.getPlayer().getName()).getSpeed(), BuildHut);
                 openBuilds.remove(e.getPlayer().getName());
             }else if(e.getName().equalsIgnoreCase("Rotate Clockwise")){
-                openBuilds.get(e.getPlayer().getName()).getBlueprint().Rotate(90);
+                e.setClose(false);
                 Blueprint building = openBuilds.get(e.getPlayer().getName()).getBlueprint();
-                Plot p = (Plot) openInputs.get(e.getPlayer().getName()).getData();
+                Plot p = openBuilds.get(e.getPlayer().getName()).getPlot();
                 Location startCorner = new Location(p.getCenter().getWorld(), p.getCenter().getX() - building.getWid()/2  + (building.getWid() % 2 == 0 ? 1 : 0),
+                        p.getCenter().getBlockY(), p.getCenter().getBlockZ() - building.getLen()/2 + (building.getLen() % 2 == 0 ? 1 : 0));
+                for(int y = 0; y < building.getHigh(); y++){
+                    for(int z = 0; z < building.getLen(); z++){
+                        for(int x = 0; x < building.getWid(); x++){
+                            Location nLoc = startCorner.clone().add(x,y,z);
+                            nLoc.getBlock().setType(Material.AIR, false);
+                        }
+                    }
+                }
+                building.Rotate(90);
+                startCorner = new Location(p.getCenter().getWorld(), p.getCenter().getX() - building.getWid()/2  + (building.getWid() % 2 == 0 ? 1 : 0),
                         p.getCenter().getBlockY(), p.getCenter().getBlockZ() - building.getLen()/2 + (building.getLen() % 2 == 0 ? 1 : 0));
                 for(int y = 0; y < building.getHigh(); y++){
                     for(int z = 0; z < building.getLen(); z++){
@@ -139,10 +151,21 @@ public class BuildingHandler implements Listener{
                     }
                 }
             }else if(e.getName().equalsIgnoreCase("Rotate Counter Clockwise")){
-                openBuilds.get(e.getPlayer().getName()).getBlueprint().Rotate(-90);
+                e.setClose(false);
                 Blueprint building = openBuilds.get(e.getPlayer().getName()).getBlueprint();
-                Plot p = (Plot) openInputs.get(e.getPlayer().getName()).getData();
+                Plot p = openBuilds.get(e.getPlayer().getName()).getPlot();
                 Location startCorner = new Location(p.getCenter().getWorld(), p.getCenter().getX() - building.getWid()/2  + (building.getWid() % 2 == 0 ? 1 : 0),
+                        p.getCenter().getBlockY(), p.getCenter().getBlockZ() - building.getLen()/2 + (building.getLen() % 2 == 0 ? 1 : 0));
+                for(int y = 0; y < building.getHigh(); y++){
+                    for(int z = 0; z < building.getLen(); z++){
+                        for(int x = 0; x < building.getWid(); x++){
+                            Location nLoc = startCorner.clone().add(x,y,z);
+                            nLoc.getBlock().setType(Material.AIR, false);
+                        }
+                    }
+                }
+                building.Rotate(-90);
+                startCorner = new Location(p.getCenter().getWorld(), p.getCenter().getX() - building.getWid()/2  + (building.getWid() % 2 == 0 ? 1 : 0),
                         p.getCenter().getBlockY(), p.getCenter().getBlockZ() - building.getLen()/2 + (building.getLen() % 2 == 0 ? 1 : 0));
                 for(int y = 0; y < building.getHigh(); y++){
                     for(int z = 0; z < building.getLen(); z++){
@@ -248,7 +271,7 @@ public class BuildingHandler implements Listener{
         private int step = 64;
         
         public BuildTask(Blueprint building, Location start, int speed, BuildersHut BuildHut){
-            Builder = Main.getNPCs().spawnBuilder("BingRazor", BuildHut.getCenter());
+            Builder = Main.getNPCs().spawnBuilder("BingRazor", start.clone().add(10, 0, 10));
             Builder.getNavigator().setTarget(start);
             this.Building = building;
             this.startCorner = start;
@@ -263,7 +286,7 @@ public class BuildingHandler implements Listener{
                     Builder.getTrait(Builder.class).getSupplies(startCorner);
                     step = 64;
                 }
-                step--;
+//                step--;
 //                LogUtil.printDebug(x + ", " + y + ", " + z);
                 if(x < Building.getWid() - (Building.getWid() % 2 == 0 ? 1 : 0)){
                     Location nLoc = startCorner.clone().add(x,y,z);

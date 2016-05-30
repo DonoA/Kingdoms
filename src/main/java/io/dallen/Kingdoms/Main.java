@@ -123,7 +123,6 @@ public class Main extends JavaPlugin {
                     changes = new ChangeTracker(Plugin);
                 }
                 NPCs = new NpcManager();
-//                CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(Builder.class));
                 ModerationCommands moderation = new ModerationCommands();
                 GeneralCommands general = new GeneralCommands();
                 AdminCommands admin = new AdminCommands();
@@ -161,9 +160,19 @@ public class Main extends JavaPlugin {
                 Main.getPlugin().getCommand("chat").setExecutor(new ChatHandler());
                 Main.getPlugin().getCommand("party").setExecutor(new Party.PartyCommands());
                 Main.getPlugin().getCommand("mute").setExecutor(new MuteCommand());
+                Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), postServerLoad, 10);
 //                Main.getPlugin().getServer().getScheduler().scheduleSyncRepeatingTask(this, new DisguiseTask(this), 1200L, 1200L);
             }
         };
+    
+    @Getter
+    private static Runnable postServerLoad = new Runnable(){ //called post server start (by 1/2 second)
+            @Override
+            public void run(){
+                net.citizensnpcs.api.CitizensAPI.getTraitFactory().registerTrait(net.citizensnpcs.api.trait.TraitInfo.create(Builder.class));
+            }
+        };
+    
     
     @Override
     public void onEnable(){ //Called pre-server enable

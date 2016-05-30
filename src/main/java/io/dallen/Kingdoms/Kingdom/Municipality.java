@@ -102,6 +102,7 @@ public class Municipality implements SaveTypes.Saveable{
         for(Class c : StructureClasses){
             Structures.put(c, new ArrayList<Structure>());
         }
+        Structures.put(Plot.class, new ArrayList<Structure>());
         Structures.get(TownHall.class).add(center);
     }
     
@@ -139,6 +140,9 @@ public class Municipality implements SaveTypes.Saveable{
                 s.setMunicipal(this);
                 return;
             }
+        }
+        if(s instanceof Plot){
+            Structures.get(Plot.class).add(s);
         }
     }
     
