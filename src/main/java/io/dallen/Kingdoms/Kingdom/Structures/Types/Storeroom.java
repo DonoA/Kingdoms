@@ -43,8 +43,8 @@ public class Storeroom extends Plot implements Storage{
     
     public Storeroom(Plot p) {
         super(p);
-        maxCapacity = p.getArea() * 100;
-        Storage = new BuildingVault(maxCapacity, maxCapacity*64, this);
+//        maxCapacity = p.getArea() * 100;
+        Storage = new BuildingVault(30, 30 * 100, this);
     }
     
     @Override

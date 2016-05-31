@@ -53,6 +53,13 @@ public class CraftingHandler implements Listener{
         mTool.setIngredient('C', Material.WATCH);
         p.getServer().addRecipe(mTool);
         
+        ItemStack CommandStick = ItemUtil.setItemNameAndLore(Material.STICK, "Command Stick", "Used for managing troops");
+        ShapedRecipe cStick = new ShapedRecipe(CommandStick);
+        mTool.shape(" I "," S "," S ");
+        mTool.setIngredient('I', Material.WATCH);
+        mTool.setIngredient('S', Material.STICK);
+        p.getServer().addRecipe(cStick);
+        
         Bukkit.getPluginManager().registerEvents(this, p);
     }
     

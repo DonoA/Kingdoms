@@ -114,7 +114,7 @@ public class StorageHandler implements Listener{
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerInteract(PlayerInteractEvent e){
         if((!cooldown.containsKey(e.getPlayer())) || 
-              (cooldown.containsKey(e.getPlayer()) && cooldown.get(e.getPlayer()) < System.currentTimeMillis() - 500)){
+              (cooldown.containsKey(e.getPlayer()) && cooldown.get(e.getPlayer()) < System.currentTimeMillis() - 100)){
                cooldown.put(e.getPlayer(), System.currentTimeMillis());
             if(e.hasBlock()){
                 Plot p = Plot.inPlot(e.getClickedBlock().getLocation());

@@ -103,11 +103,16 @@ public class TrainingGround extends Plot{
     
     @Override
     public void sendEditMenu(Player p){
-        if(super.getMunicipal() == null){
+        if(super.getMunicipal() != null){
             EditPlot.setOption(2, new ItemStack(Material.ENCHANTED_BOOK), "Train Archer");
             EditPlot.setOption(3, new ItemStack(Material.ENCHANTED_BOOK), "Train Infantry");
             EditPlot.setOption(4, new ItemStack(Material.ENCHANTED_BOOK), "Train Cavalry");
             EditPlot.setOption(5, new ItemStack(Material.ENCHANTED_BOOK), "Train General");
+        }else{
+            EditPlot.setOption(2, new ItemStack(Material.AIR), "");
+            EditPlot.setOption(3, new ItemStack(Material.AIR), "");
+            EditPlot.setOption(4, new ItemStack(Material.AIR), "");
+            EditPlot.setOption(5, new ItemStack(Material.AIR), "");
         }
         EditPlot.setMenuData(this);
         EditPlot.sendMenu(p);
@@ -120,13 +125,13 @@ public class TrainingGround extends Plot{
             if(e.getMenuName().equalsIgnoreCase("Training Ground")){
                 TrainingGround trg = (TrainingGround) e.getMenuData();
                 if(e.getName().equalsIgnoreCase("Train Archer")){
-                    Main.getNPCs().spawnSoldier("Dallen", trg.getCenter(), SoldierType.ARCHER);
+                    Main.getNPCs().spawnSoldier("Dallen", trg.getCenter(), trg.getMunicipal(), SoldierType.ARCHER);
                 }else if(e.getName().equalsIgnoreCase("Train Infantry")){
-                    Main.getNPCs().spawnSoldier("Dallen", trg.getCenter(), SoldierType.INFANTRY);
+                    Main.getNPCs().spawnSoldier("Dallen", trg.getCenter(), trg.getMunicipal(), SoldierType.INFANTRY);
                 }else if(e.getName().equalsIgnoreCase("Train Cavalry")){
-                    Main.getNPCs().spawnSoldier("Dallen", trg.getCenter(), SoldierType.CAVALRY);
+                    Main.getNPCs().spawnSoldier("Dallen", trg.getCenter(), trg.getMunicipal(), SoldierType.CAVALRY);
                 }else if(e.getName().equalsIgnoreCase("Train General")){
-                    Main.getNPCs().spawnSoldier("Dallen", trg.getCenter(), SoldierType.GENERAL);
+                    Main.getNPCs().spawnSoldier("Dallen", trg.getCenter(), trg.getMunicipal(), SoldierType.GENERAL);
                 }else{
                     BuildingHandler.chestBuildOptions(e, BuildMenu);
                 }

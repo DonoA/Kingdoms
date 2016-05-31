@@ -59,7 +59,7 @@ public class BuildersHut extends Plot implements Storage{
     
     public BuildersHut(Plot p) {
         super(p.getBase(), p.getCenter(), p.getOwner(), p.getMunicipal());
-        Storage = new BuildingVault(30, 30 * 100, this);
+        Storage = new BuildingVault(18, 18 * 100, this);
     }
     
     public boolean hasMaterials(Class type){

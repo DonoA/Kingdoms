@@ -81,7 +81,10 @@ public class Farm extends Plot{
         
         private int Apples;
         
-        private int Corn;
+        private int Carrots;
+        
+        private int Potatoes;
+        
     }
     
     public static class MenuHandler implements OptionClickEventHandler{

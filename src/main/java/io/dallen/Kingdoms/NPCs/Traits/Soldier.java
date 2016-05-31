@@ -19,6 +19,10 @@
  */
 package io.dallen.Kingdoms.NPCs.Traits;
 
+import io.dallen.Kingdoms.Kingdom.Municipality;
+import io.dallen.Kingdoms.Main;
+import lombok.Setter;
+import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.Trait;
 import org.bukkit.Material;
 import org.bukkit.entity.AnimalTamer;
@@ -34,9 +38,12 @@ import org.bukkit.inventory.ItemStack;
 public class Soldier{
     
     public static class Archer extends Trait{
+        
+        private Municipality municipal;
 
-        public Archer(){
+        public Archer(Municipality muni){
             super("Archer");
+            this.municipal = muni;
         }
         
         @Override
@@ -47,14 +54,17 @@ public class Soldier{
             ((LivingEntity)super.npc.getEntity()).getEquipment().setBoots(new ItemStack(Material.CHAINMAIL_BOOTS));
             ((LivingEntity)super.npc.getEntity()).getEquipment().setItemInMainHand(new ItemStack(Material.BOW));
             ((LivingEntity)super.npc.getEntity()).getEquipment().setItemInOffHand(new ItemStack(Material.ARROW));
+            
         }
-
     }
     
     public static class Infantry extends Trait{
         
-        public Infantry(){
+        private Municipality municipal;
+        
+        public Infantry(Municipality muni){
             super("Infantry");
+            this.municipal = muni;
         }
         
         @Override
@@ -65,14 +75,20 @@ public class Soldier{
             ((LivingEntity)super.npc.getEntity()).getEquipment().setBoots(new ItemStack(Material.IRON_BOOTS));
             ((LivingEntity)super.npc.getEntity()).getEquipment().setItemInMainHand(new ItemStack(Material.IRON_SWORD));
             ((LivingEntity)super.npc.getEntity()).getEquipment().setItemInOffHand(new ItemStack(Material.SHIELD));
+            
         }
 
     }
     
     public static class Cavalry extends Trait{
-
-        public Cavalry(){
+        
+        private Municipality municipal;
+        
+        private NPC mount;
+        
+        public Cavalry(Municipality muni){
             super("Cavalry");
+            this.municipal = muni;
         }
         
         @Override
@@ -82,19 +98,25 @@ public class Soldier{
             ((LivingEntity)super.npc.getEntity()).getEquipment().setLeggings(new ItemStack(Material.IRON_LEGGINGS));
             ((LivingEntity)super.npc.getEntity()).getEquipment().setBoots(new ItemStack(Material.IRON_BOOTS));
             ((LivingEntity)super.npc.getEntity()).getEquipment().setItemInMainHand(new ItemStack(Material.IRON_SWORD));
-            Horse mount = (Horse) super.npc.getEntity().getLocation().getWorld().spawnEntity(super.npc.getEntity().getLocation(), EntityType.HORSE);
+            NPC horse = Main.getNPCs().getNPCReg().createNPC(EntityType.HORSE, "");
+            horse.spawn(super.npc.getStoredLocation());
+            Horse mount = (Horse) horse.getEntity();
             mount.getInventory().setArmor(new ItemStack(Material.IRON_BARDING));
             mount.getInventory().setSaddle(new ItemStack(Material.SADDLE));
             mount.setOwner((AnimalTamer) super.npc.getEntity());
             mount.setPassenger(super.npc.getEntity());
+            this.mount = horse;
         }
 
     }
     
     public static class General extends Trait{
-
-        public General(){
+        
+        private Municipality municipal;
+        
+        public General(Municipality muni){
             super("General");
+            this.municipal = muni;
         }
         
         @Override
