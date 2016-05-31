@@ -19,6 +19,7 @@
  */
 package io.dallen.Kingdoms.Kingdom.Structures.Types;
 
+import io.dallen.Kingdoms.Handlers.BuildingHandler;
 import io.dallen.Kingdoms.Kingdom.Plot;
 import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEvent;
@@ -47,13 +48,29 @@ public class Farm extends Plot{
     
     private FoodStats localStock;
     
+    private boolean growing;
+    
+    @Getter
+    private static ChestGUI EditPlot;
+    
+    static {
+        EditPlot = new ChestGUI("TownHall", 2, new MenuHandler()){{
+            setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
+            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Upgrade");
+            setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
+        }};
+    }
+    
     public Farm(Plot p) {
         super(p.getBase(), p.getCenter(), p.getOwner(), p.getMunicipal());
     }
     
     @Override
     public void sendEditMenu(Player p){
-        EditPlot.setOption(1, new ItemStack(Material.ENCHANTED_BOOK), "option1");
+        if(growing)
+            EditPlot.setOption(4, new ItemStack(Material.ENCHANTED_BOOK), "Stop Growing");
+        else
+            EditPlot.setOption(4, new ItemStack(Material.ENCHANTED_BOOK), "Start Growing");
         EditPlot.setMenuData(this);
         EditPlot.sendMenu(p);
     }
@@ -71,7 +88,13 @@ public class Farm extends Plot{
         
         @Override
         public void onOptionClick(OptionClickEvent e){
-            e.getPlayer().sendMessage("Default option called");
+            if(e.getName().equalsIgnoreCase("Stop Growing")){
+                
+            }else if(e.getName().equalsIgnoreCase("Start Growing")){
+                
+            }else{
+                BuildingHandler.chestBuildOptions(e, BuildMenu);
+            }
         }
     }
     

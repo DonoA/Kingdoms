@@ -20,6 +20,7 @@
 package io.dallen.Kingdoms.Kingdom.Structures.Types;
 
 import com.google.common.primitives.Ints;
+import io.dallen.Kingdoms.Handlers.BuildingHandler;
 import io.dallen.Kingdoms.Kingdom.Municipality;
 import io.dallen.Kingdoms.Kingdom.Plot;
 import io.dallen.Kingdoms.Kingdom.Structures.Structure;
@@ -125,22 +126,8 @@ public class TownHall extends Plot{
                         }
                     }
                 }).start();
-            }else if(e.getName().equalsIgnoreCase("Build")){
-                LogUtil.printDebug(((Structure) e.getMenuData()).getMunicipal());
-                LogUtil.printDebug(((Structure) e.getMenuData()).getMunicipal().getStructures().toString());
-                if(((Structure) e.getMenuData()).getMunicipal() != null && 
-                    !((Structure) e.getMenuData()).getMunicipal().getStructures().get(BuildersHut.class).isEmpty()){
-                    BuildMenu.setMenuData(e.getMenuData());
-                    e.setNext(BuildMenu);
-                }else{
-                    e.getPlayer().sendMessage("You have no NPCs to build this!");
-                }
-            }else if(e.getName().equalsIgnoreCase("Erase")){
-                e.getPlayer().sendMessage("Default option called");
-                
-            }else if(e.getName().equalsIgnoreCase("Demolish")){
-                e.getPlayer().sendMessage("Default option called");
-                e.getPlayer().teleport(((Structure) e.getMenuData()).getCenter());
+            }else{
+                BuildingHandler.chestBuildOptions(e, BuildMenu);
             }
         }
     }

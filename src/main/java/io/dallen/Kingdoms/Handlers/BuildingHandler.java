@@ -22,6 +22,7 @@ package io.dallen.Kingdoms.Handlers;
 import io.dallen.Kingdoms.Kingdom.Plot;
 import io.dallen.Kingdoms.Kingdom.Structures.Blueprint;
 import io.dallen.Kingdoms.Kingdom.Structures.Structure;
+import static io.dallen.Kingdoms.Kingdom.Structures.Structure.BuildMenu;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.BuildersHut;
 import io.dallen.Kingdoms.Main;
 import io.dallen.Kingdoms.NPCs.Traits.Builder;
@@ -185,6 +186,24 @@ public class BuildingHandler implements Listener{
                 }
             }
         }
+    }
+    
+    public static void chestBuildOptions(ChestGUI.OptionClickEvent e, ChestGUI buildMenu){
+        if(e.getName().equalsIgnoreCase("Build")){
+                if(((Structure) e.getMenuData()).getMunicipal() != null && 
+                    !((Structure) e.getMenuData()).getMunicipal().getStructures().get(BuildersHut.class).isEmpty()){
+                    buildMenu.setMenuData(e.getMenuData());
+                    e.setNext(buildMenu);
+                }else{
+                    e.getPlayer().sendMessage("You have no NPCs to build this!");
+                }
+            }else if(e.getName().equalsIgnoreCase("Erase")){
+                e.getPlayer().sendMessage("Default option called");
+                
+            }else if(e.getName().equalsIgnoreCase("Demolish")){
+                e.getPlayer().sendMessage("Default option called");
+                e.getPlayer().teleport(((Structure) e.getMenuData()).getCenter());
+            }
     }
     
     @AllArgsConstructor

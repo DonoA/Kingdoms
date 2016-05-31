@@ -160,20 +160,7 @@ public class Structure implements SaveTypes.Saveable{
                     e.getPlayer().sendMessage("Default option called");
                 }
             }else if(e.getMenuName().equalsIgnoreCase("Edit Plot Default")){
-                if(e.getName().equalsIgnoreCase("Build")){
-                    if(((Structure) e.getMenuData()).getMunicipal() != null && 
-                        !((Structure) e.getMenuData()).getMunicipal().getStructures().get(BuildersHut.class).isEmpty()){
-                        BuildMenu.setMenuData(e.getMenuData());
-                        e.setNext(BuildMenu);
-                    }else{
-                        e.getPlayer().sendMessage("You have no NPCs to build this!");
-                    }
-                }else if(e.getName().equalsIgnoreCase("Erase")){
-                    e.getPlayer().sendMessage("Default option called");
-                    e.getPlayer().teleport(((Structure) e.getMenuData()).getCenter());
-                }else if(e.getName().equalsIgnoreCase("Demolish")){
-                    e.getPlayer().sendMessage("Default option called");
-                }
+                BuildingHandler.chestBuildOptions(e, BuildMenu);
             }
         }
     }

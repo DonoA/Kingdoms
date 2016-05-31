@@ -193,8 +193,10 @@ public class MultiBlockHandler implements Listener{
                                         last = current; // cycle points
                                         current = null;
                                         for(int i = 1; i<64 && current == null; i++){
-                                            Location neg = new Location(l.getWorld(), (direction ? last.getX() - i : last.getX()), l.getBlockY(), (!direction ? last.getY() - i : last.getY())); // the point in the negative direction
-                                            Location pos = new Location(l.getWorld(), (direction ? last.getX() + i : last.getX()), l.getBlockY(), (!direction ? last.getY() + i : last.getY())); // the point in the positive direction
+                                            Location neg = new Location(l.getWorld(), (direction ? last.getX() - i : last.getX()), 
+                                                    l.getBlockY(), (!direction ? last.getY() - i : last.getY())); // the point in the negative direction
+                                            Location pos = new Location(l.getWorld(), (direction ? last.getX() + i : last.getX()), 
+                                                    l.getBlockY(), (!direction ? last.getY() + i : last.getY())); // the point in the positive direction
                                             if(neg.getBlock().getType().equals(Material.REDSTONE_TORCH_ON)){ // Test in the negative direction
                                                 current = LocationUtil.asPoint(neg);
                                                 if(current.equals(start)){// If the found point is the start point

@@ -19,6 +19,7 @@
  */
 package io.dallen.Kingdoms.Kingdom.Structures.Types;
 
+import io.dallen.Kingdoms.Handlers.BuildingHandler;
 import io.dallen.Kingdoms.Kingdom.Plot;
 import io.dallen.Kingdoms.Kingdom.Structures.Structure;
 import static io.dallen.Kingdoms.Kingdom.Structures.Structure.BuildMenu;
@@ -126,18 +127,8 @@ public class TrainingGround extends Plot{
                     Main.getNPCs().spawnSoldier("Dallen", trg.getCenter(), SoldierType.CAVALRY);
                 }else if(e.getName().equalsIgnoreCase("Train General")){
                     Main.getNPCs().spawnSoldier("Dallen", trg.getCenter(), SoldierType.GENERAL);
-                }else if(e.getName().equalsIgnoreCase("Build")){
-                    if(((Structure) e.getMenuData()).getMunicipal() != null && 
-                        !((Structure) e.getMenuData()).getMunicipal().getStructures().get(BuildersHut.class).isEmpty()){
-                        BuildMenu.setMenuData(e.getMenuData());
-                        e.setNext(BuildMenu);
-                    }else{
-                        e.getPlayer().sendMessage("You have no NPCs to build this!");
-                    }
-                }else if(e.getName().equalsIgnoreCase("Erase")){
-                    e.getPlayer().sendMessage("Default option called");
-                }else if(e.getName().equalsIgnoreCase("Demolish")){
-                    e.getPlayer().sendMessage("Default option called");
+                }else{
+                    BuildingHandler.chestBuildOptions(e, BuildMenu);
                 }
             }
         }

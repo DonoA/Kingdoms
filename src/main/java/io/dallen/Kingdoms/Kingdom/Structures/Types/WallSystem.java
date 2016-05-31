@@ -19,11 +19,11 @@
  */
 package io.dallen.Kingdoms.Kingdom.Structures.Types;
 
+import io.dallen.Kingdoms.Handlers.BuildingHandler;
 import io.dallen.Kingdoms.Kingdom.Municipality;
 import io.dallen.Kingdoms.Kingdom.Plot;
 import io.dallen.Kingdoms.Kingdom.Structures.Structure;
 import static io.dallen.Kingdoms.Kingdom.Structures.Structure.BuildMenu;
-import io.dallen.Kingdoms.Main;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonWallSystem;
 import io.dallen.Kingdoms.Storage.SaveTypes;
 import io.dallen.Kingdoms.Util.ChestGUI;
@@ -132,23 +132,7 @@ public class WallSystem implements SaveTypes.Saveable{
 
             @Override
             public void onOptionClick(ChestGUI.OptionClickEvent e){
-                if(e.getMenuName().equalsIgnoreCase("Wall")){
-                    if(e.getName().equalsIgnoreCase("Build")){
-                        LogUtil.printDebug(((Structure) e.getMenuData()).getMunicipal());
-                        LogUtil.printDebug(((Structure) e.getMenuData()).getMunicipal().getStructures().toString());
-                        if(((Structure) e.getMenuData()).getMunicipal() != null && 
-                            !((Structure) e.getMenuData()).getMunicipal().getStructures().get(BuildersHut.class).isEmpty()){
-                            BuildMenu.setMenuData(e.getMenuData());
-                            e.setNext(BuildMenu);
-                        }else{
-                            e.getPlayer().sendMessage("You have no NPCs to build this!");
-                        }
-                    }else if(e.getName().equalsIgnoreCase("Erase")){
-                        e.getPlayer().sendMessage("Default option called");
-                    }else if(e.getName().equalsIgnoreCase("Demolish")){
-                        e.getPlayer().sendMessage("Default option called");
-                    }
-                }
+                BuildingHandler.chestBuildOptions(e, BuildMenu);
             }
         }
     }

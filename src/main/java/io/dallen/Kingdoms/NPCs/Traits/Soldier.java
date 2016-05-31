@@ -21,6 +21,7 @@ package io.dallen.Kingdoms.NPCs.Traits;
 
 import net.citizensnpcs.api.trait.Trait;
 import org.bukkit.Material;
+import org.bukkit.entity.AnimalTamer;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse;
 import org.bukkit.entity.LivingEntity;
@@ -83,6 +84,8 @@ public class Soldier{
             ((LivingEntity)super.npc.getEntity()).getEquipment().setItemInMainHand(new ItemStack(Material.IRON_SWORD));
             Horse mount = (Horse) super.npc.getEntity().getLocation().getWorld().spawnEntity(super.npc.getEntity().getLocation(), EntityType.HORSE);
             mount.getInventory().setArmor(new ItemStack(Material.IRON_BARDING));
+            mount.getInventory().setSaddle(new ItemStack(Material.SADDLE));
+            mount.setOwner((AnimalTamer) super.npc.getEntity());
             mount.setPassenger(super.npc.getEntity());
         }
 
