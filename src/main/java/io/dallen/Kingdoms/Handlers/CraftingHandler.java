@@ -55,9 +55,9 @@ public class CraftingHandler implements Listener{
         
         ItemStack CommandStick = ItemUtil.setItemNameAndLore(Material.STICK, "Command Stick", "Used for managing troops");
         ShapedRecipe cStick = new ShapedRecipe(CommandStick);
-        mTool.shape(" I "," S "," S ");
-        mTool.setIngredient('I', Material.WATCH);
-        mTool.setIngredient('S', Material.STICK);
+        cStick.shape(" I "," S "," S ");
+        cStick.setIngredient('I', Material.WATCH);
+        cStick.setIngredient('S', Material.STICK);
         p.getServer().addRecipe(cStick);
         
         Bukkit.getPluginManager().registerEvents(this, p);
@@ -65,7 +65,7 @@ public class CraftingHandler implements Listener{
     
     @EventHandler
     public void onEnchantItem(EnchantItemEvent e){
-        if(e.getItem().getType().name().contains("_BARDING")){
+        if(e.getItem().getType().name().contains("_HELMET")){
             e.getEnchantsToAdd().put(Enchantment.DURABILITY, 2);
         }
     }

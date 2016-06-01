@@ -22,7 +22,10 @@ package io.dallen.Kingdoms.NPCs;
 import io.dallen.Kingdoms.Kingdom.Municipality;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.TrainingGround.SoldierType;
 import io.dallen.Kingdoms.NPCs.Traits.Builder;
-import io.dallen.Kingdoms.NPCs.Traits.Soldier;
+import io.dallen.Kingdoms.NPCs.Traits.Soldiers.Archer;
+import io.dallen.Kingdoms.NPCs.Traits.Soldiers.Cavalry;
+import io.dallen.Kingdoms.NPCs.Traits.Soldiers.General;
+import io.dallen.Kingdoms.NPCs.Traits.Soldiers.Infantry;
 import lombok.Getter;
 import lombok.Setter;
 import net.citizensnpcs.api.CitizensAPI;
@@ -51,7 +54,7 @@ public class NpcManager {
     public NPC spawnBuilder(String user, Location spawn){
         NPC Builder = NPCReg.createNPC(EntityType.PLAYER, user);
         Builder.spawn(spawn);
-//        Builder.addTrait(new Builder());
+        Builder.addTrait(new Builder());
         return Builder;
     }
     
@@ -60,16 +63,24 @@ public class NpcManager {
         Soldier.spawn(spawn);
         switch(type){
             case ARCHER:
-                Soldier.addTrait(new Soldier.Archer(owner));
+                Archer archer = new Archer();
+                archer.setMunicipal(owner);
+                Soldier.addTrait(archer);
                 break;
             case INFANTRY:
-                Soldier.addTrait(new Soldier.Infantry(owner));
+                Infantry infantry = new Infantry();
+                infantry.setMunicipal(owner);
+                Soldier.addTrait(infantry);
                 break;
             case CAVALRY:
-                Soldier.addTrait(new Soldier.Cavalry(owner));
+                Cavalry cavalry = new Cavalry();
+                cavalry.setMunicipal(owner);
+                Soldier.addTrait(cavalry);
                 break;
             case GENERAL:
-                Soldier.addTrait(new Soldier.General(owner));
+                General general = new General();
+                general.setMunicipal(owner);
+                Soldier.addTrait(general);
                 break;
         }
         return Soldier;

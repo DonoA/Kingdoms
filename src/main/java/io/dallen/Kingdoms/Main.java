@@ -45,11 +45,16 @@ import io.dallen.Kingdoms.Handlers.WaterHandler;
 import io.dallen.Kingdoms.Kingdom.Kingdom;
 import io.dallen.Kingdoms.Kingdom.Municipality;
 import io.dallen.Kingdoms.NPCs.Traits.Builder;
-import io.dallen.Kingdoms.NPCs.Traits.Soldier;
+import io.dallen.Kingdoms.NPCs.Traits.Soldiers.Archer;
+import io.dallen.Kingdoms.NPCs.Traits.Soldiers.Cavalry;
+import io.dallen.Kingdoms.NPCs.Traits.Soldiers.General;
+import io.dallen.Kingdoms.NPCs.Traits.Soldiers.Infantry;
 import java.io.File;
 import java.util.ArrayList;
 import lombok.Getter;
 import lombok.Setter;
+import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.trait.TraitInfo;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -153,7 +158,7 @@ public class Main extends JavaPlugin {
                 Main.getPlugin().getCommand("chat").setExecutor(new ChatHandler());
                 Main.getPlugin().getCommand("party").setExecutor(new Party.PartyCommands());
                 Main.getPlugin().getCommand("mute").setExecutor(new MuteCommand());
-                Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), postServerLoad, 10);
+//                Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), postServerLoad, 10);
 //                Main.getPlugin().getServer().getScheduler().scheduleSyncRepeatingTask(this, new DisguiseTask(this), 1200L, 1200L);
             }
         };
@@ -162,11 +167,11 @@ public class Main extends JavaPlugin {
     private static Runnable postServerLoad = new Runnable(){ //called post server start (by 1/2 second)
             @Override
             public void run(){
-                net.citizensnpcs.api.CitizensAPI.getTraitFactory().registerTrait(net.citizensnpcs.api.trait.TraitInfo.create(Builder.class));
-                net.citizensnpcs.api.CitizensAPI.getTraitFactory().registerTrait(net.citizensnpcs.api.trait.TraitInfo.create(Soldier.Archer.class));
-                net.citizensnpcs.api.CitizensAPI.getTraitFactory().registerTrait(net.citizensnpcs.api.trait.TraitInfo.create(Soldier.Cavalry.class));
-                net.citizensnpcs.api.CitizensAPI.getTraitFactory().registerTrait(net.citizensnpcs.api.trait.TraitInfo.create(Soldier.General.class));
-                net.citizensnpcs.api.CitizensAPI.getTraitFactory().registerTrait(net.citizensnpcs.api.trait.TraitInfo.create(Soldier.Infantry.class));
+                CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(Builder.class));
+                CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(Archer.class));
+                CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(Cavalry.class));
+                CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(General.class));
+                CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(Infantry.class));
             }
         };
     
