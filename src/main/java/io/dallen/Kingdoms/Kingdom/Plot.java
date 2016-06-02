@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
@@ -53,7 +54,7 @@ public class Plot extends Structure implements Listener{
     @Getter @Setter
     private boolean empty = true;
     
-    public Plot(Polygon base, Location cent, Player own, Municipality mun) {
+    public Plot(Polygon base, Location cent, OfflinePlayer own, Municipality mun) {
         super(base, cent, own, mun);
     }
     

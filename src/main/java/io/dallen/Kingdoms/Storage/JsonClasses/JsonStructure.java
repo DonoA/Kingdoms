@@ -20,8 +20,13 @@
 package io.dallen.Kingdoms.Storage.JsonClasses;
 
 import io.dallen.Kingdoms.Kingdom.Structures.Structure;
+import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonLocation;
+import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonPolygon;
 import io.dallen.Kingdoms.Storage.SaveTypes;
+import java.util.UUID;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  *
@@ -29,6 +34,29 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor
 public class JsonStructure implements SaveTypes.JsonType{
+    
+    @Getter @Setter
+    private int Width; // X
+    @Getter @Setter
+    private int Height; // Y
+    @Getter @Setter
+    private int Length; // Z
+    @Getter @Setter
+    private JsonPolygon Base; // Z
+    @Getter @Setter
+    private JsonLocation Center;
+    @Getter @Setter
+    private UUID Owner;
+    @Getter @Setter
+    private int Kingdom;
+    @Getter @Setter
+    private int Municipal;
+//    @Getter @Setter
+//    private int Rank;
+//    @Getter @Setter
+//    private int maxRank;
+    @Getter @Setter
+    private String StructureType;
     
     @Override
     public Structure toJavaObject(){

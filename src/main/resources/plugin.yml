@@ -162,6 +162,6 @@ commands:
   setskins:
     description: debug command
     usage: /<command>
-  bd:
+  cleannpcs:
     description: debug command
     usage: /<command>

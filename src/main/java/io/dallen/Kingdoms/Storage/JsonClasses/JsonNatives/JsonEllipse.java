@@ -17,43 +17,39 @@
  * 
  * 
  */
-
-package io.dallen.Kingdoms.Storage.JsonClasses;
+package io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives;
 
 import io.dallen.Kingdoms.Storage.PlayerData;
 import io.dallen.Kingdoms.Storage.SaveTypes;
-import java.util.List;
+import java.awt.geom.Ellipse2D;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 /**
  *
  * @author Donovan Allen
  */
 @NoArgsConstructor
-public class JsonLeatherArmorMeta implements SaveTypes.JsonType.NativeType{
+public class JsonEllipse implements SaveTypes.JsonType.NativeType{
+    @Getter
+    private double length;
+    @Getter
+    private double width;
+    @Getter
+    private double x;
+    @Getter
+    private double y;
     
-    @Getter @Setter
-    private int rgb;
-    @Getter @Setter
-    private String displayName;
-    @Getter @Setter
-    private List<String> lore;
-
-    public JsonLeatherArmorMeta(LeatherArmorMeta meta) {
-        this.rgb = meta.getColor().asRGB();
-        if (meta.hasDisplayName()) {
-            this.displayName = meta.getDisplayName();
-        }
-        if (meta.hasLore()) {
-            this.lore = meta.getLore();
-        }
+    public JsonEllipse(Ellipse2D.Double base){
+        this.length = base.height;
+        this.width = base.width;
+        this.x = base.x;
+        this.y = base.y;
     }
     
     @Override
-    public Object toJavaObject(){
-        throw new UnsupportedOperationException("Not supported for LeatherArmorMeta");
+    public Ellipse2D.Double toJavaObject(){
+        return new Ellipse2D.Double(x, y, length, width);
     }
+    
 }

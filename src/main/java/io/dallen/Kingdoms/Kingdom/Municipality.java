@@ -104,6 +104,8 @@ public class Municipality implements SaveTypes.Saveable{
         }
         Structures.put(Plot.class, new ArrayList<Structure>());
         Structures.get(TownHall.class).add(center);
+        this.MunicipalID = allMunicipals.size();
+        allMunicipals.add(this);
     }
     
     public void createKingdom(){

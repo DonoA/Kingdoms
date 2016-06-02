@@ -85,4 +85,6 @@ public class NpcManager {
         }
         return Soldier;
     }
+    
+    
 }

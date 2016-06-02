@@ -18,53 +18,36 @@
  * 
  */
 
-package io.dallen.Kingdoms.Storage.JsonClasses;
+package io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives;
 
+import io.dallen.Kingdoms.Storage.PlayerData;
 import io.dallen.Kingdoms.Storage.SaveTypes;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.meta.ItemMeta;
 
 /**
  *
  * @author Donovan Allen
  */
 @NoArgsConstructor
-public class JsonArmor implements SaveTypes.JsonType.NativeType{
+public class JsonEnchantmentMeta implements SaveTypes.JsonType.NativeType{
     
     @Getter @Setter
-    private JsonItemStack Helm;
-    @Getter @Setter
-    private JsonItemStack Chest;
-    @Getter @Setter
-    private JsonItemStack Leg;
-    @Getter @Setter
-    private JsonItemStack Boot;
-    
-    public JsonArmor(ItemStack[] is){
-        Helm = new JsonItemStack(is[3]);
-        Chest = new JsonItemStack(is[2]);
-        Leg = new JsonItemStack(is[1]);
-        Boot = new JsonItemStack(is[0]);
-    }
-    
-    /**
-     * sets Player armor to this save
-     * @param p The player who should be set to the save
-     */
-    public void GiveTo(Player p){
-        p.getInventory().setHelmet(Helm.toJavaObject());
-        p.getInventory().setChestplate(Chest.toJavaObject());
-        p.getInventory().setLeggings(Leg.toJavaObject());
-        p.getInventory().setBoots(Boot.toJavaObject());
-        p.updateInventory();
+    private HashMap<String, Integer> enchants = new HashMap();
+
+    public JsonEnchantmentMeta(ItemMeta meta) {
+        for (Map.Entry<Enchantment, Integer> entry : meta.getEnchants().entrySet()) {
+            enchants.put(entry.getKey().getName(), entry.getValue());
+        }
     }
     
     @Override
     public Object toJavaObject(){
         throw new UnsupportedOperationException("Not supported for EnchantmentMeta");
     }
-    
 }

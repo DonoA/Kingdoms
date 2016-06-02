@@ -22,6 +22,7 @@ package io.dallen.Kingdoms.Handlers.DecayHandler;
 import io.dallen.Kingdoms.Handlers.MultiBlock;
 import io.dallen.Kingdoms.Kingdom.Plot;
 import io.dallen.Kingdoms.Util.LogUtil;
+import io.dallen.Kingdoms.Util.PermissionManager;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -98,6 +99,10 @@ public class ChangeTracker implements Listener{ //Not fully functioning
     
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent e){
+        if(e.getPlayer().hasPermission(PermissionManager.getBuildPermission())){
+            e.setCancelled(false);
+            return;
+        }
         Plot p = Plot.inPlot(e.getBlock().getLocation());
         LogUtil.printDebug("Block Place called");
         Block b = e.getBlockPlaced();
@@ -116,6 +121,10 @@ public class ChangeTracker implements Listener{ //Not fully functioning
     
     @EventHandler
     public void onBlockBreak(BlockBreakEvent e){
+        if(e.getPlayer().hasPermission(PermissionManager.getBuildPermission())){
+            e.setCancelled(false);
+            return;
+        }
         Plot p = Plot.inPlot(e.getBlock().getLocation());
         LogUtil.printDebug("Block Break called");
         Block b = e.getBlock();

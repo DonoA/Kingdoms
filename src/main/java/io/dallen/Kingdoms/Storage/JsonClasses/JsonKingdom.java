@@ -19,6 +19,7 @@
  */
 package io.dallen.Kingdoms.Storage.JsonClasses;
 
+import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonEllipse;
 import io.dallen.Kingdoms.Kingdom.Kingdom;
 import io.dallen.Kingdoms.Storage.PlayerData;
 import io.dallen.Kingdoms.Storage.SaveTypes;

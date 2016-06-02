@@ -17,10 +17,12 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.Storage.JsonClasses;
+package io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives;
 
 import io.dallen.Kingdoms.Storage.SaveTypes;
 import java.awt.Polygon;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
@@ -28,9 +30,20 @@ import java.awt.Polygon;
  */
 public class JsonPolygon implements SaveTypes.JsonType.NativeType{
     
+    @Getter @Setter
+    private int[] Xs;
+    
+    @Getter @Setter
+    private int[] Ys;
+    
+    public JsonPolygon(Polygon Base){
+        this.Xs = Base.xpoints;
+        this.Ys = Base.ypoints;
+    }
+    
     @Override
     public Polygon toJavaObject(){
-        throw new UnsupportedOperationException();
+        return new Polygon(Xs, Ys, Xs.length);
     }
     
 }

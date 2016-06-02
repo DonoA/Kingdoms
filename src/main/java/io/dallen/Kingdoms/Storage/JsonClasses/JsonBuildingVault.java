@@ -19,6 +19,9 @@
  */
 package io.dallen.Kingdoms.Storage.JsonClasses;
 
+import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonLocation;
+import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonItemStack;
+import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonPolygon;
 import io.dallen.Kingdoms.Kingdom.Vaults.BuildingVault;
 import io.dallen.Kingdoms.Kingdom.Vaults.PlayerVault;
 import io.dallen.Kingdoms.Storage.SaveTypes;

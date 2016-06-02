@@ -24,8 +24,12 @@ import io.dallen.Kingdoms.Handlers.BuildingHandler;
 import io.dallen.Kingdoms.Handlers.MultiBlockHandler;
 import io.dallen.Kingdoms.Kingdom.Kingdom;
 import io.dallen.Kingdoms.Kingdom.Municipality;
+import io.dallen.Kingdoms.Kingdom.Plot;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.BuildersHut;
+import io.dallen.Kingdoms.Kingdom.Structures.Types.WallSystem;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonMunicipality;
+import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonLocation;
+import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonPolygon;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonStructure;
 import io.dallen.Kingdoms.Storage.SaveTypes;
 import io.dallen.Kingdoms.Util.ChestGUI;
@@ -37,6 +41,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -57,19 +62,17 @@ public class Structure implements SaveTypes.Saveable{
     @Getter
     private Location Center;
     @Getter @Setter
-    private int ID;
-    @Getter @Setter
-    private Player Owner;
+    private OfflinePlayer Owner;
     @Getter @Setter
     private Kingdom Kingdom;
     @Getter @Setter
     private Municipality Municipal;
     @Getter @Setter
     private int Area;
-    @Getter @Setter
-    private int Rank;
-    @Getter @Setter
-    private int maxRank;
+//    @Getter @Setter
+//    private int Rank;
+//    @Getter @Setter
+//    private int maxRank;
     
     public static ChestGUI EditPlot;
     public static ChestGUI BuildMenu;
@@ -90,7 +93,7 @@ public class Structure implements SaveTypes.Saveable{
         }};
     }
     
-    public Structure(Polygon base, Location cent, Player own, Kingdom kingdom, Municipality municipal){
+    public Structure(Polygon base, Location cent, OfflinePlayer own, Kingdom kingdom, Municipality municipal){
         this.Center = cent;
         this.Owner = own;
         this.Kingdom = kingdom;
@@ -100,7 +103,7 @@ public class Structure implements SaveTypes.Saveable{
         
     }
     
-    public Structure(Polygon base, Location cent, Player own, Municipality municipal){
+    public Structure(Polygon base, Location cent, OfflinePlayer own, Municipality municipal){
         this.Base = base;
         this.Center = cent;
         this.Owner = own;
@@ -108,7 +111,7 @@ public class Structure implements SaveTypes.Saveable{
         setArea();
     }
     
-    public Structure(Polygon base, Location cent, Player own, Kingdom kingdom){
+    public Structure(Polygon base, Location cent, OfflinePlayer own, Kingdom kingdom){
         this.Base = base;
         this.Center = cent;
         this.Owner = own;
@@ -145,8 +148,37 @@ public class Structure implements SaveTypes.Saveable{
         }
     }
     
+    @Override
     public JsonStructure toJsonObject(){
-        throw new UnsupportedOperationException();
+        JsonStructure js = new JsonStructure();
+        js.setHeight(Height);
+        js.setWidth(Width);
+        js.setLength(Length);
+        js.setOwner(Owner.getUniqueId());
+        if(this instanceof WallSystem.Wall){
+            js.setStructureType(WallSystem.Wall.class.getName());
+        }
+        boolean classFound = false;
+        for(Class c : Municipality.getStructureClasses()){
+            if(this.getClass().isAssignableFrom(c) && !classFound){
+                js.setStructureType(c.getName());
+                classFound = true;
+            }
+        }
+        if(this instanceof Plot && !classFound){
+            js.setStructureType(Plot.class.getName());
+        }
+        if(Municipal != null)
+            js.setMunicipal(Municipal.getMunicipalID());
+        else
+            js.setMunicipal(-1);
+        if(Kingdom != null)
+            js.setKingdom(Kingdom.getKingdomID());
+        else
+            js.setKingdom(-1);
+        js.setBase(new JsonPolygon(Base));
+        js.setCenter(new JsonLocation(Center));
+        return js;
     }
     
     public static class MenuHandler implements OptionClickEventHandler{

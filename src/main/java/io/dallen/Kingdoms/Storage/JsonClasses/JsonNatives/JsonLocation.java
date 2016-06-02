@@ -18,7 +18,7 @@
  * 
  */
 
-package io.dallen.Kingdoms.Storage.JsonClasses;
+package io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives;
 
 import io.dallen.Kingdoms.Kingdom.Municipality;
 import io.dallen.Kingdoms.Storage.PlayerData;

@@ -59,6 +59,7 @@ public class Builder extends Trait{
         public void onNavigationComplete(NavigationCompleteEvent e){
             if(gettingSupplies.containsKey(e.getNPC().getId())){
                 e.getNavigator().setTarget(gettingSupplies.get(e.getNPC().getId()));
+                gettingSupplies.remove(e.getNPC().getId());
             }
         }
     }

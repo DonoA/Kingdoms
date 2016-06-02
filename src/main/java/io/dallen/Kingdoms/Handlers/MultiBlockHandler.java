@@ -230,6 +230,10 @@ public class MultiBlockHandler implements Listener{
                                     int[] Zs = new int[corners.size()];
                                     int i = 0;
                                     for(Point p : corners){
+                                        Location torch = LocationUtil.asLocation(p, l.getWorld(), l.getBlockY());
+                                        if(torch.getBlock().getType().equals(Material.REDSTONE_TORCH_ON)){
+                                            torch.getBlock().breakNaturally();
+                                        }
                                         Xs[i] = (int) p.getX();
                                         Zs[i] = (int) p.getY();
                                         i++;

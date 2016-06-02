@@ -69,6 +69,14 @@ public class Kingdom implements SaveTypes.Saveable{
     @Getter
     private ArrayList<Player> OnlinePlayers = new ArrayList<Player>();
     
+    @Getter
+    private final static ArrayList<Kingdom> allKingdoms = new ArrayList<Kingdom>();
+    
+    public Kingdom(){
+        this.KingdomID = allKingdoms.size();
+        allKingdoms.add(this);
+    }
+    
     @Override
     public JsonKingdom toJsonObject(){
         throw new UnsupportedOperationException();

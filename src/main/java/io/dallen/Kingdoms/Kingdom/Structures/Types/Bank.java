@@ -24,13 +24,14 @@ import io.dallen.Kingdoms.Kingdom.Vaults.BuildingVault;
 import java.util.HashMap;
 import lombok.Getter;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 
 /**
  * Allows the kingdom to store its subjects’ wealth safely
  * 
  * @author donoa_000
  */
-public class Bank extends Plot{
+public class Bank extends Plot implements Listener{
     @Getter
     private int securityLevel;
     @Getter
@@ -45,5 +46,7 @@ public class Bank extends Plot{
     public Bank(Plot p) {
         super(p.getBase(), p.getCenter(), p.getOwner(), p.getMunicipal());
     }
+    
+    
 
 }

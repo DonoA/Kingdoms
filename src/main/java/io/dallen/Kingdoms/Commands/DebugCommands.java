@@ -67,16 +67,8 @@ public class DebugCommands implements CommandExecutor{
                 Main.getSkinHandler().setSkin(args[0]);
                 Bukkit.getScheduler().runTaskAsynchronously(Main.getPlugin(), Main.getSkinHandler());
             }
-        }else if(cmd.getName().equalsIgnoreCase("bd")){
-            Block r =  ((Player)sender).getTargetBlock((Set<Material>) null, 8);
-            BlockRedstoneWire wire = (BlockRedstoneWire) r;
-            try {
-                Class<?> NMSEnumRedstoneWireConnection = Class.forName("net.minecraft.server.v1_9_R1.BlockRedstoneWire.EnumRedstoneWireConnection");
-//                wire.getBlockData().set(BlockRedstoneWire.NORTH, BlockRedstoneWire.EnumRedstoneWireConnection.UP);//THIS WILL NOT FUNCTION WITHOUT A CRACKED JAR
-            } catch (ClassNotFoundException ex) {
-                Logger.getLogger(DebugCommands.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
+        }else if(cmd.getName().equalsIgnoreCase("cleannpcs")){
+            Main.getNPCs().getNPCReg().deregisterAll();
         }
         return true;
     }

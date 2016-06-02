@@ -129,7 +129,7 @@ public class Main extends JavaPlugin {
                     DebugCommands dbg = new DebugCommands(new File(Main.getPlugin().getConfig().getString("debug.buildfolder")));
                     Main.getPlugin().getCommand("fillplot").setExecutor(dbg);
                     Main.getPlugin().getCommand("setskins").setExecutor(dbg);
-                    Main.getPlugin().getCommand("bd").setExecutor(dbg);
+                    Main.getPlugin().getCommand("cleannpcs").setExecutor(dbg);
                 }
                 Main.getPlugin().getCommand("menu").setExecutor(mmh);
                 Main.getPlugin().getCommand("crash").setExecutor(admin);
@@ -189,7 +189,6 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new BuildingHandler(), this);
         Bukkit.getPluginManager().registerEvents(new WaterHandler(), this);
         Bukkit.getPluginManager().registerEvents(new PlotProtectionHandler(), this);
-//        Bukkit.getPluginManager().registerEvents(new DebugHandler(), this);
         Bukkit.getScheduler().scheduleSyncDelayedTask(this, onServerLoad);
         
 //        RedisManager RM = new RedisManager();

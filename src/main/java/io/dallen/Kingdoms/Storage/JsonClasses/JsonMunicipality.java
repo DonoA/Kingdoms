@@ -19,6 +19,8 @@
  */
 package io.dallen.Kingdoms.Storage.JsonClasses;
 
+import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonEllipse;
+import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonPolygon;
 import io.dallen.Kingdoms.Kingdom.Municipality;
 import io.dallen.Kingdoms.Kingdom.Municipality.MunicipalTypes;
 import io.dallen.Kingdoms.Kingdom.Structures.Structure;
