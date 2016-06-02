@@ -267,7 +267,7 @@ public class MultiBlockHandler implements Listener{
                         }
                     }
                 }else if(e.getItem().hasItemMeta()){
-                    if(e.getItem().getItemMeta().getDisplayName().equalsIgnoreCase("Multi Tool")){
+                    if(e.getItem().getItemMeta().hasDisplayName() && e.getItem().getItemMeta().getDisplayName().equalsIgnoreCase("Multi Tool")){
                         Plot p = Plot.inPlot(e.getPlayer().getLocation());
                         if(p==null){
                             return;

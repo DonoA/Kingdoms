@@ -67,8 +67,9 @@ public class Cavalry extends Trait{
                     }
                 }
             }
-            mount.getNavigator().setTarget(testSpot);
-            Bukkit.getScheduler().scheduleAsyncDelayedTask(Main.getPlugin(), newPatrol, Math.round(Math.random()*1200));
+            final Location spot = testSpot;
+            Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), new Runnable(){public void run(){mount.getNavigator().setTarget(spot);}});
+            Bukkit.getScheduler().scheduleAsyncDelayedTask(Main.getPlugin(), newPatrol, 200 + Math.round(Math.random()*1200));
         }
     };
 
