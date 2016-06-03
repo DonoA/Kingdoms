@@ -62,7 +62,7 @@ public class General extends Trait{
                 }
             }
             final Location spot = testSpot;
-            Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), new Runnable(){public void run(){master.getNavigator().setTarget(spot);}});
+            Bukkit.getScheduler().runTask(Main.getPlugin(), new Runnable(){public void run(){master.getNavigator().setTarget(spot);}});
             Bukkit.getScheduler().scheduleAsyncDelayedTask(Main.getPlugin(), newPatrol, 200 + Math.round(Math.random()*1200));
         }
     };

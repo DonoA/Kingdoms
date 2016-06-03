@@ -22,7 +22,6 @@ package io.dallen.Kingdoms.Handlers;
 import io.dallen.Kingdoms.Kingdom.Plot;
 import io.dallen.Kingdoms.Kingdom.Structures.Blueprint;
 import io.dallen.Kingdoms.Kingdom.Structures.Structure;
-import static io.dallen.Kingdoms.Kingdom.Structures.Structure.BuildMenu;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.BuildersHut;
 import io.dallen.Kingdoms.Main;
 import io.dallen.Kingdoms.NPCs.Traits.Builder;
@@ -34,6 +33,7 @@ import io.dallen.Kingdoms.Util.LogUtil;
 import io.dallen.Kingdoms.Util.NBTmanager;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -101,7 +101,7 @@ public class BuildingHandler implements Listener{
         
         @Override
         public void onOptionClick(HotbarMenu.OptionClickEvent e){
-            LogUtil.printDebug("Hotbar event called");
+//            LogUtil.printDebug("Hotbar event called");
             if(e.getName().equalsIgnoreCase("Build")){
                 Blueprint building = openBuilds.get(e.getPlayer().getName()).getBlueprint();
                 Plot p = openBuilds.get(e.getPlayer().getName()).getPlot();
@@ -135,6 +135,9 @@ public class BuildingHandler implements Listener{
                     }
                 }
                 building.Rotate(90);
+                if(p.getLength() <= building.getLen() || p.getWidth() <= building.getWid()){
+                    building.Rotate(90);
+                }
                 startCorner = new Location(p.getCenter().getWorld(), p.getCenter().getX() - building.getWid()/2  + (building.getWid() % 2 == 0 ? 1 : 0),
                         p.getCenter().getBlockY(), p.getCenter().getBlockZ() - building.getLen()/2 + (building.getLen() % 2 == 0 ? 1 : 0));
                 for(int y = 0; y < building.getHigh(); y++){
@@ -167,6 +170,9 @@ public class BuildingHandler implements Listener{
                     }
                 }
                 building.Rotate(-90);
+                if(p.getLength() <= building.getLen() || p.getWidth() <= building.getWid()){
+                    building.Rotate(-90);
+                }
                 startCorner = new Location(p.getCenter().getWorld(), p.getCenter().getX() - building.getWid()/2  + (building.getWid() % 2 == 0 ? 1 : 0),
                         p.getCenter().getBlockY(), p.getCenter().getBlockZ() - building.getLen()/2 + (building.getLen() % 2 == 0 ? 1 : 0));
                 for(int y = 0; y < building.getHigh(); y++){
@@ -198,11 +204,30 @@ public class BuildingHandler implements Listener{
                     e.getPlayer().sendMessage("You have no NPCs to build this!");
                 }
             }else if(e.getName().equalsIgnoreCase("Erase")){
-                e.getPlayer().sendMessage("Default option called");
-                
+                Plot p = (Plot) e.getMenuData();
+                int halfWidth = p.getCenter().getBlockX()-p.getWidth()/2;
+                int halfLength = p.getCenter().getBlockZ()-p.getLength()/2;
+                int height = p.getCenter().getBlockY();
+                for(int x = -halfWidth; x < halfWidth; x++){
+                    for(int z = -halfLength; z < halfLength; z++){
+                        for(int y = height; y < height + 50; y++){
+                            if(!p.getCenter().clone().add(x, y, z).getBlock().getType().equals(Material.AIR)){
+                                p.getCenter().clone().add(x, y, z).getBlock().setType(Material.AIR);
+                            }
+                        }
+                    }
+                }
             }else if(e.getName().equalsIgnoreCase("Demolish")){
-                e.getPlayer().sendMessage("Default option called");
-                e.getPlayer().teleport(((Structure) e.getMenuData()).getCenter());
+                Plot p = (Plot) e.getMenuData();
+                if(Plot.getAllPlots().contains(p))
+                    Plot.getAllPlots().remove(p);
+                if(p.getMunicipal() != null){
+                    for(ArrayList<Structure> structs : p.getMunicipal().getStructures().values()){
+                        if(structs.contains(p)){
+                            structs.remove(p);
+                        }
+                    }
+                }
             }
     }
     
@@ -230,7 +255,7 @@ public class BuildingHandler implements Listener{
             ev.setCancelled(true);
             if(openInputs.get(ev.getPlayer().getName()).getName().equalsIgnoreCase("buildConst")){
                 final AsyncPlayerChatEvent e = ev;
-                Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), new Runnable(){
+                Bukkit.getScheduler().runTask(Main.getPlugin(), new Runnable(){
                    @Override
                    public void run(){
                        try {
@@ -310,28 +335,44 @@ public class BuildingHandler implements Listener{
                     }
     //                step--;
     //                LogUtil.printDebug(x + ", " + y + ", " + z);
+                    loopTop:
                     if(x < Building.getWid() - (Building.getWid() % 2 == 0 ? 1 : 0)){
                         Location nLoc = startCorner.clone().add(x,y,z);
-                        nLoc.getBlock().setType(Building.getBlocks()[x][y][z].getBlock(), false);
-                        nLoc.getBlock().setData(Building.getBlocks()[x][y][z].getData(), false);
-                        Builder.teleport(nLoc.add(0, 1, 0), PlayerTeleportEvent.TeleportCause.PLUGIN);
-                        x++;
+                        if(!Building.getBlocks()[x][y][z].getBlock().equals(Material.AIR)){
+                            nLoc.getBlock().setType(Building.getBlocks()[x][y][z].getBlock(), false);
+                            nLoc.getBlock().setData(Building.getBlocks()[x][y][z].getData(), false);
+                            Builder.teleport(nLoc.add(0, 1, 0), PlayerTeleportEvent.TeleportCause.PLUGIN);
+                            x++;
+                        }else{
+                            x++;
+                            break loopTop;
+                        }
                     }else{
                         x = 0;
                         if(z < Building.getLen() - 1){ // this is a bit strange, it seems to work tho
                             Location nLoc = startCorner.clone().add(x,y,z);
-                            nLoc.getBlock().setType(Building.getBlocks()[x][y][z].getBlock(), false);
-                            nLoc.getBlock().setData(Building.getBlocks()[x][y][z].getData(), false);
-                            Builder.teleport(nLoc.add(0, 1, 0), PlayerTeleportEvent.TeleportCause.PLUGIN);
-                            z++;
+                            if(!Building.getBlocks()[x][y][z].getBlock().equals(Material.AIR)){
+                                nLoc.getBlock().setType(Building.getBlocks()[x][y][z].getBlock(), false);
+                                nLoc.getBlock().setData(Building.getBlocks()[x][y][z].getData(), false);
+                                Builder.teleport(nLoc.add(0, 1, 0), PlayerTeleportEvent.TeleportCause.PLUGIN);
+                                z++;
+                            }else{
+                                z++;
+                                break loopTop;
+                            }
                         }else{
                             z = 0;
                             if(y < Building.getHigh() - (Building.getHigh() % 2 == 0 ? 1 : 0)){
                                 Location nLoc = startCorner.clone().add(x,y,z);
-                                nLoc.getBlock().setType(Building.getBlocks()[x][y][z].getBlock(), false);
-                                nLoc.getBlock().setData(Building.getBlocks()[x][y][z].getData(), false);
-                                Builder.teleport(nLoc.add(0, 1, 0), PlayerTeleportEvent.TeleportCause.PLUGIN);
-                                y++;
+                                if(!Building.getBlocks()[x][y][z].getBlock().equals(Material.AIR)){
+                                    nLoc.getBlock().setType(Building.getBlocks()[x][y][z].getBlock(), false);
+                                    nLoc.getBlock().setData(Building.getBlocks()[x][y][z].getData(), false);
+                                    Builder.teleport(nLoc.add(0, 1, 0), PlayerTeleportEvent.TeleportCause.PLUGIN);
+                                    y++;
+                                }else{
+                                    y++;
+                                    break loopTop;
+                                }
                             }else{
                                 Builder.getNavigator().setTarget(BuildHut.getCenter());
                                 running = false;

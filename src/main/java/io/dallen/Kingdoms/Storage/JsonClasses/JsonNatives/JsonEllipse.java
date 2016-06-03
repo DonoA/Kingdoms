@@ -40,11 +40,11 @@ public class JsonEllipse implements SaveTypes.JsonType.NativeType{
     @Getter
     private double y;
     
-    public JsonEllipse(Ellipse2D.Double base){
-        this.length = base.height;
-        this.width = base.width;
-        this.x = base.x;
-        this.y = base.y;
+    public JsonEllipse(Ellipse2D base){
+        this.length = base.getHeight();
+        this.width = base.getWidth();
+        this.x = base.getX();
+        this.y = base.getY();
     }
     
     @Override

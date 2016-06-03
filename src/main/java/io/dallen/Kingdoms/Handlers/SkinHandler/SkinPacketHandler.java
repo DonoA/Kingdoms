@@ -32,12 +32,15 @@ import io.dallen.Kingdoms.Main;
 import io.dallen.Kingdoms.Util.LogUtil;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.base64.Base64;
+import java.lang.reflect.InvocationTargetException;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -92,9 +95,11 @@ public class SkinPacketHandler implements Runnable{
         try{
             Method method = getFillMethod(sessionService);
             method.invoke(sessionService, handle, true);
-        }catch (Exception ex){
-            LogUtil.printErr("Mojang are dicks about requests! Skins wont work");
+        }catch (InvocationTargetException ex){
+            LogUtil.printErr("Mojang are dicks about requests! Skins won't work");
             return;
+        } catch (IllegalAccessException | IllegalArgumentException ex) {
+            Logger.getLogger(SkinPacketHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
             profile = WrappedGameProfile.fromHandle(handle);

@@ -22,7 +22,7 @@ package io.dallen.Kingdoms.Storage.JsonClasses;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonEllipse;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonPolygon;
 import io.dallen.Kingdoms.Kingdom.Municipality;
-import io.dallen.Kingdoms.Kingdom.Municipality.MunicipalTypes;
+import io.dallen.Kingdoms.Kingdom.Municipality.MunicipalType;
 import io.dallen.Kingdoms.Kingdom.Structures.Structure;
 import io.dallen.Kingdoms.Storage.SaveTypes;
 import java.util.ArrayList;
@@ -43,7 +43,10 @@ public class JsonMunicipality implements SaveTypes.JsonType{
     private HashMap<String, ArrayList<Structure>> Structures;
     
     @Getter @Setter
-    private JsonStructure Center;
+    private int Center;
+    
+    @Getter @Setter
+    private int MunicipalID;
     
     @Getter @Setter
     private JsonWallSystem walls;
@@ -55,10 +58,10 @@ public class JsonMunicipality implements SaveTypes.JsonType{
     private JsonEllipse Influence;
     
     @Getter @Setter
-    private MunicipalTypes type;
+    private MunicipalType type;
     
     @Getter @Setter
-    private String kingdom;
+    private int kingdom;
     
     @Getter @Setter
     private Date creation;

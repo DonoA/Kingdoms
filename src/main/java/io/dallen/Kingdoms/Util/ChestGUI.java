@@ -94,6 +94,13 @@ public class ChestGUI implements Listener{
         return this;
     }
     
+    public ChestGUI removeOption(int pos){
+        optionNames[pos] = null;
+        optionIcons[pos] = null;
+        optionData[pos] = null;
+        return this;
+    }
+    
     public ChestGUI clearOptions(){
         optionNames = new String[this.size];
         optionIcons = new ItemStack[this.size];

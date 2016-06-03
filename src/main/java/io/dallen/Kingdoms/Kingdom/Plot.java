@@ -46,9 +46,6 @@ public class Plot extends Structure implements Listener{
     private static ArrayList<Plot> allPlots = new ArrayList<Plot>();
     
     @Getter
-    private static ArrayList<Plot> nonMunicipalPlots = new ArrayList<Plot>();//TODO make this var used
-    
-    @Getter
     private ArrayList<Contract> contracts = new ArrayList<Contract>();
     
     @Getter @Setter

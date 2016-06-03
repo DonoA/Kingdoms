@@ -21,13 +21,10 @@ package io.dallen.Kingdoms.Kingdom.Structures;
 
 import com.google.common.primitives.Ints;
 import io.dallen.Kingdoms.Handlers.BuildingHandler;
-import io.dallen.Kingdoms.Handlers.MultiBlockHandler;
 import io.dallen.Kingdoms.Kingdom.Kingdom;
 import io.dallen.Kingdoms.Kingdom.Municipality;
 import io.dallen.Kingdoms.Kingdom.Plot;
-import io.dallen.Kingdoms.Kingdom.Structures.Types.BuildersHut;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.WallSystem;
-import io.dallen.Kingdoms.Storage.JsonClasses.JsonMunicipality;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonLocation;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonPolygon;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonStructure;
@@ -69,6 +66,8 @@ public class Structure implements SaveTypes.Saveable{
     private Municipality Municipal;
     @Getter @Setter
     private int Area;
+    @Getter @Setter
+    private int StructureID;
 //    @Getter @Setter
 //    private int Rank;
 //    @Getter @Setter
@@ -137,8 +136,10 @@ public class Structure implements SaveTypes.Saveable{
     }
     
     private void setArea(){
-        int Xmax = Ints.max(Base.xpoints);
-        int Zmax = Ints.max(Base.ypoints);
+        this.Width = (int) Math.round(Base.getBounds().getMaxX() - Base.getBounds().getMinX());
+        this.Length = (int) Math.round(Base.getBounds().getMaxY() - Base.getBounds().getMinY());
+        int Xmax = (int) Math.round(Base.getBounds().getMaxX());
+        int Zmax = (int) Math.round(Base.getBounds().getMaxY());
         for(int x = Ints.min(Base.xpoints); x <= Xmax; x++){
             for(int z = Ints.min(Base.ypoints); z <= Zmax; z++){
                 if(Base.contains(new Point(x,z)) || (Base.contains(new Point(x-1,z)) || Base.contains(new Point(x,z-1)) || Base.contains(new Point(x-1,z-1)))){

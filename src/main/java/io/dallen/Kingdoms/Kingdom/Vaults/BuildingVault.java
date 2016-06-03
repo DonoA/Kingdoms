@@ -228,7 +228,7 @@ public class BuildingVault implements Vault, SaveTypes.Saveable{ // Will start p
                         }
                     }
                     final Location bloc = sugLoc.clone();
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), new Runnable(){
+                    Bukkit.getScheduler().runTask(Main.getPlugin(), new Runnable(){
                         @Override
                         public void run(){
                             bloc.getBlock().setType(Material.LAPIS_BLOCK);
@@ -255,7 +255,7 @@ public class BuildingVault implements Vault, SaveTypes.Saveable{ // Will start p
                         }
                     }
                     final Location bloc = sugLoc.clone();
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), new Runnable(){
+                    Bukkit.getScheduler().runTask(Main.getPlugin(), new Runnable(){
                         @Override
                         public void run(){
                             bloc.getBlock().setType(Material.AIR);

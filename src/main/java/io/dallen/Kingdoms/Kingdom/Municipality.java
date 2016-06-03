@@ -36,6 +36,9 @@ import io.dallen.Kingdoms.Kingdom.Structures.Types.TownHall;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.TrainingGround;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.WallSystem.Wall;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonMunicipality;
+import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonEllipse;
+import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonLocation;
+import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonPolygon;
 import io.dallen.Kingdoms.Storage.SaveTypes;
 import io.dallen.Kingdoms.Util.LocationUtil;
 import java.awt.Polygon;
@@ -52,8 +55,6 @@ import org.bukkit.Location;
  * @author donoa_000
  */
 public class Municipality implements SaveTypes.Saveable{
-    
-    private static int currID;
     
     @Getter
     private int MunicipalID;
@@ -77,10 +78,10 @@ public class Municipality implements SaveTypes.Saveable{
     private Ellipse2D Influence;
     
     @Getter
-    private MunicipalTypes type;
+    private MunicipalType type;
     
     @Getter
-    private Kingdom kingdom;
+    private Kingdom Kingdom;
     
     @Getter
     private Date creation;
@@ -97,7 +98,7 @@ public class Municipality implements SaveTypes.Saveable{
     public Municipality(Structure center){
         this.Center = center;
         this.walls = new WallSystem(this);
-        this.type = MunicipalTypes.MANOR;
+        this.type = MunicipalType.MANOR;
         this.creation = new Date(System.currentTimeMillis());
         for(Class c : StructureClasses){
             Structures.put(c, new ArrayList<Structure>());
@@ -109,11 +110,19 @@ public class Municipality implements SaveTypes.Saveable{
     }
     
     public void createKingdom(){
-        kingdom = new Kingdom();
+        Kingdom = new Kingdom();
     }
     
-    public static enum MunicipalTypes{
-        VILLAGE, MANOR, TOWN, CITY, KEEP, CITIDEL
+    public static enum MunicipalType{
+        // DAEN
+        VILLAGE(100), MANOR(150), TOWN(200), CITY(250), KEEP(300), CITIDEL(400);
+        
+        @Getter
+        private int radius;
+        
+        MunicipalType(int radius){
+            this.radius = radius;
+        }
     }
     
     public static Municipality inMunicipal(Location l){
@@ -150,6 +159,19 @@ public class Municipality implements SaveTypes.Saveable{
     
     @Override
     public JsonMunicipality toJsonObject(){
-        throw new UnsupportedOperationException();
+        JsonMunicipality jm = new JsonMunicipality();
+        jm.setBase(new JsonPolygon(Base));
+        jm.setCenter(Center.getStructureID());
+        jm.setCreation(creation);
+        jm.setInfluence(new JsonEllipse(Influence));
+        if(Kingdom != null)
+            jm.setKingdom(Kingdom.getKingdomID());
+        else
+            jm.setKingdom(-1);
+        jm.setMunicipalID(MunicipalID);
+        
+        jm.setType(type);
+        jm.setWalls(walls.toJsonObject());
+        return jm;
     }
 }

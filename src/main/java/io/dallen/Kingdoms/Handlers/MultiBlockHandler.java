@@ -30,11 +30,13 @@ import io.dallen.Kingdoms.Kingdom.Structures.Types.BuildersHut;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.WallSystem;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.WallSystem.Wall;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.WallSystem.WallType;
+import io.dallen.Kingdoms.Main;
 import io.dallen.Kingdoms.Storage.PlayerData;
 import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEvent;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEventHandler;
 import io.dallen.Kingdoms.Util.LocationUtil;
+import io.dallen.Kingdoms.Util.PermissionManager;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.lang.reflect.Constructor;
@@ -46,6 +48,7 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -141,7 +144,8 @@ public class MultiBlockHandler implements Listener{
             if(e.hasBlock()){
                 Plot p = Plot.inPlot(e.getClickedBlock().getLocation());
                 if(p != null){
-                    if(p instanceof Wall && e.hasItem() && e.getAction().equals(Action.LEFT_CLICK_BLOCK)){
+                    if(p instanceof Wall && e.hasItem() && e.getAction().equals(Action.LEFT_CLICK_BLOCK) && 
+                            !e.getPlayer().hasPermission(PermissionManager.getBuildPermission())){
                         e.setCancelled(true);
                         Wall w = (Wall) p;
                         if(e.getItem().getType().name().contains("PICKAXE")){
@@ -230,10 +234,6 @@ public class MultiBlockHandler implements Listener{
                                     int[] Zs = new int[corners.size()];
                                     int i = 0;
                                     for(Point p : corners){
-                                        Location torch = LocationUtil.asLocation(p, l.getWorld(), l.getBlockY());
-                                        if(torch.getBlock().getType().equals(Material.REDSTONE_TORCH_ON)){
-                                            torch.getBlock().breakNaturally();
-                                        }
                                         Xs[i] = (int) p.getX();
                                         Zs[i] = (int) p.getY();
                                         i++;
@@ -249,12 +249,6 @@ public class MultiBlockHandler implements Listener{
                                                 p.sendMessage("This plot has already been claimed!");
                                             }
                                             return;
-                                        }
-                                    }
-                                    for(Municipality m : Municipality.getAllMunicipals()){
-                                        if(m.getInfluence().contains(LocationUtil.asPoint(NewPlot.getCenter()))){
-                                            NewPlot.setMunicipal(m);
-                                            m.addStructure(NewPlot);
                                         }
                                     }
                                     if(NewPlot.isValid()){
@@ -309,6 +303,19 @@ public class MultiBlockHandler implements Listener{
                     e.getPlayer().sendMessage("You have claimed this plot");
                     e.getPlayer().sendMessage("Setting base");
                     final Polygon bounds = p.getBase();
+                    for(int i = 0; i < p.getBase().npoints; i++){
+                        Location torch = LocationUtil.asLocation(new Point(p.getBase().xpoints[i], p.getBase().ypoints[i]), 
+                                p.getCenter().getWorld(), p.getCenter().getBlockY());
+                        if(torch.getBlock().getType().equals(Material.REDSTONE_TORCH_ON)){
+                            final Location t = torch;
+                            Bukkit.getScheduler().runTask(Main.getPlugin(), new Runnable(){
+                                @Override
+                                public void run() {
+                                    t.getBlock().breakNaturally();
+                                }
+                            });
+                        }
+                    }
                     int Xmax = Ints.max(bounds.xpoints);
                     int Zmax = Ints.max(bounds.ypoints);
                     for(int x = Ints.min(bounds.xpoints); x <= Xmax; x++){
@@ -323,6 +330,7 @@ public class MultiBlockHandler implements Listener{
                     for(Municipality m : Municipality.getAllMunicipals()){
                         if(m.getInfluence().intersects(p.getBase().getBounds2D())){
                             p.setMunicipal(m);
+                            m.addStructure(p);
                         }
                     }
                 }
@@ -331,11 +339,6 @@ public class MultiBlockHandler implements Listener{
                 PlayerData pd = PlayerData.getData(e.getPlayer());
                 if(e.getName().equalsIgnoreCase("Custom Contract")){
                     
-                }else if(e.getName().equalsIgnoreCase("Demolish")){
-                    
-                }else if(e.getName().equalsIgnoreCase("Erase")){
-//                    Plot newPlot = new Plot()
-                    p.setEmpty(true);
                 }else if(e.getName().equalsIgnoreCase("Wall")){
                     Wall newWall = new Wall(p, WallType.WALL);
                     newWall.setEmpty(false);
@@ -499,6 +502,4 @@ public class MultiBlockHandler implements Listener{
             }
         }
     }
-    
-    
 }

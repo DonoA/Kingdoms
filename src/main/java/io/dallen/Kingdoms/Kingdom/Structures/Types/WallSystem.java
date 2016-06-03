@@ -22,13 +22,10 @@ package io.dallen.Kingdoms.Kingdom.Structures.Types;
 import io.dallen.Kingdoms.Handlers.BuildingHandler;
 import io.dallen.Kingdoms.Kingdom.Municipality;
 import io.dallen.Kingdoms.Kingdom.Plot;
-import io.dallen.Kingdoms.Kingdom.Structures.Structure;
-import static io.dallen.Kingdoms.Kingdom.Structures.Structure.BuildMenu;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonWallSystem;
 import io.dallen.Kingdoms.Storage.SaveTypes;
 import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.LocationUtil;
-import io.dallen.Kingdoms.Util.LogUtil;
 import java.awt.Polygon;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,8 +40,6 @@ import org.bukkit.inventory.ItemStack;
  * @author donoa_000
  */
 public class WallSystem implements SaveTypes.Saveable{
-    
-    
     
     @Getter
     private HashMap<WallType, ArrayList<Wall>> Parts = new HashMap<WallType, ArrayList<Wall>>();
@@ -103,7 +98,7 @@ public class WallSystem implements SaveTypes.Saveable{
         static{
             EditPlot = new ChestGUI("Wall", 2, new MenuHandler()){{
                 setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
-                setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Upgrade");
+                setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
                 setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
             }};
         }

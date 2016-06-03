@@ -22,7 +22,6 @@ package io.dallen.Kingdoms.Kingdom.Structures.Types;
 import io.dallen.Kingdoms.Handlers.BuildingHandler;
 import io.dallen.Kingdoms.Kingdom.Plot;
 import io.dallen.Kingdoms.Kingdom.Structures.Structure;
-import static io.dallen.Kingdoms.Kingdom.Structures.Structure.BuildMenu;
 import io.dallen.Kingdoms.Main;
 import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.LogUtil;
@@ -54,7 +53,7 @@ public class TrainingGround extends Plot{
     static{
         EditPlot = new ChestGUI("Training Ground", 2, new MenuHandler()){{
             setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
-            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Upgrade");
+            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
             setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
         }};
     }
@@ -104,15 +103,12 @@ public class TrainingGround extends Plot{
     @Override
     public void sendEditMenu(Player p){
         if(super.getMunicipal() != null){
-            EditPlot.setOption(2, new ItemStack(Material.ENCHANTED_BOOK), "Train Archer");
-            EditPlot.setOption(3, new ItemStack(Material.ENCHANTED_BOOK), "Train Infantry");
-            EditPlot.setOption(4, new ItemStack(Material.ENCHANTED_BOOK), "Train Cavalry");
-            EditPlot.setOption(5, new ItemStack(Material.ENCHANTED_BOOK), "Train General");
+            EditPlot.setOption(2, new ItemStack(Material.ENCHANTED_BOOK), "Train Archer")
+                    .setOption(3, new ItemStack(Material.ENCHANTED_BOOK), "Train Infantry")
+                    .setOption(4, new ItemStack(Material.ENCHANTED_BOOK), "Train Cavalry")
+                    .setOption(5, new ItemStack(Material.ENCHANTED_BOOK), "Train General");
         }else{
-            EditPlot.setOption(2, new ItemStack(Material.AIR), "");
-            EditPlot.setOption(3, new ItemStack(Material.AIR), "");
-            EditPlot.setOption(4, new ItemStack(Material.AIR), "");
-            EditPlot.setOption(5, new ItemStack(Material.AIR), "");
+            EditPlot.removeOption(2).removeOption(3).removeOption(4).removeOption(5);
         }
         EditPlot.setMenuData(this);
         EditPlot.sendMenu(p);

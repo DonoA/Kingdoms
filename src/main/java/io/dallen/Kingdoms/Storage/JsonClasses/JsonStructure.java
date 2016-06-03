@@ -57,6 +57,8 @@ public class JsonStructure implements SaveTypes.JsonType{
 //    private int maxRank;
     @Getter @Setter
     private String StructureType;
+    @Getter @Setter
+    private int StructureID;
     
     @Override
     public Structure toJavaObject(){

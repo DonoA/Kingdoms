@@ -19,23 +19,15 @@
  */
 package io.dallen.Kingdoms.Kingdom.Structures.Types;
 
-import com.google.common.primitives.Ints;
 import io.dallen.Kingdoms.Handlers.BuildingHandler;
 import io.dallen.Kingdoms.Kingdom.Municipality;
 import io.dallen.Kingdoms.Kingdom.Plot;
-import io.dallen.Kingdoms.Kingdom.Structures.Structure;
-import static io.dallen.Kingdoms.Kingdom.Structures.Structure.BuildMenu;
 import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEvent;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEventHandler;
 import io.dallen.Kingdoms.Util.LocationUtil;
-import io.dallen.Kingdoms.Util.LogUtil;
-import java.awt.Point;
-import java.awt.Polygon;
-import java.awt.Rectangle;
 import java.awt.geom.Ellipse2D;
 import lombok.Getter;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -52,7 +44,7 @@ public class TownHall extends Plot{
     static{
         EditPlot = new ChestGUI("TownHall", 2, new MenuHandler()){{
             setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
-            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Upgrade");
+            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
             setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
         }};
     }
@@ -79,7 +71,9 @@ public class TownHall extends Plot{
             if(e.getName().equalsIgnoreCase("Create Municipal")){
                 final Plot th = (Plot) e.getData();
                 th.createMucicpal();
-                th.getMunicipal().setInfluence(new Ellipse2D.Double(th.getCenter().getBlockX()-50, th.getCenter().getBlockZ()-50, 100, 100));
+                th.getMunicipal().setInfluence(new Ellipse2D.Double(th.getCenter().getBlockX()-th.getMunicipal().getType().getRadius()/2, 
+                            th.getCenter().getBlockZ()-th.getMunicipal().getType().getRadius()/2, th.getMunicipal().getType().getRadius(), 
+                            th.getMunicipal().getType().getRadius()));
 //                e.getPlayer().teleport(th.getCenter());
 //                final Ellipse2D cic = th.getMunicipal().getInfluence();
 //                final Rectangle bounds = th.getMunicipal().getInfluence().getBounds();
