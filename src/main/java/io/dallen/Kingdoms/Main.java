@@ -112,7 +112,24 @@ public class Main extends JavaPlugin {
                 CraftingHandler crafting = new CraftingHandler(Main.getPlugin());
                 if((Main.getPlugin().getServer().getPluginManager().getPlugin("Citizens") == null) || 
                     (!Main.getPlugin().getServer().getPluginManager().getPlugin("Citizens").isEnabled())){
+                    //Check version
                     LogUtil.printErr("Citizens 2 not found!");
+                    LogUtil.printErr("Shutting Down!");
+                    Main.getPlugin().getServer().getPluginManager().disablePlugin(Main.getPlugin());
+                    return;
+                }
+                if((Main.getPlugin().getServer().getPluginManager().getPlugin("ProtocolLib") == null) || 
+                    (!Main.getPlugin().getServer().getPluginManager().getPlugin("ProtocolLib").isEnabled())){
+                    //Check version
+                    LogUtil.printErr("ProtocolLib not found!");
+                    LogUtil.printErr("Shutting Down!");
+                    Main.getPlugin().getServer().getPluginManager().disablePlugin(Main.getPlugin());
+                    return;
+                }
+                if((Main.getPlugin().getServer().getPluginManager().getPlugin("BarAPI") == null) || 
+                    (!Main.getPlugin().getServer().getPluginManager().getPlugin("BarAPI").isEnabled())){
+                    //Check version
+                    LogUtil.printErr("BarAPI not found!");
                     LogUtil.printErr("Shutting Down!");
                     Main.getPlugin().getServer().getPluginManager().disablePlugin(Main.getPlugin());
                     return;
