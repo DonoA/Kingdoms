@@ -85,17 +85,18 @@ public class BuildingVault implements Vault, SaveTypes.Saveable{ // Will start p
     
     @Override
     public boolean CanOpen(Player p){
-        if(owner.getMunicipal() != null && PlayerData.getData(p) != null){
-            PlayerData pd = PlayerData.getData(p);
-            if(pd.getMunicipal().equals(owner.getMunicipal())){
-                return true;
-            }
-        }else{
-            if(owner.getOwner().equals(p)){
-                return true;
-            }
-        }
-        return false;
+//        if(owner.getMunicipal() != null && PlayerData.getData(p) != null){
+//            PlayerData pd = PlayerData.getData(p);
+//            if(pd.getMunicipal().equals(owner.getMunicipal())){
+//                return true;
+//            }
+//        }else{
+//            if(owner.getOwner().equals(p)){
+//                return true;
+//            }
+//        }
+//        return false;
+        return true;
     }
     
     public void updateInventory(Inventory inv){

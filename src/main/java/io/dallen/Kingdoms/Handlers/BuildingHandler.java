@@ -205,12 +205,11 @@ public class BuildingHandler implements Listener{
                 }
             }else if(e.getName().equalsIgnoreCase("Erase")){
                 Plot p = (Plot) e.getMenuData();
-                int halfWidth = p.getCenter().getBlockX()-p.getWidth()/2;
-                int halfLength = p.getCenter().getBlockZ()-p.getLength()/2;
-                int height = p.getCenter().getBlockY();
-                for(int x = -halfWidth; x < halfWidth; x++){
-                    for(int z = -halfLength; z < halfLength; z++){
-                        for(int y = height; y < height + 50; y++){
+                double halfWidth = p.getWidth()/2;
+                double halfLength = p.getLength()/2;
+                for(int x = (int) -halfWidth; x <= Math.ceil(halfWidth)+1; x++){
+                    for(int z = (int) -halfLength; z <= Math.ceil(halfLength)+1; z++){
+                        for(int y = 0; y < 50; y++){
                             if(!p.getCenter().clone().add(x, y, z).getBlock().getType().equals(Material.AIR)){
                                 p.getCenter().clone().add(x, y, z).getBlock().setType(Material.AIR);
                             }
@@ -254,6 +253,12 @@ public class BuildingHandler implements Listener{
         if(openInputs.containsKey(ev.getPlayer().getName())){
             ev.setCancelled(true);
             if(openInputs.get(ev.getPlayer().getName()).getName().equalsIgnoreCase("buildConst")){
+                if(!new File(Main.getPlugin().getDataFolder() + DBmanager.getFileSep() + ev.getMessage().split(" ")[0] + ".schematic").exists()){
+                    ev.getPlayer().sendMessage("That schemaic cannot be found!");
+                    ev.getPlayer().sendMessage("Exiting build setup!");
+                    openInputs.remove(ev.getPlayer().getName());
+                    return;
+                }
                 final AsyncPlayerChatEvent e = ev;
                 Bukkit.getScheduler().runTask(Main.getPlugin(), new Runnable(){
                    @Override
@@ -336,7 +341,7 @@ public class BuildingHandler implements Listener{
     //                step--;
     //                LogUtil.printDebug(x + ", " + y + ", " + z);
                     loopTop:
-                    if(x < Building.getWid() - (Building.getWid() % 2 == 0 ? 1 : 1)){
+                    if(x < Building.getWid() - (Building.getWid() % 2 == 0 ? 1 : 0)){
                         Location nLoc = startCorner.clone().add(x,y,z);
                         if(!Building.getBlocks()[x][y][z].getBlock().equals(Material.AIR)){
                             nLoc.getBlock().setType(Building.getBlocks()[x][y][z].getBlock(), false);
@@ -374,13 +379,15 @@ public class BuildingHandler implements Listener{
                                     break loopTop;
                                 }
                             }else{
-                                Builder.getNavigator().setTarget(BuildHut.getCenter());
+                                if(Builder.isSpawned())
+                                    Builder.getNavigator().setTarget(BuildHut.getCenter());
                                 running = false;
                             }
                         }
                     }
                 }else{
-                    Builder.despawn();
+                    if(Builder.isSpawned())
+                        Builder.despawn();
                 }
             }
         }

@@ -19,8 +19,12 @@
  */
 package io.dallen.Kingdoms.Handlers;
 
+import io.dallen.Kingdoms.Util.LogUtil;
 import io.dallen.Kingdoms.Util.PermissionManager;
+import java.util.List;
+import java.util.Set;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -34,16 +38,23 @@ public class WaterHandler implements Listener{
     
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent e){
-        if(e.getAction().equals(Action.RIGHT_CLICK_BLOCK) && e.getItem()!=null && 
-                !e.getPlayer().hasPermission(PermissionManager.getBuildPermission())){
-            if(e.getItem().getType().equals(Material.WATER_BUCKET)){
+        if(e.getItem()!=null && !e.getPlayer().hasPermission(PermissionManager.getBuildPermission())){
+            if(e.getItem().getType().equals(Material.WATER_BUCKET) && e.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
                 e.setCancelled(true);
                 e.getItem().setType(Material.BUCKET);
                 if(e.getClickedBlock().getType().equals(Material.GRASS) || e.getClickedBlock().getType().equals(Material.SOIL)){
                     e.getClickedBlock().setType(Material.DIRT);
                 }
 //                e.getClickedBlock().getRelative(e.getBlockFace()).setType(Material.WATER); this would be if we wanted it to "flow"
-            }else if(e.getItem().getType().equals(Material.BUCKET)){
+            }else if((e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR) && e.getItem().getType().equals(Material.BUCKET)) {
+                List<Block> los = e.getPlayer().getLineOfSight((Set<Material>) null, 5);
+                for(Block b : los){
+                    if(b.getType() == Material.STATIONARY_WATER){
+                        e.setCancelled(true);
+                        e.getItem().setType(Material.WATER_BUCKET);// DOES NOT WORK FOR MULTI STACKS
+                        break;
+                    }
+                }
             }
         }
     }
