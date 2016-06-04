@@ -19,9 +19,11 @@
  */
 package io.dallen.Kingdoms.Util;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
@@ -36,6 +38,14 @@ public class LogUtil {
     public static void printDebug(Object msg){
         if(isDebug)
             Bukkit.getLogger().log(Level.INFO, "[Kingdoms] [DEBUG] {0}", msg.toString());
+    }
+    
+    public static void printDebugJson(Object obj){
+        try {
+            printDebug(DBmanager.getJSonParser().writeValueAsString(obj));
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(LogUtil.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     public static void printDebugStack(Exception ex){

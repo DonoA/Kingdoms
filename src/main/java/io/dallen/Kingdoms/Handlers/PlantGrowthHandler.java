@@ -21,8 +21,13 @@ package io.dallen.Kingdoms.Handlers;
 
 import io.dallen.Kingdoms.Kingdom.Plot;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.Farm;
+import io.dallen.Kingdoms.Main;
 import io.dallen.Kingdoms.Util.LogUtil;
+import java.util.ArrayList;
+import java.util.Arrays;
+import org.bukkit.Bukkit;
 import org.bukkit.CropState;
+import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockGrowEvent;
@@ -35,22 +40,47 @@ import org.bukkit.material.Crops;
  */
 public class PlantGrowthHandler implements Listener{
     
+    private static ArrayList<Material> cropTypes = new ArrayList<Material>(Arrays.asList(new Material[] 
+                            {Material.CROPS, Material.POTATO, Material.CARROT, Material.NETHER_WARTS}));
+    
     @EventHandler
     public void onBlockGrow(BlockGrowEvent e){
-        LogUtil.printDebug("block grow1");
-        LogUtil.printDebug(e.getBlock().getState().getData() instanceof Crops);
-        LogUtil.printDebug(((Crops) e.getBlock().getState().getData()).getState());
-        if(e.getBlock().getState().getData() instanceof Crops && ((Crops) e.getBlock().getState().getData()).getState().equals(CropState.VERY_TALL)){
-            LogUtil.printDebug("block grow2");
-            Plot p = Plot.inPlot(e.getBlock().getLocation());
-            if(p != null && p instanceof Farm){
-                LogUtil.printDebug("block grow");
-                Farm f = (Farm) p;
+        if(cropTypes.contains(e.getBlock().getType())){
+            ItemStack rtnStack = null;
+            boolean grown = false;
+            switch(e.getBlock().getType()){
+                case CROPS:
+                    grown = e.getBlock().getData() == (byte)6;
+                    rtnStack = new ItemStack(Material.WHEAT, (int) Math.ceil(Math.random() * 3) - 1);
+                    break;
+                case POTATO:
+                    grown = e.getBlock().getData() == (byte)6;
+                    rtnStack = new ItemStack(Material.POTATO_ITEM, (int) Math.ceil(Math.random() * 4) - 1);
+                    break;
+                case CARROT:
+                    grown = e.getBlock().getData() == (byte)6;
+                    rtnStack = new ItemStack(Material.CARROT_ITEM, (int) Math.ceil(Math.random() * 4) - 1);
+                    break;
+                case NETHER_WARTS:
+                    grown = e.getBlock().getData() == (byte)2;
+                    rtnStack = new ItemStack(Material.NETHER_WARTS, (int) Math.ceil(Math.random() * 2) - 1);
+                    break;
+            }
+            Plot p = null;
+            if(grown && (p = Plot.inPlot(e.getBlock().getLocation())) != null && p instanceof Farm){
+                final Farm f = (Farm) p;
                 if(f.isGrowing()){
-                    f.getStorage().addItem(new ItemStack(e.getBlock().getType()));
-                    Crops c = (Crops) e.getBlock().getState().getData();
-                    c.setState(CropState.SEEDED);
-                    e.getBlock().getState().setData(c);
+                    final ItemStack rtn = rtnStack;
+                    final BlockGrowEvent ev = e;
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), new Runnable(){
+                        @Override
+                        public void run() {
+                            ev.getBlock().setData((byte) 0);
+                            f.getStorage().addItem(rtn);
+                        }
+                    
+                    }, 200);
+
                 }
             }
         }
