@@ -42,7 +42,7 @@ import org.bukkit.inventory.ItemStack;
 public class Farm extends Plot implements Storage{
 
     @Getter
-    private boolean growing;
+    private boolean growing = false;
     
     @Getter
     private BuildingVault Storage;
@@ -107,9 +107,9 @@ public class Farm extends Plot implements Storage{
         @Override
         public void onOptionClick(OptionClickEvent e){
             if(e.getName().equalsIgnoreCase("Stop Growing")){
-                
+                ((Farm) e.getMenuData()).growing = false;
             }else if(e.getName().equalsIgnoreCase("Start Growing")){
-                
+                ((Farm) e.getMenuData()).growing = true;
             }else{
                 BuildingHandler.chestBuildOptions(e, BuildMenu);
             }

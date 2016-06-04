@@ -37,6 +37,7 @@ import io.dallen.Kingdoms.Util.LogUtil;
 import io.dallen.Kingdoms.Commands.MuteCommand;
 import io.dallen.Kingdoms.Handlers.BuildingHandler;
 import io.dallen.Kingdoms.Handlers.CraftingHandler;
+import io.dallen.Kingdoms.Handlers.PlantGrowthHandler;
 import io.dallen.Kingdoms.Handlers.PlotProtectionHandler;
 import io.dallen.Kingdoms.Handlers.SkinHandler.SkinPacketHandler;
 import io.dallen.Kingdoms.Handlers.StorageHandler;
@@ -201,6 +202,7 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new BuildingHandler(), this);
         Bukkit.getPluginManager().registerEvents(new WaterHandler(), this);
         Bukkit.getPluginManager().registerEvents(new PlotProtectionHandler(), this);
+        Bukkit.getPluginManager().registerEvents(new PlantGrowthHandler(), this);
         Bukkit.getScheduler().scheduleSyncDelayedTask(this, onServerLoad);
         
 //        RedisManager RM = new RedisManager();

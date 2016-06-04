@@ -21,6 +21,7 @@ package io.dallen.Kingdoms.Handlers;
 
 import io.dallen.Kingdoms.Kingdom.Plot;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.Farm;
+import io.dallen.Kingdoms.Util.LogUtil;
 import org.bukkit.CropState;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -32,17 +33,22 @@ import org.bukkit.material.Crops;
  *
  * @author Donovan Allen
  */
-public class PlantingHandler implements Listener{
+public class PlantGrowthHandler implements Listener{
     
     @EventHandler
     public void onBlockGrow(BlockGrowEvent e){
-        if(e.getBlock().getState() instanceof Crops && ((Crops) e.getBlock().getState()).getState().equals(CropState.RIPE)){
+        LogUtil.printDebug("block grow1");
+        LogUtil.printDebug(e.getBlock().getState().getData() instanceof Crops);
+        LogUtil.printDebug(((Crops) e.getBlock().getState().getData()).getState());
+        if(e.getBlock().getState().getData() instanceof Crops && ((Crops) e.getBlock().getState().getData()).getState().equals(CropState.VERY_TALL)){
+            LogUtil.printDebug("block grow2");
             Plot p = Plot.inPlot(e.getBlock().getLocation());
             if(p != null && p instanceof Farm){
+                LogUtil.printDebug("block grow");
                 Farm f = (Farm) p;
                 if(f.isGrowing()){
                     f.getStorage().addItem(new ItemStack(e.getBlock().getType()));
-                    Crops c = (Crops) e.getBlock().getState();
+                    Crops c = (Crops) e.getBlock().getState().getData();
                     c.setState(CropState.SEEDED);
                     e.getBlock().getState().setData(c);
                 }
