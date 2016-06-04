@@ -336,7 +336,7 @@ public class BuildingHandler implements Listener{
     //                step--;
     //                LogUtil.printDebug(x + ", " + y + ", " + z);
                     loopTop:
-                    if(x < Building.getWid() - (Building.getWid() % 2 == 0 ? 1 : 0)){
+                    if(x < Building.getWid() - (Building.getWid() % 2 == 0 ? 1 : 1)){
                         Location nLoc = startCorner.clone().add(x,y,z);
                         if(!Building.getBlocks()[x][y][z].getBlock().equals(Material.AIR)){
                             nLoc.getBlock().setType(Building.getBlocks()[x][y][z].getBlock(), false);

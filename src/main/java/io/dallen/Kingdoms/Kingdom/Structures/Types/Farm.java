@@ -21,12 +21,17 @@ package io.dallen.Kingdoms.Kingdom.Structures.Types;
 
 import io.dallen.Kingdoms.Handlers.BuildingHandler;
 import io.dallen.Kingdoms.Kingdom.Plot;
+import io.dallen.Kingdoms.Kingdom.Structures.Storage;
+import io.dallen.Kingdoms.Kingdom.Vaults.BuildingVault;
 import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEvent;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEventHandler;
 import lombok.Getter;
+import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -34,21 +39,13 @@ import org.bukkit.inventory.ItemStack;
  * 
  * @author donoa_000
  */
-public class Farm extends Plot{
+public class Farm extends Plot implements Storage{
 
-    private int maxFarmLand;
-    
-    private int maxResidents;
-    
-    private int currentFarmLand;
-    
-    private int currentResidents;
-    
-    private int currentlyPlanted;
-    
-    private FoodStats localStock;
-    
+    @Getter
     private boolean growing;
+    
+    @Getter
+    private BuildingVault Storage;
     
     @Getter
     private static ChestGUI EditPlot;
@@ -63,6 +60,7 @@ public class Farm extends Plot{
     
     public Farm(Plot p) {
         super(p.getBase(), p.getCenter(), p.getOwner(), p.getMunicipal());
+        Storage = new BuildingVault(18, 18 * 100, this);
     }
     
     @Override
@@ -75,16 +73,33 @@ public class Farm extends Plot{
         EditPlot.sendMenu(p);
     }
     
-    private static class FoodStats{
-        
-        private int Wheat;
-        
-        private int Apples;
-        
-        private int Carrots;
-        
-        private int Potatoes;
-        
+    @Override
+    public boolean interact(PlayerInteractEvent e){
+        if(e.getClickedBlock().getType().equals(Material.CHEST)){
+            if(e.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
+                if(Storage.CanOpen(e.getPlayer())){
+                    Storage.SendToPlayer(e.getPlayer());
+                    return true;
+                }
+            }else if(e.getAction().equals(Action.LEFT_CLICK_BLOCK)){
+                if(e.hasItem() && this.hasSpace()){
+                    Storage.addItem(e.getItem());
+                    e.getPlayer().getInventory().setItemInMainHand(new ItemStack(Material.AIR));
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+    @Override
+    public boolean hasSpace(){
+        return Storage.getFullSlots() < Storage.getUniqueSize() && Storage.getAmountFull() < Storage.getCapacity();
+    }
+    
+    @Override
+    public boolean supplyNPC(NPC npc){
+        return true;
     }
     
     public static class MenuHandler implements OptionClickEventHandler{

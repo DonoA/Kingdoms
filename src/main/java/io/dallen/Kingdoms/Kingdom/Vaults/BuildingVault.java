@@ -22,21 +22,15 @@ package io.dallen.Kingdoms.Kingdom.Vaults;
 import io.dallen.Kingdoms.Kingdom.Structures.Structure;
 import io.dallen.Kingdoms.Main;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonBuildingVault;
-import io.dallen.Kingdoms.Storage.JsonClasses.JsonMunicipality;
 import io.dallen.Kingdoms.Storage.PlayerData;
 import io.dallen.Kingdoms.Storage.MaterialWrapper;
 import io.dallen.Kingdoms.Storage.SaveTypes;
 import java.awt.Polygon;
-import java.util.HashMap;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -103,9 +97,25 @@ public class BuildingVault implements Vault, SaveTypes.Saveable{ // Will start p
         }
         return false;
     }
+    
+    public void updateInventory(Inventory inv){
+        for(int i = 0; i < inv.getSize(); i++){
+            if(contents[i] != null){
+                if(!contents[i].getMaterial().equals(Material.AIR)){
+                    inv.setItem(i, contents[i].asBukkitItem());
+                }else{
+                    inv.setItem(i, new ItemStack(Material.AIR));
+                    contents[i] = null;
+                }
+            }else{
+                inv.setItem(i, new ItemStack(Material.AIR));
+            }
+        }
+    }
+    
     /**
      * 
-     * @param is the stack to be removed0
+     * @param is the stack to be removed
      * @return if all of that material was removed
      */
     public boolean removeItem(ItemStack is){
@@ -148,7 +158,7 @@ public class BuildingVault implements Vault, SaveTypes.Saveable{ // Will start p
     
     public MaterialWrapper getMaterial(Material mat){
         for(MaterialWrapper mw : contents){
-            if(mw.getMaterial().equals(mat)){
+            if(mw != null && mw.getMaterial().equals(mat)){
                 return mw;
             }
         }

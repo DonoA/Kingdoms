@@ -33,7 +33,6 @@ import io.dallen.Kingdoms.Handlers.ChatHandler;
 import io.dallen.Kingdoms.Handlers.Party;
 import io.dallen.Kingdoms.Handlers.MenuHandlers.MainMenuHandler;
 import io.dallen.Kingdoms.Handlers.MultiBlockHandler;
-import io.dallen.Kingdoms.Terrain.KingdomTerrainGeneration;
 import io.dallen.Kingdoms.Util.LogUtil;
 import io.dallen.Kingdoms.Commands.MuteCommand;
 import io.dallen.Kingdoms.Handlers.BuildingHandler;
@@ -70,9 +69,6 @@ public class Main extends JavaPlugin {
     
     @Getter @Setter
     private static NpcManager NPCs;
-    
-    @Getter @Setter
-    private static KingdomTerrainGeneration Overworld;
     
     @Getter
     private static ProtocolManager protocolManager;
@@ -198,7 +194,6 @@ public class Main extends JavaPlugin {
         Plugin = this;
         this.saveDefaultConfig();
         World mainworld = Bukkit.getWorld(this.getConfig().getString("MainWorld"));
-        Overworld = new KingdomTerrainGeneration(mainworld);
         MultiBlockHandler mbh = new MultiBlockHandler();
         Bukkit.getPluginManager().registerEvents(mbh, this);
         Bukkit.getPluginManager().registerEvents(new JoinLeaveHandler(), this);

@@ -61,4 +61,8 @@ public class MaterialWrapper {
         is.getData().setData(Data);
         return is;
     }
+    
+    public String toString(){
+        return Material.name() + ":" + StackSize;
+    }
 }

@@ -57,7 +57,7 @@ public class Storeroom extends Plot implements Storage{
                 }
             }else if(e.getAction().equals(Action.LEFT_CLICK_BLOCK)){
                 if(e.hasItem() && this.hasSpace()){
-                    Storage.getContents()[Storage.getFullSlots()] = new MaterialWrapper(e.getItem());
+                    Storage.addItem(e.getItem());
                     return true;
                 }
             }
