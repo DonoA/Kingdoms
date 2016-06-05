@@ -479,6 +479,8 @@ public class MultiBlockHandler implements Listener{
                             }
                         }
                     }
+                }else if(e.getName().equalsIgnoreCase("Demolish") || e.getName().equalsIgnoreCase("Erase")){
+                    BuildingHandler.chestBuildOptions(e, null);
                 }else{
                     try {
                         Class structure = Class.forName("io.dallen.Kingdoms.Kingdom.Structures.Types."+e.getName().replace(" ", "").replace("'", ""));

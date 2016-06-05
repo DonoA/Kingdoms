@@ -20,8 +20,10 @@
 package io.dallen.Kingdoms.Kingdom.Structures;
 
 import io.dallen.Kingdoms.Util.LogUtil;
+import java.awt.Point;
 import java.util.Arrays;
 import lombok.Getter;
+import org.bukkit.Location;
 import org.bukkit.Material;
 
 /**
@@ -35,6 +37,9 @@ public class Blueprint {
     private int wid; // X
     @Getter
     private int high; // Y
+    
+    @Getter
+    private Point offSet;
     
     @Getter
     private BlueBlock[][][] blocks; //X Y Z
@@ -51,6 +56,32 @@ public class Blueprint {
                 for(int x = 0; x < this.wid; x++){
                     blocks[x][y][z] = new BlueBlock(b[currentOffset], d[currentOffset]);
                     currentOffset++;
+                }
+            }
+        }
+    }
+    
+    public static enum buildType{
+        CLEAR, FRAME;
+    }
+    
+    public void build(Location start, buildType type){
+        for(int y = 0; y < high; y++){
+            for(int z = 0; z < len; z++){
+                for(int x = 0; x < wid; x++){
+                    Location nLoc = start.clone().add(x,y,z);
+                    if(type.equals(buildType.CLEAR)){
+                        nLoc.getBlock().setType(Material.AIR, false);
+                    }else if(type.equals(buildType.FRAME)){
+                        Material covMat = blocks[x][y][z].getBlock();
+                        if(covMat.name().contains("STAIRS")){
+                            covMat = Material.QUARTZ_STAIRS;
+                        }else if(!covMat.equals(Material.AIR)){
+                            covMat = Material.QUARTZ_BLOCK;
+                        }
+                        nLoc.getBlock().setType(covMat, false);
+                        nLoc.getBlock().setData(blocks[x][y][z].getData(), false);
+                    }
                 }
             }
         }

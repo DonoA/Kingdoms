@@ -20,39 +20,40 @@
 package io.dallen.Kingdoms.Kingdom.Structures.Types;
 
 import io.dallen.Kingdoms.Kingdom.Plot;
+import io.dallen.Kingdoms.Kingdom.Structures.Storage;
 import io.dallen.Kingdoms.Kingdom.Vaults.BuildingVault;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import net.citizensnpcs.api.npc.NPC;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 /**
  * Allows the kingdom to manufacture weapons and armor
  * 
  * @author donoa_000
  */
-public class Blacksmith extends Plot{
+public class Blacksmith extends Plot implements Storage{
+    
     @Getter
-    private BuildingVault stock;
-    @Getter
-    private int stockCapacity;
-    @Getter
-    private int workerCapacity;
-    @Getter
-    private BlacksmithTools tools;
+    private BuildingVault storage;
+    
 
     public Blacksmith(Plot p) {
         super(p.getBase(), p.getCenter(), p.getOwner(), p.getMunicipal());
     }
-    
-    @NoArgsConstructor
-    private static class BlacksmithTools{ //holds the levels of the tools in the shop
-        @Getter
-        private int Anvail;
-        @Getter
-        private int Forge;
-        @Getter
-        private int Press;
-        @Getter
-        private int Molder;
-    
+
+    @Override
+    public boolean interact(PlayerInteractEvent e) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean hasSpace() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean supplyNPC(NPC npc) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
