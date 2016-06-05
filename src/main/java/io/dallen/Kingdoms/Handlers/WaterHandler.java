@@ -19,22 +19,39 @@
  */
 package io.dallen.Kingdoms.Handlers;
 
-import io.dallen.Kingdoms.Util.LogUtil;
 import io.dallen.Kingdoms.Util.PermissionManager;
 import java.util.List;
 import java.util.Set;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockFromToEvent;
+import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 
 /**
  *
  * @author Donovan Allen
  */
 public class WaterHandler implements Listener{
+    
+//    @EventHandler(priority = EventPriority.HIGHEST)
+//    public void onBlockPhysics(BlockPhysicsEvent e){
+//        if(e.getBlock().getType().equals(Material.WATER)){
+//            e.setCancelled(true);
+//        }
+//    }
+//    
+//    @EventHandler
+//    public void onBlockFromTo(BlockFromToEvent e){
+//        e.getToBlock().setType(Material.WATER);
+//        e.getToBlock().setData((byte) 1);
+//        e.setCancelled(true);
+//    }
     
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent e){
@@ -45,13 +62,19 @@ public class WaterHandler implements Listener{
                 if(e.getClickedBlock().getType().equals(Material.GRASS) || e.getClickedBlock().getType().equals(Material.SOIL)){
                     e.getClickedBlock().setType(Material.DIRT);
                 }
-//                e.getClickedBlock().getRelative(e.getBlockFace()).setType(Material.WATER); this would be if we wanted it to "flow"
+                e.getClickedBlock().getRelative(e.getBlockFace()).setType(Material.WATER);
+                e.getClickedBlock().getRelative(e.getBlockFace()).setData((byte) 5);
             }else if((e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR) && e.getItem().getType().equals(Material.BUCKET)) {
                 List<Block> los = e.getPlayer().getLineOfSight((Set<Material>) null, 5);
                 for(Block b : los){
                     if(b.getType() == Material.STATIONARY_WATER){
                         e.setCancelled(true);
-                        e.getItem().setType(Material.WATER_BUCKET);// DOES NOT WORK FOR MULTI STACKS
+                        if(e.getItem().getAmount() > 1){
+                            e.getItem().setAmount(e.getItem().getAmount() - 1);
+                            e.getPlayer().getInventory().addItem(new ItemStack(Material.WATER_BUCKET));
+                        }else{
+                            e.getItem().setType(Material.WATER_BUCKET);
+                        }
                         break;
                     }
                 }
