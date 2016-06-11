@@ -23,7 +23,6 @@ import io.dallen.Kingdoms.Kingdom.Plot;
 import io.dallen.Kingdoms.Kingdom.Structures.Storage;
 import io.dallen.Kingdoms.Kingdom.Vaults.BuildingVault;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.event.player.PlayerInteractEvent;
 

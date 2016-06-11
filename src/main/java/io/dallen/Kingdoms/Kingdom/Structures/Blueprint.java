@@ -87,7 +87,7 @@ public class Blueprint {
         }
     }
     
-    public void Rotate(int angle){//THIS does not account for stair blocks or other attached things atm
+    public void Rotate(int angle){
         BlueBlock[][][] ret = new BlueBlock[this.wid][this.high][this.len];
         if(angle == 90){
             final int M = blocks.length;

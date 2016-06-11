@@ -62,8 +62,10 @@ public class WaterHandler implements Listener{
                 if(e.getClickedBlock().getType().equals(Material.GRASS) || e.getClickedBlock().getType().equals(Material.SOIL)){
                     e.getClickedBlock().setType(Material.DIRT);
                 }
-                e.getClickedBlock().getRelative(e.getBlockFace()).setType(Material.WATER);
-                e.getClickedBlock().getRelative(e.getBlockFace()).setData((byte) 5);
+                if(!e.getClickedBlock().getRelative(e.getBlockFace()).getType().equals(Material.STATIONARY_WATER)){
+                    e.getClickedBlock().getRelative(e.getBlockFace()).setType(Material.WATER);
+                    e.getClickedBlock().getRelative(e.getBlockFace()).setData((byte) 5);
+                }
             }else if((e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR) && e.getItem().getType().equals(Material.BUCKET)) {
                 List<Block> los = e.getPlayer().getLineOfSight((Set<Material>) null, 5);
                 for(Block b : los){
