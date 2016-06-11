@@ -48,19 +48,24 @@ public class Farm extends Plot implements Storage{
     private BuildingVault Storage;
     
     @Getter
-    private static ChestGUI EditPlot;
-    
-    static {
-        EditPlot = new ChestGUI("TownHall", 2, new MenuHandler()){{
-            setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
-            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
-            setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
-        }};
-    }
+    private ChestGUI EditPlot;
+    @Getter
+    private ChestGUI BuildMenu;
     
     public Farm(Plot p) {
         super(p.getBase(), p.getCenter(), p.getOwner(), p.getMunicipal());
         Storage = new BuildingVault(18, 18 * 100, this);
+        EditPlot = new ChestGUI("Builders Hut", 2, new MenuHandler()){{
+            setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
+            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
+            setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
+        }};
+        EditPlot.setMenuData(this);
+        BuildMenu = new ChestGUI("Build Options", 2, new MenuHandler()){{
+            setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Light Builder's Hut");
+            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Dark Builder's Hut");
+            setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Other");
+        }};
     }
     
     @Override
@@ -111,7 +116,7 @@ public class Farm extends Plot implements Storage{
             }else if(e.getName().equalsIgnoreCase("Start Growing")){
                 ((Farm) e.getMenuData()).growing = true;
             }else{
-                BuildingHandler.chestBuildOptions(e, BuildMenu);
+                BuildingHandler.chestBuildOptions(e, ((Farm) e.getMenuData()).BuildMenu);
             }
         }
     }

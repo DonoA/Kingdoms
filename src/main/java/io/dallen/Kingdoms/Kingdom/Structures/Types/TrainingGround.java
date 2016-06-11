@@ -48,18 +48,25 @@ public class TrainingGround extends Plot{
     private int trainingArea;
     
     @Getter
-    private static ChestGUI EditPlot;
+    private ChestGUI EditPlot;
+    @Getter
+    private ChestGUI BuildMenu;
 
-    static{
+        
+    
+    public TrainingGround(Plot p) {
+        super(p.getBase(), p.getCenter(), p.getOwner(), p.getMunicipal());
         EditPlot = new ChestGUI("Training Ground", 2, new MenuHandler()){{
             setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
             setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
             setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
         }};
-    }
-    
-    public TrainingGround(Plot p) {
-        super(p.getBase(), p.getCenter(), p.getOwner(), p.getMunicipal());
+        EditPlot.setMenuData(this);
+        BuildMenu = new ChestGUI("Build Options", 2, new BuildersHut.MenuHandler()){{
+            setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Light Trainging Ground");
+            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Dark Training Ground");
+            setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Other");
+        }};
     }
     
     private static class TrainerStats{
@@ -101,7 +108,7 @@ public class TrainingGround extends Plot{
     }
     
     @Override
-    public void sendEditMenu(Player p){
+    public void sendEditMenu(Player p){ //TODO make this handle much better
         if(super.getMunicipal() != null){
             EditPlot.setOption(2, new ItemStack(Material.ENCHANTED_BOOK), "Train Archer")
                     .setOption(3, new ItemStack(Material.ENCHANTED_BOOK), "Train Infantry")
@@ -129,7 +136,7 @@ public class TrainingGround extends Plot{
                 }else if(e.getName().equalsIgnoreCase("Train General")){
                     Main.getNPCs().spawnSoldier("Dallen", trg.getCenter(), trg.getMunicipal(), SoldierType.GENERAL);
                 }else{
-                    BuildingHandler.chestBuildOptions(e, BuildMenu);
+                    BuildingHandler.chestBuildOptions(e, trg.getBuildMenu());
                 }
             }
         }

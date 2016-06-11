@@ -39,18 +39,26 @@ import org.bukkit.inventory.ItemStack;
 public class TownHall extends Plot{
     
     @Getter
-    private static ChestGUI EditPlot;
-    
-    static{
-        EditPlot = new ChestGUI("TownHall", 2, new MenuHandler()){{
-            setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
-            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
-            setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
-        }};
-    }
+    private ChestGUI EditPlot;
+    @Getter
+    private ChestGUI BuildMenu;
     
     public TownHall(Plot p){
         super(p.getBase(), p.getCenter(), p.getOwner(), p.getMunicipal());
+        EditPlot = new ChestGUI("Builders Hut", 2, new MenuHandler()){{
+            setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
+            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
+            setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
+            setOption(3, new ItemStack(Material.ENCHANTED_BOOK), "Mount Horse");
+            setOption(4, new ItemStack(Material.ENCHANTED_BOOK), "Mount Army Horse");
+            setOption(5, new ItemStack(Material.ENCHANTED_BOOK), "Mount King Horse");
+        }};
+        EditPlot.setMenuData(this);
+        BuildMenu = new ChestGUI("Build Options", 2, new MenuHandler()){{
+            setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Light Builder's Hut");
+            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Dark Builder's Hut");
+            setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Other");
+        }};
     }
     
     @Override
@@ -121,7 +129,8 @@ public class TownHall extends Plot{
                     }
                 }).start();
             }else{
-                BuildingHandler.chestBuildOptions(e, BuildMenu);
+                final Plot th = (Plot) e.getData();
+                BuildingHandler.chestBuildOptions(e, th.getBuildMenu());
             }
         }
     }

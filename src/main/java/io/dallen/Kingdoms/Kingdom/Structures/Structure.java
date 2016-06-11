@@ -68,29 +68,16 @@ public class Structure implements SaveTypes.Saveable{
     private int Area;
     @Getter @Setter
     private int StructureID;
+    @Getter
+    private OptionClickEventHandler MenuHandler;
 //    @Getter @Setter
 //    private int Rank;
 //    @Getter @Setter
 //    private int maxRank;
     
-    public static ChestGUI EditPlot;
-    public static ChestGUI BuildMenu;
     
     @Getter
     private long amountBuilt;
-    
-    static {
-//        EditPlot = new ChestGUI("Edit Plot Default", 2, new MenuHandler()){{
-//            setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
-//            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Upgrade");
-//            setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
-//        }};
-        BuildMenu = new ChestGUI("Build Options", 2, new MenuHandler()){{
-            setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Default Wall 1");
-            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Default Wall 2");
-            setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Other");
-        }};
-    }
     
     public Structure(Polygon base, Location cent, OfflinePlayer own, Kingdom kingdom, Municipality municipal){
         this.Center = cent;
@@ -118,21 +105,20 @@ public class Structure implements SaveTypes.Saveable{
         setArea();
     }
     
-    /*
-     * This method MUST compile the needed menu for sending and place the relevent options in the data slots (so they are player specific)
-     * as it turns out handling menus from the server side is terrible
-     */
     public void sendEditMenu(Player p){
-        throw new UnsupportedOperationException();
+        new ChestGUI("Structure", 2, new MenuHandler()){{
+            setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
+            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
+            setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
+        }}.sendMenu(p);
     }
     
-    /*
-     * This method MUST compile the needed menu for sending and place the relevent options in the data slots (so they are player specific)
-     * as it turns out handling menus from the server side is terrible
-     */
     public void sendBuildMenu(Player p){
-        BuildMenu.setMenuData(this);
-        BuildMenu.sendMenu(p);
+        new ChestGUI("Build Options", 2, new MenuHandler()){{
+            setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Default Building 1");
+            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Default Building 2");
+            setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Other");
+        }}.sendMenu(p);
     }
     
     private void setArea(){
@@ -182,6 +168,7 @@ public class Structure implements SaveTypes.Saveable{
         return js;
     }
     
+    
     public static class MenuHandler implements OptionClickEventHandler{
         
         @Override
@@ -193,7 +180,11 @@ public class Structure implements SaveTypes.Saveable{
                     e.getPlayer().sendMessage("Default option called");
                 }
             }else if(e.getMenuName().equalsIgnoreCase("Edit Plot Default")){
-                BuildingHandler.chestBuildOptions(e, BuildMenu);
+                BuildingHandler.chestBuildOptions(e, new ChestGUI("Build Options", 2, new MenuHandler()){{
+                    setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Default Wall 1");
+                    setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Default Wall 2");
+                    setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Other");
+                }});
             }
         }
     }

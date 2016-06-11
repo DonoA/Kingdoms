@@ -22,6 +22,7 @@ package io.dallen.Kingdoms.Kingdom.Structures.Types;
 import io.dallen.Kingdoms.Handlers.BuildingHandler;
 import io.dallen.Kingdoms.Kingdom.Municipality;
 import io.dallen.Kingdoms.Kingdom.Plot;
+import io.dallen.Kingdoms.Kingdom.Structures.Structure;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonWallSystem;
 import io.dallen.Kingdoms.Storage.SaveTypes;
 import io.dallen.Kingdoms.Util.ChestGUI;
@@ -93,19 +94,27 @@ public class WallSystem implements SaveTypes.Saveable{
         private WallType type;
         
         @Getter
-        private static ChestGUI EditPlot;
+        private ChestGUI EditPlot;
+        
+        @Getter
+        private ChestGUI BuildMenu;
 
-        static{
-            EditPlot = new ChestGUI("Wall", 2, new MenuHandler()){{
-                setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
-                setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
-                setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
-            }};
-        }
+        
         
         public Wall(Plot p, WallType type){
             super(p.getBase(), p.getCenter(), p.getOwner(), p.getMunicipal());
             this.type = type;
+            EditPlot = new ChestGUI("Training Ground", 2, new TrainingGround.MenuHandler()){{
+                setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
+                setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
+                setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
+            }};
+            EditPlot.setMenuData(this);
+            BuildMenu = new ChestGUI("Build Options", 2, new BuildersHut.MenuHandler()){{
+                setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Tall Wall");
+                setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Short Wall");
+                setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Other");
+            }};
         }
         
         public void damage(){
@@ -127,7 +136,8 @@ public class WallSystem implements SaveTypes.Saveable{
 
             @Override
             public void onOptionClick(ChestGUI.OptionClickEvent e){
-                BuildingHandler.chestBuildOptions(e, BuildMenu);
+                
+                BuildingHandler.chestBuildOptions(e, ((Wall) e.getData()).getBuildMenu());
             }
         }
     }
