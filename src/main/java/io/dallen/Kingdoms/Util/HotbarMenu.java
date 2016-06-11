@@ -38,11 +38,12 @@ import org.bukkit.inventory.ItemStack;
  *
  * @author Donovan Allen
  */
-public class HotbarMenu implements Listener{
+public class HotbarMenu{
     
     private static HashMap<String, HotbarInstance> openMenus = new HashMap<String, HotbarInstance>();
     
     private static HashMap<String, Long> cooldown = new HashMap<String, Long>();
+    
     @Setter
     private String name;
     @Setter
@@ -62,7 +63,6 @@ public class HotbarMenu implements Listener{
         optionData = new Object[9];
         optionNames[8] = "Cancel";
         optionIcons[8] = ItemUtil.setItemNameAndLore(Material.ENCHANTED_BOOK, "Cancel");
-        Main.getPlugin().getServer().getPluginManager().registerEvents(this, Main.getPlugin());
     }
     
     public HotbarMenu setOption(int pos, ItemStack icon, String name, String... info){
@@ -99,72 +99,13 @@ public class HotbarMenu implements Listener{
     }
     
     public static void closeMenu(Player player){
-        ItemStack[] hotbar =  openMenus.get(player.getName()).getPlayerOldHotbar();
+        ItemStack[] hotbar = openMenus.get(player.getName()).getPlayerOldHotbar();
         for(int i = 0; i <= 8; i++){
             player.getInventory().setItem(i, hotbar[i]);
         }
         openMenus.remove(player.getName());
     }
    
-    public void destroy(){
-        HandlerList.unregisterAll(this);
-        handler = null;
-        optionNames = null;
-        optionIcons = null;
-        optionData = null;
-    }
-    
-    @EventHandler
-    public void onInventoryOpen(InventoryOpenEvent e){
-        if(openMenus.containsKey(e.getPlayer().getName())){
-            e.setCancelled(true);
-            e.getPlayer().sendMessage("You cannot open your inventory in this menu!");
-        }
-    }
-    
-    @EventHandler
-    public void onPlayerInteract(PlayerInteractEvent event){
-        if((!cooldown.containsKey(event.getPlayer().getName())) || 
-            (cooldown.containsKey(event.getPlayer().getName()) && cooldown.get(event.getPlayer().getName()) < System.currentTimeMillis() - 500)){
-            cooldown.put(event.getPlayer().getName(), System.currentTimeMillis());
-            if(!openMenus.containsKey(event.getPlayer().getName()))
-                return;
-            if(event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
-                HotbarInstance menu = openMenus.get(event.getPlayer().getName());
-                event.setCancelled(true);
-                int slot = event.getPlayer().getInventory().getHeldItemSlot();
-                LogUtil.printDebug("slot:" + slot);
-                if(slot >= 0 && slot < 9 && menu.optionNames[slot] != null){
-                    OptionClickEvent e = new OptionClickEvent(event.getPlayer(), slot, menu.optionData[slot], menu.optionNames[slot], menu.name, menu.menuData);
-                    if(menu.optionNames[slot].equalsIgnoreCase("Cancel")){
-                        event.getPlayer().sendMessage("Canceled");
-                        e.setClose(true);
-                    }
-                    menu.handler.onOptionClick(e);
-                    LogUtil.printDebug("event called");
-                    if(e.isClose()){
-                        final Player p = (Player) event.getPlayer();
-                        final OptionClickEvent ev = e;
-                        Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), new Runnable(){
-                            @Override
-                            public void run(){
-                                if(ev.getNext() != null){
-                                    throw new UnsupportedOperationException();
-//                                    ev.getNext().sendMenu(p);
-                                }else{
-                                    HotbarMenu.closeMenu(p);
-                                }
-                            }
-                        }, 1);
-                    }
-                    if (e.isDestroy()){
-                        destroy();
-                    }
-                }
-            }
-        }
-    }
-    
     public static class HotbarInstance{
         private String name;
         private OptionClickEventHandler handler;
@@ -190,7 +131,7 @@ public class HotbarMenu implements Listener{
         public void onOptionClick(OptionClickEvent event);       
     }
     
-    public class OptionClickEvent{
+    public static class OptionClickEvent{
         @Getter
         private Player player;
         
@@ -228,6 +169,57 @@ public class HotbarMenu implements Listener{
             this.next = null;
             this.data = data;
             this.menuData = menuData;
+        }
+    }
+    
+    public static class HotbarHandler implements Listener{
+    
+        @EventHandler
+        public void onInventoryOpen(InventoryOpenEvent e){
+            if(openMenus.containsKey(e.getPlayer().getName())){
+                e.setCancelled(true);
+                e.getPlayer().sendMessage("You cannot open your inventory in this menu!");
+            }
+        }
+
+        @EventHandler
+        public void onPlayerInteract(PlayerInteractEvent event){
+            if((!cooldown.containsKey(event.getPlayer().getName())) || 
+                (cooldown.containsKey(event.getPlayer().getName()) && cooldown.get(event.getPlayer().getName()) < System.currentTimeMillis() - 500)){
+                cooldown.put(event.getPlayer().getName(), System.currentTimeMillis());
+                if(!openMenus.containsKey(event.getPlayer().getName()))
+                    return;
+                if(event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
+                    HotbarInstance menu = openMenus.get(event.getPlayer().getName());
+                    event.setCancelled(true);
+                    int slot = event.getPlayer().getInventory().getHeldItemSlot();
+                    LogUtil.printDebug("slot:" + slot);
+                    if(slot >= 0 && slot < 9 && menu.optionNames[slot] != null){
+                        OptionClickEvent e = new OptionClickEvent(event.getPlayer(), slot, menu.optionData[slot], menu.optionNames[slot], menu.name, menu.menuData);
+                        if(menu.optionNames[slot].equalsIgnoreCase("Cancel")){
+                            event.getPlayer().sendMessage("Canceled");
+                            e.setClose(true);
+                        }
+                        menu.handler.onOptionClick(e);
+                        LogUtil.printDebug("event called");
+                        if(e.isClose()){
+                            final Player p = (Player) event.getPlayer();
+                            final OptionClickEvent ev = e;
+                            Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), new Runnable(){
+                                @Override
+                                public void run(){
+                                    if(ev.getNext() != null){
+                                        throw new UnsupportedOperationException();
+    //                                    ev.getNext().sendMenu(p);
+                                    }else{
+                                        HotbarMenu.closeMenu(p);
+                                    }
+                                }
+                            }, 1);
+                        }
+                    }
+                }
+            }
         }
     }
 }

@@ -49,6 +49,8 @@ import io.dallen.Kingdoms.NPCs.Traits.Soldiers.Archer;
 import io.dallen.Kingdoms.NPCs.Traits.Soldiers.Cavalry;
 import io.dallen.Kingdoms.NPCs.Traits.Soldiers.General;
 import io.dallen.Kingdoms.NPCs.Traits.Soldiers.Infantry;
+import io.dallen.Kingdoms.Util.ChestGUI.ChestGUIHandler;
+import io.dallen.Kingdoms.Util.HotbarMenu.HotbarHandler;
 import java.io.File;
 import java.util.ArrayList;
 import lombok.Getter;
@@ -203,6 +205,8 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new WaterHandler(), this);
         Bukkit.getPluginManager().registerEvents(new PlotProtectionHandler(), this);
         Bukkit.getPluginManager().registerEvents(new PlantGrowthHandler(), this);
+        Bukkit.getPluginManager().registerEvents(new ChestGUIHandler(), this);
+        Bukkit.getPluginManager().registerEvents(new HotbarHandler(), this);
         Bukkit.getScheduler().scheduleSyncDelayedTask(this, onServerLoad);
         
 //        RedisManager RM = new RedisManager();

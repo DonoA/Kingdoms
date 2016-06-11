@@ -38,11 +38,12 @@ import org.bukkit.inventory.ItemStack;
  *
  * @author donoa_000
  */
-public class ChestGUI implements Listener{
+public class ChestGUI{
     
     private static HashMap<String, MenuInstance> openMenus = new HashMap<String, MenuInstance>();
     
     private static HashMap<String, Long> cooldown = new HashMap<String, Long>();
+    
     @Setter
     private String name;
     @Setter
@@ -66,7 +67,6 @@ public class ChestGUI implements Listener{
         optionNames = new String[this.size];
         optionIcons = new ItemStack[this.size];
         optionData = new Object[this.size];
-        Main.getPlugin().getServer().getPluginManager().registerEvents(this, Main.getPlugin());
     }
     
     public ChestGUI(String name, int size, OptionClickEventHandler handler){
@@ -78,7 +78,6 @@ public class ChestGUI implements Listener{
         final int s = this.size;
         optionData = new Object[this.size];
         this.handler = handler;
-        Main.getPlugin().getServer().getPluginManager().registerEvents(this, Main.getPlugin());
     }
    
     public ChestGUI setOption(int pos, ItemStack icon, String name, String... info){
@@ -130,61 +129,6 @@ public class ChestGUI implements Listener{
         openMenus.put(player.getName(), menu);
     }
    
-    public void destroy(){
-        HandlerList.unregisterAll(this);
-        handler = null;
-        optionNames = null;
-        optionIcons = null;
-        optionData = null;
-    }
-    
-    @EventHandler
-    public void onInventoryOpen(InventoryOpenEvent e){
-        if(openMenus.containsKey(e.getPlayer().getName())){
-            openMenus.remove(e.getPlayer().getName());
-        }
-    }
-    
-    @EventHandler
-    public void onInventoryClick(InventoryClickEvent event){
-        if((!cooldown.containsKey(event.getWhoClicked().getName())) || 
-            (cooldown.containsKey(event.getWhoClicked().getName()) && cooldown.get(event.getWhoClicked().getName()) < System.currentTimeMillis() - 500)){
-            cooldown.put(event.getWhoClicked().getName(), System.currentTimeMillis());
-            if(!openMenus.containsKey(event.getWhoClicked().getName()))
-                return;
-            MenuInstance menu = openMenus.get(event.getWhoClicked().getName());
-            if(event.getInventory().getTitle().equals(menu.name)){
-                event.setCancelled(true);
-                int slot = event.getRawSlot();
-                if(slot >= 0 && slot < menu.size && menu.optionNames[slot] != null){
-                    OptionClickEvent e = new OptionClickEvent((Player) event.getWhoClicked(), slot, menu.optionData[slot], menu.optionNames[slot], menu.name, menu.menuData);
-                    menu.handler.onOptionClick(e);
-                    if(e.isClose()){
-                        final Player p = (Player) event.getWhoClicked();
-                        final OptionClickEvent ev = e;
-                        Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), new Runnable(){
-                            @Override
-                            public void run(){
-                                if(ev.getNext() != null){
-                                    ev.getNext().sendMenu(p);
-                                }else{
-                                    p.closeInventory();
-                                }
-                            }
-                        }, 1);
-                    }
-                    if (e.isDestroy()){
-                        destroy();
-                    }
-                }
-            }
-            openMenus.remove(event.getWhoClicked().getName());
-        }
-    }
-    
-    /**
-     * Its between this and using virtual clients, This is more complex than I can work out atm Sry future me.
-     */
     public static class MenuInstance{
         private String name;
         private int size;
@@ -209,7 +153,7 @@ public class ChestGUI implements Listener{
         public void onOptionClick(OptionClickEvent event);       
     }
     
-    public class OptionClickEvent{
+    public static class OptionClickEvent{
         @Getter
         private Player player;
         
@@ -247,6 +191,51 @@ public class ChestGUI implements Listener{
             this.next = null;
             this.data = data;
             this.menuData = menuData;
+        }
+    }
+    
+    public static class ChestGUIHandler implements Listener{
+        
+        @EventHandler
+        public void onInventoryOpen(InventoryOpenEvent e){
+            if(openMenus.containsKey(e.getPlayer().getName())){
+                openMenus.remove(e.getPlayer().getName());
+            }
+        }
+
+        @EventHandler
+        public void onInventoryClick(InventoryClickEvent event){
+            if((!cooldown.containsKey(event.getWhoClicked().getName())) || 
+                (cooldown.containsKey(event.getWhoClicked().getName()) && cooldown.get(event.getWhoClicked().getName()) < System.currentTimeMillis() - 500)){
+                cooldown.put(event.getWhoClicked().getName(), System.currentTimeMillis());
+                if(!openMenus.containsKey(event.getWhoClicked().getName()))
+                    return;
+                MenuInstance menu = openMenus.get(event.getWhoClicked().getName());
+                if(event.getInventory().getTitle().equals(menu.name)){
+                    event.setCancelled(true);
+                    int slot = event.getRawSlot();
+                    if(slot >= 0 && slot < menu.size && menu.optionNames[slot] != null){
+                        OptionClickEvent e = 
+                                new OptionClickEvent((Player) event.getWhoClicked(), slot, menu.optionData[slot], menu.optionNames[slot], menu.name, menu.menuData);
+                        menu.handler.onOptionClick(e);
+                        if(e.isClose()){
+                            final Player p = (Player) event.getWhoClicked();
+                            final OptionClickEvent ev = e;
+                            Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), new Runnable(){
+                                @Override
+                                public void run(){
+                                    if(ev.getNext() != null){
+                                        ev.getNext().sendMenu(p);
+                                    }else{
+                                        p.closeInventory();
+                                    }
+                                }
+                            }, 1);
+                        }
+                    }
+                }
+                openMenus.remove(event.getWhoClicked().getName());
+            }
         }
     }
 }
