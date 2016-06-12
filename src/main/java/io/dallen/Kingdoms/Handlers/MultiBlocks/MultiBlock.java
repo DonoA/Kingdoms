@@ -17,7 +17,7 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.Handlers;
+package io.dallen.Kingdoms.Handlers.MultiBlocks;
 
 import java.util.HashMap;
 import org.bukkit.Location;

@@ -19,7 +19,7 @@
  */
 package io.dallen.Kingdoms.Handlers.DecayHandler;
 
-import io.dallen.Kingdoms.Handlers.MultiBlock;
+import io.dallen.Kingdoms.Handlers.MultiBlocks.MultiBlock;
 import io.dallen.Kingdoms.Kingdom.Plot;
 import io.dallen.Kingdoms.Util.LogUtil;
 import io.dallen.Kingdoms.Util.PermissionManager;

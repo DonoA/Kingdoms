@@ -17,34 +17,18 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.NPCs;
+package io.dallen.Kingdoms.Handlers.MultiBlocks;
 
-import io.dallen.Kingdoms.Handlers.MultiBlocks.MultiBlock;
 import org.bukkit.Location;
-import org.bukkit.event.Listener;
 
 /**
  *
  * @author Donovan Allen
  */
-public class SeigeEngine extends MultiBlock{
-    
-    private int direction;
+public class Forge extends MultiBlock{
 
-    public SeigeEngine(Location cent, int l, int w, int h) {
-        super(cent, l, w, h);
-    }
-    
-    public void push(int distance){
-        
-    }
-    
-    public void deploy(){
-        
-    }
-    
-    public static class SeigeEngineHandler implements Listener{
-        
+    public Forge(Location cent) {
+        super(cent, 5, 2, 3);
     }
     
 }
