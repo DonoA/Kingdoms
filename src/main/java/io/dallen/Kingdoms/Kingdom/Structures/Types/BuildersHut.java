@@ -26,6 +26,8 @@ import io.dallen.Kingdoms.Kingdom.Structures.Structure;
 import io.dallen.Kingdoms.Kingdom.Vaults.BuildingVault;
 import io.dallen.Kingdoms.Main;
 import io.dallen.Kingdoms.Util.ChestGUI;
+import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEvent;
+import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEventHandler;
 import io.dallen.Kingdoms.Util.LogUtil;
 import lombok.Getter;
 import net.citizensnpcs.api.npc.NPC;
@@ -103,20 +105,27 @@ public class BuildersHut extends Plot implements Storage{
     
     @Override
     public void sendEditMenu(Player p){
-        EditPlot.setOption(4, new ItemStack(Material.ENCHANTED_BOOK), "Train Builder", this);
         EditPlot.setMenuData(this);
         EditPlot.sendMenu(p);
     }
     
-    public static class MenuHandler implements ChestGUI.OptionClickEventHandler{
+    public class MenuHandler implements OptionClickEventHandler{
         
         @Override
-        public void onOptionClick(ChestGUI.OptionClickEvent e){
-            BuildersHut hut = (BuildersHut) e.getMenuData();
-            if(e.getName().equalsIgnoreCase("Train Builder")){
-                Main.getNPCs().spawnBuilder("Dallen", hut.getCenter());
-            }else{
-                BuildingHandler.chestBuildOptions(e, hut.getBuildMenu());
+        public void onOptionClick(OptionClickEvent e){
+            if(e.getMenuName().equals(EditPlot.getName())){
+                BuildersHut hut = (BuildersHut) e.getMenuData();
+                if(e.getName().equalsIgnoreCase("Train Builder")){
+                    Main.getNPCs().spawnBuilder("Dallen", hut.getCenter());
+                }else{
+                    BuildingHandler.chestBuildOptions(e, BuildMenu);
+                }
+            }else if(e.getMenuName().equals(BuildMenu.getName())){
+                if(e.getName().equalsIgnoreCase("Other")){
+                    BuildingHandler.getBuildChestHandler().onOptionClick(e);
+                }else{
+                    e.getPlayer().sendMessage("Default option called");
+                }
             }
         }
     }

@@ -22,6 +22,8 @@ package io.dallen.Kingdoms.Kingdom.Structures.Types;
 import io.dallen.Kingdoms.Handlers.BuildingHandler;
 import io.dallen.Kingdoms.Kingdom.Plot;
 import io.dallen.Kingdoms.Util.ChestGUI;
+import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEvent;
+import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEventHandler;
 import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.entity.AnimalTamer;
@@ -73,22 +75,30 @@ public class Stable extends Plot{
         EditPlot.sendMenu(p);
     }
     
-    public static class MenuHandler implements ChestGUI.OptionClickEventHandler{
+    public class MenuHandler implements OptionClickEventHandler{
         
         @Override
-        public void onOptionClick(ChestGUI.OptionClickEvent e){
-            if(e.getName().contains("Mount")){
-                Horse horse = (Horse) e.getPlayer().getLocation().getWorld().spawnEntity(e.getPlayer().getLocation(), EntityType.HORSE);
-                horse.getInventory().setSaddle(new ItemStack(Material.SADDLE));
-                if(e.getName().equalsIgnoreCase("Mount Army Horse")){
-                    horse.getInventory().setArmor(new ItemStack(Material.IRON_BARDING));
-                }else if(e.getName().equalsIgnoreCase("Mount King Horse")){
-                    horse.getInventory().setArmor(new ItemStack(Material.DIAMOND_BARDING));
+        public void onOptionClick(OptionClickEvent e){
+            if(e.getMenuName().equals(EditPlot.getName())){
+                if(e.getName().contains("Mount")){
+                    Horse horse = (Horse) e.getPlayer().getLocation().getWorld().spawnEntity(e.getPlayer().getLocation(), EntityType.HORSE);
+                    horse.getInventory().setSaddle(new ItemStack(Material.SADDLE));
+                    if(e.getName().equalsIgnoreCase("Mount Army Horse")){
+                        horse.getInventory().setArmor(new ItemStack(Material.IRON_BARDING));
+                    }else if(e.getName().equalsIgnoreCase("Mount King Horse")){
+                        horse.getInventory().setArmor(new ItemStack(Material.DIAMOND_BARDING));
+                    }
+                    horse.setOwner((AnimalTamer) e.getPlayer());
+                    horse.setPassenger(e.getPlayer());
+                }else{
+                    BuildingHandler.chestBuildOptions(e, BuildMenu);
                 }
-                horse.setOwner((AnimalTamer) e.getPlayer());
-                horse.setPassenger(e.getPlayer());
-            }else{
-                BuildingHandler.chestBuildOptions(e, ((Stable)e.getData()).getBuildMenu());
+            }else if(e.getMenuName().equals(BuildMenu.getName())){
+                if(e.getName().equalsIgnoreCase("Other")){
+                    BuildingHandler.getBuildChestHandler().onOptionClick(e);
+                }else{
+                    e.getPlayer().sendMessage("Default option called");
+                }
             }
         }
     }

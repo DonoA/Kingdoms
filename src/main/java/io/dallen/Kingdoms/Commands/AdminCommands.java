@@ -100,34 +100,63 @@ public class AdminCommands implements CommandExecutor{
                     sender.sendMessage("World Edit not found!");
                     return true;
                 }
-                File oldSchem = new File(Main.getPlugin().getServer().getPluginManager().getPlugin("WorldEdit").getDataFolder() + 
-                                         DBmanager.getFileSep() + "schematics" + DBmanager.getFileSep() + args[0] + ".schematic");
-                File newSchem = new File(Main.getPlugin().getDataFolder() + DBmanager.getFileSep() + args[0] + ".schematic");
-                if(oldSchem.exists()){
-                    try{
-                        if(!newSchem.exists()) {
-                            newSchem.createNewFile();
-                        }
-                        FileChannel source = null;
-                        FileChannel destination = null;
-                        try {
-                            source = new FileInputStream(oldSchem).getChannel();
-                            destination = new FileOutputStream(newSchem).getChannel();
-                            destination.transferFrom(source, 0, source.size());
-                        }finally{
-                            if(source != null) {
-                                source.close();
+                if(args[0].equalsIgnoreCase("all")){
+                    for(File f : new File(Main.getPlugin().getServer().getPluginManager().getPlugin("WorldEdit").getDataFolder() + 
+                                         DBmanager.getFileSep() + "schematics").listFiles()){
+                        File newSchem = new File(Main.getPlugin().getDataFolder() + DBmanager.getFileSep() + f.getName());
+                        try{
+                            if(!newSchem.exists()) {
+                                newSchem.createNewFile();
                             }
-                            if(destination != null) {
-                                destination.close();
+                            FileChannel source = null;
+                            FileChannel destination = null;
+                            try {
+                                source = new FileInputStream(f).getChannel();
+                                destination = new FileOutputStream(newSchem).getChannel();
+                                destination.transferFrom(source, 0, source.size());
+                            }finally{
+                                if(source != null) {
+                                    source.close();
+                                }
+                                if(destination != null) {
+                                    destination.close();
+                                }
                             }
+                        } catch (IOException ex) {
+                            Logger.getLogger(AdminCommands.class.getName()).log(Level.SEVERE, null, ex);
                         }
-                    } catch (IOException ex) {
-                        Logger.getLogger(AdminCommands.class.getName()).log(Level.SEVERE, null, ex);
+                        sender.sendMessage("File moved");
                     }
-                    sender.sendMessage("File moved");
                 }else{
-                    sender.sendMessage("Schematic not found!");
+                    File oldSchem = new File(Main.getPlugin().getServer().getPluginManager().getPlugin("WorldEdit").getDataFolder() + 
+                                             DBmanager.getFileSep() + "schematics" + DBmanager.getFileSep() + args[0] + ".schematic");
+                    File newSchem = new File(Main.getPlugin().getDataFolder() + DBmanager.getFileSep() + args[0] + ".schematic");
+                    if(oldSchem.exists()){
+                        try{
+                            if(!newSchem.exists()) {
+                                newSchem.createNewFile();
+                            }
+                            FileChannel source = null;
+                            FileChannel destination = null;
+                            try {
+                                source = new FileInputStream(oldSchem).getChannel();
+                                destination = new FileOutputStream(newSchem).getChannel();
+                                destination.transferFrom(source, 0, source.size());
+                            }finally{
+                                if(source != null) {
+                                    source.close();
+                                }
+                                if(destination != null) {
+                                    destination.close();
+                                }
+                            }
+                        } catch (IOException ex) {
+                            Logger.getLogger(AdminCommands.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        sender.sendMessage("File moved");
+                    }else{
+                        sender.sendMessage("Schematic not found!");
+                    }
                 }
                 return true;
             }

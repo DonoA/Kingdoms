@@ -169,7 +169,7 @@ public class Structure implements SaveTypes.Saveable{
     }
     
     
-    public static class MenuHandler implements OptionClickEventHandler{
+    public class MenuHandler implements OptionClickEventHandler{
         
         @Override
         public void onOptionClick(OptionClickEvent e){

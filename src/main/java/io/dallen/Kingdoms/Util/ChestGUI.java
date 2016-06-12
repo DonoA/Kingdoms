@@ -24,8 +24,10 @@ import java.util.HashMap;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -44,15 +46,15 @@ public class ChestGUI{
     
     private static HashMap<String, Long> cooldown = new HashMap<String, Long>();
     
-    @Setter
+    @Setter @Getter
     private String name;
-    @Setter
+    @Setter @Getter
     private int size;
-    @Setter
+    @Setter @Getter
     private InventoryType type;
     @Setter
     private OptionClickEventHandler handler;
-    @Setter
+    @Setter @Getter
     private Object menuData;
    
     private String[] optionNames;
@@ -203,7 +205,7 @@ public class ChestGUI{
             }
         }
 
-        @EventHandler
+        @EventHandler(priority = EventPriority.HIGHEST)
         public void onInventoryClick(InventoryClickEvent event){
             if((!cooldown.containsKey(event.getWhoClicked().getName())) || 
                 (cooldown.containsKey(event.getWhoClicked().getName()) && cooldown.get(event.getWhoClicked().getName()) < System.currentTimeMillis() - 500)){
@@ -212,6 +214,7 @@ public class ChestGUI{
                     return;
                 MenuInstance menu = openMenus.get(event.getWhoClicked().getName());
                 if(event.getInventory().getTitle().equals(menu.name)){
+                    event.getCursor().setType(Material.AIR);
                     event.setCancelled(true);
                     int slot = event.getRawSlot();
                     if(slot >= 0 && slot < menu.size && menu.optionNames[slot] != null){

@@ -19,16 +19,21 @@
  */
 package io.dallen.Kingdoms.Kingdom.Structures.Types;
 
+import io.dallen.Kingdoms.Handlers.BuildingHandler;
 import io.dallen.Kingdoms.Kingdom.Plot;
 import io.dallen.Kingdoms.Kingdom.Structures.Storage;
 import io.dallen.Kingdoms.Kingdom.Vaults.BuildingVault;
 import io.dallen.Kingdoms.Storage.MaterialWrapper;
+import io.dallen.Kingdoms.Util.ChestGUI;
+import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEvent;
+import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEventHandler;
 import lombok.Getter;
 import lombok.Setter;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Material;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * Allows the kingdom to store raw and refined materials
@@ -40,11 +45,26 @@ public class Storeroom extends Plot implements Storage{
     private int maxCapacity;
     @Getter
     private BuildingVault Storage;
+    @Getter
+    private ChestGUI EditPlot;
+    @Getter
+    private ChestGUI BuildMenu;
     
     public Storeroom(Plot p) {
         super(p);
 //        maxCapacity = p.getArea() * 100;
         Storage = new BuildingVault(30, 30 * 100, this);
+        EditPlot = new ChestGUI("Castle", 2, new MenuHandler()){{
+            setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
+            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
+            setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
+        }};
+        EditPlot.setMenuData(this);
+        BuildMenu = new ChestGUI("Build Options", 2, new MenuHandler()){{
+            setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Light Builder's Hut");
+            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Dark Builder's Hut");
+            setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Other");
+        }};
     }
     
     @Override
@@ -63,6 +83,22 @@ public class Storeroom extends Plot implements Storage{
             }
         }
         return false;
+    }
+    
+    public class MenuHandler implements OptionClickEventHandler{
+        
+        @Override
+        public void onOptionClick(OptionClickEvent e){
+            if(e.getMenuName().equals(EditPlot.getName())){
+                BuildingHandler.chestBuildOptions(e, BuildMenu);
+            }else if(e.getMenuName().equals(BuildMenu.getName())){
+                if(e.getName().equalsIgnoreCase("Other")){
+                    BuildingHandler.getBuildChestHandler().onOptionClick(e);
+                }else{
+                    e.getPlayer().sendMessage("Default option called");
+                }
+            }
+        }
     }
     
     @Override

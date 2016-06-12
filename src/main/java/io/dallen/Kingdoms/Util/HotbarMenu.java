@@ -27,6 +27,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -182,7 +183,7 @@ public class HotbarMenu{
             }
         }
 
-        @EventHandler
+        @EventHandler(priority = EventPriority.HIGHEST)
         public void onPlayerInteract(PlayerInteractEvent event){
             if((!cooldown.containsKey(event.getPlayer().getName())) || 
                 (cooldown.containsKey(event.getPlayer().getName()) && cooldown.get(event.getPlayer().getName()) < System.currentTimeMillis() - 500)){

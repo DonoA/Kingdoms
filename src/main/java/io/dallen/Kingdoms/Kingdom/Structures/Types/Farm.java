@@ -107,16 +107,24 @@ public class Farm extends Plot implements Storage{
         return true;
     }
     
-    public static class MenuHandler implements OptionClickEventHandler{
+    public class MenuHandler implements OptionClickEventHandler{
         
         @Override
         public void onOptionClick(OptionClickEvent e){
-            if(e.getName().equalsIgnoreCase("Stop Growing")){
-                ((Farm) e.getMenuData()).growing = false;
-            }else if(e.getName().equalsIgnoreCase("Start Growing")){
-                ((Farm) e.getMenuData()).growing = true;
-            }else{
-                BuildingHandler.chestBuildOptions(e, ((Farm) e.getMenuData()).BuildMenu);
+            if(e.getMenuName().equals(EditPlot.getName())){
+                    if(e.getName().equalsIgnoreCase("Stop Growing")){
+                        ((Farm) e.getMenuData()).growing = false;
+                    }else if(e.getName().equalsIgnoreCase("Start Growing")){
+                        ((Farm) e.getMenuData()).growing = true;
+                    }else{
+                        BuildingHandler.chestBuildOptions(e, BuildMenu);
+                    }
+            }else if(e.getMenuName().equals(BuildMenu.getName())){
+                if(e.getName().equalsIgnoreCase("Other")){
+                    BuildingHandler.getBuildChestHandler().onOptionClick(e);
+                }else{
+                    e.getPlayer().sendMessage("Default option called");
+                }
             }
         }
     }

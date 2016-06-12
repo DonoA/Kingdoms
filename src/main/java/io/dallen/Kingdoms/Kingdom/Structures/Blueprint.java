@@ -59,6 +59,7 @@ public class Blueprint {
                 }
             }
         }
+        offSet = new Point(0, 0);
     }
     
     public static enum buildType{

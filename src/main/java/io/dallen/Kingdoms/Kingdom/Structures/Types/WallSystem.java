@@ -26,6 +26,8 @@ import io.dallen.Kingdoms.Kingdom.Structures.Structure;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonWallSystem;
 import io.dallen.Kingdoms.Storage.SaveTypes;
 import io.dallen.Kingdoms.Util.ChestGUI;
+import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEvent;
+import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEventHandler;
 import io.dallen.Kingdoms.Util.LocationUtil;
 import java.awt.Polygon;
 import java.util.ArrayList;
@@ -104,13 +106,13 @@ public class WallSystem implements SaveTypes.Saveable{
         public Wall(Plot p, WallType type){
             super(p.getBase(), p.getCenter(), p.getOwner(), p.getMunicipal());
             this.type = type;
-            EditPlot = new ChestGUI("Training Ground", 2, new TrainingGround.MenuHandler()){{
+            EditPlot = new ChestGUI("Training Ground", 2, new MenuHandler()){{
                 setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
                 setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
                 setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
             }};
             EditPlot.setMenuData(this);
-            BuildMenu = new ChestGUI("Build Options", 2, new BuildersHut.MenuHandler()){{
+            BuildMenu = new ChestGUI("Build Options", 2, new MenuHandler()){{
                 setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Tall Wall");
                 setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Short Wall");
                 setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Other");
@@ -132,12 +134,19 @@ public class WallSystem implements SaveTypes.Saveable{
             EditPlot.sendMenu(p);
         }
 
-        public static class MenuHandler implements ChestGUI.OptionClickEventHandler{
+        public class MenuHandler implements OptionClickEventHandler{
 
             @Override
-            public void onOptionClick(ChestGUI.OptionClickEvent e){
-                
-                BuildingHandler.chestBuildOptions(e, ((Wall) e.getData()).getBuildMenu());
+            public void onOptionClick(OptionClickEvent e){
+                if(e.getMenuName().equals(EditPlot.getName())){
+                    BuildingHandler.chestBuildOptions(e, BuildMenu);
+                }else if(e.getMenuName().equals(BuildMenu.getName())){
+                    if(e.getName().equalsIgnoreCase("Other")){
+                        BuildingHandler.getBuildChestHandler().onOptionClick(e);
+                    }else{
+                        e.getPlayer().sendMessage("Default option called");
+                    }
+                }
             }
         }
     }

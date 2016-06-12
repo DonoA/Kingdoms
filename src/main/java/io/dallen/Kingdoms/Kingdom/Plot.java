@@ -48,6 +48,7 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemStack;
 
 /**
  *
@@ -71,10 +72,52 @@ public class Plot extends Structure implements Listener{
     
     public Plot(Polygon base, Location cent, OfflinePlayer own, Municipality mun) {
         super(base, cent, own, mun);
+        EditPlot = new ChestGUI("Set Plot Type", 4, new MenuHandler()) {{
+            setOption(9*0 + 1, new ItemStack(Material.ENCHANTED_BOOK), "Storeroom", "");
+            setOption(9*0 + 2, new ItemStack(Material.ENCHANTED_BOOK), "Barracks", "");
+            setOption(9*0 + 3, new ItemStack(Material.ENCHANTED_BOOK), "Training Ground", "");
+            setOption(9*0 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Town Hall", "");
+            setOption(9*0 + 5, new ItemStack(Material.ENCHANTED_BOOK), "Blacksmith", "");
+            setOption(9*0 + 6, new ItemStack(Material.ENCHANTED_BOOK), "Farm", "");
+            setOption(9*1 + 1, new ItemStack(Material.ENCHANTED_BOOK), "Builder's Hut", "");
+            setOption(9*1 + 2, new ItemStack(Material.ENCHANTED_BOOK), "Bank", "");
+            setOption(9*1 + 3, new ItemStack(Material.ENCHANTED_BOOK), "Stable", "");
+            setOption(9*1 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Dungeon", "");
+            setOption(9*1 + 5, new ItemStack(Material.ENCHANTED_BOOK), "Marketplace", "");
+            setOption(9*1 + 6, new ItemStack(Material.ENCHANTED_BOOK), "Court", "");
+            setOption(9*2 + 2, new ItemStack(Material.ENCHANTED_BOOK), "Wall", "");
+            setOption(9*2 + 3, new ItemStack(Material.ENCHANTED_BOOK), "Wall with Door", "");
+            setOption(9*2 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Corner", "");
+            setOption(9*2 + 5, new ItemStack(Material.ENCHANTED_BOOK), "Tower", "");
+            setOption(9*3 + 3, new ItemStack(Material.ENCHANTED_BOOK), "Custom Contract", "");
+            setOption(9*3 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Demolish", "");
+            setOption(9*3 + 5, new ItemStack(Material.ENCHANTED_BOOK), "Erase", "");
+        }};
     }
     
     public Plot(Plot p) {
         super(p.getBase(), p.getCenter(), p.getOwner(), p.getKingdom(), p.getMunicipal());
+        EditPlot = new ChestGUI("Set Plot Type", 4, new MenuHandler()) {{
+            setOption(9*0 + 1, new ItemStack(Material.ENCHANTED_BOOK), "Storeroom", "");
+            setOption(9*0 + 2, new ItemStack(Material.ENCHANTED_BOOK), "Barracks", "");
+            setOption(9*0 + 3, new ItemStack(Material.ENCHANTED_BOOK), "Training Ground", "");
+            setOption(9*0 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Town Hall", "");
+            setOption(9*0 + 5, new ItemStack(Material.ENCHANTED_BOOK), "Blacksmith", "");
+            setOption(9*0 + 6, new ItemStack(Material.ENCHANTED_BOOK), "Farm", "");
+            setOption(9*1 + 1, new ItemStack(Material.ENCHANTED_BOOK), "Builder's Hut", "");
+            setOption(9*1 + 2, new ItemStack(Material.ENCHANTED_BOOK), "Bank", "");
+            setOption(9*1 + 3, new ItemStack(Material.ENCHANTED_BOOK), "Stable", "");
+            setOption(9*1 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Dungeon", "");
+            setOption(9*1 + 5, new ItemStack(Material.ENCHANTED_BOOK), "Marketplace", "");
+            setOption(9*1 + 6, new ItemStack(Material.ENCHANTED_BOOK), "Court", "");
+            setOption(9*2 + 2, new ItemStack(Material.ENCHANTED_BOOK), "Wall", "");
+            setOption(9*2 + 3, new ItemStack(Material.ENCHANTED_BOOK), "Wall with Door", "");
+            setOption(9*2 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Corner", "");
+            setOption(9*2 + 5, new ItemStack(Material.ENCHANTED_BOOK), "Tower", "");
+            setOption(9*3 + 3, new ItemStack(Material.ENCHANTED_BOOK), "Custom Contract", "");
+            setOption(9*3 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Demolish", "");
+            setOption(9*3 + 5, new ItemStack(Material.ENCHANTED_BOOK), "Erase", "");
+        }};
     }
     
     public static Plot inPlot(Location l){
@@ -105,6 +148,12 @@ public class Plot extends Structure implements Listener{
         return true;
     }
     
+    @Override
+    public void sendEditMenu(Player p){
+        EditPlot.setMenuData(this);
+        EditPlot.sendMenu(p);
+    }
+    
     public boolean createMucicpal(){
         if(super.getMunicipal() != null){
             return false;
@@ -117,51 +166,11 @@ public class Plot extends Structure implements Listener{
         return super.getOwner().equals(p);
     }
     
-    public static class MenuHandler implements OptionClickEventHandler{
+    public class MenuHandler implements OptionClickEventHandler{
         
         @Override
         public void onOptionClick(OptionClickEvent e){
-            if(e.getMenuName().equalsIgnoreCase("New Plot")){
-                if(e.getName().equalsIgnoreCase("Confirm and Claim Plot")){
-                    final Plot p = (Plot) e.getData();
-                    Plot.getAllPlots().add(p);
-                    PlayerData pd = PlayerData.getData(e.getPlayer());
-                    pd.getPlots().add(p);
-                    e.getPlayer().sendMessage("You have claimed this plot");
-                    e.getPlayer().sendMessage("Setting base");
-                    final Polygon bounds = p.getBase();
-                    for(int i = 0; i < p.getBase().npoints; i++){
-                        Location torch = LocationUtil.asLocation(new Point(p.getBase().xpoints[i], p.getBase().ypoints[i]), 
-                                p.getCenter().getWorld(), p.getCenter().getBlockY());
-                        if(torch.getBlock().getType().equals(Material.REDSTONE_TORCH_ON)){
-                            final Location t = torch;
-                            Bukkit.getScheduler().runTask(Main.getPlugin(), new Runnable(){
-                                @Override
-                                public void run() {
-                                    t.getBlock().breakNaturally();
-                                }
-                            });
-                        }
-                    }
-                    int Xmax = Ints.max(bounds.xpoints);
-                    int Zmax = Ints.max(bounds.ypoints);
-                    for(int x = Ints.min(bounds.xpoints); x <= Xmax; x++){
-                        for(int z = Ints.min(bounds.ypoints); z <= Zmax; z++){
-                            if(bounds.contains(new Point(x,z)) || (bounds.contains(new Point(x-1,z)) || bounds.contains(new Point(x,z-1)) || bounds.contains(new Point(x-1,z-1)))){
-                                Location l = new Location(p.getCenter().getWorld(), x, p.getCenter().getBlockY()-1, z);
-                                l.getBlock().setType(Material.DIRT);
-                                l.getBlock().setData((byte) 1);
-                            }
-                        }
-                    }
-                    for(Municipality m : Municipality.getAllMunicipals()){
-                        if(m.getInfluence().intersects(p.getBase().getBounds2D())){
-                            p.setMunicipal(m);
-                            m.addStructure(p);
-                        }
-                    }
-                }
-            }else if(e.getMenuName().equalsIgnoreCase("Set Plot Type")){
+            if(e.getMenuName().equalsIgnoreCase("Set Plot Type")){
                 Plot p = Plot.inPlot(e.getPlayer().getLocation());
                 PlayerData pd = PlayerData.getData(e.getPlayer());
                 if(e.getName().equalsIgnoreCase("Custom Contract")){

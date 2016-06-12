@@ -70,8 +70,6 @@ public class MultiBlockHandler implements Listener{
     
     private ChestGUI NewPlotMenu;
     
-    private ChestGUI SetPlotType;
-    
     private ChestGUI ViewPlotMenu;
     
     private HashMap<Player, Long> cooldown = new HashMap<Player, Long>();
@@ -84,28 +82,6 @@ public class MultiBlockHandler implements Listener{
         NewPlotMenu = new ChestGUI("New Plot", InventoryType.HOPPER, optionHandler) {{
             setOption(1, new ItemStack(Material.ENCHANTED_BOOK), "Confirm and Claim Plot", "");
             setOption(3, new ItemStack(Material.ENCHANTED_BOOK), "Cancel Plot Claim", "");
-        }};
-        
-        SetPlotType = new ChestGUI("Set Plot Type", 4, optionHandler) {{
-            setOption(9*0 + 1, new ItemStack(Material.ENCHANTED_BOOK), "Storeroom", "");
-            setOption(9*0 + 2, new ItemStack(Material.ENCHANTED_BOOK), "Barracks", "");
-            setOption(9*0 + 3, new ItemStack(Material.ENCHANTED_BOOK), "Training Ground", "");
-            setOption(9*0 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Town Hall", "");
-            setOption(9*0 + 5, new ItemStack(Material.ENCHANTED_BOOK), "Blacksmith", "");
-            setOption(9*0 + 6, new ItemStack(Material.ENCHANTED_BOOK), "Farm", "");
-            setOption(9*1 + 1, new ItemStack(Material.ENCHANTED_BOOK), "Builder's Hut", "");
-            setOption(9*1 + 2, new ItemStack(Material.ENCHANTED_BOOK), "Bank", "");
-            setOption(9*1 + 3, new ItemStack(Material.ENCHANTED_BOOK), "Stable", "");
-            setOption(9*1 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Dungeon", "");
-            setOption(9*1 + 5, new ItemStack(Material.ENCHANTED_BOOK), "Marketplace", "");
-            setOption(9*1 + 6, new ItemStack(Material.ENCHANTED_BOOK), "Court", "");
-            setOption(9*2 + 2, new ItemStack(Material.ENCHANTED_BOOK), "Wall", "");
-            setOption(9*2 + 3, new ItemStack(Material.ENCHANTED_BOOK), "Wall with Door", "");
-            setOption(9*2 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Corner", "");
-            setOption(9*2 + 5, new ItemStack(Material.ENCHANTED_BOOK), "Tower", "");
-            setOption(9*3 + 3, new ItemStack(Material.ENCHANTED_BOOK), "Custom Contract", "");
-            setOption(9*3 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Demolish", "");
-            setOption(9*3 + 5, new ItemStack(Material.ENCHANTED_BOOK), "Erase", "");
         }};
         
         ViewPlotMenu = new ChestGUI("Plot Info", InventoryType.HOPPER, optionHandler) {{
@@ -267,11 +243,7 @@ public class MultiBlockHandler implements Listener{
                             return;
                         }
                         if(p.getOwner().equals(e.getPlayer())){
-                            if(p.isEmpty()){
-                                SetPlotType.sendMenu(e.getPlayer());
-                            }else{
-                                p.sendEditMenu(e.getPlayer());
-                            }
+                            p.sendEditMenu(e.getPlayer());
                         }else{
                             int loc = 0;
                             for(Contract ct : p.getContracts()){
@@ -294,7 +266,47 @@ public class MultiBlockHandler implements Listener{
     
         @Override
         public void onOptionClick(OptionClickEvent e){
-            
+            if(e.getMenuName().equalsIgnoreCase("New Plot")){
+                if(e.getName().equalsIgnoreCase("Confirm and Claim Plot")){
+                    final Plot p = (Plot) e.getData();
+                    Plot.getAllPlots().add(p);
+                    PlayerData pd = PlayerData.getData(e.getPlayer());
+                    pd.getPlots().add(p);
+                    e.getPlayer().sendMessage("You have claimed this plot");
+                    e.getPlayer().sendMessage("Setting base");
+                    final Polygon bounds = p.getBase();
+                    for(int i = 0; i < p.getBase().npoints; i++){
+                        Location torch = LocationUtil.asLocation(new Point(p.getBase().xpoints[i], p.getBase().ypoints[i]), 
+                                p.getCenter().getWorld(), p.getCenter().getBlockY());
+                        if(torch.getBlock().getType().equals(Material.REDSTONE_TORCH_ON)){
+                            final Location t = torch;
+                            Bukkit.getScheduler().runTask(Main.getPlugin(), new Runnable(){
+                                @Override
+                                public void run() {
+                                    t.getBlock().breakNaturally();
+                                }
+                            });
+                        }
+                    }
+                    int Xmax = Ints.max(bounds.xpoints);
+                    int Zmax = Ints.max(bounds.ypoints);
+                    for(int x = Ints.min(bounds.xpoints); x <= Xmax; x++){
+                        for(int z = Ints.min(bounds.ypoints); z <= Zmax; z++){
+                            if(bounds.contains(new Point(x,z)) || (bounds.contains(new Point(x-1,z)) || bounds.contains(new Point(x,z-1)) || bounds.contains(new Point(x-1,z-1)))){
+                                Location l = new Location(p.getCenter().getWorld(), x, p.getCenter().getBlockY()-1, z);
+                                l.getBlock().setType(Material.DIRT);
+                                l.getBlock().setData((byte) 1);
+                            }
+                        }
+                    }
+                    for(Municipality m : Municipality.getAllMunicipals()){
+                        if(m.getInfluence().intersects(p.getBase().getBounds2D())){
+                            p.setMunicipal(m);
+                            m.addStructure(p);
+                        }
+                    }
+                }
+            }
         }
     }
 }

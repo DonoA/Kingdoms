@@ -19,10 +19,16 @@
  */
 package io.dallen.Kingdoms.Kingdom.Structures.Types;
 
+import io.dallen.Kingdoms.Handlers.BuildingHandler;
 import io.dallen.Kingdoms.Kingdom.Plot;
 import io.dallen.Kingdoms.Kingdom.Vaults.BuildingVault;
+import io.dallen.Kingdoms.Util.ChestGUI;
+import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEvent;
+import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEventHandler;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * Allows the kingdom to house its NPCs
@@ -44,6 +50,11 @@ public class Barracks extends Plot{
     @Getter
     private PopulationStats people;
     
+    @Getter
+    private ChestGUI EditPlot;
+    @Getter
+    private ChestGUI BuildMenu;
+    
     public Barracks(Plot p) {
         super(p.getBase(), p.getCenter(), p.getOwner(), p.getMunicipal());
         maxCapacity = p.getArea() * 100;
@@ -51,6 +62,33 @@ public class Barracks extends Plot{
         amountFull = 0;
         people = new PopulationStats();
         readySpeed = 10;
+        EditPlot = new ChestGUI("Castle", 2, new MenuHandler()){{
+            setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
+            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
+            setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
+        }};
+        EditPlot.setMenuData(this);
+        BuildMenu = new ChestGUI("Build Options", 2, new MenuHandler()){{
+            setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Light Builder's Hut");
+            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Dark Builder's Hut");
+            setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Other");
+        }};
+    }
+    
+    public class MenuHandler implements OptionClickEventHandler{
+        
+        @Override
+        public void onOptionClick(OptionClickEvent e){
+            if(e.getMenuName().equals(EditPlot.getName())){
+                BuildingHandler.chestBuildOptions(e, BuildMenu);
+            }else if(e.getMenuName().equals(BuildMenu.getName())){
+                if(e.getName().equalsIgnoreCase("Other")){
+                    BuildingHandler.getBuildChestHandler().onOptionClick(e);
+                }else{
+                    e.getPlayer().sendMessage("Default option called");
+                }
+            }
+        }
     }
 
     @NoArgsConstructor

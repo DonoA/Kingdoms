@@ -21,10 +21,10 @@ package io.dallen.Kingdoms.Kingdom.Structures.Types;
 
 import io.dallen.Kingdoms.Handlers.BuildingHandler;
 import io.dallen.Kingdoms.Kingdom.Plot;
-import io.dallen.Kingdoms.Kingdom.Structures.Structure;
 import io.dallen.Kingdoms.Main;
 import io.dallen.Kingdoms.Util.ChestGUI;
-import io.dallen.Kingdoms.Util.LogUtil;
+import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEvent;
+import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEventHandler;
 import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -62,7 +62,7 @@ public class TrainingGround extends Plot{
             setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
         }};
         EditPlot.setMenuData(this);
-        BuildMenu = new ChestGUI("Build Options", 2, new BuildersHut.MenuHandler()){{
+        BuildMenu = new ChestGUI("Build Options", 2, new MenuHandler()){{
             setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Light Trainging Ground");
             setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Dark Training Ground");
             setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Other");
@@ -121,10 +121,10 @@ public class TrainingGround extends Plot{
         EditPlot.sendMenu(p);
     }
     
-    public static class MenuHandler implements ChestGUI.OptionClickEventHandler{
+    public class MenuHandler implements OptionClickEventHandler{
 
         @Override
-        public void onOptionClick(ChestGUI.OptionClickEvent e){
+        public void onOptionClick(OptionClickEvent e){
             if(e.getMenuName().equalsIgnoreCase("Training Ground")){
                 TrainingGround trg = (TrainingGround) e.getMenuData();
                 if(e.getName().equalsIgnoreCase("Train Archer")){
@@ -136,7 +136,7 @@ public class TrainingGround extends Plot{
                 }else if(e.getName().equalsIgnoreCase("Train General")){
                     Main.getNPCs().spawnSoldier("Dallen", trg.getCenter(), trg.getMunicipal(), SoldierType.GENERAL);
                 }else{
-                    BuildingHandler.chestBuildOptions(e, trg.getBuildMenu());
+                    BuildingHandler.chestBuildOptions(e, BuildMenu);
                 }
             }
         }
