@@ -20,9 +20,7 @@
 package io.dallen.Kingdoms.Commands;
 
 import io.dallen.Kingdoms.Main;
-import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
-import net.citizensnpcs.api.npc.NPCRegistry;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -41,11 +39,13 @@ public class KingdomCommands implements CommandExecutor{
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String lbl, String[] args){
         Player p = (Player) sender;
-        if(args[0].equalsIgnoreCase("spawn")){
-            npc = Main.getNPCs().getNPCReg().createNPC(EntityType.PLAYER, "Dallen");
-            npc.spawn(Bukkit.getWorlds().get(0).getSpawnLocation());
-        }else if(args[0].equalsIgnoreCase("target")){
-            npc.getNavigator().setTarget(p.getLocation());
+        if(args.length > 0){
+            if(args[0].equalsIgnoreCase("spawn")){
+                npc = Main.getNPCs().getNPCReg().createNPC(EntityType.PLAYER, "Dallen");
+                npc.spawn(Bukkit.getWorlds().get(0).getSpawnLocation());
+            }else if(args[0].equalsIgnoreCase("target")){
+                npc.getNavigator().setTarget(p.getLocation());
+            }
         }
         return true;
     }

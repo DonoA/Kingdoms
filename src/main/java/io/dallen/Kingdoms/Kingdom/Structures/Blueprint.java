@@ -25,6 +25,7 @@ import java.util.Arrays;
 import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 
 /**
  *
@@ -67,6 +68,28 @@ public class Blueprint {
     }
     
     public void build(Location start, buildType type){
+        for(int y = 0; y < high; y++){
+            for(int z = 0; z < len; z++){
+                for(int x = 0; x < wid; x++){
+                    Location nLoc = start.clone().add(x,y,z);
+                    if(type.equals(buildType.CLEAR)){
+                        nLoc.getBlock().setType(Material.AIR, false);
+                    }else if(type.equals(buildType.FRAME)){
+                        Material covMat = blocks[x][y][z].getBlock();
+                        if(covMat.name().contains("STAIRS")){
+                            covMat = Material.QUARTZ_STAIRS;
+                        }else if(!covMat.equals(Material.AIR)){
+                            covMat = Material.QUARTZ_BLOCK;
+                        }
+                        nLoc.getBlock().setType(covMat, false);
+                        nLoc.getBlock().setData(blocks[x][y][z].getData(), false);
+                    }
+                }
+            }
+        }
+    }
+        
+    public void fakeBuild(Location start, buildType type, Player p){
         for(int y = 0; y < high; y++){
             for(int z = 0; z < len; z++){
                 for(int x = 0; x < wid; x++){

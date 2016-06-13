@@ -19,6 +19,7 @@
  */
 package io.dallen.Kingdoms.Handlers;
 
+import io.dallen.Kingdoms.Main;
 import io.dallen.Kingdoms.Util.PermissionManager;
 import java.util.List;
 import java.util.Set;
@@ -31,6 +32,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -52,6 +54,13 @@ public class WaterHandler implements Listener{
 //        e.getToBlock().setData((byte) 1);
 //        e.setCancelled(true);
 //    }
+    
+    @EventHandler
+    public void onRain(WeatherChangeEvent e){
+        if(Main.getPlugin().getConfig().getBoolean("weatherDisabled", true)){
+            e.setCancelled(true);
+        }
+    }
     
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent e){

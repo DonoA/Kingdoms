@@ -19,11 +19,14 @@
  */
 package io.dallen.Kingdoms.Handlers.MultiBlocks;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 /**
  *
@@ -37,7 +40,8 @@ public class MultiBlock implements Listener{
     private int wid; // X
     private int height; // Y
     
-    private static HashMap<Location, MultiBlock> MultiBlocks = new HashMap<Location, MultiBlock>();
+    @Getter
+    private static ArrayList<MultiBlock> MultiBlocks = new ArrayList<MultiBlock>();
     
     public MultiBlock(Location cent, int l, int w, int h){
         this.center = cent;
@@ -46,17 +50,29 @@ public class MultiBlock implements Listener{
         this.height = h;
     }
     
-    public static void checkMultiBlock(BlockEvent e, Block b){
-        if(MultiBlocks.containsKey(b.getLocation())){
-            MultiBlocks.get(b.getLocation()).destroy();
+    public static MultiBlock getMultiBlock(Location bLoc){
+        for(MultiBlock mb : MultiBlocks){
+            if(bLoc.getBlockX() >= mb.center.getBlockX() - mb.len/2 &&
+               bLoc.getBlockX() <= mb.center.getBlockX() + mb.len/2 &&
+               bLoc.getBlockY() >= mb.center.getBlockY() &&
+               bLoc.getBlockY() <= mb.center.getBlockY() + mb.height &&
+               bLoc.getBlockZ() >= mb.center.getBlockZ() - mb.wid/2 &&
+               bLoc.getBlockZ() <= mb.center.getBlockZ() + mb.wid/2){
+                return mb;
+            }
         }
+        return null;
+    }
+    
+    public void onInteract(PlayerInteractEvent e){
+        
     }
     
     public void destroy(){
         for(int X = center.getBlockX() - wid/2; X < center.getBlockX() + wid/2; X++){
             for(int Z = center.getBlockZ() - len/2; Z < center.getBlockZ() + len/2; Z++){
                 for(int Y = center.getBlockY() - height/2; Y < center.getBlockY() + height/2; Y++){
-                    MultiBlocks.remove(new Location(center.getWorld(), X, Y, Z));
+                    MultiBlocks.remove(this);
                 }
             }
         }

@@ -35,25 +35,28 @@ public enum KingdomMaterial {
     ARROW_RIGHT(Material.DIAMOND_HOE, 4),
     ARROW_DOWN(Material.DIAMOND_HOE, 5),
     ARROW_UP(Material.DIAMOND_HOE, 6),
-    STRUCTURE_ARMORY(Material.DIAMOND_HOE, 7),
-    STRUCTURE_BANK(Material.DIAMOND_HOE, 8),
-    STRUCTURE_BARRACKS(Material.DIAMOND_HOE, 9),
-    STRUCTURE_BUILDERSHUT(Material.DIAMOND_HOE, 10),
-    STRUCTURE_CASTLE(Material.DIAMOND_HOE, 11),
-    STRUCTURE_DUNGEON(Material.DIAMOND_HOE, 12),
-    STRUCTURE_FARM(Material.DIAMOND_HOE, 13),
-    STRUCTURE_MARKETPLACE(Material.DIAMOND_HOE, 14),
-    STRUCTURE_STABLE(Material.DIAMOND_HOE, 15),
-    STRUCTURE_STOREROOM(Material.DIAMOND_HOE, 16),
-    STRUCTURE_TOWNHALL(Material.DIAMOND_HOE, 17),
-    STRUCTURE_TRAININGGROUND(Material.DIAMOND_HOE, 18),
-    STRUCTURE_WALL_WALL(Material.DIAMOND_HOE, 19),
-    STRUCTURE_WALL_GATE(Material.DIAMOND_HOE, 20),
-    STRUCTURE_WALL_TOWER(Material.DIAMOND_HOE, 21),
-    STRUCTURE_WALL_CORNER(Material.DIAMOND_HOE, 22),
-    ERASE(Material.DIAMOND_HOE, 23),
-    DEMOLISH(Material.DIAMOND_HOE, 24),
-    CANCEL(Material.DIAMOND_HOE, 25);
+    ARROW_CLOCKWISE(Material.DIAMOND_HOE, 7),
+    ARROW_COUNTER_CLOCKWISE(Material.DIAMOND_HOE, 8),
+    STRUCTURE_ARMORY(Material.DIAMOND_HOE, 9),
+    STRUCTURE_BANK(Material.DIAMOND_HOE, 10),
+    STRUCTURE_BARRACKS(Material.DIAMOND_HOE, 11),
+    STRUCTURE_BLACKSMITH(Material.DIAMOND_HOE, 12),
+    STRUCTURE_BUILDERSHUT(Material.DIAMOND_HOE, 13),
+    STRUCTURE_CASTLE(Material.DIAMOND_HOE, 14),
+    STRUCTURE_DUNGEON(Material.DIAMOND_HOE, 15),
+    STRUCTURE_FARM(Material.DIAMOND_HOE, 16),
+    STRUCTURE_MARKETPLACE(Material.DIAMOND_HOE, 17),
+    STRUCTURE_STABLE(Material.DIAMOND_HOE, 18),
+    STRUCTURE_STOREROOM(Material.DIAMOND_HOE, 19),
+    STRUCTURE_TOWNHALL(Material.DIAMOND_HOE, 20),
+    STRUCTURE_TRAININGGROUND(Material.DIAMOND_HOE, 21),
+    STRUCTURE_WALL_WALL(Material.DIAMOND_HOE, 22),
+    STRUCTURE_WALL_GATE(Material.DIAMOND_HOE, 23),
+    STRUCTURE_WALL_TOWER(Material.DIAMOND_HOE, 24),
+    STRUCTURE_WALL_CORNER(Material.DIAMOND_HOE, 25),
+    ERASE(Material.DIAMOND_HOE, 26),
+    DEMOLISH(Material.DIAMOND_HOE, 27),
+    CANCEL(Material.DIAMOND_HOE, 28);
     
     @Getter
     private Material coreItem;
@@ -77,6 +80,7 @@ public enum KingdomMaterial {
     
     public boolean equals(ItemStack is){
         return is.getType().equals(coreItem) && is.getDurability() == (short) dmg;
+//        && is.hasItemMeta() && is.getItemMeta().hasDisplayName() && is.getItemMeta().getDisplayName().equals(name);
     }
     
     public static KingdomMaterial fromItemStack(ItemStack is){

@@ -28,6 +28,7 @@ import io.dallen.Kingdoms.Kingdom.Structures.Types.BuildersHut;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.WallSystem.Wall;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.WallSystem.WallType;
 import io.dallen.Kingdoms.Main;
+import io.dallen.Kingdoms.Overrides.KingdomMaterial;
 import io.dallen.Kingdoms.Storage.PlayerData;
 import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEvent;
@@ -73,25 +74,24 @@ public class Plot extends Structure implements Listener{
     public Plot(Polygon base, Location cent, OfflinePlayer own, Municipality mun) {
         super(base, cent, own, mun);
         EditPlot = new ChestGUI("Set Plot Type", 4, new MenuHandler()) {{
-            setOption(9*0 + 1, new ItemStack(Material.ENCHANTED_BOOK), "Storeroom", "");
-            setOption(9*0 + 2, new ItemStack(Material.ENCHANTED_BOOK), "Barracks", "");
-            setOption(9*0 + 3, new ItemStack(Material.ENCHANTED_BOOK), "Training Ground", "");
-            setOption(9*0 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Town Hall", "");
-            setOption(9*0 + 5, new ItemStack(Material.ENCHANTED_BOOK), "Blacksmith", "");
-            setOption(9*0 + 6, new ItemStack(Material.ENCHANTED_BOOK), "Farm", "");
-            setOption(9*1 + 1, new ItemStack(Material.ENCHANTED_BOOK), "Builder's Hut", "");
-            setOption(9*1 + 2, new ItemStack(Material.ENCHANTED_BOOK), "Bank", "");
-            setOption(9*1 + 3, new ItemStack(Material.ENCHANTED_BOOK), "Stable", "");
-            setOption(9*1 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Dungeon", "");
-            setOption(9*1 + 5, new ItemStack(Material.ENCHANTED_BOOK), "Marketplace", "");
-            setOption(9*1 + 6, new ItemStack(Material.ENCHANTED_BOOK), "Court", "");
-            setOption(9*2 + 2, new ItemStack(Material.ENCHANTED_BOOK), "Wall", "");
-            setOption(9*2 + 3, new ItemStack(Material.ENCHANTED_BOOK), "Wall with Door", "");
-            setOption(9*2 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Corner", "");
-            setOption(9*2 + 5, new ItemStack(Material.ENCHANTED_BOOK), "Tower", "");
-            setOption(9*3 + 3, new ItemStack(Material.ENCHANTED_BOOK), "Custom Contract", "");
-            setOption(9*3 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Demolish", "");
-            setOption(9*3 + 5, new ItemStack(Material.ENCHANTED_BOOK), "Erase", "");
+            setOption(9*0 + 1, KingdomMaterial.STRUCTURE_STOREROOM.getItemStack(), "Storeroom", "");
+            setOption(9*0 + 2, KingdomMaterial.STRUCTURE_BARRACKS.getItemStack(), "Barracks", "");
+            setOption(9*0 + 3, KingdomMaterial.STRUCTURE_TRAININGGROUND.getItemStack(), "Training Ground", "");
+            setOption(9*0 + 4, KingdomMaterial.STRUCTURE_TOWNHALL.getItemStack(), "Town Hall", "");
+            setOption(9*0 + 5, KingdomMaterial.STRUCTURE_BLACKSMITH.getItemStack(), "Blacksmith", "");
+            setOption(9*0 + 6, KingdomMaterial.STRUCTURE_FARM.getItemStack(), "Farm", "");
+            setOption(9*1 + 1, KingdomMaterial.STRUCTURE_BUILDERSHUT.getItemStack(), "Builder's Hut", "");
+            setOption(9*1 + 2, KingdomMaterial.STRUCTURE_BANK.getItemStack(), "Bank", "");
+            setOption(9*1 + 3, KingdomMaterial.STRUCTURE_STABLE.getItemStack(), "Stable", "");
+            setOption(9*1 + 4, KingdomMaterial.STRUCTURE_DUNGEON.getItemStack(), "Dungeon", "");
+            setOption(9*1 + 5, KingdomMaterial.STRUCTURE_MARKETPLACE.getItemStack(), "Marketplace", "");
+            setOption(9*2 + 2, KingdomMaterial.STRUCTURE_WALL_WALL.getItemStack(), "Wall", "");
+            setOption(9*2 + 3, KingdomMaterial.STRUCTURE_WALL_GATE.getItemStack(), "Wall with Door", "");
+            setOption(9*2 + 4, KingdomMaterial.STRUCTURE_WALL_CORNER.getItemStack(), "Corner", "");
+            setOption(9*2 + 5, KingdomMaterial.STRUCTURE_WALL_TOWER.getItemStack(), "Tower", "");
+            setOption(9*3 + 3, new ItemStack(Material.PAPER), "Custom Contract", "");
+            setOption(9*3 + 4, KingdomMaterial.DEMOLISH.getItemStack(), "Demolish", "");
+            setOption(9*3 + 5, KingdomMaterial.ERASE.getItemStack(), "Erase", "");
         }};
     }
     

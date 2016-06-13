@@ -26,6 +26,7 @@ import io.dallen.Kingdoms.Kingdom.Structures.Structure;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.BuildersHut;
 import io.dallen.Kingdoms.Main;
 import io.dallen.Kingdoms.NPCs.Traits.Builder;
+import io.dallen.Kingdoms.Overrides.KingdomMaterial;
 import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.DBmanager;
 import io.dallen.Kingdoms.Util.HotbarMenu;
@@ -77,15 +78,15 @@ public class BuildingHandler implements Listener{
         BuildChestHandler = new BuildChestOptions();
         BuildHotbarHandler = new BuildHotbarOptions();
         RotateMenu = new HotbarMenu("RotateBuildMenu", BuildHotbarHandler){{
-            setOption(4, new ItemStack(Material.ENCHANTED_BOOK), "Build");
-            setOption(5, new ItemStack(Material.ENCHANTED_BOOK), "Rotate Clockwise");
-            setOption(3, new ItemStack(Material.ENCHANTED_BOOK), "Rotate Counter Clockwise");
+            setOption(4, KingdomMaterial.START_BUILD.getItemStack(), "Build");
+            setOption(5, KingdomMaterial.ARROW_CLOCKWISE.getItemStack(), "Rotate Clockwise");
+            setOption(3, KingdomMaterial.ARROW_COUNTER_CLOCKWISE.getItemStack(), "Rotate Counter Clockwise");
             
-            setOption(2, new ItemStack(Material.ENCHANTED_BOOK), "Shift East");
-            setOption(6, new ItemStack(Material.ENCHANTED_BOOK), "Shift West");
+            setOption(2, KingdomMaterial.ARROW_RIGHT.getItemStack(), "Shift East");
+            setOption(6, KingdomMaterial.ARROW_LEFT.getItemStack(), "Shift West");
             
-            setOption(1, new ItemStack(Material.ENCHANTED_BOOK), "Shift North");
-            setOption(7, new ItemStack(Material.ENCHANTED_BOOK), "Shift South");
+            setOption(1, KingdomMaterial.ARROW_UP.getItemStack(), "Shift North");
+            setOption(7, KingdomMaterial.ARROW_DOWN.getItemStack(), "Shift South");
         }};
     }
     
@@ -200,6 +201,14 @@ public class BuildingHandler implements Listener{
                 startCorner = new Location(p.getCenter().getWorld(), (p.getCenter().getX() + offSet.x) - building.getWid()/2  + (building.getWid() % 2 == 0 ? 1 : 0),
                         p.getCenter().getBlockY(), (p.getCenter().getBlockZ() + offSet.y) - building.getLen()/2 + (building.getLen() % 2 == 0 ? 1 : 0));
                 building.build(startCorner, Blueprint.buildType.FRAME);
+            }else if(e.getName().equalsIgnoreCase("Cancel")){
+                Blueprint building = openBuilds.get(e.getPlayer().getName()).getBlueprint();
+                Plot p = openBuilds.get(e.getPlayer().getName()).getPlot();
+                Point offSet = building.getOffSet();
+                Location startCorner = new Location(p.getCenter().getWorld(), (p.getCenter().getX() + offSet.x) - building.getWid()/2  + (building.getWid() % 2 == 0 ? 1 : 0),
+                        p.getCenter().getBlockY(), (p.getCenter().getBlockZ() + offSet.y) - building.getLen()/2 + (building.getLen() % 2 == 0 ? 1 : 0));
+                building.build(startCorner, Blueprint.buildType.CLEAR);
+                openBuilds.remove(e.getPlayer().getName());
             }
         }
     }

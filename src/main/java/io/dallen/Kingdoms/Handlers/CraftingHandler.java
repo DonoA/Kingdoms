@@ -19,6 +19,7 @@
  */
 package io.dallen.Kingdoms.Handlers;
 
+import io.dallen.Kingdoms.Overrides.KingdomMaterial;
 import io.dallen.Kingdoms.Util.ItemUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -44,8 +45,8 @@ public class CraftingHandler implements Listener{
         Crown.setIngredient('D', Material.DIAMOND);
         p.getServer().addRecipe(Crown);
         
-        ItemStack MultiTool = ItemUtil.setItemNameAndLore(Material.WATCH, "Multi Tool", "Used for managing plots");
-        ShapedRecipe mTool = new ShapedRecipe(MultiTool);
+//        ItemStack MultiTool = ItemUtil.setItemNameAndLore(Material.WATCH, "Multi Tool", "Used for managing plots");
+        ShapedRecipe mTool = new ShapedRecipe(KingdomMaterial.MULTI_TOOL.getItemStack());
         mTool.shape("IiI"," S "," C ");
         mTool.setIngredient('I', Material.IRON_BLOCK);
         mTool.setIngredient('i', Material.IRON_INGOT);

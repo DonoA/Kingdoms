@@ -4,3 +4,4 @@ debug:
   autoupdate: true
   buildfolder: C:\Users\donoa_000\Documents\Projects\Kingdoms\target
 decay: false
+weatherDisabled: true

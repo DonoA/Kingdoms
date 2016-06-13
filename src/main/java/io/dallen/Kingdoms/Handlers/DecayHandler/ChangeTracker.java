@@ -139,7 +139,6 @@ public class ChangeTracker implements Listener{ //Not fully functioning
                 e.setCancelled(true);
             }
         }
-        MultiBlock.checkMultiBlock(e, b);
     }
     
     @EventHandler
@@ -156,7 +155,6 @@ public class ChangeTracker implements Listener{ //Not fully functioning
         }else{
             e.setCancelled(true);
         }
-        MultiBlock.checkMultiBlock(e, b);
     }
     
     @EventHandler
@@ -173,7 +171,6 @@ public class ChangeTracker implements Listener{ //Not fully functioning
         }else{
             e.setCancelled(true);
         }
-        MultiBlock.checkMultiBlock(e, b);
     }
     
     @EventHandler
@@ -188,7 +185,6 @@ public class ChangeTracker implements Listener{ //Not fully functioning
                 Changes.put(b.getLocation(), new SaveBlock(b));
             }
         }
-        MultiBlock.checkMultiBlock(e, b);
     }
     
     @EventHandler
