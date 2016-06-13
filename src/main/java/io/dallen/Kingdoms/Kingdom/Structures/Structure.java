@@ -105,6 +105,11 @@ public class Structure implements SaveTypes.Saveable{
         setArea();
     }
     
+    public boolean contains(Point p){
+        return Base.contains(p) || (Base.contains(new Point(p.x-1,p.y)) || Base.contains(new Point(p.x,p.y-1)) || 
+               Base.contains(new Point(p.x-1,p.y-1)));
+    }
+    
     public void sendEditMenu(Player p){
         new ChestGUI("Structure", 2, new MenuHandler()){{
             setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");

@@ -116,7 +116,7 @@ public class Blueprint {
         if(angle == 90){
             final int M = blocks.length;
             final int N = blocks[0][0].length;
-            printMatrix(blocks);
+//            printMatrix(blocks);
             ret = new BlueBlock[N][this.high][M];
             for (int r = 0; r < M; r++) {
                 for (int c = 0; c < N; c++) {
@@ -126,11 +126,11 @@ public class Blueprint {
                     }
                 }
             }
-            printMatrix(ret);
-        }else if(angle == -90){//I really hope these work, they are hot off StackOverflow
+//            printMatrix(ret);
+        }else if(angle == -90){
             final int M = blocks.length;
             final int N = blocks[0][0].length;
-            printMatrix(blocks);
+//            printMatrix(blocks);
             ret = new BlueBlock[N][this.high][M];
             for (int r = 0; r < M; r++) {
                 for (int c = 0; c < N; c++) {
@@ -140,7 +140,7 @@ public class Blueprint {
                     }
                 }
             }
-            printMatrix(ret);
+//            printMatrix(ret);
         }
         this.blocks = ret;
         this.wid = ret.length;

@@ -156,6 +156,9 @@ public class BuildingHandler implements Listener{
                 Point offSet = building.getOffSet();
                 Location startCorner = new Location(p.getCenter().getWorld(), (p.getCenter().getX() + offSet.x) - building.getWid()/2  + (building.getWid() % 2 == 0 ? 1 : 0),
                         p.getCenter().getBlockY(), (p.getCenter().getBlockZ() + offSet.y) - building.getLen()/2 + (building.getLen() % 2 == 0 ? 1 : 0));
+                if((p.getWidth() - building.getWid())/2 + 1 < offSet.x + 1){
+                    return;
+                }
                 building.build(startCorner, Blueprint.buildType.CLEAR);
                 offSet.x += 1;
                 // ROTATE
@@ -169,6 +172,9 @@ public class BuildingHandler implements Listener{
                 Point offSet = building.getOffSet();
                 Location startCorner = new Location(p.getCenter().getWorld(), (p.getCenter().getX() + offSet.x) - building.getWid()/2  + (building.getWid() % 2 == 0 ? 1 : 0),
                         p.getCenter().getBlockY(), (p.getCenter().getBlockZ() + offSet.y) - building.getLen()/2 + (building.getLen() % 2 == 0 ? 1 : 0));
+                if((p.getWidth() - building.getWid())/2 < Math.abs(offSet.x - 1)){
+                    return;
+                }
                 building.build(startCorner, Blueprint.buildType.CLEAR);
                 offSet.x -= 1;
                 // ROTATE
@@ -182,6 +188,9 @@ public class BuildingHandler implements Listener{
                 Point offSet = building.getOffSet();
                 Location startCorner = new Location(p.getCenter().getWorld(), (p.getCenter().getX() + offSet.x) - building.getWid()/2  + (building.getWid() % 2 == 0 ? 1 : 0),
                         p.getCenter().getBlockY(), (p.getCenter().getBlockZ() + offSet.y) - building.getLen()/2 + (building.getLen() % 2 == 0 ? 1 : 0));
+                if((p.getLength() - building.getLen())/2 < Math.abs(offSet.y - 1)){
+                    return;
+                }
                 building.build(startCorner, Blueprint.buildType.CLEAR);
                 offSet.y -= 1;
                 // ROTATE
@@ -195,6 +204,9 @@ public class BuildingHandler implements Listener{
                 Point offSet = building.getOffSet();
                 Location startCorner = new Location(p.getCenter().getWorld(), (p.getCenter().getX() + offSet.x) - building.getWid()/2  + (building.getWid() % 2 == 0 ? 1 : 0),
                         p.getCenter().getBlockY(), (p.getCenter().getBlockZ() + offSet.y) - building.getLen()/2 + (building.getLen() % 2 == 0 ? 1 : 0));
+                if((p.getLength() - building.getLen())/2 + 1 < offSet.y + 1){
+                    return;
+                }
                 building.build(startCorner, Blueprint.buildType.CLEAR);
                 offSet.y += 1;
                 // ROTATE
@@ -288,6 +300,10 @@ public class BuildingHandler implements Listener{
                             Plot p = (Plot) openInputs.get(e.getPlayer().getName()).getData();
                             if(p.getLength() + 1 <= building.getLen() || p.getWidth() + 1 <= building.getWid()){
                                 building.Rotate(90);
+                            }
+                            if(p.getLength() + 1 <= building.getLen() || p.getWidth() + 1 <= building.getWid()){
+                                e.getPlayer().sendMessage("That structure is too large for this plot");
+                                return;
                             }
                             Location startCorner = new Location(p.getCenter().getWorld(), p.getCenter().getX() - building.getWid()/2  + (building.getWid() % 2 == 0 ? 1 : 0),
                                     p.getCenter().getBlockY(), p.getCenter().getBlockZ() - building.getLen()/2 + (building.getLen() % 2 == 0 ? 1 : 0));
