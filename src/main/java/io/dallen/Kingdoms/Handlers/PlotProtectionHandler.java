@@ -47,7 +47,7 @@ public class PlotProtectionHandler implements Listener{
             event.setCancelled(false);
         } else {
             Plot p = Plot.inPlot(event.getBlockPlaced().getLocation());
-            if(p.getMunicipal()!=null){
+            if(p != null && p.getMunicipal()!=null){
                 event.setCancelled(true);
             }
         }
@@ -62,7 +62,7 @@ public class PlotProtectionHandler implements Listener{
             event.setCancelled(false);
         } else {
             Plot p = Plot.inPlot(event.getBlock().getLocation());
-            if(p.getMunicipal()!=null){
+            if(p != null && p.getMunicipal()!=null){
                 event.setCancelled(true);
             }
         }
@@ -77,7 +77,7 @@ public class PlotProtectionHandler implements Listener{
             event.setCancelled(false);
         } else {
             Plot p = Plot.inPlot(event.getEntity().getLocation());
-            if(p.getMunicipal()!=null){
+            if(p != null && p.getMunicipal()!=null){
                 event.setCancelled(true);
             }
         }

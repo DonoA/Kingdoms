@@ -32,17 +32,23 @@ import io.dallen.Kingdoms.Main;
 import io.dallen.Kingdoms.Util.LogUtil;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.base64.Base64;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import java.lang.reflect.Method;
 import java.nio.charset.Charset;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.io.IOUtils;
 
 /**
  *
@@ -122,6 +128,17 @@ public class SkinPacketHandler implements Runnable{
         if(properties == null){
             LogUtil.printErr("Failed to load the skin, player skins won't be affected.");
         }
+//        try {
+//            X509EncodedKeySpec localX509EncodedKeySpec = new X509EncodedKeySpec(IOUtils.toByteArray(YggdrasilMinecraftSessionService.class.getResourceAsStream("/yggdrasil_session_pubkey.der")));
+//            KeyFactory localKeyFactory = KeyFactory.getInstance("RSA");
+//            localKeyFactory.generatePublic(localX509EncodedKeySpec);
+//        } catch (IOException ex) {
+//            Logger.getLogger(SkinPacketHandler.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (InvalidKeySpecException ex) {
+//            Logger.getLogger(SkinPacketHandler.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (NoSuchAlgorithmException ex) {
+//            Logger.getLogger(SkinPacketHandler.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }
         
     private Object getSessionService(){

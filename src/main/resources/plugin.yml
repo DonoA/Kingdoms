@@ -165,3 +165,6 @@ commands:
   cleannpcs:
     description: debug command
     usage: /<command>
+  decayall:
+    description: debug command
+    usage: /<command>

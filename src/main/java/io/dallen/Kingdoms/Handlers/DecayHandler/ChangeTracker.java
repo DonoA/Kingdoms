@@ -19,7 +19,6 @@
  */
 package io.dallen.Kingdoms.Handlers.DecayHandler;
 
-import io.dallen.Kingdoms.Handlers.MultiBlocks.MultiBlock;
 import io.dallen.Kingdoms.Kingdom.Plot;
 import io.dallen.Kingdoms.Util.LogUtil;
 import io.dallen.Kingdoms.Util.PermissionManager;
@@ -37,23 +36,23 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
-import org.bukkit.event.block.BlockExplodeEvent;
-import org.bukkit.event.block.BlockFormEvent;
+import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  *
  * @author donoa_000
  */
-public class ChangeTracker implements Listener{ //Not fully functioning
+public class ChangeTracker implements Listener{
     
     @Getter
     private static HashMap<Location, SaveBlock> Changes = new HashMap<Location, SaveBlock>();
     
     @Getter
-    private static ArrayList<Location> forDecay = new ArrayList<Location>();
+    private static volatile ArrayList<Location> forDecay = new ArrayList<Location>();
     
     @Getter
     private static Runnable MarkDecayBlocks = new Runnable(){
@@ -67,7 +66,7 @@ public class ChangeTracker implements Listener{ //Not fully functioning
                     }
                 }
                 if(!Changes.isEmpty()){
-                    for(Entry<Location, SaveBlock> e : Changes.entrySet()){//*60*60*48
+                    for(Entry<Location, SaveBlock> e : Changes.entrySet()){
                         if(new Date(System.currentTimeMillis() - 1000*60*60*48).after(e.getValue().getBreakDate())){
                             forDecay.add(e.getKey());
                         }
@@ -92,8 +91,8 @@ public class ChangeTracker implements Listener{ //Not fully functioning
         };
     
     public ChangeTracker(JavaPlugin p){
-        Bukkit.getScheduler().scheduleAsyncRepeatingTask(p, MarkDecayBlocks, 1, 20*60); //  * 60
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(p, DecayBlocks, 2, 20*60); //  * 60
+        Bukkit.getScheduler().scheduleAsyncRepeatingTask(p, MarkDecayBlocks, 1, 20*60);
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(p, DecayBlocks, 2, 20*60);
         Bukkit.getPluginManager().registerEvents(this, p);
     }
     
@@ -158,18 +157,19 @@ public class ChangeTracker implements Listener{ //Not fully functioning
     }
     
     @EventHandler
-    public void onBlockExplode(BlockExplodeEvent e){//not called
+    public void onEntityExplode(EntityExplodeEvent e){
         LogUtil.printDebug("Block Explode called");
-        Plot p = Plot.inPlot(e.getBlock().getLocation());
-        Block b = e.getBlock();
-        if(p == null){
-            if(Changes.containsKey(b.getLocation())){
-                Changes.get(b.getLocation()).setBreakDate(new Date(System.currentTimeMillis()));
+        for(Block b : e.blockList()){
+            Plot p = Plot.inPlot(b.getLocation());
+            if(p == null){
+                if(Changes.containsKey(b.getLocation())){
+                    Changes.get(b.getLocation()).setBreakDate(new Date(System.currentTimeMillis()));
+                }else{
+                    Changes.put(b.getLocation(), new SaveBlock(b));
+                }
             }else{
-                Changes.put(b.getLocation(), new SaveBlock(b));
+                e.setCancelled(true);
             }
-        }else{
-            e.setCancelled(true);
         }
     }
     
@@ -188,7 +188,7 @@ public class ChangeTracker implements Listener{ //Not fully functioning
     }
     
     @EventHandler
-    public void onBlockForm(BlockFormEvent e){//not called
+    public void onBlockFromTo(BlockFromToEvent e){
         LogUtil.printDebug("Block Form called");
         Plot p = Plot.inPlot(e.getBlock().getLocation());
         Block b = e.getBlock();

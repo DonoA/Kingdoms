@@ -37,6 +37,7 @@ import io.dallen.Kingdoms.Util.LogUtil;
 import io.dallen.Kingdoms.Commands.MuteCommand;
 import io.dallen.Kingdoms.Handlers.BuildingHandler;
 import io.dallen.Kingdoms.Handlers.CraftingHandler;
+import io.dallen.Kingdoms.Handlers.MultiBlocks.Forge;
 import io.dallen.Kingdoms.Handlers.PlantGrowthHandler;
 import io.dallen.Kingdoms.Handlers.PlotProtectionHandler;
 import io.dallen.Kingdoms.Handlers.SkinHandler.SkinPacketHandler;
@@ -109,6 +110,7 @@ public class Main extends JavaPlugin {
                 Bukkit.getScheduler().runTaskAsynchronously(Main.getPlugin(), SkinHandler);
                 skinHandler = SkinHandler;
                 CraftingHandler crafting = new CraftingHandler(Main.getPlugin());
+                Forge.loadForm();
                 if((Main.getPlugin().getServer().getPluginManager().getPlugin("Citizens") == null) || 
                     (!Main.getPlugin().getServer().getPluginManager().getPlugin("Citizens").isEnabled())){
                     //Check version
@@ -146,6 +148,7 @@ public class Main extends JavaPlugin {
                     Main.getPlugin().getCommand("fillplot").setExecutor(dbg);
                     Main.getPlugin().getCommand("setskins").setExecutor(dbg);
                     Main.getPlugin().getCommand("cleannpcs").setExecutor(dbg);
+                    Main.getPlugin().getCommand("decayall").setExecutor(dbg);
                 }
                 Main.getPlugin().getCommand("menu").setExecutor(mmh);
                 Main.getPlugin().getCommand("crash").setExecutor(admin);

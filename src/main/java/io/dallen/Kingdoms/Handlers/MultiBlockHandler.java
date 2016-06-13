@@ -146,6 +146,17 @@ public class MultiBlockHandler implements Listener{
                     }
                 }
             }
+            if(e.getAction().equals(Action.RIGHT_CLICK_BLOCK) && e.hasItem() && e.getItem().getType().equals(Material.FLINT_AND_STEEL)){
+                final Location l = e.getClickedBlock().getLocation();
+                final Player p = e.getPlayer();
+                p.sendMessage("Calculating Plot...");
+                new Thread(new Runnable(){
+                    @Override
+                    public void run(){
+                        //Check waht multiblock this is
+                    }
+                }).start();
+            }
             if(e.getAction().equals(Action.RIGHT_CLICK_BLOCK) || e.getAction().equals(Action.RIGHT_CLICK_AIR)){
                 if(!e.hasItem()){
                     if(e.hasBlock()){

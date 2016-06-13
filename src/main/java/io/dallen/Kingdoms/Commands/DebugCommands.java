@@ -20,21 +20,20 @@
 package io.dallen.Kingdoms.Commands;
 
 import io.dallen.Kingdoms.Handlers.BuildingHandler;
+import io.dallen.Kingdoms.Handlers.DecayHandler.ChangeTracker;
 import io.dallen.Kingdoms.Kingdom.Plot;
 import io.dallen.Kingdoms.Main;
 import io.dallen.Kingdoms.Util.DBmanager;
 import java.io.File;
-import java.util.Set;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import net.minecraft.server.v1_9_R1.BlockRedstoneWire;
+import org.bukkit.Location;
 
 /**
  *
@@ -69,6 +68,12 @@ public class DebugCommands implements CommandExecutor{
             }
         }else if(cmd.getName().equalsIgnoreCase("cleannpcs")){
             Main.getNPCs().getNPCReg().deregisterAll();
+        }else if(cmd.getName().equalsIgnoreCase("decayall")){
+            if(!ChangeTracker.getChanges().isEmpty()){
+                for(Map.Entry<Location, ChangeTracker.SaveBlock> e : ChangeTracker.getChanges().entrySet()){
+                    ChangeTracker.getForDecay().add(e.getKey());
+                }
+            }
         }
         return true;
     }

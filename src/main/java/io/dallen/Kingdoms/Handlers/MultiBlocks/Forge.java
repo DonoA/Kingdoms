@@ -19,16 +19,53 @@
  */
 package io.dallen.Kingdoms.Handlers.MultiBlocks;
 
+import io.dallen.Kingdoms.Kingdom.Structures.Blueprint;
+import io.dallen.Kingdoms.Main;
+import io.dallen.Kingdoms.Util.DBmanager;
+import io.dallen.Kingdoms.Util.NBTmanager;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.zip.DataFormatException;
 import org.bukkit.Location;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 
 /**
  *
  * @author Donovan Allen
  */
 public class Forge extends MultiBlock{
+    
+    private static Blueprint basicForm = null;
+    
+    private Blueprint form;
+    
+    private ItemStack fuel;
 
-    public Forge(Location cent) {
-        super(cent, 5, 2, 3);
+    private ItemStack input;
+    
+    private ItemStack output;
+    
+    public Forge(Location cent, Blueprint form) {
+        super(cent, form.getWid(), form.getHigh(), form.getLen());
     }
     
+    public void interact(PlayerInteractEvent e){
+        
+    }
+    
+    public static void loadForm(){
+        if(basicForm == null){
+            try {
+                basicForm = NBTmanager.loadData(new File(Main.getPlugin().getDataFolder() + DBmanager.getFileSep() + "multiblocks" + 
+                        DBmanager.getFileSep() + "forge" + ".schematic"));
+            } catch (IOException ex) {
+                Logger.getLogger(Forge.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (DataFormatException ex) {
+                Logger.getLogger(Forge.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
 }

@@ -227,6 +227,7 @@ public class ChestGUI{
                             Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), new Runnable(){
                                 @Override
                                 public void run(){
+                                    p.getOpenInventory().getCursor().setType(Material.AIR);
                                     if(ev.getNext() != null){
                                         ev.getNext().sendMenu(p);
                                     }else{

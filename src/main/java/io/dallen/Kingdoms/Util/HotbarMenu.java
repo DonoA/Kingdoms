@@ -186,7 +186,7 @@ public class HotbarMenu{
         @EventHandler(priority = EventPriority.HIGHEST)
         public void onPlayerInteract(PlayerInteractEvent event){
             if((!cooldown.containsKey(event.getPlayer().getName())) || 
-                (cooldown.containsKey(event.getPlayer().getName()) && cooldown.get(event.getPlayer().getName()) < System.currentTimeMillis() - 500)){
+                (cooldown.containsKey(event.getPlayer().getName()) && cooldown.get(event.getPlayer().getName()) < System.currentTimeMillis() - 50)){
                 cooldown.put(event.getPlayer().getName(), System.currentTimeMillis());
                 if(!openMenus.containsKey(event.getPlayer().getName()))
                     return;
