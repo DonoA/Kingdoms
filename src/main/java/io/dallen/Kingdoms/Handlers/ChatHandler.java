@@ -49,7 +49,7 @@ public class ChatHandler implements Listener, CommandExecutor{
     public void onChat(AsyncPlayerChatEvent e){
         PlayerData pd = PlayerData.getData(e.getPlayer());
         if(pd.getMuted() == null){
-            e.setFormat(ChatColor.WHITE + "[%c]" + PlayerData.getPlayerDat().get(e.getPlayer()).getRole().getTitle() + "%s" + ChatColor.WHITE + ": %s");
+            e.setFormat(ChatColor.WHITE + "[%c]" + PlayerData.getPlayerDat().get(e.getPlayer()).getTitle() + "%s" + ChatColor.WHITE + ": %s");
             switch(PlayerChatModes.get(e.getPlayer())){
                 case 0: //Public
                     e.setFormat(e.getFormat().replace("%c", "Public"));

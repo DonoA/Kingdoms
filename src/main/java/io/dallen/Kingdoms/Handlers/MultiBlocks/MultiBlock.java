@@ -43,6 +43,9 @@ public class MultiBlock implements Listener{
     @Getter
     private static ArrayList<MultiBlock> MultiBlocks = new ArrayList<MultiBlock>();
     
+    @Getter
+    private final static Class[] MultiBlockClasses = new Class[] {Forge.class};
+    
     public MultiBlock(Location cent, int l, int w, int h){
         this.center = cent;
         this.len = l;

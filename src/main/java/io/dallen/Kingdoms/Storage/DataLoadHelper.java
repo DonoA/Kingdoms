@@ -19,12 +19,56 @@
  */
 package io.dallen.Kingdoms.Storage;
 
+import io.dallen.Kingdoms.Kingdom.Municipality;
+import io.dallen.Kingdoms.Kingdom.Plot;
+import io.dallen.Kingdoms.Kingdom.Structures.Types.WallSystem;
+import io.dallen.Kingdoms.Storage.JsonClasses.JsonStructure;
+import java.lang.reflect.InvocationTargetException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author Donovan Allen
  */
 public class DataLoadHelper {
     
-    
-    
+    @SuppressWarnings("unchecked")
+    public boolean SaveKingdomData(){
+        try {
+            boolean cast = false;
+            int StructID = 0;
+            for(Plot p : Plot.getAllPlots()){
+                cast = false;
+                if(p instanceof WallSystem.Wall){
+                    WallSystem.Wall w = (WallSystem.Wall) p;
+                    JsonStructure json = w.toJsonObject();
+                    json.setType(WallSystem.Wall.class.getName());
+                    json.setStructureID(StructID);
+                    
+                    cast = true;
+                }
+                if(!cast){
+                    for(Class c : Municipality.getStructureClasses()){
+                        if(p.getClass().isAssignableFrom(c)){
+                            Object json = c.cast(p).getClass().getMethod("toJsonObject").invoke(c);
+                            json.getClass().getMethod("setType", String.class).invoke(json, c.getName());
+                            json.getClass().getMethod("setStructureID", int.class).invoke(json, StructID);
+                            cast = true;
+                        }
+                    }
+                }
+                if(p instanceof Plot && !cast){
+                    JsonStructure json = p.toJsonObject();
+                    json.setType(Plot.class.getName());
+                    json.setStructureID(StructID);
+                }
+                StructID++;
+            }
+            return true;
+        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+            Logger.getLogger(DataLoadHelper.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
 }

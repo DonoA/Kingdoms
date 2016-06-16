@@ -31,7 +31,8 @@ import org.bukkit.entity.Player;
  *
  * @author donoa_000
  */
-public class Blueprint {
+public class Blueprint implements Cloneable{
+    
     @Getter
     private int len; // Z
     @Getter
@@ -46,7 +47,7 @@ public class Blueprint {
     private BlueBlock[][][] blocks; //X Y Z
     
     public Blueprint(int l, int w, int h, short[] b, byte[] d){
-        LogUtil.printDebug(Arrays.toString(b));
+//        LogUtil.printDebug(Arrays.toString(b));
         this.len = l;
         this.wid = w;
         this.high = h;
@@ -60,6 +61,14 @@ public class Blueprint {
                 }
             }
         }
+        offSet = new Point(0, 0);
+    }
+    
+    public Blueprint(int l, int w, int h, BlueBlock[][][] blocks){
+        this.len = l;
+        this.wid = w;
+        this.high = h;
+        this.blocks = blocks.clone();
         offSet = new Point(0, 0);
     }
     
@@ -109,6 +118,11 @@ public class Blueprint {
                 }
             }
         }
+    }
+    
+    @Override
+    public Blueprint clone(){
+        return new Blueprint(len, wid, high, blocks);
     }
     
     public void Rotate(int angle){

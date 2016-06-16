@@ -22,7 +22,6 @@ package io.dallen.Kingdoms.Storage;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.dallen.Kingdoms.Handlers.Party;
 import io.dallen.Kingdoms.Kingdom.Plot;
-import io.dallen.Kingdoms.Kingdom.Roles.Role;
 import io.dallen.Kingdoms.Commands.MuteCommand.MuteClass;
 import io.dallen.Kingdoms.Kingdom.Kingdom;
 import io.dallen.Kingdoms.Kingdom.Municipality;
@@ -48,8 +47,8 @@ public class PlayerData implements SaveTypes.Saveable{
     @Getter
     private static HashMap<Player, PlayerData> PlayerDat = new HashMap<Player, PlayerData>();
     
-    @Getter @Setter
-    private Role Role;
+//    @Getter @Setter
+//    private Role Role;
     
     @Getter @Setter
     private Kingdom Kingdom;
@@ -62,6 +61,9 @@ public class PlayerData implements SaveTypes.Saveable{
     
     @Getter @Setter @JsonIgnore
     private String PartyID;
+    
+    @Getter @Setter
+    private String title = "Testing";
     
     @Getter @Setter
     private int Might;
@@ -96,7 +98,7 @@ public class PlayerData implements SaveTypes.Saveable{
         jpd.setMight(Might);
         jpd.setMunicipal(Municipal != null ? Municipal.getMunicipalID() : -1);
         jpd.setMuted(muted);
-        jpd.setRole(Role != null ? Role.getRoleName() : null);
+//        jpd.setRole(Role != null ? Role.getRoleName() : null);
         if(Spawn != null){
             jpd.setSpawn(new JsonLocation(Spawn));
         }else{

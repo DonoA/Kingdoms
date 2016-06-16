@@ -25,10 +25,14 @@ import io.dallen.Kingdoms.Util.LogUtil;
 import io.dallen.Kingdoms.Kingdom.Structures.Contract;
 import io.dallen.Kingdoms.Kingdom.Structures.Structure;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.BuildersHut;
+import io.dallen.Kingdoms.Kingdom.Structures.Types.WallSystem;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.WallSystem.Wall;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.WallSystem.WallType;
 import io.dallen.Kingdoms.Main;
 import io.dallen.Kingdoms.Overrides.KingdomMaterial;
+import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonLocation;
+import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonPolygon;
+import io.dallen.Kingdoms.Storage.JsonClasses.JsonStructure;
 import io.dallen.Kingdoms.Storage.PlayerData;
 import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEvent;
@@ -164,6 +168,39 @@ public class Plot extends Structure implements Listener{
     
     public boolean canBuild(Player p){
         return super.getOwner().equals(p);
+    }
+    
+    @Override
+    public JsonStructure toJsonObject(){
+        JsonStructure js = new JsonStructure();
+        js.setHeight(getHeight());
+        js.setWidth(getWidth());
+        js.setLength(getLength());
+        js.setOwner(getOwner().getUniqueId());
+        if(this instanceof WallSystem.Wall){
+            js.setStructureType(WallSystem.Wall.class.getName());
+        }
+        boolean classFound = false;
+        for(Class c : Municipality.getStructureClasses()){
+            if(this.getClass().isAssignableFrom(c) && !classFound){
+                js.setStructureType(c.getName());
+                classFound = true;
+            }
+        }
+        if(this instanceof Plot && !classFound){
+            js.setStructureType(Plot.class.getName());
+        }
+        if(getMunicipal() != null)
+            js.setMunicipal(getMunicipal().getMunicipalID());
+        else
+            js.setMunicipal(-1);
+        if(getKingdom() != null)
+            js.setKingdom(getKingdom().getKingdomID());
+        else
+            js.setKingdom(-1);
+        js.setBase(new JsonPolygon(getBase()));
+        js.setCenter(new JsonLocation(getCenter()));
+        return js;
     }
     
     public class MenuHandler implements OptionClickEventHandler{

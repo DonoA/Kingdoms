@@ -20,9 +20,11 @@
 package io.dallen.Kingdoms.Handlers;
 
 import com.google.common.primitives.Ints;
+import io.dallen.Kingdoms.Handlers.MultiBlocks.Forge;
 import io.dallen.Kingdoms.Kingdom.Municipality;
 import io.dallen.Kingdoms.Util.LogUtil;
 import io.dallen.Kingdoms.Kingdom.Plot;
+import io.dallen.Kingdoms.Kingdom.Structures.Blueprint;
 import io.dallen.Kingdoms.Kingdom.Structures.Contract;
 import io.dallen.Kingdoms.Kingdom.Structures.Storage;
 import io.dallen.Kingdoms.Kingdom.Structures.Structure;
@@ -149,11 +151,11 @@ public class MultiBlockHandler implements Listener{
             if(e.getAction().equals(Action.RIGHT_CLICK_BLOCK) && e.hasItem() && e.getItem().getType().equals(Material.FLINT_AND_STEEL)){
                 final Location l = e.getClickedBlock().getLocation();
                 final Player p = e.getPlayer();
-                p.sendMessage("Calculating Plot...");
                 new Thread(new Runnable(){
                     @Override
                     public void run(){
-                        //Check waht multiblock this is
+                        Blueprint baseForm = Forge.getBasicForm().clone();
+                        //Calculate multiblock
                     }
                 }).start();
             }

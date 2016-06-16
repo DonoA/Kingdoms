@@ -38,6 +38,7 @@ import io.dallen.Kingdoms.Commands.MuteCommand;
 import io.dallen.Kingdoms.Handlers.BuildingHandler;
 import io.dallen.Kingdoms.Handlers.CraftingHandler;
 import io.dallen.Kingdoms.Handlers.MultiBlocks.Forge;
+import io.dallen.Kingdoms.Handlers.MultiBlocks.MultiBlock;
 import io.dallen.Kingdoms.Handlers.PlantGrowthHandler;
 import io.dallen.Kingdoms.Handlers.PlotProtectionHandler;
 import io.dallen.Kingdoms.Handlers.SkinHandler.SkinPacketHandler;
@@ -51,6 +52,7 @@ import io.dallen.Kingdoms.NPCs.Traits.Soldiers.Cavalry;
 import io.dallen.Kingdoms.NPCs.Traits.Soldiers.General;
 import io.dallen.Kingdoms.NPCs.Traits.Soldiers.Infantry;
 import io.dallen.Kingdoms.Util.ChestGUI.ChestGUIHandler;
+import io.dallen.Kingdoms.Util.DBmanager;
 import io.dallen.Kingdoms.Util.HotbarMenu.HotbarHandler;
 import java.io.File;
 import java.util.ArrayList;
@@ -184,15 +186,15 @@ public class Main extends JavaPlugin {
     
     @Getter
     private static Runnable postServerLoad = new Runnable(){ //called post server start (by 1/2 second)
-            @Override
-            public void run(){
-                CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(Builder.class));
-                CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(Archer.class));
-                CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(Cavalry.class));
-                CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(General.class));
-                CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(Infantry.class));
-            }
-        };
+        @Override
+        public void run(){
+            CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(Builder.class));
+            CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(Archer.class));
+            CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(Cavalry.class));
+            CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(General.class));
+            CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(Infantry.class));
+        }
+    };
     
     
     @Override
@@ -211,12 +213,44 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new ChestGUIHandler(), this);
         Bukkit.getPluginManager().registerEvents(new HotbarHandler(), this);
         Bukkit.getScheduler().scheduleSyncDelayedTask(this, onServerLoad);
-        
+        setupDatabase();
 //        RedisManager RM = new RedisManager();
     }
     
     @Override
     public void onDisable(){
         
+    }
+    
+    /**
+     * Kingdoms
+     *  |
+     *  |--prefabs
+     *  |  |
+     * 
+     */
+    
+    public static void setupDatabase(){
+        File plugin = Main.getPlugin().getDataFolder();
+        for(String s : new String[] {"prefabs", "playerdata", "multiblock", "savedata"}){
+            if(!new File(plugin.getPath() + DBmanager.getFileSep() + s).exists()){
+                new File(plugin.getPath() + DBmanager.getFileSep() + s).mkdir();
+            }
+        }
+        for(Class c : Municipality.getStructureClasses()){
+            if(!new File(plugin.getPath() + DBmanager.getFileSep() + "prefabs" + DBmanager.getFileSep() + c.getSimpleName()).exists()){
+                new File(plugin.getPath() + DBmanager.getFileSep() + "prefabs" + DBmanager.getFileSep() + c.getSimpleName()).mkdir();
+            }
+        }
+        for(Class c : MultiBlock.getMultiBlockClasses()){
+            if(!new File(plugin.getPath() + DBmanager.getFileSep() + "multiblock" + DBmanager.getFileSep() + c.getSimpleName()).exists()){
+                new File(plugin.getPath() + DBmanager.getFileSep() + "multiblock" + DBmanager.getFileSep() + c.getSimpleName()).mkdir();
+            }
+        }
+        for(String s : new String[] {"kingdoms", "municipals", "plots"}){
+            if(!new File(plugin.getPath() + DBmanager.getFileSep() + "savedata" + DBmanager.getFileSep() + s).exists()){
+                new File(plugin.getPath() + DBmanager.getFileSep() + "savedata" + DBmanager.getFileSep() + s).mkdir();
+            }
+        }
     }
 }

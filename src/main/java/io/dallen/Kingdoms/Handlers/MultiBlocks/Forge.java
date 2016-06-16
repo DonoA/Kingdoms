@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
+import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -38,14 +39,19 @@ import org.bukkit.inventory.ItemStack;
  */
 public class Forge extends MultiBlock{
     
+    @Getter
     private static Blueprint basicForm = null;
     
+    @Getter
     private Blueprint form;
     
+    @Getter
     private ItemStack fuel;
 
+    @Getter
     private ItemStack input;
     
+    @Getter
     private ItemStack output;
     
     public Forge(Location cent, Blueprint form) {

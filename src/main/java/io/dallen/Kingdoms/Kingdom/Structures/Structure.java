@@ -46,7 +46,7 @@ import org.bukkit.inventory.ItemStack;
  *
  * @author donoa_000
  */
-public class Structure implements SaveTypes.Saveable{
+public abstract class Structure implements SaveTypes.Saveable{
     
     @Getter @Setter
     private int Width; // X

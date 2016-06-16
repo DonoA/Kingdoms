@@ -59,10 +59,64 @@ public class JsonStructure implements SaveTypes.JsonType{
     private String StructureType;
     @Getter @Setter
     private int StructureID;
+    @Getter @Setter
+    private String Type;
     
     @Override
     public Structure toJavaObject(){
         throw new UnsupportedOperationException();
+    }
+    
+    public static class Armory{
+        
+    }
+    
+    public static class Bank{
+        
+    }
+    
+    public static class Barracks{
+        
+    }
+    
+    public static class Blacksmith{
+        
+    }
+    
+    public static class BuildersHut{
+        
+    }
+    
+    public static class Castle{
+        
+    }
+    
+    public static class Dungeon{
+        
+    }
+    
+    public static class Farm{
+        
+    }
+    
+    public static class Marketplace{
+        
+    }
+    
+    public static class Stable{
+        
+    }
+    
+    public static class Storeroom{
+        
+    }
+    
+    public static class TownHall{
+        
+    }
+    
+    public static class TrainingGround{
+        
     }
     
 }
