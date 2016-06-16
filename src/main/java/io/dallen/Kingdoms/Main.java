@@ -222,12 +222,31 @@ public class Main extends JavaPlugin {
         
     }
     
-    /**
-     * Kingdoms
-     *  |
-     *  |--prefabs
-     *  |  |
-     * 
+    /*
+    Kingdoms
+    |   config.yml
+    |
+    +---multiblock
+    |   \---Forge
+    +---playerdata
+    +---prefabs
+    |   +---Armory
+    |   +---Bank
+    |   +---Barracks
+    |   +---Blacksmith
+    |   +---BuildersHut
+    |   +---Castle
+    |   +---Dungeon
+    |   +---Farm
+    |   +---Marketplace
+    |   +---Stable
+    |   +---Storeroom
+    |   +---TownHall
+    |   \---TrainingGround
+    \---savedata
+        +---kingdoms
+        +---municipals
+        \---plots
      */
     
     public static void setupDatabase(){
