@@ -152,8 +152,8 @@ commands:
     usage: |
             /is <player>
             /is <role>
-  loadschem:
-    description: moves schematics from World Edit to this plugin
+  editschem:
+    description: allows schematics to be moved and sorted
     usage: |
            /loadschem
   fillplot:

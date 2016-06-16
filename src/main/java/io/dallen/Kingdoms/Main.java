@@ -37,7 +37,6 @@ import io.dallen.Kingdoms.Util.LogUtil;
 import io.dallen.Kingdoms.Commands.MuteCommand;
 import io.dallen.Kingdoms.Handlers.BuildingHandler;
 import io.dallen.Kingdoms.Handlers.CraftingHandler;
-import io.dallen.Kingdoms.Handlers.MultiBlocks.Forge;
 import io.dallen.Kingdoms.Handlers.MultiBlocks.MultiBlock;
 import io.dallen.Kingdoms.Handlers.PlantGrowthHandler;
 import io.dallen.Kingdoms.Handlers.PlotProtectionHandler;
@@ -46,20 +45,16 @@ import io.dallen.Kingdoms.Handlers.StorageHandler;
 import io.dallen.Kingdoms.Handlers.WaterHandler;
 import io.dallen.Kingdoms.Kingdom.Kingdom;
 import io.dallen.Kingdoms.Kingdom.Municipality;
-import io.dallen.Kingdoms.NPCs.Traits.Builder;
-import io.dallen.Kingdoms.NPCs.Traits.Soldiers.Archer;
-import io.dallen.Kingdoms.NPCs.Traits.Soldiers.Cavalry;
-import io.dallen.Kingdoms.NPCs.Traits.Soldiers.General;
-import io.dallen.Kingdoms.NPCs.Traits.Soldiers.Infantry;
 import io.dallen.Kingdoms.Util.ChestGUI.ChestGUIHandler;
 import io.dallen.Kingdoms.Util.DBmanager;
 import io.dallen.Kingdoms.Util.HotbarMenu.HotbarHandler;
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import lombok.Getter;
 import lombok.Setter;
-import net.citizensnpcs.api.CitizensAPI;
-import net.citizensnpcs.api.trait.TraitInfo;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -105,6 +100,7 @@ public class Main extends JavaPlugin {
     @Getter
     private static Runnable onServerLoad = new Runnable(){ //put normal onEnable code here
             @Override
+            @SuppressWarnings("unchecked")
             public void run(){
                 protocolManager = ProtocolLibrary.getProtocolManager();
                 SkinPacketHandler SkinHandler = new SkinPacketHandler();
@@ -112,30 +108,22 @@ public class Main extends JavaPlugin {
                 Bukkit.getScheduler().runTaskAsynchronously(Main.getPlugin(), SkinHandler);
                 skinHandler = SkinHandler;
                 CraftingHandler crafting = new CraftingHandler(Main.getPlugin());
-                Forge.loadForm();
-                if((Main.getPlugin().getServer().getPluginManager().getPlugin("Citizens") == null) || 
-                    (!Main.getPlugin().getServer().getPluginManager().getPlugin("Citizens").isEnabled())){
-                    //Check version
-                    LogUtil.printErr("Citizens 2 not found!");
-                    LogUtil.printErr("Shutting Down!");
-                    Main.getPlugin().getServer().getPluginManager().disablePlugin(Main.getPlugin());
-                    return;
+                for(Class<MultiBlock> mb : MultiBlock.getMultiBlockClasses()){
+                    try {
+                        mb.getMethod("loadForm").invoke(mb);
+                    } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+                        Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
-                if((Main.getPlugin().getServer().getPluginManager().getPlugin("ProtocolLib") == null) || 
-                    (!Main.getPlugin().getServer().getPluginManager().getPlugin("ProtocolLib").isEnabled())){
-                    //Check version
-                    LogUtil.printErr("ProtocolLib not found!");
-                    LogUtil.printErr("Shutting Down!");
-                    Main.getPlugin().getServer().getPluginManager().disablePlugin(Main.getPlugin());
-                    return;
-                }
-                if((Main.getPlugin().getServer().getPluginManager().getPlugin("BarAPI") == null) || 
-                    (!Main.getPlugin().getServer().getPluginManager().getPlugin("BarAPI").isEnabled())){
-                    //Check version
-                    LogUtil.printErr("BarAPI not found!");
-                    LogUtil.printErr("Shutting Down!");
-                    Main.getPlugin().getServer().getPluginManager().disablePlugin(Main.getPlugin());
-                    return;
+                for(String d : Main.getPlugin().getDescription().getDepend()){
+                    if((Main.getPlugin().getServer().getPluginManager().getPlugin(d) == null) || 
+                        (!Main.getPlugin().getServer().getPluginManager().getPlugin(d).isEnabled())){
+                        //Check version
+                        LogUtil.printErr(d + " not found!");
+                        LogUtil.printErr("Shutting Down!");
+                        Main.getPlugin().getServer().getPluginManager().disablePlugin(Main.getPlugin());
+                        return;
+                    }
                 }
                 if(Main.getPlugin().getConfig().getBoolean("decay")){
                     changes = new ChangeTracker(Plugin);
@@ -154,7 +142,7 @@ public class Main extends JavaPlugin {
                 }
                 Main.getPlugin().getCommand("menu").setExecutor(mmh);
                 Main.getPlugin().getCommand("crash").setExecutor(admin);
-                Main.getPlugin().getCommand("loadschem").setExecutor(admin);
+                Main.getPlugin().getCommand("editschem").setExecutor(admin);
                 Main.getPlugin().getCommand("strack").setExecutor(admin);
                 Main.getPlugin().getCommand("message").setExecutor(general);
                 Main.getPlugin().getCommand("reply").setExecutor(general);
@@ -179,23 +167,9 @@ public class Main extends JavaPlugin {
                 Main.getPlugin().getCommand("chat").setExecutor(new ChatHandler());
                 Main.getPlugin().getCommand("party").setExecutor(new Party.PartyCommands());
                 Main.getPlugin().getCommand("mute").setExecutor(new MuteCommand());
-//                Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), postServerLoad, 10);
 //                Main.getPlugin().getServer().getScheduler().scheduleSyncRepeatingTask(this, new DisguiseTask(this), 1200L, 1200L);
             }
         };
-    
-    @Getter
-    private static Runnable postServerLoad = new Runnable(){ //called post server start (by 1/2 second)
-        @Override
-        public void run(){
-            CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(Builder.class));
-            CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(Archer.class));
-            CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(Cavalry.class));
-            CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(General.class));
-            CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(Infantry.class));
-        }
-    };
-    
     
     @Override
     public void onEnable(){ //Called pre-server enable
@@ -256,12 +230,12 @@ public class Main extends JavaPlugin {
                 new File(plugin.getPath() + DBmanager.getFileSep() + s).mkdir();
             }
         }
-        for(Class c : Municipality.getStructureClasses()){
+        for(Class<?> c : Municipality.getStructureClasses()){
             if(!new File(plugin.getPath() + DBmanager.getFileSep() + "prefabs" + DBmanager.getFileSep() + c.getSimpleName()).exists()){
                 new File(plugin.getPath() + DBmanager.getFileSep() + "prefabs" + DBmanager.getFileSep() + c.getSimpleName()).mkdir();
             }
         }
-        for(Class c : MultiBlock.getMultiBlockClasses()){
+        for(Class<?> c : MultiBlock.getMultiBlockClasses()){
             if(!new File(plugin.getPath() + DBmanager.getFileSep() + "multiblock" + DBmanager.getFileSep() + c.getSimpleName()).exists()){
                 new File(plugin.getPath() + DBmanager.getFileSep() + "multiblock" + DBmanager.getFileSep() + c.getSimpleName()).mkdir();
             }

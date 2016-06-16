@@ -72,7 +72,7 @@ public class BuildingVault implements Vault, SaveTypes.Saveable{ // Will start p
     
     @Override
     public boolean SendToPlayer(Player p){
-        Inventory inv = Bukkit.createInventory(p, (int) Math.ceil(uniqueSize/9)*9, "Building Inventory");
+        Inventory inv = Bukkit.createInventory(p, (int) uniqueSize, "Building Inventory");
         for(MaterialWrapper m : contents){
             if(m != null){
                 inv.addItem(m.asBukkitItem());

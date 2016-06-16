@@ -112,7 +112,7 @@ public class ChestGUI{
     public void sendMenu(Player player){
         Inventory inventory = null;
         if(type.equals(InventoryType.CHEST)){
-            inventory = Bukkit.createInventory(player, size, name);
+            inventory = Bukkit.createInventory(player, (int) Math.ceil(((double) size)/9)*9, name);
             for (int i = 0; i < optionIcons.length; i++){
                 if (optionIcons[i] != null){
                     inventory.setItem(i, optionIcons[i]);

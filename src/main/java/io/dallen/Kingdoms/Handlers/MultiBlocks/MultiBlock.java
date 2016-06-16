@@ -53,6 +53,10 @@ public class MultiBlock implements Listener{
         this.height = h;
     }
     
+    public static void loadForm(){
+        throw new UnsupportedOperationException();
+    }
+    
     public static MultiBlock getMultiBlock(Location bLoc){
         for(MultiBlock mb : MultiBlocks){
             if(bLoc.getBlockX() >= mb.center.getBlockX() - mb.len/2 &&
