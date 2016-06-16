@@ -54,6 +54,9 @@ public class PlayerData implements SaveTypes.Saveable{
     private Kingdom Kingdom;
     
     @Getter @Setter
+    private Player Player;
+    
+    @Getter @Setter
     private Municipality Municipal;
     
     @Getter @Setter
@@ -73,6 +76,10 @@ public class PlayerData implements SaveTypes.Saveable{
     
     @Getter @Setter
     private MuteClass muted;
+    
+    public PlayerData(Player p){
+        this.Player = p;
+    }
     
     @Getter
     private ArrayList<Plot> Plots = new ArrayList<Plot>();

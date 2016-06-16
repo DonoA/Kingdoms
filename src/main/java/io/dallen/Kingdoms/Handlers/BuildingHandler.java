@@ -284,7 +284,7 @@ public class BuildingHandler implements Listener{
         if(openInputs.containsKey(ev.getPlayer().getName())){
             ev.setCancelled(true);
             if(openInputs.get(ev.getPlayer().getName()).getName().equalsIgnoreCase("buildConst")){
-                if(!new File(Main.getPlugin().getDataFolder() + DBmanager.getFileSep() + ev.getMessage().split(" ")[0] + ".schematic").exists()){
+                if(!new File(Main.getPlugin().getDataFolder() + DBmanager.getFileSep() + "multiblock" + DBmanager.getFileSep() + ev.getMessage().split(" ")[0] + ".schematic").exists()){
                     ev.getPlayer().sendMessage("That schemaic cannot be found!");
                     ev.getPlayer().sendMessage("Exiting build setup!");
                     openInputs.remove(ev.getPlayer().getName());
@@ -296,7 +296,7 @@ public class BuildingHandler implements Listener{
                    public void run(){
                        try {
                             String[] args = e.getMessage().split(" ");
-                            Blueprint building = NBTmanager.loadData(new File(Main.getPlugin().getDataFolder() + DBmanager.getFileSep() + args[0] + ".schematic"));
+                            Blueprint building = NBTmanager.loadData(new File(Main.getPlugin().getDataFolder() + DBmanager.getFileSep() + "prefabs" + DBmanager.getFileSep() + args[0] + ".schematic"));
                             Plot p = (Plot) openInputs.get(e.getPlayer().getName()).getData();
                             if(p.getLength() + 1 <= building.getLen() || p.getWidth() + 1 <= building.getWid()){
                                 building.Rotate(90);

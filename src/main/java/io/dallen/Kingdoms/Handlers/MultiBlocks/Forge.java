@@ -65,8 +65,8 @@ public class Forge extends MultiBlock{
     public static void loadForm(){
         if(basicForm == null){
             try {
-                basicForm = NBTmanager.loadData(new File(Main.getPlugin().getDataFolder() + DBmanager.getFileSep() + "multiblocks" + 
-                        DBmanager.getFileSep() + "forge" + ".schematic"));
+                basicForm = NBTmanager.loadData(new File(Main.getPlugin().getDataFolder() + DBmanager.getFileSep() + "multiblock" + 
+                        DBmanager.getFileSep() + "forge.schematic"));
             } catch (IOException ex) {
                 Logger.getLogger(Forge.class.getName()).log(Level.SEVERE, null, ex);
             } catch (DataFormatException ex) {
