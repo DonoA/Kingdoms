@@ -77,11 +77,12 @@ public class Plot extends Structure implements Listener{
     
     public Plot(Polygon base, Location cent, OfflinePlayer own, Municipality mun) {
         super(base, cent, own, mun);
-        
+        defEditMenu();
     }
     
     public Plot(Plot p) {
         super(p.getBase(), p.getCenter(), p.getOwner(), p.getKingdom(), p.getMunicipal());
+        defEditMenu();
     }
     
     protected void defEditMenu(){
