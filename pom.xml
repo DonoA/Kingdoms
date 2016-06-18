@@ -162,5 +162,11 @@
             <version>2.6.0-rc1</version>
             <type>jar</type>
         </dependency>
+        <dependency>
+            <groupId>ai.h2o</groupId>
+            <artifactId>reflections</artifactId>
+            <version>0.9.11-SNAPSHOT</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
 </project>

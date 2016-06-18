@@ -21,7 +21,7 @@
 package io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives;
 
 import io.dallen.Kingdoms.Storage.PlayerData;
-import io.dallen.Kingdoms.Storage.SaveTypes;
+import io.dallen.Kingdoms.Storage.SaveType;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.Getter;
@@ -35,7 +35,7 @@ import org.bukkit.inventory.meta.ItemMeta;
  * @author Donovan Allen
  */
 @NoArgsConstructor
-public class JsonEnchantmentMeta implements SaveTypes.JsonType.NativeType{
+public class JsonEnchantmentMeta implements SaveType.NativeType{
     
     @Getter @Setter
     private HashMap<String, Integer> enchants = new HashMap();

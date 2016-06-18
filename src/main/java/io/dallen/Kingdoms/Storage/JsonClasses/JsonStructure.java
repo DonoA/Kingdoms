@@ -22,7 +22,8 @@ package io.dallen.Kingdoms.Storage.JsonClasses;
 import io.dallen.Kingdoms.Kingdom.Structures.Structure;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonLocation;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonPolygon;
-import io.dallen.Kingdoms.Storage.SaveTypes;
+import io.dallen.Kingdoms.Storage.SaveType;
+import java.util.HashMap;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,7 +34,7 @@ import lombok.Setter;
  * @author Donovan Allen
  */
 @NoArgsConstructor
-public class JsonStructure implements SaveTypes.JsonType{
+public class JsonStructure implements SaveType.NativeType.JsonType{
     
     @Getter @Setter
     private int Width; // X
@@ -56,67 +57,16 @@ public class JsonStructure implements SaveTypes.JsonType{
 //    @Getter @Setter
 //    private int maxRank;
     @Getter @Setter
-    private String StructureType;
-    @Getter @Setter
     private int StructureID;
     @Getter @Setter
     private String Type;
     
+    @Getter @Setter
+    private HashMap<String, Object> attr = new HashMap<String, Object>();
+    
     @Override
     public Structure toJavaObject(){
         throw new UnsupportedOperationException();
-    }
-    
-    public static class Armory{
-        
-    }
-    
-    public static class Bank{
-        
-    }
-    
-    public static class Barracks{
-        
-    }
-    
-    public static class Blacksmith{
-        
-    }
-    
-    public static class BuildersHut{
-        
-    }
-    
-    public static class Castle{
-        
-    }
-    
-    public static class Dungeon{
-        
-    }
-    
-    public static class Farm{
-        
-    }
-    
-    public static class Marketplace{
-        
-    }
-    
-    public static class Stable{
-        
-    }
-    
-    public static class Storeroom{
-        
-    }
-    
-    public static class TownHall{
-        
-    }
-    
-    public static class TrainingGround{
-        
     }
     
 }

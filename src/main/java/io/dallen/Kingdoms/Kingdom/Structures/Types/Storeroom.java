@@ -23,6 +23,7 @@ import io.dallen.Kingdoms.Handlers.BuildingHandler;
 import io.dallen.Kingdoms.Kingdom.Plot;
 import io.dallen.Kingdoms.Kingdom.Structures.Storage;
 import io.dallen.Kingdoms.Kingdom.Vaults.BuildingVault;
+import io.dallen.Kingdoms.Storage.JsonClasses.JsonStructure;
 import io.dallen.Kingdoms.Storage.MaterialWrapper;
 import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEvent;
@@ -84,6 +85,7 @@ public class Storeroom extends Plot implements Storage{
         }
         return false;
     }
+    
     
     public class MenuHandler implements OptionClickEventHandler{
         

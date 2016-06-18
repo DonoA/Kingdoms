@@ -21,7 +21,7 @@ package io.dallen.Kingdoms.Storage.JsonClasses;
 
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonArmor;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonItemStack;
-import io.dallen.Kingdoms.Storage.SaveTypes;
+import io.dallen.Kingdoms.Storage.SaveType;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -29,7 +29,7 @@ import lombok.Setter;
  *
  * @author Donovan Allen
  */
-public class JsonInventory implements SaveTypes.JsonType.NativeType{
+public class JsonInventory implements SaveType.NativeType{
     
     @Getter @Setter
     private JsonItemStack[] contents;

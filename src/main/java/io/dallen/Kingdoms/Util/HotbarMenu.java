@@ -186,7 +186,7 @@ public class HotbarMenu{
         @EventHandler(priority = EventPriority.HIGHEST)
         public void onPlayerInteract(PlayerInteractEvent event){
             if((!cooldown.containsKey(event.getPlayer().getName())) || 
-                (cooldown.containsKey(event.getPlayer().getName()) && cooldown.get(event.getPlayer().getName()) < System.currentTimeMillis() - 50)){
+                (cooldown.containsKey(event.getPlayer().getName()) && cooldown.get(event.getPlayer().getName()) < System.currentTimeMillis() - 100)){
                 cooldown.put(event.getPlayer().getName(), System.currentTimeMillis());
                 if(!openMenus.containsKey(event.getPlayer().getName()))
                     return;
@@ -194,7 +194,6 @@ public class HotbarMenu{
                     HotbarInstance menu = openMenus.get(event.getPlayer().getName());
                     event.setCancelled(true);
                     int slot = event.getPlayer().getInventory().getHeldItemSlot();
-                    LogUtil.printDebug("slot:" + slot);
                     if(slot >= 0 && slot < 9 && menu.optionNames[slot] != null){
                         OptionClickEvent e = new OptionClickEvent(event.getPlayer(), slot, menu.optionData[slot], menu.optionNames[slot], menu.name, menu.menuData);
                         if(menu.optionNames[slot].equalsIgnoreCase("Cancel")){
@@ -202,16 +201,14 @@ public class HotbarMenu{
                             e.setClose(true);
                         }
                         menu.handler.onOptionClick(e);
-                        LogUtil.printDebug("event called");
                         if(e.isClose()){
-                            final Player p = (Player) event.getPlayer();
+                            final Player p = event.getPlayer();
                             final OptionClickEvent ev = e;
                             Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), new Runnable(){
                                 @Override
                                 public void run(){
                                     if(ev.getNext() != null){
                                         throw new UnsupportedOperationException();
-    //                                    ev.getNext().sendMenu(p);
                                     }else{
                                         HotbarMenu.closeMenu(p);
                                     }

@@ -77,50 +77,33 @@ public class Plot extends Structure implements Listener{
     
     public Plot(Polygon base, Location cent, OfflinePlayer own, Municipality mun) {
         super(base, cent, own, mun);
-        EditPlot = new ChestGUI("Set Plot Type", 4, new MenuHandler()) {{
-            setOption(9*0 + 1, KingdomMaterial.STRUCTURE_STOREROOM.getItemStack(), "Storeroom", "");
-            setOption(9*0 + 2, KingdomMaterial.STRUCTURE_BARRACKS.getItemStack(), "Barracks", "");
-            setOption(9*0 + 3, KingdomMaterial.STRUCTURE_TRAININGGROUND.getItemStack(), "Training Ground", "");
-            setOption(9*0 + 4, KingdomMaterial.STRUCTURE_TOWNHALL.getItemStack(), "Town Hall", "");
-            setOption(9*0 + 5, KingdomMaterial.STRUCTURE_BLACKSMITH.getItemStack(), "Blacksmith", "");
-            setOption(9*0 + 6, KingdomMaterial.STRUCTURE_FARM.getItemStack(), "Farm", "");
-            setOption(9*1 + 1, KingdomMaterial.STRUCTURE_BUILDERSHUT.getItemStack(), "Builder's Hut", "");
-            setOption(9*1 + 2, KingdomMaterial.STRUCTURE_BANK.getItemStack(), "Bank", "");
-            setOption(9*1 + 3, KingdomMaterial.STRUCTURE_STABLE.getItemStack(), "Stable", "");
-            setOption(9*1 + 4, KingdomMaterial.STRUCTURE_DUNGEON.getItemStack(), "Dungeon", "");
-            setOption(9*1 + 5, KingdomMaterial.STRUCTURE_MARKETPLACE.getItemStack(), "Marketplace", "");
-            setOption(9*2 + 2, KingdomMaterial.STRUCTURE_WALL_WALL.getItemStack(), "Wall", "");
-            setOption(9*2 + 3, KingdomMaterial.STRUCTURE_WALL_GATE.getItemStack(), "Wall with Door", "");
-            setOption(9*2 + 4, KingdomMaterial.STRUCTURE_WALL_CORNER.getItemStack(), "Corner", "");
-            setOption(9*2 + 5, KingdomMaterial.STRUCTURE_WALL_TOWER.getItemStack(), "Tower", "");
-            setOption(9*3 + 3, new ItemStack(Material.PAPER), "Custom Contract", "");
-            setOption(9*3 + 4, KingdomMaterial.DEMOLISH.getItemStack(), "Demolish", "");
-            setOption(9*3 + 5, KingdomMaterial.ERASE.getItemStack(), "Erase", "");
-        }};
+        
     }
     
     public Plot(Plot p) {
         super(p.getBase(), p.getCenter(), p.getOwner(), p.getKingdom(), p.getMunicipal());
+    }
+    
+    protected void defEditMenu(){
         EditPlot = new ChestGUI("Set Plot Type", 4, new MenuHandler()) {{
-            setOption(9*0 + 1, new ItemStack(Material.ENCHANTED_BOOK), "Storeroom", "");
-            setOption(9*0 + 2, new ItemStack(Material.ENCHANTED_BOOK), "Barracks", "");
-            setOption(9*0 + 3, new ItemStack(Material.ENCHANTED_BOOK), "Training Ground", "");
-            setOption(9*0 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Town Hall", "");
-            setOption(9*0 + 5, new ItemStack(Material.ENCHANTED_BOOK), "Blacksmith", "");
-            setOption(9*0 + 6, new ItemStack(Material.ENCHANTED_BOOK), "Farm", "");
-            setOption(9*1 + 1, new ItemStack(Material.ENCHANTED_BOOK), "Builder's Hut", "");
-            setOption(9*1 + 2, new ItemStack(Material.ENCHANTED_BOOK), "Bank", "");
-            setOption(9*1 + 3, new ItemStack(Material.ENCHANTED_BOOK), "Stable", "");
-            setOption(9*1 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Dungeon", "");
-            setOption(9*1 + 5, new ItemStack(Material.ENCHANTED_BOOK), "Marketplace", "");
-            setOption(9*1 + 6, new ItemStack(Material.ENCHANTED_BOOK), "Court", "");
-            setOption(9*2 + 2, new ItemStack(Material.ENCHANTED_BOOK), "Wall", "");
-            setOption(9*2 + 3, new ItemStack(Material.ENCHANTED_BOOK), "Wall with Door", "");
-            setOption(9*2 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Corner", "");
-            setOption(9*2 + 5, new ItemStack(Material.ENCHANTED_BOOK), "Tower", "");
-            setOption(9*3 + 3, new ItemStack(Material.ENCHANTED_BOOK), "Custom Contract", "");
-            setOption(9*3 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Demolish", "");
-            setOption(9*3 + 5, new ItemStack(Material.ENCHANTED_BOOK), "Erase", "");
+            setOption(9*0 + 1, KingdomMaterial.STRUCTURE_STOREROOM.getItemStack(), "Storeroom");
+            setOption(9*0 + 2, KingdomMaterial.STRUCTURE_BARRACKS.getItemStack(), "Barracks");
+            setOption(9*0 + 3, KingdomMaterial.STRUCTURE_TRAININGGROUND.getItemStack(), "Training Ground");
+            setOption(9*0 + 4, KingdomMaterial.STRUCTURE_TOWNHALL.getItemStack(), "Town Hall");
+            setOption(9*0 + 5, KingdomMaterial.STRUCTURE_BLACKSMITH.getItemStack(), "Blacksmith");
+            setOption(9*0 + 6, KingdomMaterial.STRUCTURE_FARM.getItemStack(), "Farm");
+            setOption(9*1 + 1, KingdomMaterial.STRUCTURE_BUILDERSHUT.getItemStack(), "Builder's Hut");
+            setOption(9*1 + 2, KingdomMaterial.STRUCTURE_BANK.getItemStack(), "Bank");
+            setOption(9*1 + 3, KingdomMaterial.STRUCTURE_STABLE.getItemStack(), "Stable");
+            setOption(9*1 + 4, KingdomMaterial.STRUCTURE_DUNGEON.getItemStack(), "Dungeon");
+            setOption(9*1 + 5, KingdomMaterial.STRUCTURE_MARKETPLACE.getItemStack(), "Marketplace");
+            setOption(9*2 + 2, KingdomMaterial.STRUCTURE_WALL_WALL.getItemStack(), "Wall");
+            setOption(9*2 + 3, KingdomMaterial.STRUCTURE_WALL_GATE.getItemStack(), "Wall with Door");
+            setOption(9*2 + 4, KingdomMaterial.STRUCTURE_WALL_CORNER.getItemStack(), "Corner");
+            setOption(9*2 + 5, KingdomMaterial.STRUCTURE_WALL_TOWER.getItemStack(), "Tower");
+            setOption(9*3 + 3, new ItemStack(Material.PAPER), "Custom Contract");
+            setOption(9*3 + 4, KingdomMaterial.DEMOLISH.getItemStack(), "Demolish");
+            setOption(9*3 + 5, KingdomMaterial.ERASE.getItemStack(), "Erase");
         }};
     }
     
@@ -178,17 +161,17 @@ public class Plot extends Structure implements Listener{
         js.setLength(getLength());
         js.setOwner(getOwner().getUniqueId());
         if(this instanceof WallSystem.Wall){
-            js.setStructureType(WallSystem.Wall.class.getName());
+            js.setType(WallSystem.Wall.class.getName());
         }
         boolean classFound = false;
         for(Class c : Municipality.getStructureClasses()){
             if(this.getClass().isAssignableFrom(c) && !classFound){
-                js.setStructureType(c.getName());
+                js.setType(c.getName());
                 classFound = true;
             }
         }
         if(this instanceof Plot && !classFound){
-            js.setStructureType(Plot.class.getName());
+            js.setType(Plot.class.getName());
         }
         if(getMunicipal() != null)
             js.setMunicipal(getMunicipal().getMunicipalID());

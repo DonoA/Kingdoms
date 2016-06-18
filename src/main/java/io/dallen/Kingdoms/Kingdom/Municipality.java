@@ -19,42 +19,31 @@
  */
 package io.dallen.Kingdoms.Kingdom;
 
-import io.dallen.Kingdoms.Kingdom.Structures.Types.WallSystem;
 import io.dallen.Kingdoms.Kingdom.Structures.Structure;
-import io.dallen.Kingdoms.Kingdom.Structures.Types.Armory;
-import io.dallen.Kingdoms.Kingdom.Structures.Types.Bank;
-import io.dallen.Kingdoms.Kingdom.Structures.Types.Barracks;
-import io.dallen.Kingdoms.Kingdom.Structures.Types.Blacksmith;
-import io.dallen.Kingdoms.Kingdom.Structures.Types.BuildersHut;
-import io.dallen.Kingdoms.Kingdom.Structures.Types.Castle;
-import io.dallen.Kingdoms.Kingdom.Structures.Types.Dungeon;
-import io.dallen.Kingdoms.Kingdom.Structures.Types.Farm;
-import io.dallen.Kingdoms.Kingdom.Structures.Types.Marketplace;
-import io.dallen.Kingdoms.Kingdom.Structures.Types.Stable;
-import io.dallen.Kingdoms.Kingdom.Structures.Types.Storeroom;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.TownHall;
-import io.dallen.Kingdoms.Kingdom.Structures.Types.TrainingGround;
+import io.dallen.Kingdoms.Kingdom.Structures.Types.WallSystem;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.WallSystem.Wall;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonMunicipality;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonEllipse;
-import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonLocation;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonPolygon;
-import io.dallen.Kingdoms.Storage.SaveTypes;
+import io.dallen.Kingdoms.Storage.SaveType;
 import io.dallen.Kingdoms.Util.LocationUtil;
 import java.awt.Polygon;
 import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Location;
+import org.reflections.Reflections;
 
 /**
  *
  * @author donoa_000
  */
-public class Municipality implements SaveTypes.Saveable{
+public class Municipality implements SaveType.Saveable{
     
     @Getter
     private int MunicipalID;
@@ -90,10 +79,13 @@ public class Municipality implements SaveTypes.Saveable{
     private Location influenceCenter;
     
     @Getter
-    private final static Class[] StructureClasses = new Class[] {Armory.class, Bank.class, Barracks.class, Blacksmith.class, 
-                                                                BuildersHut.class, Castle.class, Dungeon.class, Farm.class, 
-                                                                Marketplace.class, Stable.class, Storeroom.class, TownHall.class, 
-                                                                TrainingGround.class};
+    private final static Class[] StructureClasses;
+    
+    static {
+        Reflections reflections = new Reflections("io.dallen.Kingdoms.Kingdom.Structures.Types");
+        Set<Class<? extends Plot>> cs = reflections.getSubTypesOf(Plot.class);
+        StructureClasses = (Class[]) cs.toArray();
+    }
     
     public Municipality(Structure center){
         this.Center = center;

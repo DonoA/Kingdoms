@@ -24,7 +24,7 @@ import io.dallen.Kingdoms.Main;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonBuildingVault;
 import io.dallen.Kingdoms.Storage.PlayerData;
 import io.dallen.Kingdoms.Storage.MaterialWrapper;
-import io.dallen.Kingdoms.Storage.SaveTypes;
+import io.dallen.Kingdoms.Storage.SaveType;
 import java.awt.Polygon;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -38,7 +38,7 @@ import org.bukkit.inventory.ItemStack;
  *
  * @author donoa_000
  */
-public class BuildingVault implements Vault, SaveTypes.Saveable{ // Will start pile from center and add blocks outward
+public class BuildingVault implements Vault, SaveType.Saveable{ // Will start pile from center and add blocks outward
     @Getter
     private Structure owner;
     
@@ -202,7 +202,7 @@ public class BuildingVault implements Vault, SaveTypes.Saveable{ // Will start p
 //        }
 //    }
     
-    public static class ResourcePile implements SaveTypes.Saveable{
+    public static class ResourcePile implements SaveType.Saveable{
         
         @Getter
         private Location startLoc;

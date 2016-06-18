@@ -155,7 +155,7 @@ commands:
   editschem:
     description: allows schematics to be moved and sorted
     usage: |
-           /loadschem
+           /editschem
   fillplot:
     description: debug command
     usage: /<command>

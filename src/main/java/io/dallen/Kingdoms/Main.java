@@ -45,6 +45,7 @@ import io.dallen.Kingdoms.Handlers.StorageHandler;
 import io.dallen.Kingdoms.Handlers.WaterHandler;
 import io.dallen.Kingdoms.Kingdom.Kingdom;
 import io.dallen.Kingdoms.Kingdom.Municipality;
+import io.dallen.Kingdoms.Storage.DataLoadHelper;
 import io.dallen.Kingdoms.Util.ChestGUI.ChestGUIHandler;
 import io.dallen.Kingdoms.Util.DBmanager;
 import io.dallen.Kingdoms.Util.HotbarMenu.HotbarHandler;
@@ -193,7 +194,7 @@ public class Main extends JavaPlugin {
     
     @Override
     public void onDisable(){
-        
+        DataLoadHelper.SaveKingdomData();
     }
     
     /*

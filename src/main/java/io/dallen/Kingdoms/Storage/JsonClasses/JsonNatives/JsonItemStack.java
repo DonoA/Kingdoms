@@ -21,7 +21,7 @@
 package io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives;
 
 import io.dallen.Kingdoms.Storage.PlayerData;
-import io.dallen.Kingdoms.Storage.SaveTypes;
+import io.dallen.Kingdoms.Storage.SaveType;
 import java.util.List;
 import java.util.Map;
 import lombok.Getter;
@@ -40,7 +40,7 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
  * @author Donovan Allen
  */
 @NoArgsConstructor
-public class JsonItemStack implements SaveTypes.JsonType.NativeType{
+public class JsonItemStack implements SaveType.NativeType{
     @Getter @Setter
     private String material;
     @Getter @Setter

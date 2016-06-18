@@ -54,7 +54,7 @@ public class ChestGUI{
     private InventoryType type;
     @Setter
     private OptionClickEventHandler handler;
-    @Setter @Getter
+    @Getter
     private Object menuData;
    
     private String[] optionNames;
@@ -74,12 +74,20 @@ public class ChestGUI{
     public ChestGUI(String name, int size, OptionClickEventHandler handler){
         this.type = InventoryType.CHEST;
         this.name = name;
-        this.size = size*9;
+        if(size > 8){
+            this.size = size;
+        }else{
+            this.size = size*9;
+        }
         optionNames = new String[this.size];
         optionIcons = new ItemStack[this.size];
-        final int s = this.size;
         optionData = new Object[this.size];
         this.handler = handler;
+    }
+    
+    public ChestGUI setMenuData(Object o){
+        this.menuData = o;
+        return this;
     }
    
     public ChestGUI setOption(int pos, ItemStack icon, String name, String... info){
@@ -208,7 +216,7 @@ public class ChestGUI{
         @EventHandler(priority = EventPriority.HIGHEST)
         public void onInventoryClick(InventoryClickEvent event){
             if((!cooldown.containsKey(event.getWhoClicked().getName())) || 
-                (cooldown.containsKey(event.getWhoClicked().getName()) && cooldown.get(event.getWhoClicked().getName()) < System.currentTimeMillis() - 500)){
+                (cooldown.containsKey(event.getWhoClicked().getName()) && cooldown.get(event.getWhoClicked().getName()) < System.currentTimeMillis() - 100)){
                 cooldown.put(event.getWhoClicked().getName(), System.currentTimeMillis());
                 if(!openMenus.containsKey(event.getWhoClicked().getName()))
                     return;

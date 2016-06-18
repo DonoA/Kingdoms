@@ -22,7 +22,7 @@ package io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives;
 
 import io.dallen.Kingdoms.Kingdom.Municipality;
 import io.dallen.Kingdoms.Storage.PlayerData;
-import io.dallen.Kingdoms.Storage.SaveTypes;
+import io.dallen.Kingdoms.Storage.SaveType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -34,7 +34,7 @@ import org.bukkit.Location;
  * @author Donovan Allen
  */
 @NoArgsConstructor
-public class JsonLocation implements SaveTypes.JsonType.NativeType{
+public class JsonLocation implements SaveType.NativeType{
     @Getter @Setter
     private double x;
     @Getter @Setter

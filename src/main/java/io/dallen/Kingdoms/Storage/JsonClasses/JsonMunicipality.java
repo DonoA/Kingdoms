@@ -24,7 +24,7 @@ import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonPolygon;
 import io.dallen.Kingdoms.Kingdom.Municipality;
 import io.dallen.Kingdoms.Kingdom.Municipality.MunicipalType;
 import io.dallen.Kingdoms.Kingdom.Structures.Structure;
-import io.dallen.Kingdoms.Storage.SaveTypes;
+import io.dallen.Kingdoms.Storage.SaveType;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -37,7 +37,7 @@ import lombok.Setter;
  * @author Donovan Allen
  */
 @NoArgsConstructor
-public class JsonMunicipality implements SaveTypes.JsonType{
+public class JsonMunicipality implements SaveType.NativeType.JsonType{
     
     @Getter @Setter
     private HashMap<String, ArrayList<Structure>> Structures;

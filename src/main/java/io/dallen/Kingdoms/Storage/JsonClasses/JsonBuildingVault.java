@@ -24,14 +24,14 @@ import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonItemStack;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonPolygon;
 import io.dallen.Kingdoms.Kingdom.Vaults.BuildingVault;
 import io.dallen.Kingdoms.Kingdom.Vaults.PlayerVault;
-import io.dallen.Kingdoms.Storage.SaveTypes;
+import io.dallen.Kingdoms.Storage.SaveType;
 import lombok.Getter;
 
 /**
  *
  * @author Donovan Allen
  */
-public class JsonBuildingVault implements SaveTypes.JsonType{
+public class JsonBuildingVault implements SaveType.NativeType.JsonType{
     @Getter
     private JsonStructure owner;
     
@@ -56,7 +56,7 @@ public class JsonBuildingVault implements SaveTypes.JsonType{
     @Getter
     private JsonResourcePile pile;
     
-    public static class JsonResourcePile implements SaveTypes.JsonType{
+    public static class JsonResourcePile implements SaveType.NativeType.JsonType{
         @Getter
         private JsonLocation startLoc;
         @Getter

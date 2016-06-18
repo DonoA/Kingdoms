@@ -17,33 +17,17 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives;
+package io.dallen.Kingdoms.Util.Annotations;
 
-import io.dallen.Kingdoms.Storage.SaveType;
-import java.awt.Polygon;
-import lombok.Getter;
-import lombok.Setter;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  *
  * @author Donovan Allen
  */
-public class JsonPolygon implements SaveType.NativeType{
-    
-    @Getter @Setter
-    private int[] Xs;
-    
-    @Getter @Setter
-    private int[] Ys;
-    
-    public JsonPolygon(Polygon Base){
-        this.Xs = Base.xpoints;
-        this.Ys = Base.ypoints;
-    }
-    
-    @Override
-    public Polygon toJavaObject(){
-        return new Polygon(Xs, Ys, Xs.length);
-    }
-    
-}
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.FIELD, ElementType.TYPE})
+public @interface SaveData {}

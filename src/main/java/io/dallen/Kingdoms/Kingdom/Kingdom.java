@@ -22,7 +22,7 @@ package io.dallen.Kingdoms.Kingdom;
 import io.dallen.Kingdoms.Kingdom.Structures.Structure;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonKingdom;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonPlayerData;
-import io.dallen.Kingdoms.Storage.SaveTypes;
+import io.dallen.Kingdoms.Storage.SaveType;
 import java.awt.Polygon;
 import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ import org.bukkit.entity.Player;
  *
  * @author donoa_000
  */
-public class Kingdom implements SaveTypes.Saveable{
+public class Kingdom implements SaveType.Saveable{
     
     private static int currID;
     

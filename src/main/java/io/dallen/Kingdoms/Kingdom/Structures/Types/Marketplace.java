@@ -22,11 +22,13 @@ package io.dallen.Kingdoms.Kingdom.Structures.Types;
 import io.dallen.Kingdoms.Handlers.BuildingHandler;
 import io.dallen.Kingdoms.Kingdom.Plot;
 import io.dallen.Kingdoms.Kingdom.Vaults.BuildingVault;
+import io.dallen.Kingdoms.Storage.JsonClasses.JsonStructure;
 import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEvent;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEventHandler;
 import java.util.ArrayList;
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -40,6 +42,7 @@ public class Marketplace extends Plot{
 
     private int space;
     
+    @Getter @Setter
     private ArrayList<Stall> stalls = new ArrayList<Stall>();
     
     @Getter
@@ -61,6 +64,7 @@ public class Marketplace extends Plot{
             setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Other");
         }};
     }
+    
     
     public class MenuHandler implements OptionClickEventHandler{
         

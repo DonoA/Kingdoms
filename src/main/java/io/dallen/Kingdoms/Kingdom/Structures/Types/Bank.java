@@ -22,11 +22,13 @@ package io.dallen.Kingdoms.Kingdom.Structures.Types;
 import io.dallen.Kingdoms.Handlers.BuildingHandler;
 import io.dallen.Kingdoms.Kingdom.Plot;
 import io.dallen.Kingdoms.Kingdom.Vaults.BuildingVault;
+import io.dallen.Kingdoms.Storage.JsonClasses.JsonStructure;
 import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEvent;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEventHandler;
 import java.util.HashMap;
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -42,7 +44,7 @@ public class Bank extends Plot implements Listener{
     private int securityLevel;
     @Getter
     private int vaultNumber;
-    @Getter
+    @Getter @Setter
     private HashMap<Player, BuildingVault> vaults = new HashMap<Player, BuildingVault>();
     @Getter
     private boolean MunicipalBank;

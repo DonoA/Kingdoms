@@ -20,7 +20,7 @@
 
 package io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives;
 
-import io.dallen.Kingdoms.Storage.SaveTypes;
+import io.dallen.Kingdoms.Storage.SaveType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -32,7 +32,7 @@ import org.bukkit.inventory.ItemStack;
  * @author Donovan Allen
  */
 @NoArgsConstructor
-public class JsonArmor implements SaveTypes.JsonType.NativeType{
+public class JsonArmor implements SaveType.NativeType{
     
     @Getter @Setter
     private JsonItemStack Helm;

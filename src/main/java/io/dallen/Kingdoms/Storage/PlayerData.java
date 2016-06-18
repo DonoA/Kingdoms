@@ -43,7 +43,7 @@ import org.bukkit.entity.Player;
  * @author donoa_000
  */
 @NoArgsConstructor
-public class PlayerData implements SaveTypes.Saveable{
+public class PlayerData implements SaveType.Saveable{
     @Getter
     private static HashMap<Player, PlayerData> PlayerDat = new HashMap<Player, PlayerData>();
     

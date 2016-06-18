@@ -20,7 +20,7 @@
 package io.dallen.Kingdoms.Storage.JsonClasses;
 
 import io.dallen.Kingdoms.Kingdom.Vaults.PlayerVault;
-import io.dallen.Kingdoms.Storage.SaveTypes;
+import io.dallen.Kingdoms.Storage.SaveType;
 import lombok.NoArgsConstructor;
 
 /**
@@ -28,7 +28,7 @@ import lombok.NoArgsConstructor;
  * @author Donovan Allen
  */
 @NoArgsConstructor
-public class JsonPlayerVault implements SaveTypes.JsonType{
+public class JsonPlayerVault implements SaveType.NativeType.JsonType{
     
     @Override
     public PlayerVault toJavaObject(){

@@ -20,7 +20,7 @@
 
 package io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives;
 
-import io.dallen.Kingdoms.Storage.SaveTypes;
+import io.dallen.Kingdoms.Storage.SaveType;
 import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,7 +32,7 @@ import org.bukkit.inventory.meta.BookMeta;
  * @author Donovan Allen
  */
 @NoArgsConstructor
-public class JsonBookMeta implements SaveTypes.JsonType.NativeType{
+public class JsonBookMeta implements SaveType.NativeType{
     
     @Getter
     @Setter

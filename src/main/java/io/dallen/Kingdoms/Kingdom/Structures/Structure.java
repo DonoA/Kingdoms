@@ -28,7 +28,7 @@ import io.dallen.Kingdoms.Kingdom.Structures.Types.WallSystem;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonLocation;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonPolygon;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonStructure;
-import io.dallen.Kingdoms.Storage.SaveTypes;
+import io.dallen.Kingdoms.Storage.SaveType;
 import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEvent;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEventHandler;
@@ -46,7 +46,7 @@ import org.bukkit.inventory.ItemStack;
  *
  * @author donoa_000
  */
-public abstract class Structure implements SaveTypes.Saveable{
+public abstract class Structure implements SaveType.Saveable{
     
     @Getter @Setter
     private int Width; // X
@@ -148,17 +148,17 @@ public abstract class Structure implements SaveTypes.Saveable{
         js.setLength(Length);
         js.setOwner(Owner.getUniqueId());
         if(this instanceof WallSystem.Wall){
-            js.setStructureType(WallSystem.Wall.class.getName());
+            js.setType(WallSystem.Wall.class.getName());
         }
         boolean classFound = false;
         for(Class c : Municipality.getStructureClasses()){
             if(this.getClass().isAssignableFrom(c) && !classFound){
-                js.setStructureType(c.getName());
+                js.setType(c.getName());
                 classFound = true;
             }
         }
         if(this instanceof Plot && !classFound){
-            js.setStructureType(Plot.class.getName());
+            js.setType(Plot.class.getName());
         }
         if(Municipal != null)
             js.setMunicipal(Municipal.getMunicipalID());

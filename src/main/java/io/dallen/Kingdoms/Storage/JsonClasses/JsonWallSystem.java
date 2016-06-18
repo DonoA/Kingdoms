@@ -21,7 +21,7 @@ package io.dallen.Kingdoms.Storage.JsonClasses;
 
 import io.dallen.Kingdoms.Kingdom.Structures.Types.WallSystem;
 import io.dallen.Kingdoms.Storage.PlayerData;
-import io.dallen.Kingdoms.Storage.SaveTypes;
+import io.dallen.Kingdoms.Storage.SaveType;
 import lombok.NoArgsConstructor;
 
 /**
@@ -29,7 +29,7 @@ import lombok.NoArgsConstructor;
  * @author Donovan Allen
  */
 @NoArgsConstructor
-public class JsonWallSystem implements SaveTypes.JsonType{
+public class JsonWallSystem implements SaveType.NativeType.JsonType{
     
     @Override
     public WallSystem toJavaObject(){

@@ -100,12 +100,12 @@ public class AdminCommands implements CommandExecutor, OptionClickEventHandler{
                 }else{
                     sender.sendMessage("Player not found!");
                 }
-            }else if(cmd.getName().equalsIgnoreCase("editschem") && args.length > 0 && sender instanceof Player){
-                
+            }else if(cmd.getName().equalsIgnoreCase("editschem") && sender instanceof Player){
                 new ChestGUI("Edit Schematics", InventoryType.HOPPER, this){{
                     setOption(1, new ItemStack(Material.ENCHANTED_BOOK), "Tranfer Schem");
                     setOption(2, new ItemStack(Material.ENCHANTED_BOOK), "Move Schem");
                     setOption(3, new ItemStack(Material.ENCHANTED_BOOK), "Delete Schem");
+                    setMenuData(Main.getPlugin().getDataFolder());
                 }}.sendMenu((Player) sender);
                 return true;
             }
@@ -125,46 +125,49 @@ public class AdminCommands implements CommandExecutor, OptionClickEventHandler{
                     e.getPlayer().sendMessage("World Edit not found!");
                     return;
                 }
-                ChestGUI schems = new ChestGUI("Select Schematic to Transfer", 0, this);
+                ChestGUI schems = new ChestGUI("Select Schematic to Transfer", 54, this);
+                int Size = 0;
                 for(File f : new File(Main.getPlugin().getServer().getPluginManager().getPlugin("WorldEdit").getDataFolder() + 
                                          DBmanager.getFileSep() + "schematics").listFiles()){
                     if(!new File(Main.getPlugin().getDataFolder() + DBmanager.getFileSep() + "prefabs" + DBmanager.getFileSep() 
-                            + f.getName()).exists() && schems.getSize() < 54 && f.isFile() && f.getName().contains(".schematic")){
-                        schems.setOption(schems.getSize(), new ItemStack(Material.PAPER), f.getName());
-                        schems.setSize(schems.getSize() + 1);
+                            + f.getName()).exists() && Size < 54 && f.isFile() && f.getName().contains(".schematic")){
+                        schems.setOption(Size, new ItemStack(Material.PAPER), f.getName());
+                       Size++;;
                     }
                 }
-                schems.setOption(schems.getSize(), new ItemStack(Material.ENCHANTED_BOOK), "Move All");
-                schems.setSize(schems.getSize() + 1);
+                schems.setOption(Size, new ItemStack(Material.ENCHANTED_BOOK), "Move All");
+               Size++;;
                 e.setNext(schems);
             }else if(e.getName().equals("Move Schem")){
-                ChestGUI schems = new ChestGUI("Select Schematic to Move", 0, this);
+                ChestGUI schems = new ChestGUI("Select Schematic to Move", 54, this);
+                int Size = 0;
                 for(File f : new File(Main.getPlugin().getDataFolder() + DBmanager.getFileSep() + "prefabs").listFiles()){
-                    if(schems.getSize() < 54 && f.isDirectory()){
-                        schems.setOption(schems.getSize(), new ItemStack(Material.BOOK), f.getName());
-                        schems.setSize(schems.getSize() + 1);
+                    if(Size < 54 && f.isDirectory()){
+                        schems.setOption(Size, new ItemStack(Material.BOOK), f.getName());
+                       Size++;;
                     }
                 }
                 for(File f : new File(Main.getPlugin().getDataFolder() + DBmanager.getFileSep() + "prefabs").listFiles()){
-                    if(schems.getSize() < 54 && f.isFile()){
-                        schems.setOption(schems.getSize(), new ItemStack(Material.PAPER), f.getName());
-                        schems.setSize(schems.getSize() + 1);
+                    if(Size < 54 && f.isFile()){
+                        schems.setOption(Size, new ItemStack(Material.PAPER), f.getName());
+                       Size++;;
                     }
                 }
                 schems.setMenuData(new File(Main.getPlugin().getDataFolder() + DBmanager.getFileSep() + "prefabs"));
                 e.setNext(schems);
             }else if(e.getName().equals("Delete Schem")){
-                ChestGUI schems = new ChestGUI("Select Schematic to Delete", 0, this);
+                ChestGUI schems = new ChestGUI("Select Schematic to Delete", 54, this);
+                int Size = 0;
                 for(File f : new File(Main.getPlugin().getDataFolder() + DBmanager.getFileSep() + "prefabs").listFiles()){
-                    if(schems.getSize() < 54 && f.isDirectory()){
-                        schems.setOption(schems.getSize(), new ItemStack(Material.BOOK), f.getName());
-                        schems.setSize(schems.getSize() + 1);
+                    if(Size < 54 && f.isDirectory()){
+                        schems.setOption(Size, new ItemStack(Material.BOOK), f.getName());
+                       Size++;;
                     }
                 }
                 for(File f : new File(Main.getPlugin().getDataFolder() + DBmanager.getFileSep() + "prefabs").listFiles()){
-                    if(schems.getSize() < 54 && f.isFile()){
-                        schems.setOption(schems.getSize(), new ItemStack(Material.PAPER), f.getName());
-                        schems.setSize(schems.getSize() + 1);
+                    if(Size < 54 && f.isFile()){
+                        schems.setOption(Size, new ItemStack(Material.PAPER), f.getName());
+                       Size++;;
                     }
                 }
                 schems.setMenuData(new File(Main.getPlugin().getDataFolder() + DBmanager.getFileSep() + "prefabs"));
@@ -232,48 +235,50 @@ public class AdminCommands implements CommandExecutor, OptionClickEventHandler{
         }else if(e.getMenuName().equals("Select Schematic to Move")){
             File selected = new File(e.getMenuData().toString() + DBmanager.getFileSep() + e.getName());
             if(selected.isDirectory()){
-                ChestGUI schems = new ChestGUI("Select Schematic to Move", 0, this);
+                ChestGUI schems = new ChestGUI("Select Schematic to Move", 54, this);
+                int Size = 0;
                 for(File f : selected.listFiles()){
-                    if(schems.getSize() < 54 && f.isDirectory()){
-                        schems.setOption(schems.getSize(), new ItemStack(Material.ENCHANTED_BOOK), f.getName());
-                        schems.setSize(schems.getSize() + 1);
+                    if(Size < 54 && f.isDirectory()){
+                        schems.setOption(Size, new ItemStack(Material.ENCHANTED_BOOK), f.getName());
+                        Size++;
                     }
                 }
                 for(File f : selected.listFiles()){
-                    if(schems.getSize() < 54 && f.isFile()){
-                        schems.setOption(schems.getSize(), new ItemStack(Material.ENCHANTED_BOOK), f.getName());
-                        schems.setSize(schems.getSize() + 1);
+                    if(Size < 54 && f.isFile()){
+                        schems.setOption(Size, new ItemStack(Material.ENCHANTED_BOOK), f.getName());
+                        Size++;
                     }
                 }
                 schems.setMenuData(selected);
                 e.setNext(schems);
             }else if(selected.isFile()){
-                ChestGUI schems = new ChestGUI("Select Schematic Destination", 0, this);
-                for(File f : selected.listFiles()){
-                    if(schems.getSize() < 54 && f.isDirectory()){
-                        schems.setOption(schems.getSize(), new ItemStack(Material.ENCHANTED_BOOK), f.getName());
-                        schems.setSize(schems.getSize() + 1);
+                ChestGUI schems = new ChestGUI("Select Schematic Destination", 54, this);
+                int Size = 0;
+                for(File f : selected.getParentFile().listFiles()){
+                    if(Size < 54 && f.isDirectory()){
+                        schems.setOption(Size, new ItemStack(Material.ENCHANTED_BOOK), f.getName());
+                        Size++;
                     }
                 }
-                schems.setOption(schems.getSize(), new ItemStack(Material.ENCHANTED_BOOK), "Current Directory");
-                schems.setSize(schems.getSize() + 1);
+                schems.setOption(Size, new ItemStack(Material.ENCHANTED_BOOK), "Current Directory");
                 schems.setMenuData(selected);
                 e.setNext(schems);
             }
         }else if(e.getMenuName().equals("Select Schematic to Delete")){
             File selected = new File(e.getMenuData().toString() + DBmanager.getFileSep() + e.getName());
             if(selected.isDirectory()){
-                ChestGUI schems = new ChestGUI("Select Schematic to Delete", 0, this);
+                ChestGUI schems = new ChestGUI("Select Schematic to Delete", 54, this);
+                int Size = 0;
                 for(File f : selected.listFiles()){
-                    if(schems.getSize() < 54 && f.isDirectory()){
-                        schems.setOption(schems.getSize(), new ItemStack(Material.ENCHANTED_BOOK), f.getName());
-                        schems.setSize(schems.getSize() + 1);
+                    if(Size < 54 && f.isDirectory()){
+                        schems.setOption(Size, new ItemStack(Material.ENCHANTED_BOOK), f.getName());
+                       Size++;;
                     }
                 }
                 for(File f : selected.listFiles()){
-                    if(schems.getSize() < 54 && f.isFile()){
-                        schems.setOption(schems.getSize(), new ItemStack(Material.ENCHANTED_BOOK), f.getName());
-                        schems.setSize(schems.getSize() + 1);
+                    if(Size < 54 && f.isFile()){
+                        schems.setOption(Size, new ItemStack(Material.ENCHANTED_BOOK), f.getName());
+                       Size++;;
                     }
                 }
                 schems.setMenuData(selected);
@@ -285,9 +290,9 @@ public class AdminCommands implements CommandExecutor, OptionClickEventHandler{
             File oldSchem = (File) e.getMenuData();
             File newSchem;
             if(e.getName().equals("Current Directory")){
-                newSchem = new File(Main.getPlugin().getDataFolder() + DBmanager.getFileSep() + "prefabs");
+                newSchem = new File(Main.getPlugin().getDataFolder() + DBmanager.getFileSep() + "prefabs" + DBmanager.getFileSep() + oldSchem.getName());
             }else{
-                newSchem = new File(Main.getPlugin().getDataFolder() + DBmanager.getFileSep() + "prefabs" + DBmanager.getFileSep() + e.getName());
+                newSchem = new File(Main.getPlugin().getDataFolder() + DBmanager.getFileSep() + "prefabs" + DBmanager.getFileSep() + e.getName() + DBmanager.getFileSep() + oldSchem.getName());
             }
             if(oldSchem.exists()){
                 try{

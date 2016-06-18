@@ -23,18 +23,18 @@ package io.dallen.Kingdoms.Storage;
  *
  * @author Donovan Allen
  */
-public class SaveTypes {
+public interface SaveType {
     
-    public static interface JsonType{
-        
-        public <T extends Saveable> T toJavaObject();
-        
-        public static interface NativeType{
-            public <T> T toJavaObject();
+    public static interface NativeType extends SaveType{
+        public <T> T toJavaObject();
+            
+        public static interface JsonType extends NativeType{
+
+            public <T extends Saveable> T toJavaObject();
         }
     }
     
-    public static interface Saveable{
-        public <T extends JsonType> T toJsonObject();
+    public static interface Saveable extends SaveType{
+        public <T extends NativeType> T toJsonObject();
     }
 }

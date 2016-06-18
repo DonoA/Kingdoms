@@ -22,7 +22,7 @@ package io.dallen.Kingdoms.Storage.JsonClasses;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonEllipse;
 import io.dallen.Kingdoms.Kingdom.Kingdom;
 import io.dallen.Kingdoms.Storage.PlayerData;
-import io.dallen.Kingdoms.Storage.SaveTypes;
+import io.dallen.Kingdoms.Storage.SaveType;
 import java.util.ArrayList;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,7 +33,7 @@ import lombok.Setter;
  * @author Donovan Allen
  */
 @NoArgsConstructor
-public class JsonKingdom implements SaveTypes.JsonType{
+public class JsonKingdom implements SaveType.NativeType.JsonType{
     
     @Getter @Setter
     private String Leader;
