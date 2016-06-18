@@ -25,6 +25,7 @@ import io.dallen.Kingdoms.Kingdom.Structures.Storage;
 import io.dallen.Kingdoms.Kingdom.Vaults.BuildingVault;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonStructure;
 import io.dallen.Kingdoms.Storage.MaterialWrapper;
+import io.dallen.Kingdoms.Util.Annotations.SaveData;
 import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEvent;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEventHandler;
@@ -44,7 +45,7 @@ import org.bukkit.inventory.ItemStack;
 public class Storeroom extends Plot implements Storage{
     @Getter
     private int maxCapacity;
-    @Getter
+    @Getter @Setter @SaveData
     private BuildingVault Storage;
     @Getter
     private ChestGUI EditPlot;

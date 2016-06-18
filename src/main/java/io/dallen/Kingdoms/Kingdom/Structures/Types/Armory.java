@@ -32,6 +32,7 @@ import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEvent;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEventHandler;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -59,7 +60,7 @@ public class Armory extends Plot implements Storage{
     @Getter
     private WeaponStats stats;
     
-    @Getter @SaveData
+    @Getter @Setter @SaveData
     private BuildingVault Storage;
     
     @Getter

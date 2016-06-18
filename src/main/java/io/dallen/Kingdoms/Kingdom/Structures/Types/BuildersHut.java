@@ -25,11 +25,13 @@ import io.dallen.Kingdoms.Kingdom.Structures.Storage;
 import io.dallen.Kingdoms.Kingdom.Structures.Structure;
 import io.dallen.Kingdoms.Kingdom.Vaults.BuildingVault;
 import io.dallen.Kingdoms.Main;
+import io.dallen.Kingdoms.Util.Annotations.SaveData;
 import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEvent;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEventHandler;
 import io.dallen.Kingdoms.Util.LogUtil;
 import lombok.Getter;
+import lombok.Setter;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -43,7 +45,7 @@ import org.bukkit.inventory.ItemStack;
  */
 public class BuildersHut extends Plot implements Storage{
     
-    @Getter
+    @Getter @Setter @SaveData
     private BuildingVault Storage;
     @Getter
     private int workerCapacity;

@@ -23,6 +23,7 @@ import io.dallen.Kingdoms.Handlers.BuildingHandler;
 import io.dallen.Kingdoms.Kingdom.Plot;
 import io.dallen.Kingdoms.Kingdom.Vaults.BuildingVault;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonStructure;
+import io.dallen.Kingdoms.Util.Annotations.SaveData;
 import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEvent;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEventHandler;
@@ -44,7 +45,7 @@ public class Bank extends Plot implements Listener{
     private int securityLevel;
     @Getter
     private int vaultNumber;
-    @Getter @Setter
+    @Getter @Setter @SaveData
     private HashMap<Player, BuildingVault> vaults = new HashMap<Player, BuildingVault>();
     @Getter
     private boolean MunicipalBank;

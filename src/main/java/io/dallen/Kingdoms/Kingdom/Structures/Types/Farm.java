@@ -23,10 +23,12 @@ import io.dallen.Kingdoms.Handlers.BuildingHandler;
 import io.dallen.Kingdoms.Kingdom.Plot;
 import io.dallen.Kingdoms.Kingdom.Structures.Storage;
 import io.dallen.Kingdoms.Kingdom.Vaults.BuildingVault;
+import io.dallen.Kingdoms.Util.Annotations.SaveData;
 import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEvent;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEventHandler;
 import lombok.Getter;
+import lombok.Setter;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -41,10 +43,10 @@ import org.bukkit.inventory.ItemStack;
  */
 public class Farm extends Plot implements Storage{
 
-    @Getter
+    @Getter @Setter @SaveData
     private boolean growing = false;
     
-    @Getter
+    @Getter @Setter @SaveData
     private BuildingVault Storage;
     
     @Getter
