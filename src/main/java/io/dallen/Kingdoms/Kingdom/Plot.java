@@ -89,6 +89,7 @@ public class Plot extends Structure implements Listener{
             setOption(9*1 + 3, KingdomMaterial.STRUCTURE_STABLE.getItemStack(), "Stable", "");
             setOption(9*1 + 4, KingdomMaterial.STRUCTURE_DUNGEON.getItemStack(), "Dungeon", "");
             setOption(9*1 + 5, KingdomMaterial.STRUCTURE_MARKETPLACE.getItemStack(), "Marketplace", "");
+            setOption(9*1 + 6, KingdomMaterial.STRUCTURE_POSTOFFICE.getItemStack(), "Post Office, """);
             setOption(9*2 + 2, KingdomMaterial.STRUCTURE_WALL_WALL.getItemStack(), "Wall", "");
             setOption(9*2 + 3, KingdomMaterial.STRUCTURE_WALL_GATE.getItemStack(), "Wall with Door", "");
             setOption(9*2 + 4, KingdomMaterial.STRUCTURE_WALL_CORNER.getItemStack(), "Corner", "");
@@ -113,6 +114,7 @@ public class Plot extends Structure implements Listener{
             setOption(9*1 + 3, new ItemStack(Material.ENCHANTED_BOOK), "Stable", "");
             setOption(9*1 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Dungeon", "");
             setOption(9*1 + 5, new ItemStack(Material.ENCHANTED_BOOK), "Marketplace", "");
+            setOption(9*1 + 6, new ItemStack(Material.ENCHANTED_BOOK), "Post Office", "");
             setOption(9*1 + 6, new ItemStack(Material.ENCHANTED_BOOK), "Court", "");
             setOption(9*2 + 2, new ItemStack(Material.ENCHANTED_BOOK), "Wall", "");
             setOption(9*2 + 3, new ItemStack(Material.ENCHANTED_BOOK), "Wall with Door", "");

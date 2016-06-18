@@ -93,7 +93,7 @@ public class Municipality implements SaveTypes.Saveable{
     private final static Class[] StructureClasses = new Class[] {Armory.class, Bank.class, Barracks.class, Blacksmith.class, 
                                                                 BuildersHut.class, Castle.class, Dungeon.class, Farm.class, 
                                                                 Marketplace.class, Stable.class, Storeroom.class, TownHall.class, 
-                                                                TrainingGround.class};
+                                                                TrainingGround.class, PostOffice.class};
     
     public Municipality(Structure center){
         this.Center = center;
