@@ -19,6 +19,7 @@
  */
 package io.dallen.Kingdoms.Storage;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.dallen.Kingdoms.Util.Annotations.SaveData;
 import io.dallen.Kingdoms.Kingdom.Kingdom;
 import io.dallen.Kingdoms.Kingdom.Municipality;
@@ -31,73 +32,88 @@ import io.dallen.Kingdoms.Storage.JsonClasses.JsonMunicipality;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonPlayerData;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonStructure;
 import io.dallen.Kingdoms.Util.DBmanager;
+import io.dallen.Kingdoms.Util.LogUtil;
 import java.io.File;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.world.WorldSaveEvent;
 import org.reflections.Reflections;
 
 /**
  *
  * @author Donovan Allen
  */
-public class DataLoadHelper {
-    
-    @Getter
-    private final static Class[] NativeTypes;
-    
-    static {
-        Reflections reflections = new Reflections("io.dallen.Kingdoms.Storage");
-        Set<Class<? extends SaveType.NativeType>> cs = reflections.getSubTypesOf(SaveType.NativeType.class);
-        NativeTypes = (Class[]) cs.toArray();
-    }
+public class DataLoadHelper implements Listener{
     
     @SuppressWarnings("unchecked")
     public static boolean SaveKingdomData(){
         try {
-            int StructID = 0;
+            LogUtil.printDebug(Arrays.toString(Plot.getAllPlots().toArray()));
             for(Plot p : Plot.getAllPlots()){
                 JsonStructure json = null;
+                Class<? extends Plot> typ = null;
                 if(p instanceof WallSystem.Wall){
+                    typ = WallSystem.Wall.class;
                     WallSystem.Wall w = (WallSystem.Wall) p;
                     json = w.toJsonObject();
                     json.setType(WallSystem.Wall.class.getName());
-                    json.setStructureID(StructID);
                 }
                 if(json == null){
-                    for(Class c : Municipality.getStructureClasses()){
+                    for(Class c : Main.getStructureClasses()){
                         if(p.getClass().isAssignableFrom(c)){
-                            json = (JsonStructure) c.getMethod("toJsonObject").invoke(c.cast(p));
+                            typ = c;
+                            SaveType.Saveable sts = (SaveType.Saveable) p;
+                            json = (JsonStructure) sts.toJsonObject();
                             json.setType(c.getName());
-                            json.setStructureID(StructID);
                         }
                     }
                 }
                 if(json == null){
+                    typ = Plot.class;
                     json = p.toJsonObject();
                     json.setType(Plot.class.getName());
-                    json.setStructureID(StructID);
                 }
-                for(Field f : p.getClass().getFields()){
+                LogUtil.printDebug(Arrays.toString(typ.getDeclaredFields()));
+                for(Field f : typ.getDeclaredFields()){
+                    LogUtil.printDebug("Found field " + f.getName() + " of " + f.getType().getName());
+                    if(!f.isAccessible()){
+                        f.setAccessible(true);
+                    }
                     if(f.isAnnotationPresent(SaveData.class)){
                         if(SaveType.Saveable.class.isAssignableFrom(f.getType())){
                             SaveType.NativeType ntv = (SaveType.NativeType) f.getType().getMethod("toJsonObject").invoke(f.get(p));
                             json.getAttr().put(f.getName(), ntv);
                         }else{
-                            json.getAttr().put(f.getName(), f.get(p));
+                            boolean found = false;
+                            for(Class c : Main.getNativeTypes()){
+                                for(Constructor ctr : c.getDeclaredConstructors()){
+                                    if(Arrays.asList(ctr.getParameterTypes()).contains(f.getType())){
+                                        json.getAttr().put(f.getName(), f.get(p));
+                                        found = true;
+                                    }
+                                }
+                            }
+                            if(!found)
+                                json.getAttr().put(f.getName(), f.get(p));
                         }
                     }
                 }
+                LogUtil.printDebug(DBmanager.getJSonParser().writeValueAsString(json));
                 DBmanager.saveObj(json, new File(Main.getPlugin().getDataFolder() + DBmanager.getFileSep() + "savedata" + DBmanager.getFileSep() + "plots"), 
-                                    StructID + ".plotdata");
-                StructID++;
+                                    json.getStructureID() + ".plotdata");
             }
             for(Municipality m : Municipality.getAllMunicipals()){
                 JsonMunicipality json = m.toJsonObject();
@@ -110,7 +126,7 @@ public class DataLoadHelper {
                                     k.getKingdomID() + ".kingdomdata");
             }
             return true;
-        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | JsonProcessingException ex) {
             Logger.getLogger(DataLoadHelper.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
@@ -160,4 +176,6 @@ public class DataLoadHelper {
             return new PlayerData(p);
         }
     }
+    
+    public static class GetterAndSetterNotFoundException extends Exception{}
 }

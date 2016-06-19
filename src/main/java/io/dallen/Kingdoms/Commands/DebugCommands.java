@@ -23,6 +23,7 @@ import io.dallen.Kingdoms.Handlers.BuildingHandler;
 import io.dallen.Kingdoms.Handlers.DecayHandler.ChangeTracker;
 import io.dallen.Kingdoms.Kingdom.Plot;
 import io.dallen.Kingdoms.Main;
+import io.dallen.Kingdoms.Storage.DataLoadHelper;
 import io.dallen.Kingdoms.Util.DBmanager;
 import java.io.File;
 import java.util.Map;
@@ -74,6 +75,8 @@ public class DebugCommands implements CommandExecutor{
                     ChangeTracker.getForDecay().add(e.getKey());
                 }
             }
+        }else if(cmd.getName().equalsIgnoreCase("save-kingdoms")){
+            DataLoadHelper.SaveKingdomData();
         }
         return true;
     }

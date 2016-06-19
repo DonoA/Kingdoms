@@ -30,7 +30,7 @@ import org.bukkit.event.block.BlockPhysicsEvent;
  */
 public class DebugHandler implements Listener{
     
-    @EventHandler(priority = EventPriority.HIGHEST)
+//    @EventHandler(priority = EventPriority.HIGHEST)
     public void onBlockPhysics(BlockPhysicsEvent e){
         e.setCancelled(true);
     }

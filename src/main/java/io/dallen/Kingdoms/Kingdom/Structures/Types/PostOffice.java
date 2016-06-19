@@ -15,7 +15,7 @@ public class PostOffice extends Plot implements Storage {
     public PostOffice(Plot p) {
         super(p);
     }
-
+    
     @Override
     public BuildingVault getStorage() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

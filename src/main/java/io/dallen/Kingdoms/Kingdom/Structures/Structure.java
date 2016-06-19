@@ -25,6 +25,7 @@ import io.dallen.Kingdoms.Kingdom.Kingdom;
 import io.dallen.Kingdoms.Kingdom.Municipality;
 import io.dallen.Kingdoms.Kingdom.Plot;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.WallSystem;
+import io.dallen.Kingdoms.Main;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonLocation;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonPolygon;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonStructure;
@@ -47,6 +48,9 @@ import org.bukkit.inventory.ItemStack;
  * @author donoa_000
  */
 public abstract class Structure implements SaveType.Saveable{
+    
+    @Getter @Setter
+    private static int currentID = 0;
     
     @Getter @Setter
     private int Width; // X
@@ -85,6 +89,8 @@ public abstract class Structure implements SaveType.Saveable{
         this.Kingdom = kingdom;
         this.Municipal = municipal;
         this.Base = base;
+        this.StructureID = currentID;
+        currentID++;
         setArea();
         
     }
@@ -94,6 +100,8 @@ public abstract class Structure implements SaveType.Saveable{
         this.Center = cent;
         this.Owner = own;
         this.Municipal = municipal;
+        this.StructureID = currentID;
+        currentID++;
         setArea();
     }
     
@@ -102,6 +110,8 @@ public abstract class Structure implements SaveType.Saveable{
         this.Center = cent;
         this.Owner = own;
         this.Kingdom = kingdom;
+        this.StructureID = currentID;
+        currentID++;
         setArea();
     }
     
@@ -151,7 +161,7 @@ public abstract class Structure implements SaveType.Saveable{
             js.setType(WallSystem.Wall.class.getName());
         }
         boolean classFound = false;
-        for(Class c : Municipality.getStructureClasses()){
+        for(Class c : Main.getStructureClasses()){
             if(this.getClass().isAssignableFrom(c) && !classFound){
                 js.setType(c.getName());
                 classFound = true;
@@ -170,6 +180,7 @@ public abstract class Structure implements SaveType.Saveable{
             js.setKingdom(-1);
         js.setBase(new JsonPolygon(Base));
         js.setCenter(new JsonLocation(Center));
+        js.setStructureID(StructureID);
         return js;
     }
     

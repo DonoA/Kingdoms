@@ -165,7 +165,7 @@ public class Plot extends Structure implements Listener{
             js.setType(WallSystem.Wall.class.getName());
         }
         boolean classFound = false;
-        for(Class c : Municipality.getStructureClasses()){
+        for(Class c : Main.getStructureClasses()){
             if(this.getClass().isAssignableFrom(c) && !classFound){
                 js.setType(c.getName());
                 classFound = true;

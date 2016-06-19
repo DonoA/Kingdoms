@@ -29,6 +29,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.bukkit.Location;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -37,6 +38,7 @@ import org.bukkit.inventory.ItemStack;
  *
  * @author Donovan Allen
  */
+@NoArgsConstructor
 public class Forge extends MultiBlock{
     
     @Getter
@@ -64,14 +66,14 @@ public class Forge extends MultiBlock{
     
     public static void loadForm(){
         if(basicForm == null){
-            try {
-                basicForm = NBTmanager.loadData(new File(Main.getPlugin().getDataFolder() + DBmanager.getFileSep() + "multiblock" + 
-                        DBmanager.getFileSep() + "forge.schematic"));
-            } catch (IOException ex) {
-                Logger.getLogger(Forge.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (DataFormatException ex) {
-                Logger.getLogger(Forge.class.getName()).log(Level.SEVERE, null, ex);
-            }
+//            try {
+//                basicForm = NBTmanager.loadData(new File(Main.getPlugin().getDataFolder() + DBmanager.getFileSep() + "multiblock" + 
+//                        DBmanager.getFileSep() + "forge.schematic"));
+//            } catch (IOException ex) {
+//                Logger.getLogger(Forge.class.getName()).log(Level.SEVERE, null, ex);
+//            } catch (DataFormatException ex) {
+//                Logger.getLogger(Forge.class.getName()).log(Level.SEVERE, null, ex);
+//            }
         }
     }
 }

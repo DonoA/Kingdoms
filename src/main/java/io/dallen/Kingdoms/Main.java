@@ -45,20 +45,28 @@ import io.dallen.Kingdoms.Handlers.StorageHandler;
 import io.dallen.Kingdoms.Handlers.WaterHandler;
 import io.dallen.Kingdoms.Kingdom.Kingdom;
 import io.dallen.Kingdoms.Kingdom.Municipality;
+import io.dallen.Kingdoms.Kingdom.Plot;
 import io.dallen.Kingdoms.Storage.DataLoadHelper;
+import io.dallen.Kingdoms.Storage.SaveType;
 import io.dallen.Kingdoms.Util.ChestGUI.ChestGUIHandler;
 import io.dallen.Kingdoms.Util.DBmanager;
 import io.dallen.Kingdoms.Util.HotbarMenu.HotbarHandler;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.reflections.Reflections;
 
 /**
  *
@@ -71,6 +79,12 @@ public class Main extends JavaPlugin {
     
     @Getter @Setter
     private static NpcManager NPCs;
+    
+    @Getter
+    private static Set<Class<? extends Plot>> StructureClasses;
+    
+    @Getter
+    private static Set<Class<? extends SaveType.NativeType>> NativeTypes;
     
     @Getter
     private static ProtocolManager protocolManager;
@@ -140,6 +154,7 @@ public class Main extends JavaPlugin {
                     Main.getPlugin().getCommand("setskins").setExecutor(dbg);
                     Main.getPlugin().getCommand("cleannpcs").setExecutor(dbg);
                     Main.getPlugin().getCommand("decayall").setExecutor(dbg);
+                    Main.getPlugin().getCommand("save-kingdoms").setExecutor(dbg);
                 }
                 Main.getPlugin().getCommand("menu").setExecutor(mmh);
                 Main.getPlugin().getCommand("crash").setExecutor(admin);
@@ -177,17 +192,27 @@ public class Main extends JavaPlugin {
         Plugin = this;
         this.saveDefaultConfig();
         World mainworld = Bukkit.getWorld(this.getConfig().getString("MainWorld"));
-        MultiBlockHandler mbh = new MultiBlockHandler();
-        Bukkit.getPluginManager().registerEvents(mbh, this);
-        Bukkit.getPluginManager().registerEvents(new JoinLeaveHandler(), this);
-        Bukkit.getPluginManager().registerEvents(new StorageHandler(), this);
-        Bukkit.getPluginManager().registerEvents(new BuildingHandler(), this);
-        Bukkit.getPluginManager().registerEvents(new WaterHandler(), this);
-        Bukkit.getPluginManager().registerEvents(new PlotProtectionHandler(), this);
-        Bukkit.getPluginManager().registerEvents(new PlantGrowthHandler(), this);
-        Bukkit.getPluginManager().registerEvents(new ChestGUIHandler(), this);
-        Bukkit.getPluginManager().registerEvents(new HotbarHandler(), this);
+        Reflections reflections = new Reflections("io.dallen.Kingdoms");
+        Set<Class<? extends Listener>> lstn = reflections.getSubTypesOf(Listener.class);
+        for(Class<? extends Listener> l : lstn){
+            boolean hasEventHandler = false;
+            for(Method m : l.getDeclaredMethods()){
+                if(m.isAnnotationPresent(EventHandler.class)){
+                    hasEventHandler = true;
+                }
+            }
+            if(hasEventHandler){
+                try {
+                    l.getConstructor();
+                    Bukkit.getPluginManager().registerEvents((Listener) l.newInstance(), this);
+                } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | SecurityException ex) {}
+            }
+        }
         Bukkit.getScheduler().scheduleSyncDelayedTask(this, onServerLoad);
+        reflections = new Reflections("io.dallen.Kingdoms.Kingdom.Structures.Types");
+        StructureClasses = reflections.getSubTypesOf(Plot.class);
+        reflections = new Reflections("io.dallen.Kingdoms.Storage");
+        NativeTypes = reflections.getSubTypesOf(SaveType.NativeType.class);
         setupDatabase();
 //        RedisManager RM = new RedisManager();
     }
@@ -231,7 +256,7 @@ public class Main extends JavaPlugin {
                 new File(plugin.getPath() + DBmanager.getFileSep() + s).mkdir();
             }
         }
-        for(Class<?> c : Municipality.getStructureClasses()){
+        for(Class<?> c : StructureClasses){
             if(!new File(plugin.getPath() + DBmanager.getFileSep() + "prefabs" + DBmanager.getFileSep() + c.getSimpleName()).exists()){
                 new File(plugin.getPath() + DBmanager.getFileSep() + "prefabs" + DBmanager.getFileSep() + c.getSimpleName()).mkdir();
             }

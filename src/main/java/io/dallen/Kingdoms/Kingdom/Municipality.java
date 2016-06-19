@@ -23,14 +23,17 @@ import io.dallen.Kingdoms.Kingdom.Structures.Structure;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.TownHall;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.WallSystem;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.WallSystem.Wall;
+import io.dallen.Kingdoms.Main;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonMunicipality;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonEllipse;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonPolygon;
 import io.dallen.Kingdoms.Storage.SaveType;
 import io.dallen.Kingdoms.Util.LocationUtil;
+import io.dallen.Kingdoms.Util.LogUtil;
 import java.awt.Polygon;
 import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Set;
@@ -78,21 +81,12 @@ public class Municipality implements SaveType.Saveable{
     @Getter @Setter
     private Location influenceCenter;
     
-    @Getter
-    private final static Class[] StructureClasses;
-    
-    static {
-        Reflections reflections = new Reflections("io.dallen.Kingdoms.Kingdom.Structures.Types");
-        Set<Class<? extends Plot>> cs = reflections.getSubTypesOf(Plot.class);
-        StructureClasses = (Class[]) cs.toArray();
-    }
-    
     public Municipality(Structure center){
         this.Center = center;
         this.walls = new WallSystem(this);
         this.type = MunicipalType.MANOR;
         this.creation = new Date(System.currentTimeMillis());
-        for(Class c : StructureClasses){
+        for(Class c : Main.getStructureClasses()){
             Structures.put(c, new ArrayList<Structure>());
         }
         Structures.put(Plot.class, new ArrayList<Structure>());
@@ -137,7 +131,7 @@ public class Municipality implements SaveType.Saveable{
             walls.getParts().get(w.getType()).add(w);
             w.setMunicipal(this);
         }
-        for(Class c : StructureClasses){
+        for(Class c : Main.getStructureClasses()){
             if(s.getClass().isAssignableFrom(c)){
                 Structures.get(c).add(s);
                 s.setMunicipal(this);

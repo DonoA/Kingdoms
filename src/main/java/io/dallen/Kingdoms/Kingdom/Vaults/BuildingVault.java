@@ -22,10 +22,13 @@ package io.dallen.Kingdoms.Kingdom.Vaults;
 import io.dallen.Kingdoms.Kingdom.Structures.Structure;
 import io.dallen.Kingdoms.Main;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonBuildingVault;
+import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonItemStack;
+import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonPolygon;
 import io.dallen.Kingdoms.Storage.PlayerData;
 import io.dallen.Kingdoms.Storage.MaterialWrapper;
 import io.dallen.Kingdoms.Storage.SaveType;
 import java.awt.Polygon;
+import java.util.ArrayList;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -167,7 +170,23 @@ public class BuildingVault implements Vault, SaveType.Saveable{ // Will start pi
     }
     
     public JsonBuildingVault toJsonObject(){
-        throw new UnsupportedOperationException();
+        JsonBuildingVault jbv = new JsonBuildingVault();
+        jbv.setAmountFull(amountFull);
+        jbv.setCapacity(capacity);
+        ArrayList<JsonItemStack> content = new ArrayList<JsonItemStack>();
+        for(MaterialWrapper mw : contents){
+            if(mw != null){
+                content.add(new JsonItemStack(mw.asBukkitItem()));
+            }else{
+                content.add(null);
+            }
+        }
+        jbv.setContents(content.toArray(new JsonItemStack[] {}));
+//        jbv.setFloorPlan(new JsonPolygon(floorPlan));
+        jbv.setFullSlots(fullSlots);
+        jbv.setOwner(owner.getStructureID());
+        jbv.setUniqueSize(uniqueSize);
+        return jbv;
     }
     
 //    public static class InvenHandler implements Listener{

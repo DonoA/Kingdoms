@@ -26,31 +26,32 @@ import io.dallen.Kingdoms.Kingdom.Vaults.BuildingVault;
 import io.dallen.Kingdoms.Kingdom.Vaults.PlayerVault;
 import io.dallen.Kingdoms.Storage.SaveType;
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
  * @author Donovan Allen
  */
 public class JsonBuildingVault implements SaveType.NativeType.JsonType{
-    @Getter
-    private JsonStructure owner;
+    @Getter @Setter
+    private int owner;
     
-    @Getter
+    @Getter @Setter
     private double uniqueSize;
     
-    @Getter
+    @Getter @Setter
     private int fullSlots;
     
-    @Getter
+    @Getter @Setter
     private int capacity;
     
-    @Getter
+    @Getter @Setter
     private int amountFull;
     
-    @Getter
+    @Getter @Setter
     private JsonPolygon floorPlan;
     
-    @Getter
+    @Getter @Setter
     private JsonItemStack[] contents;
     
     @Getter

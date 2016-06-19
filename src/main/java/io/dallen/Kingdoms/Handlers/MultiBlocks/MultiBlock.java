@@ -22,8 +22,10 @@ package io.dallen.Kingdoms.Handlers.MultiBlocks;
 import java.util.ArrayList;
 import java.util.HashMap;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -32,6 +34,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
  *
  * @author donoa_000
  */
+@NoArgsConstructor
 public class MultiBlock implements Listener{
     
     private String type;
@@ -71,6 +74,7 @@ public class MultiBlock implements Listener{
         return null;
     }
     
+    @EventHandler
     public void onInteract(PlayerInteractEvent e){
         
     }

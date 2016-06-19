@@ -168,3 +168,6 @@ commands:
   decayall:
     description: debug command
     usage: /<command>
+  save-kingdoms:
+    description: debug command
+    usage: /<command>
