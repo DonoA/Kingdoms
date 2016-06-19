@@ -33,9 +33,11 @@ import io.dallen.Kingdoms.Storage.SaveType;
 import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEvent;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEventHandler;
+import io.dallen.Kingdoms.Util.LogUtil;
 import java.awt.Point;
 import java.awt.Polygon;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -47,6 +49,7 @@ import org.bukkit.inventory.ItemStack;
  *
  * @author donoa_000
  */
+@NoArgsConstructor
 public abstract class Structure implements SaveType.Saveable{
     
     @Getter @Setter
@@ -83,35 +86,22 @@ public abstract class Structure implements SaveType.Saveable{
     @Getter
     private long amountBuilt;
     
-    public Structure(Polygon base, Location cent, OfflinePlayer own, Kingdom kingdom, Municipality municipal){
+    public Structure(Polygon base, Location cent, OfflinePlayer own){
         this.Center = cent;
         this.Owner = own;
-        this.Kingdom = kingdom;
-        this.Municipal = municipal;
         this.Base = base;
+        LogUtil.printDebug("new struct " + currentID);
         this.StructureID = currentID;
         currentID++;
         setArea();
         
     }
     
-    public Structure(Polygon base, Location cent, OfflinePlayer own, Municipality municipal){
+    public Structure(Polygon base, Location cent, OfflinePlayer own, int ID){
         this.Base = base;
         this.Center = cent;
         this.Owner = own;
-        this.Municipal = municipal;
-        this.StructureID = currentID;
-        currentID++;
-        setArea();
-    }
-    
-    public Structure(Polygon base, Location cent, OfflinePlayer own, Kingdom kingdom){
-        this.Base = base;
-        this.Center = cent;
-        this.Owner = own;
-        this.Kingdom = kingdom;
-        this.StructureID = currentID;
-        currentID++;
+        this.StructureID = ID;
         setArea();
     }
     
@@ -136,7 +126,7 @@ public abstract class Structure implements SaveType.Saveable{
         }}.sendMenu(p);
     }
     
-    private void setArea(){
+    public void setArea(){
         this.Width = (int) Math.round(Base.getBounds().getMaxX() - Base.getBounds().getMinX());
         this.Length = (int) Math.round(Base.getBounds().getMaxY() - Base.getBounds().getMinY());
         int Xmax = (int) Math.round(Base.getBounds().getMaxX());

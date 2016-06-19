@@ -21,33 +21,23 @@ package io.dallen.Kingdoms.Kingdom;
 
 import com.google.common.primitives.Ints;
 import io.dallen.Kingdoms.Handlers.BuildingHandler;
-import io.dallen.Kingdoms.Util.LogUtil;
 import io.dallen.Kingdoms.Kingdom.Structures.Contract;
 import io.dallen.Kingdoms.Kingdom.Structures.Structure;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.BuildersHut;
-import io.dallen.Kingdoms.Kingdom.Structures.Types.WallSystem;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.WallSystem.Wall;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.WallSystem.WallType;
-import io.dallen.Kingdoms.Main;
 import io.dallen.Kingdoms.Overrides.KingdomMaterial;
-import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonLocation;
-import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonPolygon;
-import io.dallen.Kingdoms.Storage.JsonClasses.JsonStructure;
 import io.dallen.Kingdoms.Storage.PlayerData;
 import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEvent;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEventHandler;
-import io.dallen.Kingdoms.Util.LocationUtil;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import lombok.Getter;
 import lombok.Setter;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -75,13 +65,13 @@ public class Plot extends Structure implements Listener{
     @Getter @Setter
     private boolean empty = true;
     
-    public Plot(Polygon base, Location cent, OfflinePlayer own, Municipality mun) {
-        super(base, cent, own, mun);
+    public Plot(Polygon base, Location cent, OfflinePlayer own) {
+        super(base, cent, own);
         defEditMenu();
     }
     
     public Plot(Plot p) {
-        super(p.getBase(), p.getCenter(), p.getOwner(), p.getKingdom(), p.getMunicipal());
+        super(p.getBase(), p.getCenter(), p.getOwner(), p.getStructureID());
         defEditMenu();
     }
     
@@ -99,7 +89,7 @@ public class Plot extends Structure implements Listener{
             setOption(9*1 + 4, KingdomMaterial.STRUCTURE_DUNGEON.getItemStack(), "Dungeon");
             setOption(9*1 + 5, KingdomMaterial.STRUCTURE_MARKETPLACE.getItemStack(), "Marketplace");
             setOption(9*2 + 2, KingdomMaterial.STRUCTURE_WALL_WALL.getItemStack(), "Wall");
-            setOption(9*2 + 3, KingdomMaterial.STRUCTURE_WALL_GATE.getItemStack(), "Wall with Door");
+            setOption(9*2 + 3, KingdomMaterial.STRUCTURE_WALL_GATE.getItemStack(), "Gate");
             setOption(9*2 + 4, KingdomMaterial.STRUCTURE_WALL_CORNER.getItemStack(), "Corner");
             setOption(9*2 + 5, KingdomMaterial.STRUCTURE_WALL_TOWER.getItemStack(), "Tower");
             setOption(9*3 + 3, new ItemStack(Material.PAPER), "Custom Contract");
@@ -154,38 +144,11 @@ public class Plot extends Structure implements Listener{
         return super.getOwner().equals(p);
     }
     
-    @Override
-    public JsonStructure toJsonObject(){
-        JsonStructure js = new JsonStructure();
-        js.setHeight(getHeight());
-        js.setWidth(getWidth());
-        js.setLength(getLength());
-        js.setOwner(getOwner().getUniqueId());
-        if(this instanceof WallSystem.Wall){
-            js.setType(WallSystem.Wall.class.getName());
-        }
-        boolean classFound = false;
-        for(Class c : Main.getStructureClasses()){
-            if(this.getClass().isAssignableFrom(c) && !classFound){
-                js.setType(c.getName());
-                classFound = true;
-            }
-        }
-        if(this instanceof Plot && !classFound){
-            js.setType(Plot.class.getName());
-        }
-        if(getMunicipal() != null)
-            js.setMunicipal(getMunicipal().getMunicipalID());
-        else
-            js.setMunicipal(-1);
-        if(getKingdom() != null)
-            js.setKingdom(getKingdom().getKingdomID());
-        else
-            js.setKingdom(-1);
-        js.setBase(new JsonPolygon(getBase()));
-        js.setCenter(new JsonLocation(getCenter()));
-        return js;
-    }
+//    @Override
+//    public JsonStructure toJsonObject(){
+//        JsonStructure js = new JsonStructure();
+//        return js;
+//    }
     
     public class MenuHandler implements OptionClickEventHandler{
         
@@ -196,8 +159,9 @@ public class Plot extends Structure implements Listener{
                 PlayerData pd = PlayerData.getData(e.getPlayer());
                 if(e.getName().equalsIgnoreCase("Custom Contract")){
                     
-                }else if(e.getName().equalsIgnoreCase("Wall")){
-                    Wall newWall = new Wall(p, WallType.WALL);
+                }else if(e.getName().equalsIgnoreCase("Wall") || e.getName().equalsIgnoreCase("Gate") || e.getName().equalsIgnoreCase("Corner") || e.getName().equalsIgnoreCase("Tower")){
+                    
+                    Wall newWall = new Wall(p, WallType.valueOf(e.getName().toUpperCase()));
                     newWall.setEmpty(false);
                     Plot.getAllPlots().remove(p);
                     Plot.getAllPlots().add(newWall);
@@ -228,111 +192,6 @@ public class Plot extends Structure implements Listener{
                             if(bounds.contains(new Point(x,z)) || (bounds.contains(new Point(x-1,z)) || bounds.contains(new Point(x,z-1)) || bounds.contains(new Point(x-1,z-1)))){
                                 Location l = new Location(p.getCenter().getWorld(), x, p.getCenter().getBlockY()-1, z);
                                 l.getBlock().setType(Material.COBBLESTONE);
-                            }
-                        }
-                    }
-                }else if(e.getName().equalsIgnoreCase("Wall with Door")){
-                    Wall newWall = new Wall(p, WallType.GATE);
-                    newWall.setEmpty(false);
-                    Plot.getAllPlots().remove(p);
-                    Plot.getAllPlots().add(newWall);
-                    pd.getPlots().remove(p);
-                    pd.getPlots().add(newWall);
-                    if(p.getMunicipal() != null){
-                        p.getMunicipal().getWalls().getParts().get(WallType.GATE).add(newWall);
-                    }
-                    e.getPlayer().sendMessage("You have assigned this plot to be a wall segments.");
-                    if(p.getMunicipal() == null){
-                        e.getPlayer().sendMessage("This building is not part of a municipal, you have no NPCs to help you build it!");
-                    }else if(p.getMunicipal().getStructures().containsKey(BuildersHut.class) && 
-                            !p.getMunicipal().getStructures().get(BuildersHut.class).isEmpty()){
-                        for(Structure st : p.getMunicipal().getStructures().get(BuildersHut.class)){
-                            BuildersHut hut = (BuildersHut) st;
-                            if(hut.hasMaterials(newWall.getClass())){
-                                e.getPlayer().sendMessage("Your NPCs will start work imediatly");
-                                return;
-                            }
-                        }
-                        e.getPlayer().sendMessage("You dont have the needed resources to build this structure fully");
-                    }
-                    final Polygon bounds = p.getBase();
-                    int Xmax = Ints.max(bounds.xpoints);
-                    int Zmax = Ints.max(bounds.ypoints);
-                    for(int x = Ints.min(bounds.xpoints); x <= Xmax; x++){
-                        for(int z = Ints.min(bounds.ypoints); z <= Zmax; z++){
-                            if(bounds.contains(new Point(x,z)) || (bounds.contains(new Point(x-1,z)) || bounds.contains(new Point(x,z-1)) || bounds.contains(new Point(x-1,z-1)))){
-                                Location l = new Location(p.getCenter().getWorld(), x, p.getCenter().getBlockY()-1, z);
-                                l.getBlock().setType(Material.PRISMARINE);
-                            }
-                        }
-                    }
-                }else if(e.getName().equalsIgnoreCase("Corner")){
-                    Wall newWall = new Wall(p, WallType.CORNER);
-                    newWall.setEmpty(false);
-                    Plot.getAllPlots().remove(p);
-                    Plot.getAllPlots().add(newWall);
-                    pd.getPlots().remove(p);
-                    pd.getPlots().add(newWall);
-                    if(p.getMunicipal() != null){
-                        p.getMunicipal().getWalls().getParts().get(WallType.CORNER).add(newWall);
-                    }
-                    e.getPlayer().sendMessage("You have assigned this plot to be a wall segments.");
-                    if(p.getMunicipal() == null){
-                        e.getPlayer().sendMessage("This building is not part of a municipal, you have no NPCs to help you build it!");
-                    }else if(p.getMunicipal().getStructures().containsKey(BuildersHut.class) && 
-                            !p.getMunicipal().getStructures().get(BuildersHut.class).isEmpty()){
-                        for(Structure st : p.getMunicipal().getStructures().get(BuildersHut.class)){
-                            BuildersHut hut = (BuildersHut) st;
-                            if(hut.hasMaterials(newWall.getClass())){
-                                e.getPlayer().sendMessage("Your NPCs will start work imediatly");
-                                return;
-                            }
-                        }
-                        e.getPlayer().sendMessage("You dont have the needed resources to build this structure fully");
-                    }
-                    final Polygon bounds = p.getBase();
-                    int Xmax = Ints.max(bounds.xpoints);
-                    int Zmax = Ints.max(bounds.ypoints);
-                    for(int x = Ints.min(bounds.xpoints); x <= Xmax; x++){
-                        for(int z = Ints.min(bounds.ypoints); z <= Zmax; z++){
-                            if(bounds.contains(new Point(x,z)) || (bounds.contains(new Point(x-1,z)) || bounds.contains(new Point(x,z-1)) || bounds.contains(new Point(x-1,z-1)))){
-                                Location l = new Location(p.getCenter().getWorld(), x, p.getCenter().getBlockY()-1, z);
-                                l.getBlock().setType(Material.SMOOTH_BRICK);
-                            }
-                        }
-                    }
-                }else if(e.getName().equalsIgnoreCase("Tower")){
-                    Wall newWall = new Wall(p, WallType.TOWER);
-                    newWall.setEmpty(false);
-                    Plot.getAllPlots().remove(p);
-                    Plot.getAllPlots().add(newWall);
-                    pd.getPlots().remove(p);
-                    pd.getPlots().add(newWall);
-                    if(p.getMunicipal() != null){
-                        p.getMunicipal().getWalls().getParts().get(WallType.TOWER).add(newWall);
-                    }
-                    e.getPlayer().sendMessage("You have assigned this plot to be a wall segments.");
-                    if(p.getMunicipal() == null){
-                        e.getPlayer().sendMessage("This building is not part of a municipal, you have no NPCs to help you build it!");
-                    }else if(p.getMunicipal().getStructures().containsKey(BuildersHut.class) && 
-                            !p.getMunicipal().getStructures().get(BuildersHut.class).isEmpty()){
-                        for(Structure st : p.getMunicipal().getStructures().get(BuildersHut.class)){
-                            BuildersHut hut = (BuildersHut) st;
-                            if(hut.hasMaterials(newWall.getClass())){
-                                e.getPlayer().sendMessage("Your NPCs will start work imediatly");
-                                return;
-                            }
-                        }
-                        e.getPlayer().sendMessage("You dont have the needed resources to build this structure fully");
-                    }
-                    final Polygon bounds = p.getBase();
-                    int Xmax = Ints.max(bounds.xpoints);
-                    int Zmax = Ints.max(bounds.ypoints);
-                    for(int x = Ints.min(bounds.xpoints); x <= Xmax; x++){
-                        for(int z = Ints.min(bounds.ypoints); z <= Zmax; z++){
-                            if(bounds.contains(new Point(x,z)) || (bounds.contains(new Point(x-1,z)) || bounds.contains(new Point(x,z-1)) || bounds.contains(new Point(x-1,z-1)))){
-                                Location l = new Location(p.getCenter().getWorld(), x, p.getCenter().getBlockY()-1, z);
-                                l.getBlock().setType(Material.BRICK);
                             }
                         }
                     }

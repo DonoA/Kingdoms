@@ -23,12 +23,14 @@ import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonArmor;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonItemStack;
 import io.dallen.Kingdoms.Storage.SaveType;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
  *
  * @author Donovan Allen
  */
+@NoArgsConstructor
 public class JsonInventory implements SaveType.NativeType{
     
     @Getter @Setter
@@ -37,9 +39,7 @@ public class JsonInventory implements SaveType.NativeType{
     @Getter @Setter
     private JsonArmor armor;
     
-    public JsonInventory(){
-        
-    }
+    
     
     @Override
     public <T> T toJavaObject() {

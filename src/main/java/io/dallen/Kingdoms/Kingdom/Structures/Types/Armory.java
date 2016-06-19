@@ -70,7 +70,7 @@ public class Armory extends Plot implements Storage{
     private ChestGUI BuildMenu;
     
     public Armory(Plot p) {
-        super(p.getBase(), p.getCenter(), p.getOwner(), p.getMunicipal());
+        super(p);
         Storage = new BuildingVault(18,18*64, this);
         EditPlot = new ChestGUI("Castle", 2, new MenuHandler()){{
             setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");

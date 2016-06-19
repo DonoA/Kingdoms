@@ -134,7 +134,7 @@ public class DataLoadHelper implements Listener{
     
     @SuppressWarnings("unchecked")
     public static boolean LoadKingdomData(){
-        HashMap<String, Object> PlotObjs = DBmanager.loadAllObj(Plot.class, new File(Main.getPlugin().getDataFolder() + DBmanager.getFileSep() + "savedata" + DBmanager.getFileSep() + "plots"));
+        HashMap<String, Object> PlotObjs = DBmanager.loadAllObj(JsonStructure.class, new File(Main.getPlugin().getDataFolder() + DBmanager.getFileSep() + "savedata" + DBmanager.getFileSep() + "plots"));
         for(Object o : PlotObjs.values()){
             try {
                 JsonStructure js = (JsonStructure) o;
@@ -142,13 +142,18 @@ public class DataLoadHelper implements Listener{
                 Plot p = (Plot) type.cast(js.toJavaObject());
                 for(Entry<String, Object> e : js.getAttr().entrySet()){
                     Object obj = e.getValue();
-                    if(SaveType.class.isAssignableFrom(e.getValue().getClass())){
-                        obj = e.getValue().getClass().getMethod("toJavaObject").invoke(SaveType.NativeType.class.cast(e.getValue()));
+                    if(e.getValue() instanceof SaveType.NativeType){
+                        obj = ((SaveType.NativeType) e.getValue()).toJavaObject();
                     }
-                    type.getMethod("set"+capitalize(e.getKey()), Object.class).invoke(p, obj);
+                    Field dat = type.getField(e.getKey());
+                    if(!dat.isAccessible())
+                        dat.setAccessible(true);
+                    dat.set(p, obj);
                 }
                 Plot.getAllPlots().add(p);
-            } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+            } catch (ClassNotFoundException | SecurityException | IllegalAccessException | IllegalArgumentException ex) {
+                Logger.getLogger(DataLoadHelper.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (NoSuchFieldException ex) {
                 Logger.getLogger(DataLoadHelper.class.getName()).log(Level.SEVERE, null, ex);
             }
         }

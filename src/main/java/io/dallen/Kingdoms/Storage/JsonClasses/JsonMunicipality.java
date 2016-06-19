@@ -58,7 +58,7 @@ public class JsonMunicipality implements SaveType.NativeType.JsonType{
     private JsonEllipse Influence;
     
     @Getter @Setter
-    private MunicipalType type;
+    private String type;
     
     @Getter @Setter
     private int kingdom;

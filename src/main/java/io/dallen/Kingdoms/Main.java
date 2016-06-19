@@ -52,6 +52,7 @@ import io.dallen.Kingdoms.Util.ChestGUI.ChestGUIHandler;
 import io.dallen.Kingdoms.Util.DBmanager;
 import io.dallen.Kingdoms.Util.HotbarMenu.HotbarHandler;
 import java.io.File;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -191,6 +192,7 @@ public class Main extends JavaPlugin {
     public void onEnable(){ //Called pre-server enable
         Plugin = this;
         this.saveDefaultConfig();
+        DataLoadHelper.LoadKingdomData();
         World mainworld = Bukkit.getWorld(this.getConfig().getString("MainWorld"));
         Reflections reflections = new Reflections("io.dallen.Kingdoms");
         Set<Class<? extends Listener>> lstn = reflections.getSubTypesOf(Listener.class);
@@ -219,7 +221,7 @@ public class Main extends JavaPlugin {
     
     @Override
     public void onDisable(){
-        DataLoadHelper.SaveKingdomData();
+//        DataLoadHelper.SaveKingdomData();
     }
     
     /*

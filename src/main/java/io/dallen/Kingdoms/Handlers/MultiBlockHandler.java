@@ -49,6 +49,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -227,11 +228,11 @@ public class MultiBlockHandler implements Listener{
                                         Zs[i] = (int) p.getY();
                                         i++;
                                     }
-                                    Plot NewPlot = new Plot(new Polygon(Xs, Zs, corners.size()), 
-                                            LocationUtil.asLocation(LocationUtil.calcCenter(corners.toArray(new Point[corners.size()])), 
-                                            l.getWorld(), l.getBlockY()), p, null);
+                                    Location cent = LocationUtil.asLocation(LocationUtil.calcCenter(corners.toArray(new Point[corners.size()])), l.getWorld(), l.getBlockY());
+                                    Polygon base = new Polygon(Xs, Zs, corners.size());
+                                    NewPlot np = new NewPlot(cent, base);
                                     for(Plot plot : Plot.getAllPlots()){
-                                        if(plot.getCenter().equals(NewPlot.getCenter())){
+                                        if(plot.getCenter().equals(cent )){
                                             if(plot.getOwner().equals(p)){
                                                 p.sendMessage("You already own this plot!");
                                             }else{
@@ -240,8 +241,10 @@ public class MultiBlockHandler implements Listener{
                                             return;
                                         }
                                     }
-                                    if(NewPlot.isValid()){
-                                        NewPlotMenu.setOption(1, new ItemStack(Material.ENCHANTED_BOOK), "Confirm and Claim Plot", NewPlot, "Plot size: " + -1 + ", " + -1).sendMenu(p);
+                                    if(np.isValid()){
+                                        NewPlotMenu.setOption(1, new ItemStack(Material.ENCHANTED_BOOK), "Confirm and Claim Plot", np, 
+                                                "Plot size: " + (int) Math.round(np.Base.getBounds().getMaxX() - np.Base.getBounds().getMinX()) + 
+                                                        ", " + (int) Math.round(np.Base.getBounds().getMaxY() - np.Base.getBounds().getMinY())).sendMenu(p);
                                     }else{
                                         p.sendMessage("Invalid Plot");
                                     }
@@ -271,7 +274,19 @@ public class MultiBlockHandler implements Listener{
         }
     }
     
-    
+    @AllArgsConstructor
+    public static class NewPlot{
+        private Location center;
+        private Polygon Base;
+        public boolean isValid(){
+            for(Plot p : Plot.getAllPlots()){
+                if(p.getBase().intersects(Base.getBounds2D())){
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
     
     
     
@@ -281,7 +296,8 @@ public class MultiBlockHandler implements Listener{
         public void onOptionClick(OptionClickEvent e){
             if(e.getMenuName().equalsIgnoreCase("New Plot")){
                 if(e.getName().equalsIgnoreCase("Confirm and Claim Plot")){
-                    final Plot p = (Plot) e.getData();
+                    NewPlot np = (NewPlot) e.getData();
+                    Plot p = new Plot(np.Base, np.center, e.getPlayer());
                     Plot.getAllPlots().add(p);
                     PlayerData pd = PlayerData.getData(e.getPlayer());
                     pd.getPlots().add(p);

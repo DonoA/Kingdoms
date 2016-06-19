@@ -32,6 +32,7 @@ import io.dallen.Kingdoms.Util.LocationUtil;
 import java.awt.Polygon;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map.Entry;
 import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.boss.BossBar;
@@ -75,7 +76,17 @@ public class WallSystem implements SaveType.Saveable{
     }
     
     public JsonWallSystem toJsonObject(){
-        throw new UnsupportedOperationException();
+        JsonWallSystem jws = new JsonWallSystem();
+        HashMap<String, ArrayList<Integer>> pts = new HashMap<String, ArrayList<Integer>>();
+        for(Entry<WallType, ArrayList<Wall>> e : Parts.entrySet()){
+            ArrayList<Integer> ids = new ArrayList<Integer>();
+            for(Wall w : e.getValue()){
+                ids.add(w.getStructureID());
+            }
+            pts.put(e.getKey().name(), ids);
+        }
+        jws.setParts(pts);
+        return jws;
     }
     
     public static enum WallType {
@@ -104,7 +115,7 @@ public class WallSystem implements SaveType.Saveable{
         
         
         public Wall(Plot p, WallType type){
-            super(p.getBase(), p.getCenter(), p.getOwner(), p.getMunicipal());
+            super(p);
             this.type = type;
             EditPlot = new ChestGUI("Training Ground", 2, new MenuHandler()){{
                 setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");

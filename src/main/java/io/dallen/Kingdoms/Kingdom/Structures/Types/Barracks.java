@@ -56,7 +56,7 @@ public class Barracks extends Plot{
     private ChestGUI BuildMenu;
     
     public Barracks(Plot p) {
-        super(p.getBase(), p.getCenter(), p.getOwner(), p.getMunicipal());
+        super(p);
         maxCapacity = p.getArea() * 100;
         currentCapacity = 0;
         amountFull = 0;

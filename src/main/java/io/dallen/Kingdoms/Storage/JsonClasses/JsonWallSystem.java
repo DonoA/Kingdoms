@@ -20,9 +20,14 @@
 package io.dallen.Kingdoms.Storage.JsonClasses;
 
 import io.dallen.Kingdoms.Kingdom.Structures.Types.WallSystem;
+import io.dallen.Kingdoms.Kingdom.Structures.Types.WallSystem.WallType;
 import io.dallen.Kingdoms.Storage.PlayerData;
 import io.dallen.Kingdoms.Storage.SaveType;
+import java.util.ArrayList;
+import java.util.HashMap;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  *
@@ -30,6 +35,9 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor
 public class JsonWallSystem implements SaveType.NativeType.JsonType{
+
+    @Getter @Setter
+    private HashMap<String, ArrayList<Integer>> Parts = new HashMap<String, ArrayList<Integer>>();
     
     @Override
     public WallSystem toJavaObject(){

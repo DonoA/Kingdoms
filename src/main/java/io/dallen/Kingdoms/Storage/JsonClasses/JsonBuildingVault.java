@@ -26,12 +26,14 @@ import io.dallen.Kingdoms.Kingdom.Vaults.BuildingVault;
 import io.dallen.Kingdoms.Kingdom.Vaults.PlayerVault;
 import io.dallen.Kingdoms.Storage.SaveType;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
  *
  * @author Donovan Allen
  */
+@NoArgsConstructor
 public class JsonBuildingVault implements SaveType.NativeType.JsonType{
     @Getter @Setter
     private int owner;

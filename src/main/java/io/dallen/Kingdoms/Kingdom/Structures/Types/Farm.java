@@ -55,7 +55,7 @@ public class Farm extends Plot implements Storage{
     private ChestGUI BuildMenu;
     
     public Farm(Plot p) {
-        super(p.getBase(), p.getCenter(), p.getOwner(), p.getMunicipal());
+        super(p);
         Storage = new BuildingVault(18, 18 * 100, this);
         EditPlot = new ChestGUI("Builders Hut", 2, new MenuHandler()){{
             setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");

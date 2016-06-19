@@ -22,12 +22,14 @@ package io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives;
 import io.dallen.Kingdoms.Storage.SaveType;
 import java.awt.Polygon;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
  *
  * @author Donovan Allen
  */
+@NoArgsConstructor
 public class JsonPolygon implements SaveType.NativeType{
     
     @Getter @Setter

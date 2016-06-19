@@ -48,6 +48,8 @@ import org.reflections.Reflections;
  */
 public class Municipality implements SaveType.Saveable{
     
+    private static int currID = 0;
+    
     @Getter
     private int MunicipalID;
     
@@ -91,7 +93,8 @@ public class Municipality implements SaveType.Saveable{
         }
         Structures.put(Plot.class, new ArrayList<Structure>());
         Structures.get(TownHall.class).add(center);
-        this.MunicipalID = allMunicipals.size();
+        this.MunicipalID = currID;
+        currID++;
         allMunicipals.add(this);
     }
     
@@ -101,7 +104,12 @@ public class Municipality implements SaveType.Saveable{
     
     public static enum MunicipalType{
         // DAEN
-        VILLAGE(100), MANOR(150), TOWN(200), CITY(250), KEEP(300), CITIDEL(400);
+        VILLAGE(100), 
+        MANOR(150), 
+        TOWN(200), 
+        CITY(250), 
+        KEEP(300), 
+        CITIDEL(400);
         
         @Getter
         private int radius;
@@ -146,7 +154,11 @@ public class Municipality implements SaveType.Saveable{
     @Override
     public JsonMunicipality toJsonObject(){
         JsonMunicipality jm = new JsonMunicipality();
-        jm.setBase(new JsonPolygon(Base));
+        if(Base != null){
+            jm.setBase(new JsonPolygon(Base));
+        }else{
+            jm.setBase(null);
+        }
         jm.setCenter(Center.getStructureID());
         jm.setCreation(creation);
         jm.setInfluence(new JsonEllipse(Influence));
@@ -155,8 +167,7 @@ public class Municipality implements SaveType.Saveable{
         else
             jm.setKingdom(-1);
         jm.setMunicipalID(MunicipalID);
-        
-        jm.setType(type);
+        jm.setType(type.name());
         jm.setWalls(walls.toJsonObject());
         return jm;
     }

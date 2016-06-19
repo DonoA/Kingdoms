@@ -52,7 +52,7 @@ public class Castle extends Plot{
     private ChestGUI BuildMenu;
     
     public Castle(Plot p) {
-        super(p.getBase(), p.getCenter(), p.getOwner(), p.getMunicipal());
+        super(p);
         EditPlot = new ChestGUI("Castle", 2, new MenuHandler()){{
             setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
             setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
