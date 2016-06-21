@@ -24,7 +24,9 @@ import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonItemStack;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonPolygon;
 import io.dallen.Kingdoms.Kingdom.Vaults.BuildingVault;
 import io.dallen.Kingdoms.Kingdom.Vaults.PlayerVault;
+import io.dallen.Kingdoms.Storage.MaterialWrapper;
 import io.dallen.Kingdoms.Storage.SaveType;
+import java.util.ArrayList;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -77,7 +79,24 @@ public class JsonBuildingVault implements SaveType.NativeType.JsonType{
     
     @Override
     public BuildingVault toJavaObject(){
-        throw new UnsupportedOperationException();
+        BuildingVault bv = new BuildingVault((int) uniqueSize, capacity);
+        bv.setFullSlots(fullSlots);
+        bv.setAmountFull(amountFull);
+        if(floorPlan != null){
+            bv.setFloorPlan(floorPlan.toJavaObject());
+        }else{
+            bv.setFloorPlan(null);
+        }
+        ArrayList<MaterialWrapper> content = new ArrayList<MaterialWrapper>();
+        for(JsonItemStack jis : contents){
+            if(jis != null){
+                content.add(new MaterialWrapper(jis.toJavaObject()));
+            }else{
+                content.add(null);
+            }
+        }
+        bv.setContents(content.toArray(new MaterialWrapper[] {}));
+        return bv;
     }
     
 }

@@ -63,7 +63,7 @@ public abstract class Structure implements SaveType.Saveable{
     private int Length; // Z
     @Getter @Setter
     private Polygon Base; // Z
-    @Getter
+    @Getter @Setter
     private Location Center;
     @Getter @Setter
     private OfflinePlayer Owner;

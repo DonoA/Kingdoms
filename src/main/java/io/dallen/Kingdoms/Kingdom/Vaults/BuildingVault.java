@@ -30,6 +30,7 @@ import io.dallen.Kingdoms.Storage.SaveType;
 import java.awt.Polygon;
 import java.util.ArrayList;
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -42,25 +43,25 @@ import org.bukkit.inventory.ItemStack;
  * @author donoa_000
  */
 public class BuildingVault implements Vault, SaveType.Saveable{ // Will start pile from center and add blocks outward
-    @Getter
+    @Getter @Setter
     private Structure owner;
     
     @Getter
     private double uniqueSize;
     
-    @Getter
+    @Getter @Setter
     private int fullSlots;
     
     @Getter
     private int capacity;
     
-    @Getter
+    @Getter @Setter
     private int amountFull;
     
-    @Getter
+    @Getter @Setter
     private Polygon floorPlan;
     
-    @Getter
+    @Getter @Setter
     private MaterialWrapper[] contents;
     
     @Getter
@@ -68,6 +69,12 @@ public class BuildingVault implements Vault, SaveType.Saveable{ // Will start pi
     
     public BuildingVault(int uniqueSize, int capacity, Structure owner) {
         this.owner = owner;
+        this.uniqueSize = uniqueSize;
+        this.capacity = capacity;
+        contents = new MaterialWrapper[uniqueSize];
+    }
+    
+    public BuildingVault(int uniqueSize, int capacity) {
         this.uniqueSize = uniqueSize;
         this.capacity = capacity;
         contents = new MaterialWrapper[uniqueSize];

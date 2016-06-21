@@ -19,6 +19,11 @@
  */
 package io.dallen.Kingdoms.Storage;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 /**
  *
  * @author Donovan Allen
@@ -36,5 +41,14 @@ public interface SaveType {
     
     public static interface Saveable extends SaveType{
         public <T extends NativeType> T toJsonObject();
+    }
+    
+    @AllArgsConstructor @NoArgsConstructor
+    public static class SaveAttr{
+        @Getter @Setter
+        private Class type;
+        
+        @Getter @Setter
+        private Object data;
     }
 }

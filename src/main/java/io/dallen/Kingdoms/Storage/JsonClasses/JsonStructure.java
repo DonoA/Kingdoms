@@ -19,15 +19,21 @@
  */
 package io.dallen.Kingdoms.Storage.JsonClasses;
 
+import io.dallen.Kingdoms.Kingdom.Plot;
 import io.dallen.Kingdoms.Kingdom.Structures.Structure;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonLocation;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonPolygon;
 import io.dallen.Kingdoms.Storage.SaveType;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.bukkit.Bukkit;
 
 /**
  *
@@ -66,7 +72,27 @@ public class JsonStructure implements SaveType.NativeType.JsonType{
     
     @Override
     public Structure toJavaObject(){
-        throw new UnsupportedOperationException();
+        try {
+            Plot p = new Plot();
+            p.setLength(Length);
+            p.setWidth(Width);
+            p.setHeight(Height);
+            if(Base != null){
+                p.setBase(Base.toJavaObject());
+            }else{
+                p.setBase(null);
+            }
+            p.setCenter(Center.toJavaObject());
+            p.setOwner(Bukkit.getOfflinePlayer(Owner));
+            p.setStructureID(StructureID);
+            Class structure = Class.forName(Type);
+            Constructor constructor = structure.getConstructor(new Class[] {Plot.class});
+            Plot newPlot = (Plot) constructor.newInstance(p);
+            return newPlot;
+        } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | ClassNotFoundException ex) {
+            Logger.getLogger(JsonStructure.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
     
 }

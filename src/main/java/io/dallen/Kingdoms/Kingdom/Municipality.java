@@ -159,6 +159,12 @@ public class Municipality implements SaveType.Saveable{
         }else{
             jm.setBase(null);
         }
+        jm.setStructures(new ArrayList<Integer>());
+        for(ArrayList<Structure> st : Structures.values()){
+            for(Structure s : st){
+                jm.getStructures().add(s.getStructureID());
+            }
+        }
         jm.setCenter(Center.getStructureID());
         jm.setCreation(creation);
         jm.setInfluence(new JsonEllipse(Influence));

@@ -49,6 +49,7 @@ import org.bukkit.inventory.ItemStack;
  *
  * @author donoa_000
  */
+
 public class Plot extends Structure implements Listener{
     
     @Getter
@@ -74,6 +75,12 @@ public class Plot extends Structure implements Listener{
         super(p.getBase(), p.getCenter(), p.getOwner(), p.getStructureID());
         defEditMenu();
     }
+    
+    public Plot() {
+        super();
+        defEditMenu();
+    }
+    
     
     protected void defEditMenu(){
         EditPlot = new ChestGUI("Set Plot Type", 4, new MenuHandler()) {{

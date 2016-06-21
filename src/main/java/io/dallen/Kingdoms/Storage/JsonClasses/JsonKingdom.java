@@ -55,7 +55,7 @@ public class JsonKingdom implements SaveType.NativeType.JsonType{
     
     @Override
     public Kingdom toJavaObject(){
-        throw new UnsupportedOperationException("Not supported for LeatherArmorMeta");
+        throw new UnsupportedOperationException();
     }
     
     @NoArgsConstructor

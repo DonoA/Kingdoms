@@ -118,6 +118,7 @@ public class Main extends JavaPlugin {
             @Override
             @SuppressWarnings("unchecked")
             public void run(){
+                DataLoadHelper.LoadKingdomData();
                 protocolManager = ProtocolLibrary.getProtocolManager();
                 SkinPacketHandler SkinHandler = new SkinPacketHandler();
                 protocolManager.addPacketListener(SkinHandler.getAdapter());
@@ -192,7 +193,6 @@ public class Main extends JavaPlugin {
     public void onEnable(){ //Called pre-server enable
         Plugin = this;
         this.saveDefaultConfig();
-        DataLoadHelper.LoadKingdomData();
         World mainworld = Bukkit.getWorld(this.getConfig().getString("MainWorld"));
         Reflections reflections = new Reflections("io.dallen.Kingdoms");
         Set<Class<? extends Listener>> lstn = reflections.getSubTypesOf(Listener.class);

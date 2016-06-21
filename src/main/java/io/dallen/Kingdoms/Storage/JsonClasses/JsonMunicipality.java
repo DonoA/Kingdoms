@@ -40,7 +40,7 @@ import lombok.Setter;
 public class JsonMunicipality implements SaveType.NativeType.JsonType{
     
     @Getter @Setter
-    private HashMap<String, ArrayList<Structure>> Structures;
+    private ArrayList<Integer> Structures;
     
     @Getter @Setter
     private int Center;
