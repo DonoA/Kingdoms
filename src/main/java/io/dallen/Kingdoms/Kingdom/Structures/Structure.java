@@ -190,7 +190,7 @@ public abstract class Structure implements SaveType.Saveable{
                     setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Default Wall 1");
                     setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Default Wall 2");
                     setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Other");
-                }});
+                }}, Structure.this);
             }
         }
     }

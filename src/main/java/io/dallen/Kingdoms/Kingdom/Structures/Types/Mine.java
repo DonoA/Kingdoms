@@ -25,6 +25,7 @@ import io.dallen.Kingdoms.Kingdom.Structures.Storage;
 import io.dallen.Kingdoms.Kingdom.Vaults.BuildingVault;
 import io.dallen.Kingdoms.Main;
 import io.dallen.Kingdoms.NPCs.Traits.Builder;
+import io.dallen.Kingdoms.NPCs.Traits.Miner;
 import io.dallen.Kingdoms.Util.Annotations.SaveData;
 import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.LocationUtil;
@@ -56,6 +57,8 @@ public class Mine extends Plot implements Storage{
     
     private Location currentBlock;
     
+    private MineTask mineTask = null;
+    
     @Getter
     private ChestGUI EditPlot;
     @Getter
@@ -70,7 +73,6 @@ public class Mine extends Plot implements Storage{
             setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
             setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
         }};
-        EditPlot.setMenuData(this);
         BuildMenu = new ChestGUI("Build Options", 2, new MenuHandler()){{
             setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Light Builder's Hut");
             setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Dark Builder's Hut");
@@ -115,11 +117,15 @@ public class Mine extends Plot implements Storage{
             if(e.getMenuName().equals(EditPlot.getName())){
                 if(e.getName().equals("Start Mining")){
                     digging = !digging;
-                    
+                    EditPlot.setOption(0*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Stop Mining");
+                    if(mineTask == null){
+                        mineTask = new MineTask(getCenter(), 10);
+                    }
                 }else if(e.getName().equals("Stop Mining")){
-                    
+                    digging = !digging;
+                    EditPlot.setOption(0*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Start Mining");
                 }else{
-                    BuildingHandler.chestBuildOptions(e, BuildMenu);
+                    BuildingHandler.chestBuildOptions(e, BuildMenu, Mine.this);
                 }
             }else if(e.getMenuName().equals(BuildMenu.getName())){
                 if(e.getName().equalsIgnoreCase("Other")){
@@ -131,7 +137,7 @@ public class Mine extends Plot implements Storage{
         }
     }
     
-    public static class BuildTask implements Runnable{
+    public class MineTask implements Runnable{
         
         private int x = 0;
         
@@ -139,54 +145,51 @@ public class Mine extends Plot implements Storage{
         
         private int z = 0;
         
-        private Mine Building;
-        
         private Location startCorner;
         
-        private NPC Builder;
+        private NPC Miner;
         
         private boolean running = true;
         
         private int step = 64;
         
-        public BuildTask(Mine building, Location start, int speed, BuildersHut BuildHut){
-            LogUtil.printDebug(LocationUtil.asPoint(BuildHut.getCenter()));
-            Builder = Main.getNPCs().spawnBuilder("BingRazor", BuildHut.getCenter());
-            Builder.getNavigator().setTarget(start);
-            this.Building = building;
+        public MineTask(Location start, int speed){
+            LogUtil.printDebug(LocationUtil.asPoint(Mine.this.getCenter()));
+            Miner = Main.getNPCs().spawnBuilder("BingRazor", Mine.this.getCenter());
+            Miner.getNavigator().setTarget(start);
             this.startCorner = start;
             Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.getPlugin(), this, speed, speed);
         }
         
         @Override
         public void run(){
-            if(!Builder.getNavigator().isNavigating()){
+            if(!Miner.getNavigator().isNavigating()){
                 if(running){
                     if(step == 0){
-                        Builder.getTrait(Builder.class).getSupplies(startCorner);
+                        Miner.getTrait(Miner.class).getSupplies(startCorner);
                         step = 64;
                     }
     //                step--;
     //                LogUtil.printDebug(x + ", " + y + ", " + z);
-                    if(x < Building.getWidth() - (Building.getWidth() % 2 == 0 ? 1 : 0)){
+                    if(x < Mine.this.getWidth() - (Mine.this.getWidth() % 2 == 0 ? 1 : 0)){
                         Location nLoc = startCorner.clone().add(x,y,z);
                         Collection<ItemStack> drops = nLoc.getBlock().getDrops();
                         for(ItemStack drop : drops){
-                            Building.getStorage().addItem(drop);
+                            Mine.this.getStorage().addItem(drop);
                         }
                         nLoc.getBlock().setType(Material.AIR);
-                        Builder.teleport(nLoc.add(0, 1, 0), PlayerTeleportEvent.TeleportCause.PLUGIN);
+                        Miner.teleport(nLoc.add(0, 1, 0), PlayerTeleportEvent.TeleportCause.PLUGIN);
                         x++;
                     }else{
                         x = 0;
-                        if(z < Building.getLength() - 1){ // this is a bit strange, it seems to work tho
+                        if(z < Mine.this.getLength() - 1){ // this is a bit strange, it seems to work tho
                             Location nLoc = startCorner.clone().add(x,y,z);
                             Collection<ItemStack> drops = nLoc.getBlock().getDrops();
                             for(ItemStack drop : drops){
-                                Building.getStorage().addItem(drop);
+                                Mine.this.getStorage().addItem(drop);
                             }
                             nLoc.getBlock().setType(Material.AIR);
-                            Builder.teleport(nLoc.add(0, 1, 0), PlayerTeleportEvent.TeleportCause.PLUGIN);
+                            Miner.teleport(nLoc.add(0, 1, 0), PlayerTeleportEvent.TeleportCause.PLUGIN);
                             z++;
                         }else{
                             z = 0;
@@ -194,10 +197,10 @@ public class Mine extends Plot implements Storage{
                                 Location nLoc = startCorner.clone().add(x,y,z);
                                 Collection<ItemStack> drops = nLoc.getBlock().getDrops();
                                 for(ItemStack drop : drops){
-                                    Building.getStorage().addItem(drop);
+                                    Mine.this.getStorage().addItem(drop);
                                 }
                                 nLoc.getBlock().setType(Material.AIR);
-                                Builder.teleport(nLoc.add(0, 1, 0), PlayerTeleportEvent.TeleportCause.PLUGIN);
+                                Miner.teleport(nLoc.add(0, 1, 0), PlayerTeleportEvent.TeleportCause.PLUGIN);
                                 y--;
                             }else{
                                 running = false;
@@ -205,7 +208,7 @@ public class Mine extends Plot implements Storage{
                         }
                     }
                 }else{
-                    Builder.despawn();
+                    Miner.despawn();
                 }
             }
         }

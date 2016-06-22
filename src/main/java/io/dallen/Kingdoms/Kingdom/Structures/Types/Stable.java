@@ -62,7 +62,7 @@ public class Stable extends Plot{
             setOption(4, new ItemStack(Material.ENCHANTED_BOOK), "Mount Army Horse");
             setOption(5, new ItemStack(Material.ENCHANTED_BOOK), "Mount King Horse");
         }};
-        EditPlot.setMenuData(this);
+        
         BuildMenu = new ChestGUI("Build Options", 2, new MenuHandler()){{
             setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Light Builder's Hut");
             setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Dark Builder's Hut");
@@ -91,7 +91,7 @@ public class Stable extends Plot{
                     horse.setOwner((AnimalTamer) e.getPlayer());
                     horse.setPassenger(e.getPlayer());
                 }else{
-                    BuildingHandler.chestBuildOptions(e, BuildMenu);
+                    BuildingHandler.chestBuildOptions(e, BuildMenu, Stable.this);
                 }
             }else if(e.getMenuName().equals(BuildMenu.getName())){
                 if(e.getName().equalsIgnoreCase("Other")){

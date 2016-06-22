@@ -61,7 +61,7 @@ public class TrainingGround extends Plot{
             setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
             setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
         }};
-        EditPlot.setMenuData(this);
+        
         BuildMenu = new ChestGUI("Build Options", 2, new MenuHandler()){{
             setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Light Trainging Ground");
             setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Dark Training Ground");
@@ -117,7 +117,7 @@ public class TrainingGround extends Plot{
         }else{
             EditPlot.removeOption(2).removeOption(3).removeOption(4).removeOption(5);
         }
-        EditPlot.setMenuData(this);
+        
         EditPlot.sendMenu(p);
     }
     
@@ -126,17 +126,16 @@ public class TrainingGround extends Plot{
         @Override
         public void onOptionClick(OptionClickEvent e){
             if(e.getMenuName().equalsIgnoreCase("Training Ground")){
-                TrainingGround trg = (TrainingGround) e.getMenuData();
                 if(e.getName().equalsIgnoreCase("Train Archer")){
-                    Main.getNPCs().spawnSoldier("Dallen", trg.getCenter(), trg.getMunicipal(), SoldierType.ARCHER);
+                    Main.getNPCs().spawnSoldier("Dallen", getCenter(), getMunicipal(), SoldierType.ARCHER);
                 }else if(e.getName().equalsIgnoreCase("Train Infantry")){
-                    Main.getNPCs().spawnSoldier("Dallen", trg.getCenter(), trg.getMunicipal(), SoldierType.INFANTRY);
+                    Main.getNPCs().spawnSoldier("Dallen", getCenter(), getMunicipal(), SoldierType.INFANTRY);
                 }else if(e.getName().equalsIgnoreCase("Train Cavalry")){
-                    Main.getNPCs().spawnSoldier("Dallen", trg.getCenter(), trg.getMunicipal(), SoldierType.CAVALRY);
+                    Main.getNPCs().spawnSoldier("Dallen", getCenter(), getMunicipal(), SoldierType.CAVALRY);
                 }else if(e.getName().equalsIgnoreCase("Train General")){
-                    Main.getNPCs().spawnSoldier("Dallen", trg.getCenter(), trg.getMunicipal(), SoldierType.GENERAL);
+                    Main.getNPCs().spawnSoldier("Dallen", getCenter(), getMunicipal(), SoldierType.GENERAL);
                 }else{
-                    BuildingHandler.chestBuildOptions(e, BuildMenu);
+                    BuildingHandler.chestBuildOptions(e, BuildMenu, TrainingGround.this);
                 }
             }
         }

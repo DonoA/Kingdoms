@@ -122,7 +122,7 @@ public class WallSystem implements SaveType.Saveable{
                 setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
                 setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
             }};
-            EditPlot.setMenuData(this);
+            
             BuildMenu = new ChestGUI("Build Options", 2, new MenuHandler()){{
                 setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Tall Wall");
                 setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Short Wall");
@@ -141,7 +141,7 @@ public class WallSystem implements SaveType.Saveable{
         @Override
         public void sendEditMenu(Player p){
             EditPlot.setOption(4, new ItemStack(Material.ENCHANTED_BOOK), "Train Builder", this);
-            EditPlot.setMenuData(this);
+            
             EditPlot.sendMenu(p);
         }
 
@@ -150,7 +150,7 @@ public class WallSystem implements SaveType.Saveable{
             @Override
             public void onOptionClick(OptionClickEvent e){
                 if(e.getMenuName().equals(EditPlot.getName())){
-                    BuildingHandler.chestBuildOptions(e, BuildMenu);
+                    BuildingHandler.chestBuildOptions(e, BuildMenu, Wall.this);
                 }else if(e.getMenuName().equals(BuildMenu.getName())){
                     if(e.getName().equalsIgnoreCase("Other")){
                         BuildingHandler.getBuildChestHandler().onOptionClick(e);

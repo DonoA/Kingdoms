@@ -79,8 +79,6 @@ public class Blacksmith extends Plot implements Storage{
                 dwnPos++;
             }
         }};
-        EditPlot.setMenuData(this);
-        ForgeMenu.setMenuData(this);
     }
     
     public class MenuHandler implements OptionClickEventHandler{
@@ -88,7 +86,7 @@ public class Blacksmith extends Plot implements Storage{
         @Override
         public void onOptionClick(OptionClickEvent e){
             if(e.getMenuName().equals(EditPlot.getName())){
-                BuildingHandler.chestBuildOptions(e, BuildMenu);
+                BuildingHandler.chestBuildOptions(e, BuildMenu, Blacksmith.this);
             }else if(e.getMenuName().equals(BuildMenu.getName())){
                 if(e.getName().equalsIgnoreCase("Other")){
                     BuildingHandler.getBuildChestHandler().onOptionClick(e);
@@ -97,8 +95,7 @@ public class Blacksmith extends Plot implements Storage{
                 }
             }else if(e.getMenuName().equals(ForgeMenu.getName())){
                 ItemStack craft = new ItemStack(Material.valueOf(e.getName().replace(" ", "_")));
-                Blacksmith bs = (Blacksmith) e.getData();
-                bs.getStorage().addItem(craft);
+                Blacksmith.this.getStorage().addItem(craft);
                 e.getPlayer().sendMessage("Forged " + e.getName());
             }
         }

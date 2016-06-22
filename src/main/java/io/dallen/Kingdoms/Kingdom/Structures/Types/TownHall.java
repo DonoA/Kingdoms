@@ -50,7 +50,7 @@ public class TownHall extends Plot{
             setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
             setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
         }};
-        EditPlot.setMenuData(this);
+        
         BuildMenu = new ChestGUI("Build Options", 2, new MenuHandler()){{
             setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Light Builder's Hut");
             setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Dark Builder's Hut");
@@ -65,7 +65,7 @@ public class TownHall extends Plot{
         }else if(super.getKingdom() == null){
             EditPlot.setOption(4, new ItemStack(Material.ENCHANTED_BOOK), "Create Kingdom", this);
         }
-        EditPlot.setMenuData(this);
+        
         EditPlot.sendMenu(p);
     }
     
@@ -75,25 +75,24 @@ public class TownHall extends Plot{
         public void onOptionClick(OptionClickEvent e){
             if(e.getMenuName().equals(EditPlot.getName())){
                 if(e.getName().equalsIgnoreCase("Create Municipal")){
-                    final Plot th = (Plot) e.getData();
-                    th.createMucicpal();
-                    th.getMunicipal().setInfluence(new Ellipse2D.Double(th.getCenter().getBlockX()-th.getMunicipal().getType().getRadius()/2, 
-                                th.getCenter().getBlockZ()-th.getMunicipal().getType().getRadius()/2, th.getMunicipal().getType().getRadius(), 
-                                th.getMunicipal().getType().getRadius()));
-    //                e.getPlayer().teleport(th.getCenter());
-    //                final Ellipse2D cic = th.getMunicipal().getInfluence();
-    //                final Rectangle bounds = th.getMunicipal().getInfluence().getBounds();
+                    createMucicpal();
+                    getMunicipal().setInfluence(new Ellipse2D.Double(getCenter().getBlockX()-getMunicipal().getType().getRadius()/2, 
+                                getCenter().getBlockZ()-getMunicipal().getType().getRadius()/2, getMunicipal().getType().getRadius(), 
+                                getMunicipal().getType().getRadius()));
+    //                e.getPlayer().teleport(getCenter());
+    //                final Ellipse2D cic = getMunicipal().getInfluence();
+    //                final Rectangle bounds = getMunicipal().getInfluence().getBounds();
     //                int Xmax = (int) bounds.getMaxX();
     //                int Zmax = (int) bounds.getMaxY();
     //                for(int x = (int) bounds.getMinX(); x <= Xmax; x++){
     //                    for(int z = (int) bounds.getMinY(); z <= Zmax; z++){
     //                        if(cic.contains(new Point(x,z)) || (cic.contains(new Point(x-1,z)) || cic.contains(new Point(x,z-1)) || cic.contains(new Point(x-1,z-1)))){
-    //                            Location l = new Location(th.getCenter().getWorld(), x, th.getCenter().getBlockY()-1, z);
+    //                            Location l = new Location(getCenter().getWorld(), x, getCenter().getBlockY()-1, z);
     //                            l.getBlock().setType(Material.DIAMOND_BLOCK);
     //                        }
     //                    }
     //                }
-                    th.getMunicipal().setInfluenceCenter(th.getCenter());
+                    getMunicipal().setInfluenceCenter(getCenter());
                     e.getPlayer().sendMessage("Municipal Created!");
                     e.getPlayer().sendMessage("Adding Structures");
                     final Player plr = e.getPlayer();
@@ -101,33 +100,32 @@ public class TownHall extends Plot{
                         @Override
                         public void run(){
                             for(Plot p : Plot.getAllPlots()){
-                                if(p.getMunicipal() == null && th.getMunicipal().getInfluence().contains(LocationUtil.asPoint(p.getCenter()))){
+                                if(p.getMunicipal() == null && getMunicipal().getInfluence().contains(LocationUtil.asPoint(p.getCenter()))){
                                     plr.sendMessage("Added a plot to the municipal");
-                                    th.getMunicipal().addStructure(p);
+                                    getMunicipal().addStructure(p);
                                 }
                             }
                         }
                     }).start();
                 }else if(e.getName().equalsIgnoreCase("Create Kingdom")){
-                    final Plot th = (Plot) e.getData();
-                    th.getMunicipal().createKingdom();
-                    th.getKingdom().setInfluence(new Ellipse2D.Double(th.getMunicipal().getInfluenceCenter().getBlockX(), 
-                            th.getMunicipal().getInfluenceCenter().getBlockZ(), 250, 250));
+                    getMunicipal().createKingdom();
+                    getKingdom().setInfluence(new Ellipse2D.Double(getMunicipal().getInfluenceCenter().getBlockX(), 
+                            getMunicipal().getInfluenceCenter().getBlockZ(), 250, 250));
                     e.getPlayer().sendMessage("Kingdom Founded!");
                     e.getPlayer().sendMessage("Adding Municipals");
                     new Thread(new Runnable(){
                         @Override
                         public void run(){
                             for(Municipality m : Municipality.getAllMunicipals()){
-                                if(m.getKingdom() == null && th.getMunicipal().getInfluence().intersects(m.getInfluence().getBounds())){
+                                if(m.getKingdom() == null && getMunicipal().getInfluence().intersects(m.getInfluence().getBounds())){
                                     //This should ask before adding
-                                    th.getKingdom().getMunicipals().add(m);
+                                    getKingdom().getMunicipals().add(m);
                                 }
                             }
                         }
                     }).start();
                 }else{
-                    BuildingHandler.chestBuildOptions(e, BuildMenu);
+                    BuildingHandler.chestBuildOptions(e, BuildMenu, TownHall.this);
                 }
             }else if(e.getMenuName().equals(BuildMenu.getName())){
                 if(e.getName().equalsIgnoreCase("Other")){

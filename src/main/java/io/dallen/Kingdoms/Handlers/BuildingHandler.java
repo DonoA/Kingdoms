@@ -225,11 +225,11 @@ public class BuildingHandler implements Listener{
         }
     }
     
-    public static void chestBuildOptions(ChestGUI.OptionClickEvent e, ChestGUI buildMenu){
+    public static void chestBuildOptions(ChestGUI.OptionClickEvent e, ChestGUI buildMenu, Structure struc){
         if(e.getName().equalsIgnoreCase("Build")){
-                if(((Structure) e.getMenuData()).getMunicipal() != null && 
-                    !((Structure) e.getMenuData()).getMunicipal().getStructures().get(BuildersHut.class).isEmpty()){
-                    buildMenu.setMenuData(e.getMenuData());
+                if(struc.getMunicipal() != null && 
+                    !struc.getMunicipal().getStructures().get(BuildersHut.class).isEmpty()){
+                    buildMenu.setMenuData(struc);
                     e.setNext(buildMenu);
                 }else{
                     e.getPlayer().sendMessage("You have no NPCs to build this!");

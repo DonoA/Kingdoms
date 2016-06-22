@@ -58,7 +58,6 @@ public class Castle extends Plot{
             setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
             setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
         }};
-        EditPlot.setMenuData(this);
         BuildMenu = new ChestGUI("Build Options", 2, new MenuHandler()){{
             setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Light Builder's Hut");
             setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Dark Builder's Hut");
@@ -71,7 +70,7 @@ public class Castle extends Plot{
         @Override
         public void onOptionClick(OptionClickEvent e){
             if(e.getMenuName().equals(EditPlot.getName())){
-                BuildingHandler.chestBuildOptions(e, BuildMenu);
+                BuildingHandler.chestBuildOptions(e, BuildMenu, Castle.this);
             }else if(e.getMenuName().equals(BuildMenu.getName())){
                 if(e.getName().equalsIgnoreCase("Other")){
                     BuildingHandler.getBuildChestHandler().onOptionClick(e);

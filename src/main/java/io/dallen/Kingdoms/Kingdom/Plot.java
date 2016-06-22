@@ -141,7 +141,7 @@ public class Plot extends Structure implements Listener{
     
     @Override
     public void sendEditMenu(Player p){
-        EditPlot.setMenuData(this);
+        
         EditPlot.sendMenu(p);
     }
     
@@ -209,7 +209,7 @@ public class Plot extends Structure implements Listener{
                         }
                     }
                 }else if(e.getName().equalsIgnoreCase("Demolish") || e.getName().equalsIgnoreCase("Erase")){
-                    BuildingHandler.chestBuildOptions(e, null);
+                    BuildingHandler.chestBuildOptions(e, null, Plot.this); //WTF is this supposed to do
                 }else{
                     try {
                         Class structure = Class.forName("io.dallen.Kingdoms.Kingdom.Structures.Types."+e.getName().replace(" ", "").replace("'", ""));

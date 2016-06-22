@@ -62,7 +62,7 @@ public class Farm extends Plot implements Storage{
             setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
             setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
         }};
-        EditPlot.setMenuData(this);
+        
         BuildMenu = new ChestGUI("Build Options", 2, new MenuHandler()){{
             setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Light Builder's Hut");
             setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Dark Builder's Hut");
@@ -77,7 +77,7 @@ public class Farm extends Plot implements Storage{
             EditPlot.setOption(4, new ItemStack(Material.ENCHANTED_BOOK), "Stop Growing");
         else
             EditPlot.setOption(4, new ItemStack(Material.ENCHANTED_BOOK), "Start Growing");
-        EditPlot.setMenuData(this);
+        
         EditPlot.sendMenu(p);
     }
     
@@ -116,12 +116,10 @@ public class Farm extends Plot implements Storage{
         @Override
         public void onOptionClick(OptionClickEvent e){
             if(e.getMenuName().equals(EditPlot.getName())){
-                    if(e.getName().equalsIgnoreCase("Stop Growing")){
-                        ((Farm) e.getMenuData()).growing = false;
-                    }else if(e.getName().equalsIgnoreCase("Start Growing")){
-                        ((Farm) e.getMenuData()).growing = true;
+                    if(e.getName().equalsIgnoreCase("Stop Growing") || e.getName().equalsIgnoreCase("Start Growing")){
+                        growing = !growing;
                     }else{
-                        BuildingHandler.chestBuildOptions(e, BuildMenu);
+                        BuildingHandler.chestBuildOptions(e, BuildMenu, Farm.this);
                     }
             }else if(e.getMenuName().equals(BuildMenu.getName())){
                 if(e.getName().equalsIgnoreCase("Other")){
