@@ -79,6 +79,8 @@ public class PlayerData implements SaveType.Saveable{
     
     public PlayerData(Player p){
         this.Player = p;
+        Vault = new PlayerVault(p, 27);
+        muted = new MuteClass();
     }
     
     @Getter

@@ -90,15 +90,21 @@ public class Plot extends Structure implements Listener{
             setOption(9*0 + 4, KingdomMaterial.STRUCTURE_TOWNHALL.getItemStack(), "Town Hall");
             setOption(9*0 + 5, KingdomMaterial.STRUCTURE_BLACKSMITH.getItemStack(), "Blacksmith");
             setOption(9*0 + 6, KingdomMaterial.STRUCTURE_FARM.getItemStack(), "Farm");
+            setOption(9*0 + 7, KingdomMaterial.STRUCTURE_ARMORY.getItemStack(), "Armory");
+            
             setOption(9*1 + 1, KingdomMaterial.STRUCTURE_BUILDERSHUT.getItemStack(), "Builder's Hut");
             setOption(9*1 + 2, KingdomMaterial.STRUCTURE_BANK.getItemStack(), "Bank");
             setOption(9*1 + 3, KingdomMaterial.STRUCTURE_STABLE.getItemStack(), "Stable");
             setOption(9*1 + 4, KingdomMaterial.STRUCTURE_DUNGEON.getItemStack(), "Dungeon");
             setOption(9*1 + 5, KingdomMaterial.STRUCTURE_MARKETPLACE.getItemStack(), "Marketplace");
+            setOption(9*1 + 6, KingdomMaterial.STRUCTURE_POSTOFFICE.getItemStack(), "Post Office");
+            setOption(9*1 + 7, KingdomMaterial.STRUCTURE_MINE.getItemStack(), "Mine");
+            
             setOption(9*2 + 2, KingdomMaterial.STRUCTURE_WALL_WALL.getItemStack(), "Wall");
             setOption(9*2 + 3, KingdomMaterial.STRUCTURE_WALL_GATE.getItemStack(), "Gate");
             setOption(9*2 + 4, KingdomMaterial.STRUCTURE_WALL_CORNER.getItemStack(), "Corner");
             setOption(9*2 + 5, KingdomMaterial.STRUCTURE_WALL_TOWER.getItemStack(), "Tower");
+            
             setOption(9*3 + 3, new ItemStack(Material.PAPER), "Custom Contract");
             setOption(9*3 + 4, KingdomMaterial.DEMOLISH.getItemStack(), "Demolish");
             setOption(9*3 + 5, KingdomMaterial.ERASE.getItemStack(), "Erase");

@@ -86,9 +86,10 @@ public class BuildersHut extends Plot implements Storage{
                 }
             }else if(e.getAction().equals(Action.LEFT_CLICK_BLOCK)){
                 if(e.hasItem() && this.hasSpace()){
-                    Storage.addItem(e.getItem());
-                    e.getPlayer().getInventory().setItemInMainHand(new ItemStack(Material.AIR));
-                    return true;
+                    if(Storage.addItem(e.getItem())){
+                        e.getPlayer().getInventory().setItemInMainHand(new ItemStack(Material.AIR));
+                        return true;
+                    }
                 }
             }
         }

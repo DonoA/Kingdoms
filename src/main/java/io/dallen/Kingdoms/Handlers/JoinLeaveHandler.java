@@ -32,7 +32,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 public class JoinLeaveHandler implements Listener{
     @EventHandler
     public void onJoin(PlayerJoinEvent e){
-        PlayerData.getPlayerDat().put(e.getPlayer(), new PlayerData());
+        PlayerData.getPlayerDat().put(e.getPlayer(), new PlayerData(e.getPlayer()));
     }
     
     @EventHandler

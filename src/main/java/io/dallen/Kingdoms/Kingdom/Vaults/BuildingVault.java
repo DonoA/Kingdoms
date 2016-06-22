@@ -29,6 +29,8 @@ import io.dallen.Kingdoms.Storage.MaterialWrapper;
 import io.dallen.Kingdoms.Storage.SaveType;
 import java.awt.Polygon;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
@@ -67,6 +69,14 @@ public class BuildingVault implements Vault, SaveType.Saveable{ // Will start pi
     @Getter
     private ResourcePile pile;
     
+    @Getter
+    private List<Material> list = null;
+    
+    @Getter
+    private List<String> listPatern = null;
+    
+    private ListType listType = ListType.ALL;
+    
     public BuildingVault(int uniqueSize, int capacity, Structure owner) {
         this.owner = owner;
         this.uniqueSize = uniqueSize;
@@ -78,6 +88,57 @@ public class BuildingVault implements Vault, SaveType.Saveable{ // Will start pi
         this.uniqueSize = uniqueSize;
         this.capacity = capacity;
         contents = new MaterialWrapper[uniqueSize];
+    }
+    
+    public void setFilter(ListType listType, Material...items){
+        this.listType = listType;
+        if(listType.equals(ListType.WHITELIST) || listType.equals(ListType.BLACKLIST)){
+            listPatern = null;
+            list = Arrays.asList(items);
+        }
+    }
+    
+    public void setFilter(ListType listType, String...listPatern){
+        this.listType = listType;
+        if(listType.equals(ListType.WHITELIST) || listType.equals(ListType.BLACKLIST)){
+            list = null;
+            this.listPatern = Arrays.asList(listPatern);
+        }
+    }
+    
+    public void setFilter(ListType listType){
+        this.listType = listType;
+    }
+    
+    public boolean canAdd(Material m){
+        if(listType.equals(ListType.ALL)){
+            return true;
+        }else if(listType.equals(ListType.NONE)){
+            return false;
+        }else if(listType.equals(ListType.WHITELIST)){
+            if(listPatern == null && list.contains(m)){
+                return true;
+            }else if(listPatern != null){
+                for(String s : listPatern){
+                    if(m.name().contains(s)){
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }else if(listType.equals(ListType.BLACKLIST)){
+            if(listPatern == null && list.contains(m)){
+                return false;
+            }else if(listPatern != null){
+                for(String s : listPatern){
+                    if(m.name().contains(s)){
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+        return true;
     }
     
     @Override
@@ -147,10 +208,10 @@ public class BuildingVault implements Vault, SaveType.Saveable{ // Will start pi
     /**
      * 
      * @param is the stack to be added
-     * @return if it was a new stack
+     * @return if the item could be added
      */
     public boolean addItem(ItemStack is){
-        if(fullSlots < uniqueSize && amountFull < capacity){
+        if(fullSlots < uniqueSize && amountFull < capacity && canAdd(is.getType())){
             boolean added = false;
             for(MaterialWrapper mw : contents) {
                 if(mw != null && mw.getMaterial().equals(is.getType())) {
@@ -161,8 +222,8 @@ public class BuildingVault implements Vault, SaveType.Saveable{ // Will start pi
             if(!added){
                 contents[fullSlots] = new MaterialWrapper(is);
                 fullSlots++;
-                return true;
             }
+            return true;
         }
         return false;
     }
@@ -301,5 +362,9 @@ public class BuildingVault implements Vault, SaveType.Saveable{ // Will start pi
                 }
             }).start();
         }
+    }
+    
+    public static enum ListType{
+        WHITELIST, BLACKLIST, ALL, NONE;
     }
 }

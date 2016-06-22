@@ -25,9 +25,14 @@ import io.dallen.Kingdoms.Kingdom.Vaults.BuildingVault;
 import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEvent;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEventHandler;
+import io.dallen.Kingdoms.Util.LogUtil;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.bukkit.Material;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -57,7 +62,7 @@ public class Barracks extends Plot{
     
     public Barracks(Plot p) {
         super(p);
-        maxCapacity = p.getArea() * 100;
+        maxCapacity = p.getArea() / 4;
         currentCapacity = 0;
         amountFull = 0;
         people = new PopulationStats();
@@ -75,6 +80,8 @@ public class Barracks extends Plot{
         }};
     }
     
+    
+    
     public class MenuHandler implements OptionClickEventHandler{
         
         @Override
@@ -89,6 +96,36 @@ public class Barracks extends Plot{
                 }
             }
         }
+    }
+    
+    public static class BedHandler implements Listener{
+        
+        public BedHandler(){
+            LogUtil.printDebug("Loaded BedHandler!");
+        }
+        
+        @EventHandler
+        public void onBlockPlace(BlockPlaceEvent e){
+            if(e.getBlock().getType().equals(Material.BED)){
+                Plot p = Plot.inPlot(e.getBlock().getLocation());
+                if(p != null && p instanceof Barracks){
+                    Barracks b = (Barracks) p;
+                    b.currentCapacity++;
+                }
+            }
+        }
+        
+        @EventHandler
+        public void onBlockBreak(BlockBreakEvent e){
+            if(e.getBlock().getType().equals(Material.BED)){
+                Plot p = Plot.inPlot(e.getBlock().getLocation());
+                if(p != null && p instanceof Barracks){
+                    Barracks b = (Barracks) p;
+                    b.currentCapacity--;
+                }
+            }
+        }
+        
     }
 
     @NoArgsConstructor

@@ -21,8 +21,10 @@ package io.dallen.Kingdoms.Kingdom.Structures.Types;
 
 import io.dallen.Kingdoms.Handlers.BuildingHandler;
 import io.dallen.Kingdoms.Kingdom.Plot;
+import io.dallen.Kingdoms.Kingdom.Structures.Storage;
 import io.dallen.Kingdoms.Kingdom.Vaults.BuildingVault;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonStructure;
+import io.dallen.Kingdoms.Storage.PlayerData;
 import io.dallen.Kingdoms.Util.Annotations.SaveData;
 import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEvent;
@@ -30,9 +32,12 @@ import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEventHandler;
 import java.util.HashMap;
 import lombok.Getter;
 import lombok.Setter;
+import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -40,7 +45,7 @@ import org.bukkit.inventory.ItemStack;
  * 
  * @author donoa_000
  */
-public class Bank extends Plot implements Listener{
+public class Bank extends Plot implements Storage{
     @Getter
     private int securityLevel;
     @Getter
@@ -51,7 +56,8 @@ public class Bank extends Plot implements Listener{
     private boolean MunicipalBank;
     @Getter
     private boolean KingdomBank;
-    
+    @Getter
+    private BuildingVault Storage;
     @Getter
     private ChestGUI EditPlot;
     @Getter
@@ -70,6 +76,28 @@ public class Bank extends Plot implements Listener{
             setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Dark Builder's Hut");
             setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Other");
         }};
+    }
+    
+    @Override
+    public boolean interact(PlayerInteractEvent e){
+        if(e.getClickedBlock().getType().equals(Material.THIN_GLASS)){
+            if(e.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
+                PlayerData pd = PlayerData.getData(e.getPlayer());
+                pd.getVault().SendToPlayer(e.getPlayer());
+            }
+        }
+        return false;
+    }
+    
+    @Override
+    public boolean hasSpace(){
+        return Storage.getFullSlots() < Storage.getUniqueSize() && Storage.getAmountFull() < Storage.getCapacity();
+    }
+    
+    @Override
+    public boolean supplyNPC(NPC npc){
+        
+        return true;
     }
     
     public class MenuHandler implements OptionClickEventHandler{

@@ -83,6 +83,7 @@ public class Armory extends Plot implements Storage{
             setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Dark Builder's Hut");
             setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Other");
         }};
+        Storage.setFilter(BuildingVault.ListType.WHITELIST, "_HELMET", "_CHESTPLATE", "_LEGGINGS", "_BOOTS");
     }
     
     @Override
@@ -95,8 +96,10 @@ public class Armory extends Plot implements Storage{
                 }
             }else if(e.getAction().equals(Action.LEFT_CLICK_BLOCK)){
                 if(e.hasItem() && this.hasSpace()){
-                    Storage.addItem(e.getItem());
-                    return true;
+                    if(Storage.addItem(e.getItem())){
+                        e.getPlayer().getInventory().setItemInMainHand(new ItemStack(Material.AIR));
+                        return true;
+                    }
                 }
             }
         }
@@ -126,6 +129,7 @@ public class Armory extends Plot implements Storage{
     
     @Override
     public boolean supplyNPC(NPC npc){
+        
         return true;
     }
 

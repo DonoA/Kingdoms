@@ -19,7 +19,7 @@
  */
 package io.dallen.Kingdoms.Kingdom.Structures;
 
-import io.dallen.Kingdoms.Kingdom.Vaults.BuildingVault;
+import io.dallen.Kingdoms.Kingdom.Vaults.Vault;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.event.player.PlayerInteractEvent;
 
@@ -28,7 +28,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
  * @author Donovan Allen
  */
 public interface Storage{
-    public BuildingVault getStorage();
+    public Vault getStorage();
     
     public boolean interact(PlayerInteractEvent e);
     

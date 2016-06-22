@@ -31,6 +31,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Material;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -48,6 +49,8 @@ public class Blacksmith extends Plot implements Storage{
     private ChestGUI EditPlot;
     @Getter
     private ChestGUI BuildMenu;
+    @Getter
+    private ChestGUI ForgeMenu;
     
     public Blacksmith(Plot p) {
         super(p);
@@ -57,12 +60,27 @@ public class Blacksmith extends Plot implements Storage{
             setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
             setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
         }};
-        EditPlot.setMenuData(this);
+        
         BuildMenu = new ChestGUI("Build Options", 2, new MenuHandler()){{
             setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Light Builder's Hut");
             setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Dark Builder's Hut");
             setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Other");
         }};
+        ForgeMenu = new ChestGUI("Forge", 9*6, new MenuHandler()){{
+            String[] sets = new String[] {"LEATHER", "CHAINMAIL", "IRON", "GOLD", "DIAMOND"};
+            String[] types = new String[] {"HELMET", "CHESTPLATE", "LEGGINGS", "BOOTS", "SWORD"};
+            int dwnPos = 0;
+            for(String set : sets){
+                int accPos = 0;
+                for(String type : types){
+                    setOption(9*dwnPos + accPos, new ItemStack(Material.valueOf(set + "_" + type)), set + " " + type);
+                    accPos+=2;
+                }
+                dwnPos++;
+            }
+        }};
+        EditPlot.setMenuData(this);
+        ForgeMenu.setMenuData(this);
     }
     
     public class MenuHandler implements OptionClickEventHandler{
@@ -77,13 +95,22 @@ public class Blacksmith extends Plot implements Storage{
                 }else{
                     e.getPlayer().sendMessage("Default option called");
                 }
+            }else if(e.getMenuName().equals(ForgeMenu.getName())){
+                ItemStack craft = new ItemStack(Material.valueOf(e.getName().replace(" ", "_")));
+                Blacksmith bs = (Blacksmith) e.getData();
+                bs.getStorage().addItem(craft);
+                e.getPlayer().sendMessage("Forged " + e.getName());
             }
         }
     }
 
     @Override
     public boolean interact(PlayerInteractEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if(e.getAction().equals(Action.RIGHT_CLICK_BLOCK) && e.getClickedBlock().getType().equals(Material.ANVIL)){
+            e.setCancelled(true);
+            
+        }
+        return false;
     }
 
     @Override

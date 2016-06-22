@@ -68,6 +68,7 @@ public class Farm extends Plot implements Storage{
             setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Dark Builder's Hut");
             setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Other");
         }};
+        Storage.setFilter(BuildingVault.ListType.WHITELIST, Material.WHEAT, Material.POTATO_ITEM, Material.NETHER_WARTS, Material.CARROT_ITEM);
     }
     
     @Override
@@ -90,9 +91,10 @@ public class Farm extends Plot implements Storage{
                 }
             }else if(e.getAction().equals(Action.LEFT_CLICK_BLOCK)){
                 if(e.hasItem() && this.hasSpace()){
-                    Storage.addItem(e.getItem());
-                    e.getPlayer().getInventory().setItemInMainHand(new ItemStack(Material.AIR));
-                    return true;
+                    if(Storage.addItem(e.getItem())){
+                        e.getPlayer().getInventory().setItemInMainHand(new ItemStack(Material.AIR));
+                        return true;
+                    }
                 }
             }
         }

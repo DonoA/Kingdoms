@@ -21,13 +21,13 @@ package io.dallen.Kingdoms.Handlers;
 
 import io.dallen.Kingdoms.Kingdom.Plot;
 import io.dallen.Kingdoms.Kingdom.Structures.Storage;
+import io.dallen.Kingdoms.Kingdom.Vaults.BuildingVault;
 import io.dallen.Kingdoms.Storage.MaterialWrapper;
 import io.dallen.Kingdoms.Util.LogUtil;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import lombok.Getter;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -65,7 +65,7 @@ public class StorageHandler implements Listener{
     }};
     
     @Getter
-    private static HashMap<Player, Storage> openStorages = new HashMap<Player, Storage>();
+    private static HashMap<String, Storage> openStorages = new HashMap<String, Storage>();
     
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onInventoryClick(InventoryClickEvent event){//NEED TO HANDLE MOVE_TO_OTHER_INVENTORY //ALSO THE DROP AND PICKUP THING
@@ -73,24 +73,24 @@ public class StorageHandler implements Listener{
             (cooldown.containsKey((Player) event.getWhoClicked()) && 
              cooldown.get((Player) event.getWhoClicked()) < System.currentTimeMillis() - 100)){
             cooldown.put((Player) event.getWhoClicked(), System.currentTimeMillis());
-            if(event.getInventory().getName().equalsIgnoreCase("Building Inventory")){
+            if(event.getInventory().getName().equalsIgnoreCase("Building Inventory") && openStorages.containsKey(((Player) event.getWhoClicked()).getName())){
                 //NEED TO HANDLE SHIFT CLICKS
-                Storage s = openStorages.get((Player) event.getWhoClicked());
-                LogUtil.printDebug(Arrays.toString(s.getStorage().getContents()));
-                LogUtil.printDebug(s.getStorage().getFullSlots());
+                Storage s = openStorages.get(((Player) event.getWhoClicked()).getName());
+                BuildingVault bv = (BuildingVault) s.getStorage();
+                LogUtil.printDebug(Arrays.toString(bv.getContents()));
+                LogUtil.printDebug(bv.getFullSlots());
                 if(event.getRawSlot() >= 0 && event.getRawSlot() < (int)(Math.ceil(s.getStorage().getUniqueSize()/9)*9)){
                     event.setCancelled(true);
                     if(remove.contains(event.getAction())){
                         ItemStack removeStack = event.getCurrentItem();
                         event.setCursor(removeStack);
-                        s.getStorage().removeItem(removeStack);
-                        s.getStorage().updateInventory(event.getInventory());
+                        bv.removeItem(removeStack);
+                        bv.updateInventory(event.getInventory());
                     }else if(add.contains(event.getAction())){
                         ItemStack insertStack = event.getCursor();
-                        if(s.getStorage().getFullSlots() < s.getStorage().getUniqueSize()){
+                        if(bv.addItem(insertStack)){
                             event.setCursor(null);
-                            s.getStorage().addItem(insertStack);
-                            s.getStorage().updateInventory(event.getInventory());
+                            bv.updateInventory(event.getInventory());
                         }
                     }
                 }
@@ -111,7 +111,7 @@ public class StorageHandler implements Listener{
                         boolean opened = s.interact(e);
                         e.setCancelled(opened);
                         if(opened)
-                            openStorages.put(e.getPlayer(), s);
+                            openStorages.put(e.getPlayer().getName(), s);
                     }
                 }
             }
@@ -120,8 +120,8 @@ public class StorageHandler implements Listener{
     
     @EventHandler
     public void onInventoryOpen(InventoryOpenEvent e){
-        if(openStorages.containsKey((Player) e.getPlayer())){
-            openStorages.remove((Player) e.getPlayer());
+        if(openStorages.containsKey(((Player) e.getPlayer()).getName())){
+            openStorages.remove(((Player) e.getPlayer()).getName());
         }
     }
     
