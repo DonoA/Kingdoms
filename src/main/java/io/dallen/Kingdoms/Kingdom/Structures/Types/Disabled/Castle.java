@@ -17,7 +17,7 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.Kingdom.Structures.Types;
+package io.dallen.Kingdoms.Kingdom.Structures.Types.Disabled;
 
 import io.dallen.Kingdoms.Handlers.BuildingHandler;
 import io.dallen.Kingdoms.Kingdom.Plot;
@@ -29,7 +29,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 /**
- *
+ * Currently Unused
  * @author donoa_000
  */
 public class Castle extends Plot{

@@ -57,7 +57,7 @@ public class Farm extends Plot implements Storage{
     public Farm(Plot p) {
         super(p);
         Storage = new BuildingVault(18, 18 * 100, this);
-        EditPlot = new ChestGUI("Builders Hut", 2, new MenuHandler()){{
+        EditPlot = new ChestGUI("Farm", 2, new MenuHandler()){{
             setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
             setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
             setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Build");

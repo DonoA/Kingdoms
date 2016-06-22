@@ -62,7 +62,7 @@ public class Barracks extends Plot{
         amountFull = 0;
         people = new PopulationStats();
         readySpeed = 10;
-        EditPlot = new ChestGUI("Castle", 2, new MenuHandler()){{
+        EditPlot = new ChestGUI("Barracks", 2, new MenuHandler()){{
             setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
             setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
             setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Build");

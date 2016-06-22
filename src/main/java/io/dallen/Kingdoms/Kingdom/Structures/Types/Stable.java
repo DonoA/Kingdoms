@@ -54,7 +54,7 @@ public class Stable extends Plot{
     
     public Stable(Plot p) {
         super(p);
-        EditPlot = new ChestGUI("Builders Hut", 2, new MenuHandler()){{
+        EditPlot = new ChestGUI("Stable", 2, new MenuHandler()){{
             setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
             setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
             setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Build");

@@ -56,7 +56,7 @@ public class Storeroom extends Plot implements Storage{
         super(p);
 //        maxCapacity = p.getArea() * 100;
         Storage = new BuildingVault(30, 30 * 100, this);
-        EditPlot = new ChestGUI("Castle", 2, new MenuHandler()){{
+        EditPlot = new ChestGUI("Storeroom", 2, new MenuHandler()){{
             setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
             setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
             setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
