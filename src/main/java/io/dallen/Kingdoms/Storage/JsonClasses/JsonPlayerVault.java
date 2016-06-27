@@ -20,8 +20,12 @@
 package io.dallen.Kingdoms.Storage.JsonClasses;
 
 import io.dallen.Kingdoms.Kingdom.Vaults.PlayerVault;
+import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonItemStack;
 import io.dallen.Kingdoms.Storage.SaveType;
+import java.util.UUID;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  *
@@ -29,6 +33,11 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor
 public class JsonPlayerVault implements SaveType.NativeType.JsonType{
+    @Getter @Setter
+    private UUID owner;
+    
+    @Getter @Setter
+    private JsonItemStack[] storage;
     
     @Override
     public PlayerVault toJavaObject(){

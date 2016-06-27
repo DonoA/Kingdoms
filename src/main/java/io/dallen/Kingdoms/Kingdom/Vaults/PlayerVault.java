@@ -19,11 +19,16 @@
  */
 package io.dallen.Kingdoms.Kingdom.Vaults;
 
+import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonItemStack;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonPlayerData;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonPlayerVault;
 import io.dallen.Kingdoms.Storage.SaveType;
+import java.util.ArrayList;
 import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -34,19 +39,7 @@ public class PlayerVault implements Vault, SaveType.Saveable{
     @Getter
     private Player Owner;
     
-    @Getter
-    private double uniqueSize;
-    
-    @Getter
-    private int fullSlots;
-    
-    @Getter
-    private int capacity;
-    
-    @Getter
-    private int amountFull;
-    
-    private ItemStack[] storage;
+    private Inventory storage;
     
     @Override
     public boolean SendToPlayer(Player p){
@@ -58,15 +51,39 @@ public class PlayerVault implements Vault, SaveType.Saveable{
         return p.equals(Owner);
     }
     
+    @Override
+    public double getUniqueSize(){
+        return storage.getSize();
+    }
+    
+    @Override
+    public int getCapacity(){
+        return (int) getUniqueSize();
+    }
+    
+    @Override
+    public int getAmountFull(){
+        return storage.firstEmpty()-1;
+    }
     
     public PlayerVault(Player p, int size){
-        this.uniqueSize = size;
         this.Owner = p;
-        this.storage = new ItemStack[size];
+        this.storage = Bukkit.createInventory(p, size, p.getName() + "'s Vault");
     }
     
     @Override
     public JsonPlayerVault toJsonObject(){
-        throw new UnsupportedOperationException();
+        JsonPlayerVault jpv = new JsonPlayerVault();
+        jpv.setOwner(Owner.getUniqueId());
+        ArrayList<JsonItemStack> content = new ArrayList<JsonItemStack>();
+        for(ItemStack is : storage.getContents()){
+            if(is != null){
+                content.add(new JsonItemStack(is));
+            }else{
+                content.add(null);
+            }
+        }
+        jpv.setStorage(content.toArray(new JsonItemStack[] {}));
+        return jpv;
     }
 }

@@ -189,7 +189,7 @@ public class DataLoadHelper implements Listener{
                 pd.getPlayer().getUniqueId().toString() + ".playerdata");
     }
     
-    public PlayerData LoadPlayerData(Player p){
+    public static PlayerData LoadPlayerData(Player p){
         Object jpd = DBmanager.loadObj(JsonPlayerData.class, new File(Main.getPlugin().getDataFolder() + 
                 DBmanager.getFileSep() + "playerdata" + DBmanager.getFileSep() + p.getUniqueId().toString() + ".playerdata"));
         if(jpd instanceof JsonPlayerData){

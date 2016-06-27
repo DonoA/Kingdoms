@@ -19,6 +19,7 @@
  */
 package io.dallen.Kingdoms.Handlers;
 
+import io.dallen.Kingdoms.Storage.DataLoadHelper;
 import io.dallen.Kingdoms.Storage.PlayerData;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -32,11 +33,12 @@ import org.bukkit.event.player.PlayerQuitEvent;
 public class JoinLeaveHandler implements Listener{
     @EventHandler
     public void onJoin(PlayerJoinEvent e){
-        PlayerData.getPlayerDat().put(e.getPlayer(), new PlayerData(e.getPlayer()));
+        PlayerData.getPlayerDat().put(e.getPlayer(), DataLoadHelper.LoadPlayerData(e.getPlayer()));
     }
     
     @EventHandler
-    public void onQuit(PlayerQuitEvent e){
+    public void onQuit(PlayerQuitEvent e){ //This should do some kind of fancy cache for relogs (maybe like 5 min ttl)
+        DataLoadHelper.SavePlayerData(PlayerData.getData(e.getPlayer()));
         PlayerData.getPlayerDat().remove(e.getPlayer());
     }
 }
