@@ -6,7 +6,7 @@ Authors: Dallen, Icy, WezD
 [Kingdom design/development folder](https://goo.gl/n6xMft)
 
 # A quick overview
-=
+
 Kingdoms runs a little differently than most plugins because it uses large
 amounts of reflection to take care of basic tasks. This will give quick examples
 of how to create or add basic functions to the plugin. The most important part of
