@@ -31,7 +31,7 @@ folder unless they are more fitting elsewhere.
 ### Adding a plot class
 Adding a plot class is a bit more involved. First make sure you class extends Plot,
 is located in Kingdom/Structure/Types, and has a constructor that accepts Plot 
-as the only argument and calls super(<plot>) in the first line. Next you will 
+as the only argument and calls super(plot) in the first line. Next you will 
 need to add you plot to the menu, you can find the menu in Plot.java under 
 defEditMenu(). If you want your plot to have a custom icon you can also add a
 KingdomMaterial for it (that class is under Overrides).
