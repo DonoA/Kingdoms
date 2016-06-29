@@ -38,6 +38,7 @@ import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -49,7 +50,7 @@ import org.bukkit.inventory.ItemStack;
  */
 public class Mine extends Plot implements Storage{
     
-//    @Getter @Setter @SaveData
+    @Getter @Setter @SaveData
     private boolean digging;
     
     @Getter @Setter @SaveData
@@ -78,6 +79,12 @@ public class Mine extends Plot implements Storage{
             setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Dark Builder's Hut");
             setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Other");
         }};
+        Storage = new BuildingVault(18,18*64, this);
+    }
+    
+    @Override
+    public void sendEditMenu(Player p){
+        EditPlot.sendMenu(p);
     }
     
     @Override
@@ -141,15 +148,13 @@ public class Mine extends Plot implements Storage{
         
         private int x = 0;
         
-        private int y = 0; 
+        private int y = -1; 
         
         private int z = 0;
         
         private Location startCorner;
         
         private NPC Miner;
-        
-        private boolean running = true;
         
         private int step = 64;
         
@@ -164,7 +169,7 @@ public class Mine extends Plot implements Storage{
         @Override
         public void run(){
             if(!Miner.getNavigator().isNavigating()){
-                if(running){
+                if(Mine.this.digging){
                     if(step == 0){
                         Miner.getTrait(Miner.class).getSupplies(startCorner);
                         step = 64;
@@ -193,7 +198,7 @@ public class Mine extends Plot implements Storage{
                             z++;
                         }else{
                             z = 0;
-                            if(y >= 30){
+                            if(y >= -30){
                                 Location nLoc = startCorner.clone().add(x,y,z);
                                 Collection<ItemStack> drops = nLoc.getBlock().getDrops();
                                 for(ItemStack drop : drops){
@@ -203,7 +208,7 @@ public class Mine extends Plot implements Storage{
                                 Miner.teleport(nLoc.add(0, 1, 0), PlayerTeleportEvent.TeleportCause.PLUGIN);
                                 y--;
                             }else{
-                                running = false;
+                                Mine.this.digging = false;
                             }
                         }
                     }

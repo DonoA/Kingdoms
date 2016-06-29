@@ -64,7 +64,7 @@ public class BuildingVault implements Vault, SaveType.Saveable{ // Will start pi
     private Polygon floorPlan;
     
     @Getter @Setter
-    private MaterialWrapper[] contents;
+    private ItemStack[] contents;
     
     @Getter
     private ResourcePile pile;
@@ -81,13 +81,13 @@ public class BuildingVault implements Vault, SaveType.Saveable{ // Will start pi
         this.owner = owner;
         this.uniqueSize = uniqueSize;
         this.capacity = capacity;
-        contents = new MaterialWrapper[uniqueSize];
+        contents = new ItemStack[uniqueSize];
     }
     
     public BuildingVault(int uniqueSize, int capacity) {
         this.uniqueSize = uniqueSize;
         this.capacity = capacity;
-        contents = new MaterialWrapper[uniqueSize];
+        contents = new ItemStack[uniqueSize];
     }
     
     public void setFilter(ListType listType, Material...items){
@@ -144,9 +144,16 @@ public class BuildingVault implements Vault, SaveType.Saveable{ // Will start pi
     @Override
     public boolean SendToPlayer(Player p){
         Inventory inv = Bukkit.createInventory(p, (int) uniqueSize, "Building Inventory");
-        for(MaterialWrapper m : contents){
+        for(ItemStack m : contents){
             if(m != null){
-                inv.addItem(m.asBukkitItem());
+                ItemStack toAdd = m.clone();
+                toAdd.setAmount((m.getAmount() < 64 ? m.getAmount() : 64));
+                List<String> lore = (toAdd.hasItemMeta() && toAdd.getItemMeta().hasLore() ? 
+                        toAdd.getItemMeta().getLore() : new ArrayList<String>());
+                lore.add(" ");
+                lore.add(m.getAmount() + " total");
+                toAdd.getItemMeta().setLore(lore);
+                inv.addItem(toAdd);
             }
         }
 //        InvenHandler.openVaults.put(p.getName(), this);
@@ -173,8 +180,15 @@ public class BuildingVault implements Vault, SaveType.Saveable{ // Will start pi
     public void updateInventory(Inventory inv){
         for(int i = 0; i < inv.getSize(); i++){
             if(contents[i] != null){
-                if(!contents[i].getMaterial().equals(Material.AIR)){
-                    inv.setItem(i, contents[i].asBukkitItem());
+                if(!contents[i].getType().equals(Material.AIR)){
+                    ItemStack toAdd = contents[i].clone();
+                    toAdd.setAmount((contents[i].getAmount() < 64 ? contents[i].getAmount() : 64));
+                    List<String> lore = (toAdd.hasItemMeta() && toAdd.getItemMeta().hasLore() ? 
+                            toAdd.getItemMeta().getLore() : new ArrayList<String>());
+                    lore.add(" ");
+                    lore.add(contents[i].getAmount() + " total");
+                    toAdd.getItemMeta().setLore(lore);
+                    inv.setItem(i, toAdd);
                 }else{
                     inv.setItem(i, new ItemStack(Material.AIR));
                     contents[i] = null;
@@ -188,21 +202,24 @@ public class BuildingVault implements Vault, SaveType.Saveable{ // Will start pi
     /**
      * 
      * @param is the stack to be removed
-     * @return if all of that material was removed
+     * @return the amount remaining in the passed stack after removal
      */
-    public boolean removeItem(ItemStack is){
-        for(MaterialWrapper mw : contents) {
-            if(mw != null && mw.getMaterial().equals(is.getType())) {
-                mw.removeFromStack(is.getAmount());
-                if(mw.getStackSize() <= 0){
-                    mw.setMaterial(Material.AIR);
+    public int removeItem(ItemStack is){
+        for(ItemStack mw : contents) {
+            if(mw != null && mw.isSimilar(is)) {
+                mw.setAmount(mw.getAmount() - is.getAmount());
+                if(mw.getAmount() == 0){
+                    mw.setType(Material.AIR);
                     fullSlots--;
-                    return true;
+                    return 0;
+                }else{
+                    int amnt = -mw.getAmount();
+                    mw.setAmount(0);
+                    return amnt;
                 }
-                return false;
             }
         }
-        return true;
+        return is.getAmount();
     }
     
     /**
@@ -213,14 +230,14 @@ public class BuildingVault implements Vault, SaveType.Saveable{ // Will start pi
     public boolean addItem(ItemStack is){
         if(fullSlots < uniqueSize && amountFull < capacity && canAdd(is.getType())){
             boolean added = false;
-            for(MaterialWrapper mw : contents) {
-                if(mw != null && mw.getMaterial().equals(is.getType())) {
-                    mw.addToStack(is.getAmount());
+            for(ItemStack mw : contents) {
+                if(mw != null && mw.isSimilar(is)) {
+                    mw.setAmount(mw.getAmount() + is.getAmount());
                     added = true;
                 }
             }
             if(!added){
-                contents[fullSlots] = new MaterialWrapper(is);
+                contents[fullSlots] = is.clone();
                 fullSlots++;
             }
             return true;
@@ -228,9 +245,9 @@ public class BuildingVault implements Vault, SaveType.Saveable{ // Will start pi
         return false;
     }
     
-    public MaterialWrapper getMaterial(Material mat){
-        for(MaterialWrapper mw : contents){
-            if(mw != null && mw.getMaterial().equals(mat)){
+    public ItemStack getMaterial(ItemStack mat){
+        for(ItemStack mw : contents){
+            if(mw != null && mw.isSimilar(mat)){
                 return mw;
             }
         }
@@ -242,9 +259,9 @@ public class BuildingVault implements Vault, SaveType.Saveable{ // Will start pi
         jbv.setAmountFull(amountFull);
         jbv.setCapacity(capacity);
         ArrayList<JsonItemStack> content = new ArrayList<JsonItemStack>();
-        for(MaterialWrapper mw : contents){
+        for(ItemStack mw : contents){
             if(mw != null){
-                content.add(new JsonItemStack(mw.asBukkitItem()));
+                content.add(new JsonItemStack(mw));
             }else{
                 content.add(null);
             }

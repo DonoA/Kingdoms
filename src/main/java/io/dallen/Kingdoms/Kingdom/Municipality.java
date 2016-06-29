@@ -19,10 +19,12 @@
  */
 package io.dallen.Kingdoms.Kingdom;
 
+import io.dallen.Kingdoms.Kingdom.Structures.Storage;
 import io.dallen.Kingdoms.Kingdom.Structures.Structure;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.TownHall;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.WallSystem;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.WallSystem.Wall;
+import io.dallen.Kingdoms.Kingdom.Vaults.BuildingVault;
 import io.dallen.Kingdoms.Main;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonMunicipality;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonEllipse;
@@ -36,10 +38,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Location;
+import org.bukkit.inventory.ItemStack;
 import org.reflections.Reflections;
 
 /**
@@ -148,6 +152,37 @@ public class Municipality implements SaveType.Saveable{
         }
         if(s instanceof Plot){
             Structures.get(Plot.class).add(s);
+        }
+    }
+    
+    public List<Structure> materialLocation(ItemStack is){
+        List<Structure> materialLocations = new ArrayList<Structure>();
+        for(Class<? extends Plot> cls : Main.getStructureClasses()){
+            if(Storage.class.isAssignableFrom(cls)){
+                for(Structure struct : this.Structures.get(cls)){
+                    Storage s = (Storage) struct;
+                    if(((BuildingVault) s.getStorage()).getMaterial(is) != null){
+                        materialLocations.add(struct);
+                    }
+                }
+            }
+        }
+        return materialLocations;
+    }
+    
+    public void removeMaterial(ItemStack is){
+        for(Class<? extends Plot> cls : Main.getStructureClasses()){
+            if(Storage.class.isAssignableFrom(cls)){
+                for(Structure struct : this.Structures.get(cls)){
+                    Storage s = (Storage) struct;
+                    if(((BuildingVault) s.getStorage()).getMaterial(is) != null){
+                        is.setAmount(((BuildingVault) s.getStorage()).removeItem(is));
+                        if(is.getAmount() == 0){
+                            return;
+                        }
+                    }
+                }
+            }
         }
     }
     

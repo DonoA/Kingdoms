@@ -66,6 +66,10 @@ public class Marketplace extends Plot{
         }};
     }
     
+    @Override
+    public void sendEditMenu(Player p){
+        EditPlot.sendMenu(p);
+    }
     
     public class MenuHandler implements OptionClickEventHandler{
         

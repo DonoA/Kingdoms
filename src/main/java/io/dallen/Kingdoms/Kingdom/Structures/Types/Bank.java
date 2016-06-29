@@ -90,6 +90,11 @@ public class Bank extends Plot implements Storage{
     }
     
     @Override
+    public void sendEditMenu(Player p){
+        EditPlot.sendMenu(p);
+    }
+    
+    @Override
     public boolean hasSpace(){
         return Storage.getFullSlots() < Storage.getUniqueSize() && Storage.getAmountFull() < Storage.getCapacity();
     }

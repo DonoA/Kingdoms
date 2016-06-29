@@ -141,7 +141,6 @@ public class Plot extends Structure implements Listener{
     
     @Override
     public void sendEditMenu(Player p){
-        
         EditPlot.sendMenu(p);
     }
     
@@ -226,6 +225,7 @@ public class Plot extends Structure implements Listener{
                         e.getPlayer().sendMessage("You have assigned this plot to be a " + e.getName() +".");
                     } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException 
                             | InvocationTargetException | NoSuchMethodException | SecurityException ex) {
+                        ex.printStackTrace();
                         e.getPlayer().sendMessage("Building name not found!");
                     }
                 }

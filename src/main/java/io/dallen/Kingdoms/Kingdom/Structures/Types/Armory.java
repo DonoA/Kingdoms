@@ -36,6 +36,7 @@ import lombok.Setter;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -84,6 +85,11 @@ public class Armory extends Plot implements Storage{
             setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Other");
         }};
         Storage.setFilter(BuildingVault.ListType.WHITELIST, "_HELMET", "_CHESTPLATE", "_LEGGINGS", "_BOOTS");
+    }
+    
+    @Override
+    public void sendEditMenu(Player p){
+        EditPlot.sendMenu(p);
     }
     
     @Override

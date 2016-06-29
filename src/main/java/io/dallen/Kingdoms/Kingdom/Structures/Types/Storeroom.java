@@ -33,6 +33,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -89,6 +90,10 @@ public class Storeroom extends Plot implements Storage{
         return false;
     }
     
+    @Override
+    public void sendEditMenu(Player p){
+        EditPlot.sendMenu(p);
+    }
     
     public class MenuHandler implements OptionClickEventHandler{
         

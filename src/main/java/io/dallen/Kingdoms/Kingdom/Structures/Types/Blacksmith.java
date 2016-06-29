@@ -23,6 +23,7 @@ import io.dallen.Kingdoms.Handlers.BuildingHandler;
 import io.dallen.Kingdoms.Kingdom.Plot;
 import io.dallen.Kingdoms.Kingdom.Structures.Storage;
 import io.dallen.Kingdoms.Kingdom.Vaults.BuildingVault;
+import io.dallen.Kingdoms.Main;
 import io.dallen.Kingdoms.Util.Annotations.SaveData;
 import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEvent;
@@ -30,7 +31,9 @@ import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEventHandler;
 import lombok.Getter;
 import lombok.Setter;
 import net.citizensnpcs.api.npc.NPC;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -68,7 +71,7 @@ public class Blacksmith extends Plot implements Storage{
         }};
         ForgeMenu = new ChestGUI("Forge", 9*6, new MenuHandler()){{
             String[] sets = new String[] {"LEATHER", "CHAINMAIL", "IRON", "GOLD", "DIAMOND"};
-            String[] types = new String[] {"HELMET", "CHESTPLATE", "LEGGINGS", "BOOTS", "SWORD"};
+            String[] types = new String[] {"HELMET", "CHESTPLATE", "LEGGINGS", "BOOTS"};
             int dwnPos = 0;
             for(String set : sets){
                 int accPos = 0;
@@ -79,6 +82,11 @@ public class Blacksmith extends Plot implements Storage{
                 dwnPos++;
             }
         }};
+    }
+    
+    @Override
+    public void sendEditMenu(Player p){
+        EditPlot.sendMenu(p);
     }
     
     public class MenuHandler implements OptionClickEventHandler{
@@ -105,7 +113,28 @@ public class Blacksmith extends Plot implements Storage{
     public boolean interact(PlayerInteractEvent e) {
         if(e.getAction().equals(Action.RIGHT_CLICK_BLOCK) && e.getClickedBlock().getType().equals(Material.ANVIL)){
             e.setCancelled(true);
-            
+            final PlayerInteractEvent ev = e;
+            Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), new Runnable(){
+                @Override
+                public void run(){
+                    ev.getPlayer().closeInventory();
+                    ForgeMenu.sendMenu(ev.getPlayer());
+                }
+            }, 1);
+        }else if(e.getClickedBlock().getType().equals(Material.CHEST)){
+            if(e.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
+                if(Storage.CanOpen(e.getPlayer())){
+                    Storage.SendToPlayer(e.getPlayer());
+                    return true;
+                }
+            }else if(e.getAction().equals(Action.LEFT_CLICK_BLOCK)){
+                if(e.hasItem() && this.hasSpace()){
+                    if(Storage.addItem(e.getItem())){
+                        e.getPlayer().getInventory().setItemInMainHand(new ItemStack(Material.AIR));
+                        return true;
+                    }
+                }
+            }
         }
         return false;
     }

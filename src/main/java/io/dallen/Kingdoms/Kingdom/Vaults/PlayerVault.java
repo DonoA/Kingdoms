@@ -43,6 +43,7 @@ public class PlayerVault implements Vault, SaveType.Saveable{
     
     @Override
     public boolean SendToPlayer(Player p){
+        p.openInventory(storage);
         return true;
     }
     

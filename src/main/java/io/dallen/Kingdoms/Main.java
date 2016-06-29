@@ -221,7 +221,7 @@ public class Main extends JavaPlugin {
     
     @Override
     public void onDisable(){
-//        DataLoadHelper.SaveKingdomData();
+        DataLoadHelper.SaveKingdomData();
     }
     
     /*

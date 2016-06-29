@@ -26,6 +26,7 @@ import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEvent;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEventHandler;
 import lombok.Getter;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -65,6 +66,11 @@ public class Dungeon extends Plot{
             setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Dark Builder's Hut");
             setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Other");
         }};
+    }
+    
+    @Override
+    public void sendEditMenu(Player p){
+        EditPlot.sendMenu(p);
     }
     
     public class MenuHandler implements OptionClickEventHandler{

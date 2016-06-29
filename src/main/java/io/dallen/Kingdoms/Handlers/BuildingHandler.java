@@ -22,8 +22,10 @@ package io.dallen.Kingdoms.Handlers;
 import io.dallen.Kingdoms.Kingdom.Plot;
 import io.dallen.Kingdoms.Kingdom.Structures.Blueprint;
 import io.dallen.Kingdoms.Kingdom.Structures.Blueprint.BlueBlock;
+import io.dallen.Kingdoms.Kingdom.Structures.Storage;
 import io.dallen.Kingdoms.Kingdom.Structures.Structure;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.BuildersHut;
+import io.dallen.Kingdoms.Kingdom.Vaults.BuildingVault;
 import io.dallen.Kingdoms.Main;
 import io.dallen.Kingdoms.NPCs.Traits.Builder;
 import io.dallen.Kingdoms.Overrides.KingdomMaterial;
@@ -38,6 +40,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
@@ -117,6 +120,36 @@ public class BuildingHandler implements Listener{
                 Location startCorner = new Location(p.getCenter().getWorld(), (p.getCenter().getX() + offSet.x) - building.getWid()/2  + (building.getWid() % 2 == 0 ? 1 : 0),
                         p.getCenter().getBlockY(), (p.getCenter().getBlockZ() + offSet.y) - building.getLen()/2 + (building.getLen() % 2 == 0 ? 1 : 0));
                 building.build(startCorner, Blueprint.buildType.CLEAR);
+                List<ItemStack> mats = new ArrayList<ItemStack>();
+                for(BlueBlock[][] bbarr1 : building.getBlocks()){
+                    for(BlueBlock[] bbarr2: bbarr1){
+                        for(BlueBlock bb : bbarr2){
+                            ItemStack is = new ItemStack(bb.getBlock());
+                            is.getData().setData(bb.getData());
+                            boolean found = false;
+                            for(ItemStack mat : mats){
+                                if(mat.isSimilar(is)){
+                                    mat.setAmount(mat.getAmount()+1);
+                                    found = true;
+                                }
+                            }
+                            if(!found){
+                                mats.add(is);
+                            }
+                        }
+                    }
+                }
+                List<Structure> locs = new ArrayList<Structure>();
+                for(ItemStack is : mats){
+                    locs = p.getMunicipal().materialLocation(is);
+                    for(Structure s : locs){
+                        is.setAmount(((BuildingVault)((Storage) s).getStorage()).removeItem(is));
+                    }
+                    if(is.getAmount() > 0){
+                        e.getPlayer().sendMessage("Your municipality does not have the materials to build this structure");
+                        return;
+                    }
+                }
                 BuildTask buildTask = new BuildTask(building, startCorner, openBuilds.get(e.getPlayer().getName()).getSpeed(), BuildHut);
                 openBuilds.remove(e.getPlayer().getName());
             }else if(e.getName().equalsIgnoreCase("Rotate Clockwise")){
@@ -248,7 +281,7 @@ public class BuildingHandler implements Listener{
                     }
                 }
             }else if(e.getName().equalsIgnoreCase("Demolish")){
-                Plot p = (Plot) e.getMenuData();
+                Plot p = (Plot) struc;
                 if(Plot.getAllPlots().contains(p))
                     Plot.getAllPlots().remove(p);
                 if(p.getMunicipal() != null){
@@ -304,6 +337,36 @@ public class BuildingHandler implements Listener{
                             if(p.getLength() + 1 <= building.getLen() || p.getWidth() + 1 <= building.getWid()){
                                 e.getPlayer().sendMessage("That structure is too large for this plot");
                                 return;
+                            }
+                            List<ItemStack> mats = new ArrayList<ItemStack>();
+                            for(BlueBlock[][] bbarr1 : building.getBlocks()){
+                                for(BlueBlock[] bbarr2: bbarr1){
+                                    for(BlueBlock bb : bbarr2){
+                                        ItemStack is = new ItemStack(bb.getBlock());
+                                        is.getData().setData(bb.getData());
+                                        boolean found = false;
+                                        for(ItemStack mat : mats){
+                                            if(mat.isSimilar(is)){
+                                                mat.setAmount(mat.getAmount()+1);
+                                                found = true;
+                                            }
+                                        }
+                                        if(!found){
+                                            mats.add(is);
+                                        }
+                                    }
+                                }
+                            }
+                            List<Structure> locs = new ArrayList<Structure>();
+                            for(ItemStack is : mats){
+                                locs = p.getMunicipal().materialLocation(is);
+                                for(Structure s : locs){
+                                    is.setAmount(is.getAmount()-((BuildingVault)((Storage) s).getStorage()).getMaterial(is).getAmount());
+                                }
+                                if(is.getAmount() > 0){
+                                    e.getPlayer().sendMessage("Your municipality does not have the materials to build this structure");
+                                    return;
+                                }
                             }
                             Location startCorner = new Location(p.getCenter().getWorld(), p.getCenter().getX() - building.getWid()/2  + (building.getWid() % 2 == 0 ? 1 : 0),
                                     p.getCenter().getBlockY(), p.getCenter().getBlockZ() - building.getLen()/2 + (building.getLen() % 2 == 0 ? 1 : 0));

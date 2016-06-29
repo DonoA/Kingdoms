@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.bukkit.inventory.ItemStack;
 
 /**
  *
@@ -95,7 +96,7 @@ public class JsonBuildingVault implements SaveType.NativeType.JsonType{
                 content.add(null);
             }
         }
-        bv.setContents(content.toArray(new MaterialWrapper[] {}));
+        bv.setContents(content.toArray(new ItemStack[] {}));
         return bv;
     }
     

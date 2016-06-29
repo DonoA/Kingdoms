@@ -29,6 +29,7 @@ import io.dallen.Kingdoms.Util.LogUtil;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -80,7 +81,10 @@ public class Barracks extends Plot{
         }};
     }
     
-    
+    @Override
+    public void sendEditMenu(Player p){
+        EditPlot.sendMenu(p);
+    }
     
     public class MenuHandler implements OptionClickEventHandler{
         
