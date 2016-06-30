@@ -34,6 +34,9 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.util.BlockIterator;
+import org.bukkit.block.Block;
+import org.bukkit.Material;
 
 /**
  *
@@ -105,8 +108,26 @@ public class GeneralCommands implements CommandExecutor{
                     + "§6Want more specific help? Check out our help section:\n" 
                     + "§7<forum link>");
             return true;
-        }else if(cmd.getName().equalsIgnoreCase("is")){
+        }else if(cmd.getName().equalsIgnoreCase("is")) {
             //get info from wiki database
+            return true;
+        }else if(cmd.getName().equalsIgnoreCase("setpost")) {
+            //set a new post office 
+            Player p = (Player) sender;
+            BlockIterator iterator = new BlockIterator(p, 5);
+            Block selectBlock = iterator.next();
+            while (selectBlock.getType() == Material.AIR && iterator.hasNext()) {
+                selectBlock = iterator.next();
+            }
+            if (selectBlock.getType() == Material.CHEST) {
+                if (selectBlock.getMetadata("Lock").equals("Fish")) {
+                    p.sendMessage("YAY!");
+                } else {
+                    p.sendRawMessage(selectBlock.getMetadata("Lock").toString());
+                }
+            } else {
+                p.sendMessage("§cThat's not a chest!");
+            }
             return true;
         }else{
             if(sender instanceof Player){

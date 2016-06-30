@@ -169,6 +169,7 @@ public class Main extends JavaPlugin {
                 Main.getPlugin().getCommand("list").setExecutor(general);
                 Main.getPlugin().getCommand("self").setExecutor(general);
                 Main.getPlugin().getCommand("is").setExecutor(general);
+                Main.getPlugin().getCommand("setpost").setExecutor(general);
                 Main.getPlugin().getCommand("where").setExecutor(moderation);
                 Main.getPlugin().getCommand("ban").setExecutor(moderation);
                 Main.getPlugin().getCommand("unban").setExecutor(moderation);
