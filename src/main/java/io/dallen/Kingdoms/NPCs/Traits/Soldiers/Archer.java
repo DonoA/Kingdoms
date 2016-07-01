@@ -36,6 +36,10 @@ import org.bukkit.inventory.ItemStack;
  * @author Donovan Allen
  */
 public class Archer extends Trait{
+    
+    private final static String[] names = new String[] {
+                "Dallen"
+            };
 
     @Setter
     private Municipality municipal;

@@ -29,6 +29,7 @@ import io.dallen.Kingdoms.Util.Annotations.SaveData;
 import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.LocationUtil;
 import io.dallen.Kingdoms.Util.LogUtil;
+import java.awt.Rectangle;
 import java.util.Collection;
 import lombok.Getter;
 import lombok.Setter;
@@ -73,9 +74,7 @@ public class Mine extends Plot implements Storage{
             setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
         }};
         BuildMenu = new ChestGUI("Build Options", 2, new MenuHandler()){{
-            setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Light Builder's Hut");
-            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Dark Builder's Hut");
-            setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Other");
+            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Other");
         }};
         Storage = new BuildingVault(18,18*64, this);
     }
@@ -134,11 +133,7 @@ public class Mine extends Plot implements Storage{
                     BuildingHandler.chestBuildOptions(e, BuildMenu, Mine.this);
                 }
             }else if(e.getMenuName().equals(BuildMenu.getName())){
-                if(e.getName().equalsIgnoreCase("Other")){
-                    BuildingHandler.getBuildChestHandler().onOptionClick(e);
-                }else{
-                    e.getPlayer().sendMessage("Default option called");
-                }
+                BuildingHandler.getBuildChestHandler().onOptionClick(e);
             }
         }
     }
@@ -151,6 +146,8 @@ public class Mine extends Plot implements Storage{
         
         private int z = 0;
         
+        private Rectangle currentHole;
+        
         private Location startCorner;
         
         private NPC Miner;
@@ -161,6 +158,8 @@ public class Mine extends Plot implements Storage{
         
         public MineTask(Location start, int speed){
             LogUtil.printDebug(LocationUtil.asPoint(Mine.this.getCenter()));
+            currentHole = new Rectangle(-(getWidth()/2  + (getWidth() % 2 == 0 ? 1 : 0)), -(getLength()/2 + (getLength() % 2 == 0 ? 1 : 0)), 
+                    getWidth()/2  + (getWidth() % 2 == 0 ? 1 : 0), getLength()/2 + (getLength() % 2 == 0 ? 1 : 0));
             Miner = Main.getNPCs().spawnBuilder("BingRazor", Mine.this.getCenter());
             Miner.getNavigator().setTarget(start);
             this.startCorner = start;
@@ -175,8 +174,6 @@ public class Mine extends Plot implements Storage{
                         Miner.getTrait(Miner.class).getSupplies(startCorner);
                         step = 64;
                     }
-    //                step--;
-    //                LogUtil.printDebug(x + ", " + y + ", " + z);
                     if(x < Mine.this.getWidth() - (Mine.this.getWidth() % 2 == 0 ? 1 : 0)){
                         Location nLoc = startCorner.clone().add(x,y,z);
                         Collection<ItemStack> drops = nLoc.getBlock().getDrops();
@@ -199,7 +196,7 @@ public class Mine extends Plot implements Storage{
                             z++;
                         }else{
                             z = 0;
-                            if(y >= -30){
+                            if(y >= -30 || startCorner.clone().getBlockY() + y > 3){
                                 Location nLoc = startCorner.clone().add(x,y,z);
                                 Collection<ItemStack> drops = nLoc.getBlock().getDrops();
                                 for(ItemStack drop : drops){

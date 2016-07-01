@@ -54,11 +54,14 @@ public enum KingdomMaterial {
     STRUCTURE_WALL_GATE(Material.DIAMOND_HOE, 23),
     STRUCTURE_WALL_TOWER(Material.DIAMOND_HOE, 24),
     STRUCTURE_WALL_CORNER(Material.DIAMOND_HOE, 25),
-    STRUCTURE_POSTOFFICE(Material.DIAMOND_HOE, 29),
-    STRUCTURE_MINE(Material.DIAMOND_HOE, 30),
     ERASE(Material.DIAMOND_HOE, 26),
     DEMOLISH(Material.DIAMOND_HOE, 27),
-    CANCEL(Material.DIAMOND_HOE, 28);
+    CANCEL(Material.DIAMOND_HOE, 28),
+    STRUCTURE_POSTOFFICE(Material.DIAMOND_HOE, 29),
+    STRUCTURE_MINE(Material.DIAMOND_HOE, 30),
+    TRADE_CONFIRM(Material.DIAMOND_HOE, 31),
+    TRADE_REJECT(Material.DIAMOND_HOE, 32),
+    TRADE_DIVIDER(Material.DIAMOND_HOE, 33);
     
     @Getter
     private Material coreItem;

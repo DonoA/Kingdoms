@@ -76,11 +76,7 @@ public class Marketplace extends Plot{
             if(e.getMenuName().equals(EditPlot.getName())){
                 BuildingHandler.chestBuildOptions(e, BuildMenu, Marketplace.this);
             }else if(e.getMenuName().equals(BuildMenu.getName())){
-                if(e.getName().equalsIgnoreCase("Other")){
-                    BuildingHandler.getBuildChestHandler().onOptionClick(e);
-                }else{
-                    e.getPlayer().sendMessage("Default option called");
-                }
+                BuildingHandler.getBuildChestHandler().onOptionClick(e);
             }
         }
     }
