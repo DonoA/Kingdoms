@@ -75,9 +75,7 @@ public class Barracks extends Plot{
         }};
         
         BuildMenu = new ChestGUI("Build Options", 2, new MenuHandler()){{
-            setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Light Builder's Hut");
-            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Dark Builder's Hut");
-            setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Other");
+            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Other");
         }};
     }
     
@@ -93,11 +91,7 @@ public class Barracks extends Plot{
             if(e.getMenuName().equals(EditPlot.getName())){
                 BuildingHandler.chestBuildOptions(e, BuildMenu, Barracks.this);
             }else if(e.getMenuName().equals(BuildMenu.getName())){
-                if(e.getName().equalsIgnoreCase("Other")){
-                    BuildingHandler.getBuildChestHandler().onOptionClick(e);
-                }else{
-                    e.getPlayer().sendMessage("Default option called");
-                }
+                BuildingHandler.getBuildChestHandler().onOptionClick(e);
             }
         }
     }

@@ -60,9 +60,7 @@ public class Marketplace extends Plot{
         }};
         
         BuildMenu = new ChestGUI("Build Options", 2, new MenuHandler()){{
-            setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Light Builder's Hut");
-            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Dark Builder's Hut");
-            setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Other");
+            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Other");
         }};
     }
     

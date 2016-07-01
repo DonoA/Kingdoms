@@ -63,9 +63,7 @@ public class TrainingGround extends Plot{
         }};
         
         BuildMenu = new ChestGUI("Build Options", 2, new MenuHandler()){{
-            setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Light Trainging Ground");
-            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Dark Training Ground");
-            setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Other");
+            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Other");
         }};
     }
     
@@ -117,7 +115,6 @@ public class TrainingGround extends Plot{
         }else{
             EditPlot.removeOption(2).removeOption(3).removeOption(4).removeOption(5);
         }
-        
         EditPlot.sendMenu(p);
     }
     

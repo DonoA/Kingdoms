@@ -103,6 +103,73 @@ public class BuildingHandler implements Listener{
                 Plot p = (Plot) s;
                 StringInput in = new StringInput("buildConst", p);
                 openInputs.put(e.getPlayer().getName(), in);
+            }else{
+                try {
+                    String[] args = new String[]{e.getName().replace(".schematic", ""), "5"};
+                    Blueprint building = NBTmanager.loadData(new File(Main.getPlugin().getDataFolder() + DBmanager.getFileSep() + "prefabs" + DBmanager.getFileSep() + args[0] + ".schematic"));
+                    Plot p = (Plot) openInputs.get(e.getPlayer().getName()).getData();
+                    if(p.getLength() + 1 <= building.getLen() || p.getWidth() + 1 <= building.getWid()){
+                        building.Rotate(90);
+                    }
+                    if(p.getLength() + 1 <= building.getLen() || p.getWidth() + 1 <= building.getWid()){
+                        e.getPlayer().sendMessage("That structure is too large for this plot");
+                        return;
+                    }
+                    List<ItemStack> mats = new ArrayList<ItemStack>();
+                    for(BlueBlock[][] bbarr1 : building.getBlocks()){
+                        for(BlueBlock[] bbarr2: bbarr1){
+                            for(BlueBlock bb : bbarr2){
+                                ItemStack is = new ItemStack(bb.getBlock());
+                                is.getData().setData(bb.getData());
+                                boolean found = false;
+                                for(ItemStack mat : mats){
+                                    if(mat.isSimilar(is)){
+                                        mat.setAmount(mat.getAmount()+1);
+                                        found = true;
+                                    }
+                                }
+                                if(!found){
+                                    mats.add(is);
+                                }
+                            }
+                        }
+                    }
+                    List<Structure> locs = new ArrayList<Structure>();
+                    for(ItemStack is : mats){
+                        locs = p.getMunicipal().materialLocation(is);
+                        for(Structure st : locs){
+                            is.setAmount(is.getAmount()-((BuildingVault)((Storage) st).getStorage()).getMaterial(is).getAmount());
+                        }
+                        if(is.getAmount() > 0){
+                            e.getPlayer().sendMessage("Your municipality does not have the materials to build this structure");
+                            return;
+                        }
+                    }
+                    Location startCorner = new Location(p.getCenter().getWorld(), p.getCenter().getX() - building.getWid()/2  + (building.getWid() % 2 == 0 ? 1 : 0),
+                            p.getCenter().getBlockY(), p.getCenter().getBlockZ() - building.getLen()/2 + (building.getLen() % 2 == 0 ? 1 : 0));
+                    for(int y = 0; y < building.getHigh(); y++){
+                        for(int z = 0; z < building.getLen(); z++){
+                            for(int x = 0; x < building.getWid(); x++){
+                                Location nLoc = startCorner.clone().add(x,y,z);
+                                Material covMat = building.getBlocks()[x][y][z].getBlock();
+                                if(covMat.name().contains("STAIRS")){
+                                    covMat = Material.QUARTZ_STAIRS;
+                                }else if(!covMat.equals(Material.AIR)){
+                                    covMat = Material.QUARTZ_BLOCK;
+                                }
+                                nLoc.getBlock().setType(covMat, false);
+                                nLoc.getBlock().setData(building.getBlocks()[x][y][z].getData(), false);
+                            }
+                        }
+                    }
+
+                    RotateMenu.sendMenu(e.getPlayer());
+                    BuildFrame frame = new BuildFrame(building, p, Integer.parseInt(args[1]));
+                    openBuilds.put(e.getPlayer().getName(), frame);
+                    openInputs.remove(e.getPlayer().getName());
+                } catch (IOException | DataFormatException ex) {
+                    Logger.getLogger(MultiBlockHandler.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
     }
@@ -263,6 +330,15 @@ public class BuildingHandler implements Listener{
                 if(struc.getMunicipal() != null && 
                     !struc.getMunicipal().getStructures().get(BuildersHut.class).isEmpty()){
                     buildMenu.setMenuData(struc);
+                    int i = 0;
+                    for(File f : new File(Main.getPlugin().getDataFolder() + DBmanager.getFileSep() + "prefabs" + DBmanager.getFileSep() + 
+                            struc.getClass().getName() + DBmanager.getFileSep()).listFiles()){
+                        if(i<9){
+                            buildMenu.setOption(0*9+i, new ItemStack(Material.ENCHANTED_BOOK), f.getName());
+                        }else{
+                            break;
+                        }
+                    }
                     e.setNext(buildMenu);
                 }else{
                     e.getPlayer().sendMessage("You have no NPCs to build this!");
@@ -325,9 +401,9 @@ public class BuildingHandler implements Listener{
                 }
                 final AsyncPlayerChatEvent e = ev;
                 Bukkit.getScheduler().runTask(Main.getPlugin(), new Runnable(){
-                   @Override
-                   public void run(){
-                       try {
+                    @Override
+                    public void run(){
+                        try {
                             String[] args = e.getMessage().split(" ");
                             Blueprint building = NBTmanager.loadData(new File(Main.getPlugin().getDataFolder() + DBmanager.getFileSep() + "prefabs" + DBmanager.getFileSep() + args[0] + ".schematic"));
                             Plot p = (Plot) openInputs.get(e.getPlayer().getName()).getData();
@@ -393,7 +469,7 @@ public class BuildingHandler implements Listener{
                         } catch (IOException | DataFormatException ex) {
                             Logger.getLogger(MultiBlockHandler.class.getName()).log(Level.SEVERE, null, ex);
                         }
-                   } 
+                    } 
                 });
             }
         }

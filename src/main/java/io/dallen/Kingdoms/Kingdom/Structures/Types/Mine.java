@@ -24,14 +24,12 @@ import io.dallen.Kingdoms.Kingdom.Plot;
 import io.dallen.Kingdoms.Kingdom.Structures.Storage;
 import io.dallen.Kingdoms.Kingdom.Vaults.BuildingVault;
 import io.dallen.Kingdoms.Main;
-import io.dallen.Kingdoms.NPCs.Traits.Builder;
 import io.dallen.Kingdoms.NPCs.Traits.Miner;
 import io.dallen.Kingdoms.Util.Annotations.SaveData;
 import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.LocationUtil;
 import io.dallen.Kingdoms.Util.LogUtil;
 import java.util.Collection;
-import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import net.citizensnpcs.api.npc.NPC;
@@ -126,7 +124,8 @@ public class Mine extends Plot implements Storage{
                     digging = !digging;
                     EditPlot.setOption(0*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Stop Mining");
                     if(mineTask == null){
-                        mineTask = new MineTask(getCenter(), 10);
+                        mineTask = new MineTask(new Location(getCenter().getWorld(), getCenter().getX() - getWidth()/2  + (getWidth() % 2 == 0 ? 1 : 0),
+                        getCenter().getBlockY(), getCenter().getBlockZ() - getLength()/2 + (getLength() % 2 == 0 ? 1 : 0)), 10);
                     }
                 }else if(e.getName().equals("Stop Mining")){
                     digging = !digging;
@@ -156,6 +155,8 @@ public class Mine extends Plot implements Storage{
         
         private NPC Miner;
         
+        private boolean finished = false;
+        
         private int step = 64;
         
         public MineTask(Location start, int speed){
@@ -168,8 +169,8 @@ public class Mine extends Plot implements Storage{
         
         @Override
         public void run(){
-            if(!Miner.getNavigator().isNavigating()){
-                if(Mine.this.digging){
+            if(!Miner.getNavigator().isNavigating() && Mine.this.digging){
+                if(!finished){
                     if(step == 0){
                         Miner.getTrait(Miner.class).getSupplies(startCorner);
                         step = 64;
@@ -209,6 +210,7 @@ public class Mine extends Plot implements Storage{
                                 y--;
                             }else{
                                 Mine.this.digging = false;
+                                finished = true;
                             }
                         }
                     }

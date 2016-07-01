@@ -17,7 +17,9 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.Handlers.MagicHandler;
+package io.dallen.Kingdoms.RPG.Magic;
+
+import io.dallen.Kingdoms.Handlers.MagicHandler.*;
 
 /**
  *
