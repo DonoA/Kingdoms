@@ -19,6 +19,7 @@
  */
 package io.dallen.Kingdoms.Commands;
 
+import io.dallen.Kingdoms.Util.SetPostUtil;
 import io.dallen.Kingdoms.Kingdom.Kingdom;
 import io.dallen.Kingdoms.Storage.PlayerData;
 import io.dallen.Kingdoms.Util.PermissionManager;
@@ -26,6 +27,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+
+import io.dallen.Kingdoms.Util.SetPostUtil;
 import lombok.Getter;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
@@ -35,7 +38,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BlockIterator;
-import org.bukkit.block.Block;
+//import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.Material;
 
 /**
@@ -113,21 +117,9 @@ public class GeneralCommands implements CommandExecutor{
             return true;
         }else if(cmd.getName().equalsIgnoreCase("setpost")) {
             //set a new post office 
+            SetPostUtil util = new SetPostUtil();
             Player p = (Player) sender;
-            BlockIterator iterator = new BlockIterator(p, 5);
-            Block selectBlock = iterator.next();
-            while (selectBlock.getType() == Material.AIR && iterator.hasNext()) {
-                selectBlock = iterator.next();
-            }
-            if (selectBlock.getType() == Material.CHEST) {
-                if (selectBlock.getMetadata("Lock").equals("Fish")) {
-                    p.sendMessage("YAY!");
-                } else {
-                    p.sendRawMessage(selectBlock.getMetadata("Lock").toString());
-                }
-            } else {
-                p.sendMessage("§cThat's not a chest!");
-            }
+            util.setPost(p, args);
             return true;
         }else{
             if(sender instanceof Player){
