@@ -159,7 +159,7 @@ commands:
   setpost:
     description: set a post office
     usage: |
-            /setpost
+            /setpost <name>
   fillplot:
     description: debug command
     usage: /<command>
