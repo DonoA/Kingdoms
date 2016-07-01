@@ -156,6 +156,10 @@ commands:
     description: allows schematics to be moved and sorted
     usage: |
            /editschem
+  setpost:
+    description: set a post office
+    usage: |
+            /setpost
   fillplot:
     description: debug command
     usage: /<command>
