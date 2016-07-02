@@ -107,7 +107,13 @@ public class Trade {
                     Trade trade = openTrades.get(event.getWhoClicked().getName());
                     if(event.getInventory().getTitle().equals(trade.gui.title)){
                         if(event.getRawSlot() % 9 < 4){
-                            
+                            if(event.getRawSlot() == 9*3 + 3){
+                                //toggle confirm for this player
+                            }else{
+                                trade.gui.updateForPlayers();
+                            }
+                        }else{
+                            event.setCancelled(true);
                         }
                     }
                 }

@@ -68,8 +68,7 @@ public class NpcManager {
                 Soldier.addTrait(archer);
                 break;
             case INFANTRY:
-                Infantry infantry = new Infantry();
-                infantry.setMunicipal(owner);
+                Infantry infantry = new Infantry(owner);
                 Soldier.addTrait(infantry);
                 break;
             case CAVALRY:

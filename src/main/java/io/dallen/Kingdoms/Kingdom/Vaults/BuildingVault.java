@@ -247,7 +247,7 @@ public class BuildingVault implements Vault, SaveType.Saveable{ // Will start pi
     
     public ItemStack getMaterial(ItemStack mat){
         for(ItemStack mw : contents){
-            if(mw != null && mw.isSimilar(mat)){
+            if(mw != null && mw.isSimilar(mat) && mw.getAmount() > 0){
                 return mw;
             }
         }
