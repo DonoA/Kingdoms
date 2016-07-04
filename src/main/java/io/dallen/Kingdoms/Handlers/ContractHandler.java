@@ -20,10 +20,15 @@
 package io.dallen.Kingdoms.Handlers;
 
 import io.dallen.Kingdoms.Overrides.KingdomMaterial;
+import io.dallen.Kingdoms.RPG.Contract.Contract;
 import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEventHandler;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -36,7 +41,12 @@ import org.bukkit.event.player.PlayerInteractEvent;
  */
 public class ContractHandler implements Listener, OptionClickEventHandler{
     
+    private static int currentID = -1;
+    
     private static HashMap<String, Long> cooldown = new HashMap<String, Long>();
+    
+    @Getter
+    private static HashMap<Integer, Contract> allContracts = new HashMap<Integer, Contract>();
     
     private ChestGUI createContract = new ChestGUI("",9*1,this){{
         setOption(9*0 + 0, KingdomMaterial.DEFAULT.getItemStack(), "Build");
@@ -47,14 +57,30 @@ public class ContractHandler implements Listener, OptionClickEventHandler{
         setOption(9*0 + 5, KingdomMaterial.DEFAULT.getItemStack(), "Transport");
     }};
     
+    public static int geCurrentID(){
+        currentID++;
+        return currentID;
+    }
+    
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent e){
         if(((!cooldown.containsKey(e.getPlayer().getName())) || 
                 (cooldown.containsKey(e.getPlayer().getName()) && cooldown.get(e.getPlayer().getName()) < System.currentTimeMillis() - 100)) && 
-                e.hasItem() && KingdomMaterial.CONTRACT_EMPTY.getItemStack().isSimilar(e.getItem()) && 
+                e.hasItem() && 
                 (e.getAction().equals(Action.RIGHT_CLICK_BLOCK) || e.getAction().equals(Action.RIGHT_CLICK_AIR))){
             cooldown.put(e.getPlayer().getName(), System.currentTimeMillis());
-            createContract.sendMenu(e.getPlayer());
+            if(KingdomMaterial.CONTRACT_EMPTY.getItemStack().isSimilar(e.getItem())){
+                createContract.sendMenu(e.getPlayer());
+            }else if(KingdomMaterial.CONTRACT_UNFINISHED.getItemStack().isSimilar(e.getItem())){
+                try {
+                    int id = Integer.parseInt(e.getItem().getItemMeta().getLore().get(0).split(":")[1]);
+                    if(allContracts.containsKey(id)){
+                        allContracts.get(id).interact(e);
+                    }
+                } catch (Exception ex) {
+                    Logger.getLogger(ContractHandler.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
         }
     }
     
@@ -68,7 +94,7 @@ public class ContractHandler implements Listener, OptionClickEventHandler{
             } catch (ClassNotFoundException | IllegalArgumentException | SecurityException | NoSuchMethodException | IllegalAccessException 
                     | InvocationTargetException | InstantiationException ex) {
                 ex.printStackTrace();
-                e.getPlayer().sendMessage("Building name not found!");
+                e.getPlayer().sendMessage("Contract name not found!");
             }
         }
     }

@@ -22,11 +22,13 @@ package io.dallen.Kingdoms.Kingdom.Structures.Types;
 import io.dallen.Kingdoms.Handlers.BuildingHandler;
 import io.dallen.Kingdoms.Kingdom.Municipality;
 import io.dallen.Kingdoms.Kingdom.Structures.Plot;
+import io.dallen.Kingdoms.RPG.Contract.Contract;
 import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEvent;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEventHandler;
 import io.dallen.Kingdoms.Util.LocationUtil;
 import java.awt.geom.Ellipse2D;
+import java.util.ArrayList;
 import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -42,6 +44,8 @@ public class TownHall extends Plot{
     private ChestGUI EditPlot;
     @Getter
     private ChestGUI BuildMenu;
+    
+    private ArrayList<Contract> contracts = new ArrayList<Contract>();
     
     public TownHall(Plot p){
         super(p);

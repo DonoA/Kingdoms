@@ -29,6 +29,7 @@ import io.dallen.Kingdoms.Kingdom.Structures.Types.WallSystem.WallType;
 import io.dallen.Kingdoms.Overrides.KingdomMaterial;
 import io.dallen.Kingdoms.RPG.Contract.Contract;
 import io.dallen.Kingdoms.RPG.PlayerData;
+import io.dallen.Kingdoms.Util.Annotations.SaveData;
 import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEvent;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEventHandler;
@@ -66,6 +67,9 @@ public class Plot extends Structure implements Listener{
     
     @Getter @Setter
     private boolean empty = true;
+    
+    @Getter @Setter @SaveData
+    private int tier;
     
     public Plot(Polygon base, Location cent, OfflinePlayer own) {
         super(base, cent, own);

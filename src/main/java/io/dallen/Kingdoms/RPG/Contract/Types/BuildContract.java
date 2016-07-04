@@ -22,6 +22,8 @@ package io.dallen.Kingdoms.RPG.Contract.Types;
 import io.dallen.Kingdoms.Kingdom.Structures.Plot;
 import io.dallen.Kingdoms.Kingdom.Structures.Blueprint;
 import io.dallen.Kingdoms.RPG.Contract.Contract;
+import io.dallen.Kingdoms.RPG.Contract.Contract.ContractTarget;
+import io.dallen.Kingdoms.RPG.Contract.Contract.RewardType;
 import io.dallen.Kingdoms.Util.ChestGUI;
 import lombok.Getter;
 import lombok.Setter;
@@ -33,7 +35,7 @@ import org.bukkit.event.inventory.InventoryType;
  *
  * @author Donovan Allen
  */
-public class BuildContract implements Contract, Listener{
+public class BuildContract implements /*Contract, */Listener{
     
     @Getter
     private ContractTarget contractTarget;
@@ -74,7 +76,7 @@ public class BuildContract implements Contract, Listener{
         }
     }
     
-    @Override
+//    @Override
     public boolean isFinished(){
         return false;
     }

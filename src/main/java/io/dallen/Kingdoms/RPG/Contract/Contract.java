@@ -21,6 +21,8 @@ package io.dallen.Kingdoms.RPG.Contract;
 
 import io.dallen.Kingdoms.Util.ChestGUI;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 
 /**
  *
@@ -43,6 +45,10 @@ public interface Contract {
     public boolean isContractorFinished();
     
     public boolean isWorkerFinished();
+    
+    public ItemStack getContractItem();
+    
+    public void interact(PlayerInteractEvent e);
     
     public static enum ContractTarget{
         PLAYER, NPC, BOTH

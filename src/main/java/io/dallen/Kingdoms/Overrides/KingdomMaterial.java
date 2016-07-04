@@ -64,7 +64,8 @@ public enum KingdomMaterial {
     TRADE_DIVIDER(Material.DIAMOND_HOE, 33),
     CONTRACT_EMPTY(Material.DIAMOND_HOE, 34),
     CONTRACT_FILLED(Material.DIAMOND_HOE, 35),
-    DEFAULT(Material.DIAMOND_HOE, 36);
+    CONTRACT_UNFINISHED(Material.DIAMOND_HOE, 36),
+    DEFAULT(Material.DIAMOND_HOE, 37);
     
     @Getter
     private Material coreItem;
