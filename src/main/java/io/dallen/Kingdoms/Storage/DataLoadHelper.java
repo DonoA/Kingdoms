@@ -19,10 +19,11 @@
  */
 package io.dallen.Kingdoms.Storage;
 
+import io.dallen.Kingdoms.RPG.PlayerData;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.dallen.Kingdoms.Kingdom.Kingdom;
 import io.dallen.Kingdoms.Kingdom.Municipality;
-import io.dallen.Kingdoms.Kingdom.Plot;
+import io.dallen.Kingdoms.Kingdom.Structures.Plot;
 import io.dallen.Kingdoms.Kingdom.Structures.Structure;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.WallSystem;
 import io.dallen.Kingdoms.Kingdom.Vaults.BuildingVault;

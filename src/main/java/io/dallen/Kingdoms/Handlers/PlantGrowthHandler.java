@@ -19,7 +19,7 @@
  */
 package io.dallen.Kingdoms.Handlers;
 
-import io.dallen.Kingdoms.Kingdom.Plot;
+import io.dallen.Kingdoms.Kingdom.Structures.Plot;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.Farm;
 import io.dallen.Kingdoms.Main;
 import io.dallen.Kingdoms.Util.LogUtil;

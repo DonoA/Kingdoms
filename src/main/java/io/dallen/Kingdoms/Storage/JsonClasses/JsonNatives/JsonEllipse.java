@@ -19,7 +19,7 @@
  */
 package io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives;
 
-import io.dallen.Kingdoms.Storage.PlayerData;
+import io.dallen.Kingdoms.RPG.PlayerData;
 import io.dallen.Kingdoms.Storage.SaveType;
 import java.awt.geom.Ellipse2D;
 import lombok.Getter;

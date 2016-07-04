@@ -20,7 +20,7 @@
 package io.dallen.Kingdoms.Kingdom.Structures.Types;
 
 import io.dallen.Kingdoms.Handlers.BuildingHandler;
-import io.dallen.Kingdoms.Kingdom.Plot;
+import io.dallen.Kingdoms.Kingdom.Structures.Plot;
 import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEvent;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEventHandler;

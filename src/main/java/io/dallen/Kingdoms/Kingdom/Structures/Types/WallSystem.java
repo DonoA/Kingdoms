@@ -21,7 +21,7 @@ package io.dallen.Kingdoms.Kingdom.Structures.Types;
 
 import io.dallen.Kingdoms.Handlers.BuildingHandler;
 import io.dallen.Kingdoms.Kingdom.Municipality;
-import io.dallen.Kingdoms.Kingdom.Plot;
+import io.dallen.Kingdoms.Kingdom.Structures.Plot;
 import io.dallen.Kingdoms.Kingdom.Structures.Structure;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonWallSystem;
 import io.dallen.Kingdoms.Storage.SaveType;

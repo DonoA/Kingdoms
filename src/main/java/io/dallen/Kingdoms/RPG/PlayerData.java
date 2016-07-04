@@ -17,17 +17,18 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.Storage;
+package io.dallen.Kingdoms.RPG;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.dallen.Kingdoms.Handlers.Party;
-import io.dallen.Kingdoms.Kingdom.Plot;
+import io.dallen.Kingdoms.Kingdom.Structures.Plot;
 import io.dallen.Kingdoms.Commands.MuteCommand.MuteClass;
 import io.dallen.Kingdoms.Kingdom.Kingdom;
 import io.dallen.Kingdoms.Kingdom.Municipality;
 import io.dallen.Kingdoms.Kingdom.Vaults.PlayerVault;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonLocation;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonPlayerData;
+import io.dallen.Kingdoms.Storage.SaveType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
@@ -77,6 +78,12 @@ public class PlayerData implements SaveType.Saveable{
     @Getter @Setter
     private MuteClass muted;
     
+    @Getter
+    private Rating contractorRating;
+    
+    @Getter
+    private Rating workerRating;
+    
     public PlayerData(Player p){
         this.Player = p;
         Vault = new PlayerVault(p, 27);
@@ -117,4 +124,7 @@ public class PlayerData implements SaveType.Saveable{
         return jpd;
     }
     
+    public static enum Rating{
+        VERY_NEGATIVE, NEGATIVE, POOR, NEUTRAL, FAIR, GOOD, VERY_GOOD, PERFECT
+    }
 }

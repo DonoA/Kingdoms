@@ -23,17 +23,13 @@ import com.google.common.primitives.Ints;
 import io.dallen.Kingdoms.Handlers.MultiBlocks.Forge;
 import io.dallen.Kingdoms.Kingdom.Municipality;
 import io.dallen.Kingdoms.Util.LogUtil;
-import io.dallen.Kingdoms.Kingdom.Plot;
+import io.dallen.Kingdoms.Kingdom.Structures.Plot;
 import io.dallen.Kingdoms.Kingdom.Structures.Blueprint;
-import io.dallen.Kingdoms.Kingdom.Structures.Contract;
-import io.dallen.Kingdoms.Kingdom.Structures.Storage;
-import io.dallen.Kingdoms.Kingdom.Structures.Structure;
-import io.dallen.Kingdoms.Kingdom.Structures.Types.BuildersHut;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.WallSystem;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.WallSystem.Wall;
-import io.dallen.Kingdoms.Kingdom.Structures.Types.WallSystem.WallType;
 import io.dallen.Kingdoms.Main;
-import io.dallen.Kingdoms.Storage.PlayerData;
+import io.dallen.Kingdoms.RPG.Contract.Contract;
+import io.dallen.Kingdoms.RPG.PlayerData;
 import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEvent;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEventHandler;
@@ -41,14 +37,9 @@ import io.dallen.Kingdoms.Util.LocationUtil;
 import io.dallen.Kingdoms.Util.PermissionManager;
 import java.awt.Point;
 import java.awt.Polygon;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -263,7 +254,7 @@ public class MultiBlockHandler implements Listener{
                         }else{
                             int loc = 0;
                             for(Contract ct : p.getContracts()){
-                                ViewPlotMenu.setOption(loc, new ItemStack(Material.ENCHANTED_BOOK), ct.getMessage(), ct.getPay(), ct.getType().getName());
+                                ViewPlotMenu.setOption(loc, new ItemStack(Material.ENCHANTED_BOOK), "some contract");
                                 loc++;
                             }
                             ViewPlotMenu.sendMenu(e.getPlayer());

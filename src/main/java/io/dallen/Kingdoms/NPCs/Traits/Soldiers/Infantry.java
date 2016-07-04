@@ -20,10 +20,8 @@
 package io.dallen.Kingdoms.NPCs.Traits.Soldiers;
 
 import io.dallen.Kingdoms.Kingdom.Municipality;
-import io.dallen.Kingdoms.Kingdom.Plot;
 import io.dallen.Kingdoms.Kingdom.Structures.Structure;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.Armory;
-import io.dallen.Kingdoms.Kingdom.Vaults.BuildingVault;
 import io.dallen.Kingdoms.Main;
 import io.dallen.Kingdoms.NPCs.FiniteStateMachine;
 import io.dallen.Kingdoms.NPCs.FiniteStateMachine.FsmState;
@@ -159,11 +157,17 @@ public class Infantry extends Trait{
                         }
                     }
                 }
-                final Location spot = testSpot;
-                Bukkit.getScheduler().runTask(Main.getPlugin(), new Runnable(){public void run(){master.getNavigator().setTarget(spot); ticksTilNextPatrol = 200 + Math.round(Math.random()*1200);}});
+                target = testSpot;
+                Bukkit.getScheduler().runTask(Main.getPlugin(), new Runnable(){
+                    public void run(){
+                        master.getNavigator().setTarget(target);
+                        ticksTilNextPatrol = 200 + Math.round(Math.random()*1200);
+                    }
+                });
             }else{
                 ticksTilNextPatrol--;
             }
+            //check for enemies nearby
         }
         
         @Override

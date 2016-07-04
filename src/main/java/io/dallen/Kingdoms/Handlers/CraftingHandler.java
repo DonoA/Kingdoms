@@ -45,14 +45,20 @@ public class CraftingHandler implements Listener{
         Crown.setIngredient('D', Material.DIAMOND);
         p.getServer().addRecipe(Crown);
         
-//        ItemStack MultiTool = ItemUtil.setItemNameAndLore(Material.WATCH, "Multi Tool", "Used for managing plots");
-        ShapedRecipe mTool = new ShapedRecipe(KingdomMaterial.MULTI_TOOL.getItemStack());
-        mTool.shape("IiI"," S "," C ");
-        mTool.setIngredient('I', Material.IRON_BLOCK);
-        mTool.setIngredient('i', Material.IRON_INGOT);
-        mTool.setIngredient('S', Material.STICK);
-        mTool.setIngredient('C', Material.WATCH);
-        p.getServer().addRecipe(mTool);
+        ShapedRecipe itm = new ShapedRecipe(KingdomMaterial.MULTI_TOOL.getItemStack());
+        itm.shape("IiI"," S "," C ");
+        itm.setIngredient('I', Material.IRON_BLOCK);
+        itm.setIngredient('i', Material.IRON_INGOT);
+        itm.setIngredient('S', Material.STICK);
+        itm.setIngredient('C', Material.WATCH);
+        p.getServer().addRecipe(itm);
+        
+        itm = new ShapedRecipe(KingdomMaterial.CONTRACT_EMPTY.getItemStack());
+        itm.shape(" q "," p "," b ");
+        itm.setIngredient('q', Material.FEATHER);
+        itm.setIngredient('p', Material.PAPER);
+        itm.setIngredient('b', Material.BOOK);
+        p.getServer().addRecipe(itm);
         
         ItemStack CommandStick = ItemUtil.setItemNameAndLore(Material.STICK, "Command Stick", "Used for managing troops");
         ShapedRecipe cStick = new ShapedRecipe(CommandStick);
@@ -60,6 +66,8 @@ public class CraftingHandler implements Listener{
         cStick.setIngredient('I', Material.WATCH);
         cStick.setIngredient('S', Material.STICK);
         p.getServer().addRecipe(cStick);
+        
+        
         
         Bukkit.getPluginManager().registerEvents(this, p);
     }

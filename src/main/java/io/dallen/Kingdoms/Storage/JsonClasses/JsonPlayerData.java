@@ -21,7 +21,7 @@ package io.dallen.Kingdoms.Storage.JsonClasses;
 
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonLocation;
 import io.dallen.Kingdoms.Commands.MuteCommand.MuteClass;
-import io.dallen.Kingdoms.Storage.PlayerData;
+import io.dallen.Kingdoms.RPG.PlayerData;
 import io.dallen.Kingdoms.Storage.SaveType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

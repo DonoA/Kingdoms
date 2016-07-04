@@ -21,7 +21,7 @@ package io.dallen.Kingdoms.Storage.JsonClasses;
 
 import io.dallen.Kingdoms.Kingdom.Structures.Types.WallSystem;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.WallSystem.WallType;
-import io.dallen.Kingdoms.Storage.PlayerData;
+import io.dallen.Kingdoms.RPG.PlayerData;
 import io.dallen.Kingdoms.Storage.SaveType;
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -19,6 +19,7 @@
  */
 package io.dallen.Kingdoms.Storage;
 
+import io.dallen.Kingdoms.RPG.PlayerData;
 import com.lambdaworks.redis.RedisClient;
 import com.lambdaworks.redis.api.StatefulRedisConnection;
 import com.lambdaworks.redis.api.sync.RedisCommands;

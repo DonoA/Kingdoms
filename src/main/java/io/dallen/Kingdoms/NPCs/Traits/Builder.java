@@ -19,15 +19,15 @@
  */
 package io.dallen.Kingdoms.NPCs.Traits;
 
+import io.dallen.Kingdoms.Kingdom.Structures.Blueprint.BlueBlock;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.BuildersHut;
+import io.dallen.Kingdoms.NPCs.FiniteStateMachine;
+import io.dallen.Kingdoms.NPCs.FiniteStateMachine.FsmState;
 import java.util.HashMap;
 import lombok.Getter;
 import lombok.Setter;
-import net.citizensnpcs.api.ai.event.NavigationCompleteEvent;
 import net.citizensnpcs.api.trait.Trait;
 import org.bukkit.Location;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
 
 /**
@@ -42,25 +42,56 @@ public class Builder extends Trait{
     @Getter @Setter
     private BuildersHut BuildHut;
     
+    private final FiniteStateMachine brain;
+    
     private static HashMap<Integer, Location> gettingSupplies = new HashMap<Integer, Location>();
     
     public Builder(){
         super("Builder");
+        brain = new FiniteStateMachine();
     }
     
-    public void getSupplies(Location rtnLoc){
-        super.npc.getNavigator().setTarget(BuildHut.getCenter());
-        gettingSupplies.put(super.npc.getId(), rtnLoc);
-    }
-    
-    public static class navigationEvents implements Listener{
+    public class getSupplies implements FsmState{
         
-        @EventHandler
-        public void onNavigationComplete(NavigationCompleteEvent e){
-            if(gettingSupplies.containsKey(e.getNPC().getId())){
-                e.getNavigator().setTarget(gettingSupplies.get(e.getNPC().getId()));
-                gettingSupplies.remove(e.getNPC().getId());
+        private Location target;
+        
+        private long ticksTilNextPatrol = 0;
+        
+        @Override
+        public void invoke(){
+            if(!npc.getNavigator().isNavigating() && ticksTilNextPatrol <= 0){
+               
+            }else{
+                ticksTilNextPatrol--;
             }
+        }
+        
+        @Override
+        public boolean isComplete(){
+            return false;
+        }
+    }
+    
+    public class placeBlock implements FsmState{
+        
+        private Location target;
+        
+        private BlueBlock block;
+        
+        private long ticksTilNextPatrol = 0;
+        
+        @Override
+        public void invoke(){
+            if(!npc.getNavigator().isNavigating() && ticksTilNextPatrol <= 0){
+               
+            }else{
+                ticksTilNextPatrol--;
+            }
+        }
+        
+        @Override
+        public boolean isComplete(){
+            return false;
         }
     }
 }

@@ -21,7 +21,7 @@
 package io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives;
 
 import io.dallen.Kingdoms.Kingdom.Municipality;
-import io.dallen.Kingdoms.Storage.PlayerData;
+import io.dallen.Kingdoms.RPG.PlayerData;
 import io.dallen.Kingdoms.Storage.SaveType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

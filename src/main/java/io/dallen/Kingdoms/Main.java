@@ -38,7 +38,7 @@ import io.dallen.Kingdoms.Handlers.MultiBlocks.MultiBlock;
 import io.dallen.Kingdoms.Handlers.SkinHandler.SkinPacketHandler;
 import io.dallen.Kingdoms.Kingdom.Kingdom;
 import io.dallen.Kingdoms.Kingdom.Municipality;
-import io.dallen.Kingdoms.Kingdom.Plot;
+import io.dallen.Kingdoms.Kingdom.Structures.Plot;
 import io.dallen.Kingdoms.Storage.DataLoadHelper;
 import io.dallen.Kingdoms.Storage.SaveType;
 import io.dallen.Kingdoms.Util.DBmanager;

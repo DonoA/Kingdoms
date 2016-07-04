@@ -19,7 +19,7 @@
  */
 package io.dallen.Kingdoms.Storage.JsonClasses;
 
-import io.dallen.Kingdoms.Kingdom.Plot;
+import io.dallen.Kingdoms.Kingdom.Structures.Plot;
 import io.dallen.Kingdoms.Kingdom.Structures.Structure;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonLocation;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonPolygon;

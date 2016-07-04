@@ -19,7 +19,7 @@
  */
 package io.dallen.Kingdoms.Handlers;
 
-import io.dallen.Kingdoms.Kingdom.Plot;
+import io.dallen.Kingdoms.Kingdom.Structures.Plot;
 import io.dallen.Kingdoms.Kingdom.Structures.Blueprint;
 import io.dallen.Kingdoms.Kingdom.Structures.Blueprint.BlueBlock;
 import io.dallen.Kingdoms.Kingdom.Structures.Storage;
@@ -491,8 +491,6 @@ public class BuildingHandler implements Listener{
         
         private int step = 0;
         
-       private int getSupplies = 64;
-        
         public BuildTask(Blueprint building, Location start, int speed, BuildersHut BuildHut){
             LogUtil.printDebug(LocationUtil.asPoint(BuildHut.getCenter()));
             Builder = Main.getNPCs().spawnBuilder("BingRazer", BuildHut.getCenter());
@@ -516,11 +514,6 @@ public class BuildingHandler implements Listener{
         public void run(){
             if(!Builder.getNavigator().isNavigating()){
                 if(running){
-                    if(getSupplies == 0){
-                        Builder.getTrait(Builder.class).getSupplies(startCorner);
-                        getSupplies = 64;
-                    }
-    //                getSupplies--;
                     if(step < blocks.size()){
                         Builder.teleport(blockLocations.get(step).clone().add(0, 1, 0), PlayerTeleportEvent.TeleportCause.PLUGIN);
                         blockLocations.get(step).getBlock().setType(blocks.get(step).getBlock(), false);

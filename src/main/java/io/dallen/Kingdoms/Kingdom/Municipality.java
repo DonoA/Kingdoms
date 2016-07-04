@@ -19,6 +19,7 @@
  */
 package io.dallen.Kingdoms.Kingdom;
 
+import io.dallen.Kingdoms.Kingdom.Structures.Plot;
 import io.dallen.Kingdoms.Kingdom.Structures.Storage;
 import io.dallen.Kingdoms.Kingdom.Structures.Structure;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.TownHall;

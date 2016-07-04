@@ -33,7 +33,7 @@ public class MailReceiver {
     @Getter
     private ArrayList<Letter> currentLetters = new ArrayList<Letter>();
     
-    public static class Letter {
+    public static class Letter{
         @Getter
         private String message;
         
@@ -59,7 +59,7 @@ public class MailReceiver {
             
         }
         
-        public static enum AttachmentType {
+        public static enum AttachmentType{
             ITEMSTACK, GOLD
         }
     }

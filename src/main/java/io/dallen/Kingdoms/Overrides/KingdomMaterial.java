@@ -61,7 +61,10 @@ public enum KingdomMaterial {
     STRUCTURE_MINE(Material.DIAMOND_HOE, 30),
     TRADE_CONFIRM(Material.DIAMOND_HOE, 31),
     TRADE_REJECT(Material.DIAMOND_HOE, 32),
-    TRADE_DIVIDER(Material.DIAMOND_HOE, 33);
+    TRADE_DIVIDER(Material.DIAMOND_HOE, 33),
+    CONTRACT_EMPTY(Material.DIAMOND_HOE, 34),
+    CONTRACT_FILLED(Material.DIAMOND_HOE, 35),
+    DEFAULT(Material.DIAMOND_HOE, 36);
     
     @Getter
     private Material coreItem;

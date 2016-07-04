@@ -31,6 +31,7 @@ import org.bukkit.Location;
  * @author Donovan Allen
  */
 public class FiniteStateMachine{
+    
     @Getter @Setter
     private Queue<FsmState> stateQueue = new LinkedList<FsmState>();
     

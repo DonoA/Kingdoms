@@ -21,7 +21,7 @@ package io.dallen.Kingdoms.Commands;
 
 import io.dallen.Kingdoms.Handlers.BuildingHandler;
 import io.dallen.Kingdoms.Handlers.DecayHandler.ChangeTracker;
-import io.dallen.Kingdoms.Kingdom.Plot;
+import io.dallen.Kingdoms.Kingdom.Structures.Plot;
 import io.dallen.Kingdoms.Main;
 import io.dallen.Kingdoms.Storage.DataLoadHelper;
 import io.dallen.Kingdoms.Util.DBmanager;

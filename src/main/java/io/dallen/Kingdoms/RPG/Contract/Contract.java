@@ -17,12 +17,38 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.RPG.Magic;
+package io.dallen.Kingdoms.RPG.Contract;
+
+import io.dallen.Kingdoms.Util.ChestGUI;
+import org.bukkit.entity.Player;
 
 /**
  *
  * @author Donovan Allen
  */
-public class BlockPlaceHandler {
+public interface Contract {
     
+    public boolean isFinished();
+    
+    public ContractTarget getContractTarget();
+    
+    public Player getContractor();
+    
+    public Object getContractee();
+    
+    public RewardType getRewardType();
+    
+    public Object getReward();
+    
+    public boolean isContractorFinished();
+    
+    public boolean isWorkerFinished();
+    
+    public static enum ContractTarget{
+        PLAYER, NPC, BOTH
+    }
+    
+    public static enum RewardType{
+        PLOT, GOLD, ITEM
+    }
 }

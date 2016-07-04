@@ -17,12 +17,12 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.RPG.Magic;
+package io.dallen.Kingdoms.RPG.Contract.Types;
 
 /**
  *
  * @author Donovan Allen
  */
-public class BlockPlaceHandler {
+public class Patrol {
     
 }

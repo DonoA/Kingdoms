@@ -20,7 +20,7 @@
 
 package io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives;
 
-import io.dallen.Kingdoms.Storage.PlayerData;
+import io.dallen.Kingdoms.RPG.PlayerData;
 import io.dallen.Kingdoms.Storage.SaveType;
 import java.util.List;
 import lombok.Getter;

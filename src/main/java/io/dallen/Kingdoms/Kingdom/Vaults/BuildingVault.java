@@ -24,7 +24,7 @@ import io.dallen.Kingdoms.Main;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonBuildingVault;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonItemStack;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonPolygon;
-import io.dallen.Kingdoms.Storage.PlayerData;
+import io.dallen.Kingdoms.RPG.PlayerData;
 import io.dallen.Kingdoms.Storage.MaterialWrapper;
 import io.dallen.Kingdoms.Storage.SaveType;
 import java.awt.Polygon;

@@ -19,7 +19,7 @@
  */
 package io.dallen.Kingdoms.Handlers.DecayHandler;
 
-import io.dallen.Kingdoms.Kingdom.Plot;
+import io.dallen.Kingdoms.Kingdom.Structures.Plot;
 import io.dallen.Kingdoms.Util.LogUtil;
 import io.dallen.Kingdoms.Util.PermissionManager;
 import java.util.ArrayList;

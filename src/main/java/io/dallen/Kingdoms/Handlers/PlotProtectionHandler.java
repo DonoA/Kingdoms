@@ -19,7 +19,7 @@
  */
 package io.dallen.Kingdoms.Handlers;
 
-import io.dallen.Kingdoms.Kingdom.Plot;
+import io.dallen.Kingdoms.Kingdom.Structures.Plot;
 import io.dallen.Kingdoms.Util.PermissionManager;
 import org.bukkit.Material;
 import org.bukkit.block.Block;

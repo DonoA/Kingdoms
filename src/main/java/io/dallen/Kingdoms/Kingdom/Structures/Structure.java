@@ -23,7 +23,6 @@ import com.google.common.primitives.Ints;
 import io.dallen.Kingdoms.Handlers.BuildingHandler;
 import io.dallen.Kingdoms.Kingdom.Kingdom;
 import io.dallen.Kingdoms.Kingdom.Municipality;
-import io.dallen.Kingdoms.Kingdom.Plot;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.WallSystem;
 import io.dallen.Kingdoms.Main;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonLocation;

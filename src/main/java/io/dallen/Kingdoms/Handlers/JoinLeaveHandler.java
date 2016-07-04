@@ -20,7 +20,7 @@
 package io.dallen.Kingdoms.Handlers;
 
 import io.dallen.Kingdoms.Storage.DataLoadHelper;
-import io.dallen.Kingdoms.Storage.PlayerData;
+import io.dallen.Kingdoms.RPG.PlayerData;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;

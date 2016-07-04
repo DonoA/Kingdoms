@@ -17,17 +17,18 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.Kingdom;
+package io.dallen.Kingdoms.Kingdom.Structures;
 
 import com.google.common.primitives.Ints;
 import io.dallen.Kingdoms.Handlers.BuildingHandler;
-import io.dallen.Kingdoms.Kingdom.Structures.Contract;
+import io.dallen.Kingdoms.Kingdom.Municipality;
 import io.dallen.Kingdoms.Kingdom.Structures.Structure;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.BuildersHut;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.WallSystem.Wall;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.WallSystem.WallType;
 import io.dallen.Kingdoms.Overrides.KingdomMaterial;
-import io.dallen.Kingdoms.Storage.PlayerData;
+import io.dallen.Kingdoms.RPG.Contract.Contract;
+import io.dallen.Kingdoms.RPG.PlayerData;
 import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEvent;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEventHandler;
