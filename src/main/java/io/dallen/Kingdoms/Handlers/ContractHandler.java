@@ -19,6 +19,7 @@
  */
 package io.dallen.Kingdoms.Handlers;
 
+import io.dallen.Kingdoms.Main;
 import io.dallen.Kingdoms.Overrides.KingdomMaterial;
 import io.dallen.Kingdoms.RPG.Contract.Contract;
 import io.dallen.Kingdoms.RPG.Contract.Contract.RewardType;
@@ -33,6 +34,7 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -94,12 +96,11 @@ public class ContractHandler implements Listener, OptionClickEventHandler{
                         Contract c = allContracts.get(Integer.parseInt(e.getItem().getItemMeta().getLore().get(0)));
                         if(c.getContractee() != null && c.isFinished()){
                             e.getPlayer().sendMessage("Maked Contract as completed!");
-                            e.getPlayer().getItemInHand().setType(Material.AIR);
                             if(c.getRewardType().equals(RewardType.ITEM)){
                                 LogUtil.printDebug("Adding items");
                                 for(ItemStack is : (ItemStack[]) c.getReward()){
                                     if(is != null){
-                                        e.getPlayer().getInventory().addItem();
+                                        e.getPlayer().getInventory().addItem(is);
                                     }
                                 }
                             }else if(c.getRewardType().equals(RewardType.GOLD)){
@@ -108,6 +109,7 @@ public class ContractHandler implements Listener, OptionClickEventHandler{
 
                             }
                             allContracts.remove(c.getID());
+                            e.getPlayer().setItemInHand(new ItemStack(Material.AIR));
                         }else{
                             c.interact(e, true);
                         }

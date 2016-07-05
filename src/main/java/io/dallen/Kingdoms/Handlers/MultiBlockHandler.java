@@ -264,9 +264,10 @@ public class MultiBlockHandler implements Listener{
                                 ViewPlotMenu.setOption(loc, ct.getContractItem(), ct.getContractItem().getItemMeta().getDisplayName(), 
                                         (Object) ct.getID(), String.valueOf(ct.getID()));
                                 LogUtil.printDebug("added contract " + ct.getID());
+                                LogUtil.printDebug(Arrays.toString((ItemStack[]) ct.getReward()));
                                 loc++;
                             }
-                            LogUtil.printDebug(Arrays.toString(ViewPlotMenu.getOptionData()));
+                            
                             ViewPlotMenu.sendMenu(e.getPlayer());
                         }
                     }

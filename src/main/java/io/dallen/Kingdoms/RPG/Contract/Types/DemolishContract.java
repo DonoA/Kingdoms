@@ -29,6 +29,7 @@ import io.dallen.Kingdoms.RPG.Contract.PlotContract;
 import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.ItemUtil;
 import io.dallen.Kingdoms.Util.LogUtil;
+import java.util.Arrays;
 import java.util.HashMap;
 import lombok.Getter;
 import lombok.Setter;
@@ -141,12 +142,12 @@ public class DemolishContract implements PlotContract, ChestGUI.OptionClickEvent
         if(!finished){
             selectReward(e.getPlayer());
         }else{
-            e.getPlayer().getItemInHand().setType(Material.AIR);
             e.getPlayer().sendMessage("added contract to plot");
             plot.getContracts().add(this);
             if(plot.getMunicipal() != null){
                 ((TownHall) plot.getMunicipal().getCenter()).getContracts().add(this);
             }
+            e.getPlayer().setItemInHand(new ItemStack(Material.AIR));
         }
     }
     
@@ -158,6 +159,7 @@ public class DemolishContract implements PlotContract, ChestGUI.OptionClickEvent
                 DemolishContract demolishContract = openInputs.get(event.getPlayer().getName());
                 demolishContract.rewardType = RewardType.ITEM;
                 demolishContract.reward = event.getInventory().getContents();
+                LogUtil.printDebug(Arrays.toString(event.getInventory().getContents()));
                 demolishContract.contractItem = ItemUtil.setItemNameAndLore(KingdomMaterial.CONTRACT_FILLED.getItemStack(), 
                         "Demolish Contract", String.valueOf(demolishContract.ID));
                 event.getPlayer().setItemInHand(demolishContract.contractItem);
