@@ -59,6 +59,7 @@ public class ChestGUI{
    
     private String[] optionNames;
     private ItemStack[] optionIcons;
+    @Getter
     private Object[] optionData;
     
     public ChestGUI(String name, InventoryType type, OptionClickEventHandler handler){

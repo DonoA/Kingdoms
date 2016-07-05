@@ -107,7 +107,7 @@ public class Main extends JavaPlugin {
             @Override
             @SuppressWarnings("unchecked")
             public void run(){
-                DataLoadHelper.LoadKingdomData();
+//                DataLoadHelper.LoadKingdomData();
                 protocolManager = ProtocolLibrary.getProtocolManager();
                 SkinPacketHandler SkinHandler = new SkinPacketHandler();
                 protocolManager.addPacketListener(SkinHandler.getAdapter());

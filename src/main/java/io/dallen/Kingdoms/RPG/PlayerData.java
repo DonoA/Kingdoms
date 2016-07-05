@@ -88,20 +88,31 @@ public class PlayerData implements SaveType.Saveable{
     @Getter
     private ArrayList<Contract> currentContracts = new ArrayList<Contract>();
     
+    @Getter
+    private ArrayList<Plot> Plots = new ArrayList<Plot>();
+    
+    @Getter
+    private int gold = 0;
+    
     public PlayerData(Player p){
         this.Player = p;
         Vault = new PlayerVault(p, 27);
         muted = new MuteClass();
     }
     
-    @Getter
-    private ArrayList<Plot> Plots = new ArrayList<Plot>();
-    
     public static PlayerData getData(Player p){
         if(PlayerDat.containsKey(p)){
             return PlayerDat.get(p);
         }
         return null;
+    }
+    
+    public void addGold(int amount){
+        gold += amount;
+    }
+    
+    public void removeGold(int amount){
+        gold -= amount;
     }
     
     public Party getCurrParty(){

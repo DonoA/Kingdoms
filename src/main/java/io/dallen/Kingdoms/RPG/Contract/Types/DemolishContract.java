@@ -22,15 +22,18 @@ package io.dallen.Kingdoms.RPG.Contract.Types;
 import io.dallen.Kingdoms.Handlers.ContractHandler;
 import io.dallen.Kingdoms.Kingdom.Structures.Plot;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.TownHall;
+import io.dallen.Kingdoms.Main;
 import io.dallen.Kingdoms.Overrides.KingdomMaterial;
 import io.dallen.Kingdoms.RPG.Contract.Contract;
 import io.dallen.Kingdoms.RPG.Contract.PlotContract;
 import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.ItemUtil;
+import io.dallen.Kingdoms.Util.LogUtil;
 import java.util.HashMap;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -85,11 +88,16 @@ public class DemolishContract implements PlotContract, ChestGUI.OptionClickEvent
         this.contractor = contractor;
         Plot p = Plot.inPlot(e.getPlayer().getLocation());
         if(p != null){
+            this.ID = ContractHandler.geCurrentID();
+            e.getPlayer().setItemInHand(ItemUtil.setItemNameAndLore(KingdomMaterial.CONTRACT_UNFINISHED.getItemStack(), 
+                    e.getName() + " - Unfinished", String.valueOf(ID)));
             this.plot = p;
             this.contractItem = e.getPlayer().getItemInHand();
-            this.ID = ContractHandler.geCurrentID();
             ContractHandler.getAllContracts().put(ID, this);
-            selectReward(e.getPlayer());
+            e.setNext(new ChestGUI("Select Reward Type", InventoryType.HOPPER, this){{
+                setOption(2, KingdomMaterial.DEFAULT.getItemStack(), "Gold");
+                setOption(4, KingdomMaterial.DEFAULT.getItemStack(), "Item");
+            }});
         }else{
             e.getPlayer().sendMessage("You must be in a plot to create this type of contract");
         }
@@ -97,7 +105,7 @@ public class DemolishContract implements PlotContract, ChestGUI.OptionClickEvent
     
     @Override
     public boolean isFinished(){
-        return false;
+        return true;
     }
     
     public void selectReward(Player p){
@@ -114,18 +122,27 @@ public class DemolishContract implements PlotContract, ChestGUI.OptionClickEvent
                 e.getPlayer().sendMessage("Enter amount of gold in chat");
                 openInputs.put(e.getPlayer().getName(), this);
             }else if(e.getName().equals("Item")){
-                Inventory itm = Bukkit.createInventory(e.getPlayer(), 9*2, "Contract Reward");
-                itm.setItem(9*2 + 8, KingdomMaterial.TRADE_CONFIRM.getItemStack());
-                openInputs.put(e.getPlayer().getName(), this);
+                final Inventory itm = Bukkit.createInventory(e.getPlayer(), 9*2, "Contract Reward");
+                final ChestGUI.OptionClickEvent ev = e;
+                Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), new Runnable(){
+                    @Override
+                    public void run(){
+                        ev.getPlayer().openInventory(itm);
+                        openInputs.put(ev.getPlayer().getName(), DemolishContract.this);
+                    }
+                }, 2);
             }
         }
     }
     
     @Override
     public void interact(PlayerInteractEvent e, boolean finished){
+        LogUtil.printDebug("Interact Called, " + finished);
         if(!finished){
             selectReward(e.getPlayer());
         }else{
+            e.getPlayer().getItemInHand().setType(Material.AIR);
+            e.getPlayer().sendMessage("added contract to plot");
             plot.getContracts().add(this);
             if(plot.getMunicipal() != null){
                 ((TownHall) plot.getMunicipal().getCenter()).getContracts().add(this);
@@ -142,7 +159,7 @@ public class DemolishContract implements PlotContract, ChestGUI.OptionClickEvent
                 demolishContract.rewardType = RewardType.ITEM;
                 demolishContract.reward = event.getInventory().getContents();
                 demolishContract.contractItem = ItemUtil.setItemNameAndLore(KingdomMaterial.CONTRACT_FILLED.getItemStack(), 
-                        "Demolish Contract");
+                        "Demolish Contract", String.valueOf(demolishContract.ID));
                 event.getPlayer().setItemInHand(demolishContract.contractItem);
                 openInputs.remove(event.getPlayer().getName());
             }
@@ -166,7 +183,7 @@ public class DemolishContract implements PlotContract, ChestGUI.OptionClickEvent
                     demolishContract.rewardType = RewardType.GOLD;
                     demolishContract.reward = amount;
                     demolishContract.contractItem = ItemUtil.setItemNameAndLore(KingdomMaterial.CONTRACT_FILLED.getItemStack(), 
-                            "Demolish Contract");
+                            "Demolish Contract", String.valueOf(demolishContract.ID));
                     ev.getPlayer().setItemInHand(demolishContract.contractItem);
                     openInputs.remove(ev.getPlayer().getName());
                 }

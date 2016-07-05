@@ -48,41 +48,41 @@ public class ChatHandler implements Listener, CommandExecutor{
     @EventHandler
     public void onChat(AsyncPlayerChatEvent e){
         PlayerData pd = PlayerData.getData(e.getPlayer());
-        if(pd.getMuted() == null){
-            e.setFormat(ChatColor.WHITE + "[%c]" + PlayerData.getPlayerDat().get(e.getPlayer()).getTitle() + "%s" + ChatColor.WHITE + ": %s");
-            switch(PlayerChatModes.get(e.getPlayer())){
-                case 0: //Public
-                    e.setFormat(e.getFormat().replace("%c", "Public"));
-                    if(MuteCommand.getLocalMutes().containsKey(e.getPlayer())){
-                        e.getRecipients().removeAll(MuteCommand.getLocalMutes().get(e.getPlayer()));
-                    }
-                   break;
-                case 1: //Faction
-                    Kingdom f = PlayerData.getPlayerDat().get(e.getPlayer()).getKingdom();
-                    e.setFormat(e.getFormat().replace("%c", f.getName()));
-                    e.getRecipients().clear();
-                    e.getRecipients().addAll(f.getOnlinePlayers());
-                    if(MuteCommand.getLocalMutes().containsKey(e.getPlayer())){
-                        e.getRecipients().removeAll(MuteCommand.getLocalMutes().get(e.getPlayer()));
-                    }
-                    break;
-                case 2: //Party
-                    e.setFormat(e.getFormat().replace("%c", "Party"));
-                    e.getRecipients().clear();
-                    e.getRecipients().addAll(PlayerData.getPlayerDat().get(e.getPlayer()).getCurrParty().getMembers());
-                    if(MuteCommand.getLocalMutes().containsKey(e.getPlayer())){
-                        e.getRecipients().removeAll(MuteCommand.getLocalMutes().get(e.getPlayer()));
-                    }
-                    break;
-            }
-        }else{
-            e.getPlayer().sendMessage("You are currently muted, you cannot chat");
-            if(pd.getMuted().getTime() != null){
-                e.getPlayer().sendMessage("You are muted for another " + TimeUtil.asTime(new Date(System.currentTimeMillis()), pd.getMuted().getTime()));
-            }
-            e.getRecipients().clear();
-            e.setCancelled(true);
-        }
+//        if(pd.getMuted() == null){
+//            e.setFormat(ChatColor.WHITE + "[%c]" + PlayerData.getPlayerDat().get(e.getPlayer()).getTitle() + "%s" + ChatColor.WHITE + ": %s");
+//            switch(PlayerChatModes.get(e.getPlayer())){
+//                case 0: //Public
+//                    e.setFormat(e.getFormat().replace("%c", "Public"));
+//                    if(MuteCommand.getLocalMutes().containsKey(e.getPlayer())){
+//                        e.getRecipients().removeAll(MuteCommand.getLocalMutes().get(e.getPlayer()));
+//                    }
+//                   break;
+//                case 1: //Faction
+//                    Kingdom f = PlayerData.getPlayerDat().get(e.getPlayer()).getKingdom();
+//                    e.setFormat(e.getFormat().replace("%c", f.getName()));
+//                    e.getRecipients().clear();
+//                    e.getRecipients().addAll(f.getOnlinePlayers());
+//                    if(MuteCommand.getLocalMutes().containsKey(e.getPlayer())){
+//                        e.getRecipients().removeAll(MuteCommand.getLocalMutes().get(e.getPlayer()));
+//                    }
+//                    break;
+//                case 2: //Party
+//                    e.setFormat(e.getFormat().replace("%c", "Party"));
+//                    e.getRecipients().clear();
+//                    e.getRecipients().addAll(PlayerData.getPlayerDat().get(e.getPlayer()).getCurrParty().getMembers());
+//                    if(MuteCommand.getLocalMutes().containsKey(e.getPlayer())){
+//                        e.getRecipients().removeAll(MuteCommand.getLocalMutes().get(e.getPlayer()));
+//                    }
+//                    break;
+//            }
+//        }else{
+//            e.getPlayer().sendMessage("You are currently muted, you cannot chat");
+//            if(pd.getMuted().getTime() != null){
+//                e.getPlayer().sendMessage("You are muted for another " + TimeUtil.asTime(new Date(System.currentTimeMillis()), pd.getMuted().getTime()));
+//            }
+//            e.getRecipients().clear();
+//            e.setCancelled(true);
+//        }
     }
     
     @Override

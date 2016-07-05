@@ -255,10 +255,18 @@ public class MultiBlockHandler implements Listener{
                             p.sendEditMenu(e.getPlayer());
                         }else{
                             int loc = 0;
+                            boolean empty = true;
                             for(Contract ct : p.getContracts()){
-                                ViewPlotMenu.setOption(loc, ct.getContractItem(), ct.getContractItem().getItemMeta().getDisplayName(), ct.getID());
+                                if(empty){
+                                    ViewPlotMenu.clearOptions();
+                                    empty = false;
+                                }
+                                ViewPlotMenu.setOption(loc, ct.getContractItem(), ct.getContractItem().getItemMeta().getDisplayName(), 
+                                        (Object) ct.getID(), String.valueOf(ct.getID()));
+                                LogUtil.printDebug("added contract " + ct.getID());
                                 loc++;
                             }
+                            LogUtil.printDebug(Arrays.toString(ViewPlotMenu.getOptionData()));
                             ViewPlotMenu.sendMenu(e.getPlayer());
                         }
                     }
@@ -330,6 +338,7 @@ public class MultiBlockHandler implements Listener{
                 }
             }else if(e.getMenuName().equals(ViewPlotMenu.getName())){
                 int id = (int) e.getData();
+                LogUtil.printDebug("Clicked " + id);
                 PlayerData pd =  PlayerData.getData(e.getPlayer());
                 Contract c = ContractHandler.getAllContracts().get(id);
                 pd.getCurrentContracts().add(c);
