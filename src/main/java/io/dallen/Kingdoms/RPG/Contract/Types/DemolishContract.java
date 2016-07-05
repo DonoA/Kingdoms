@@ -21,8 +21,10 @@ package io.dallen.Kingdoms.RPG.Contract.Types;
 
 import io.dallen.Kingdoms.Handlers.ContractHandler;
 import io.dallen.Kingdoms.Kingdom.Structures.Plot;
+import io.dallen.Kingdoms.Kingdom.Structures.Types.TownHall;
 import io.dallen.Kingdoms.Overrides.KingdomMaterial;
 import io.dallen.Kingdoms.RPG.Contract.Contract;
+import io.dallen.Kingdoms.RPG.Contract.PlotContract;
 import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.ItemUtil;
 import java.util.HashMap;
@@ -44,18 +46,18 @@ import org.bukkit.inventory.ItemStack;
  *
  * @author Donovan Allen
  */
-public class DemolishContract implements Contract, ChestGUI.OptionClickEventHandler {
+public class DemolishContract implements PlotContract, ChestGUI.OptionClickEventHandler {
     
     @Getter
-    private int id;
+    private int ID;
     
-    @Getter
+    @Getter @Setter
     private ContractTarget contractTarget;
     
     @Getter
     private Player contractor;
     
-    @Getter
+    @Getter @Setter
     private Object contractee;
     
     @Getter
@@ -85,8 +87,8 @@ public class DemolishContract implements Contract, ChestGUI.OptionClickEventHand
         if(p != null){
             this.plot = p;
             this.contractItem = e.getPlayer().getItemInHand();
-            this.id = ContractHandler.geCurrentID();
-            ContractHandler.getAllContracts().put(id, this);
+            this.ID = ContractHandler.geCurrentID();
+            ContractHandler.getAllContracts().put(ID, this);
             selectReward(e.getPlayer());
         }else{
             e.getPlayer().sendMessage("You must be in a plot to create this type of contract");
@@ -120,8 +122,15 @@ public class DemolishContract implements Contract, ChestGUI.OptionClickEventHand
     }
     
     @Override
-    public void interact(PlayerInteractEvent e){
-        
+    public void interact(PlayerInteractEvent e, boolean finished){
+        if(!finished){
+            selectReward(e.getPlayer());
+        }else{
+            plot.getContracts().add(this);
+            if(plot.getMunicipal() != null){
+                ((TownHall) plot.getMunicipal().getCenter()).getContracts().add(this);
+            }
+        }
     }
     
     public static class DemolishHandler implements Listener{
@@ -132,7 +141,9 @@ public class DemolishContract implements Contract, ChestGUI.OptionClickEventHand
                 DemolishContract demolishContract = openInputs.get(event.getPlayer().getName());
                 demolishContract.rewardType = RewardType.ITEM;
                 demolishContract.reward = event.getInventory().getContents();
-                event.getPlayer().setItemInHand(ItemUtil.setItemNameAndLore(KingdomMaterial.CONTRACT_FILLED.getItemStack(), "Demolish Contract"));
+                demolishContract.contractItem = ItemUtil.setItemNameAndLore(KingdomMaterial.CONTRACT_FILLED.getItemStack(), 
+                        "Demolish Contract");
+                event.getPlayer().setItemInHand(demolishContract.contractItem);
                 openInputs.remove(event.getPlayer().getName());
             }
         }
@@ -154,7 +165,9 @@ public class DemolishContract implements Contract, ChestGUI.OptionClickEventHand
                     DemolishContract demolishContract = openInputs.get(ev.getPlayer().getName());
                     demolishContract.rewardType = RewardType.GOLD;
                     demolishContract.reward = amount;
-                    ev.getPlayer().setItemInHand(ItemUtil.setItemNameAndLore(KingdomMaterial.CONTRACT_FILLED.getItemStack(), "Demolish Contract"));
+                    demolishContract.contractItem = ItemUtil.setItemNameAndLore(KingdomMaterial.CONTRACT_FILLED.getItemStack(), 
+                            "Demolish Contract");
+                    ev.getPlayer().setItemInHand(demolishContract.contractItem);
                     openInputs.remove(ev.getPlayer().getName());
                 }
             }

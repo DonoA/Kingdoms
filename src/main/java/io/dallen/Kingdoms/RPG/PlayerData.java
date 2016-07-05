@@ -26,6 +26,7 @@ import io.dallen.Kingdoms.Commands.MuteCommand.MuteClass;
 import io.dallen.Kingdoms.Kingdom.Kingdom;
 import io.dallen.Kingdoms.Kingdom.Municipality;
 import io.dallen.Kingdoms.Kingdom.Vaults.PlayerVault;
+import io.dallen.Kingdoms.RPG.Contract.Contract;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonNatives.JsonLocation;
 import io.dallen.Kingdoms.Storage.JsonClasses.JsonPlayerData;
 import io.dallen.Kingdoms.Storage.SaveType;
@@ -83,6 +84,9 @@ public class PlayerData implements SaveType.Saveable{
     
     @Getter
     private Rating workerRating;
+    
+    @Getter
+    private ArrayList<Contract> currentContracts = new ArrayList<Contract>();
     
     public PlayerData(Player p){
         this.Player = p;

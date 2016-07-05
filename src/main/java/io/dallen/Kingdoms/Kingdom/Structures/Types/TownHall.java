@@ -45,8 +45,6 @@ public class TownHall extends Plot{
     @Getter
     private ChestGUI BuildMenu;
     
-    private ArrayList<Contract> contracts = new ArrayList<Contract>();
-    
     public TownHall(Plot p){
         super(p);
         EditPlot = new ChestGUI("Town Hall", 2, new MenuHandler()){{

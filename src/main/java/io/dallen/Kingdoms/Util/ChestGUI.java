@@ -89,6 +89,12 @@ public class ChestGUI{
         this.menuData = o;
         return this;
     }
+    
+    public ChestGUI setOption(int pos, ItemStack icon){
+        optionNames[pos] = name;
+        optionIcons[pos] = icon;
+        return this;
+    }
    
     public ChestGUI setOption(int pos, ItemStack icon, String name, String... info){
         optionNames[pos] = name;
@@ -190,7 +196,7 @@ public class ChestGUI{
         
         @Getter
         private Object menuData;
-       
+        
         public OptionClickEvent(Player player, int position, Object data, String name, String menuName, Object menuData){
             this.player = player;
             this.position = position;

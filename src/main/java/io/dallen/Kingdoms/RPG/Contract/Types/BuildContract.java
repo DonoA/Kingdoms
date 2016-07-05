@@ -19,9 +19,8 @@
  */
 package io.dallen.Kingdoms.RPG.Contract.Types;
 
-import io.dallen.Kingdoms.Kingdom.Structures.Plot;
 import io.dallen.Kingdoms.Kingdom.Structures.Blueprint;
-import io.dallen.Kingdoms.RPG.Contract.Contract;
+import io.dallen.Kingdoms.Kingdom.Structures.Plot;
 import io.dallen.Kingdoms.RPG.Contract.Contract.ContractTarget;
 import io.dallen.Kingdoms.RPG.Contract.Contract.RewardType;
 import io.dallen.Kingdoms.Util.ChestGUI;
@@ -29,7 +28,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryType;
 
 /**
  *

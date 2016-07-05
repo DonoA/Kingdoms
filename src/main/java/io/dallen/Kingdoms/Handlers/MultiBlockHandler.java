@@ -25,10 +25,12 @@ import io.dallen.Kingdoms.Kingdom.Municipality;
 import io.dallen.Kingdoms.Util.LogUtil;
 import io.dallen.Kingdoms.Kingdom.Structures.Plot;
 import io.dallen.Kingdoms.Kingdom.Structures.Blueprint;
+import io.dallen.Kingdoms.Kingdom.Structures.Types.TownHall;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.WallSystem;
 import io.dallen.Kingdoms.Kingdom.Structures.Types.WallSystem.Wall;
 import io.dallen.Kingdoms.Main;
 import io.dallen.Kingdoms.RPG.Contract.Contract;
+import io.dallen.Kingdoms.RPG.Contract.PlotContract;
 import io.dallen.Kingdoms.RPG.PlayerData;
 import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEvent;
@@ -62,11 +64,11 @@ import org.bukkit.inventory.ItemStack;
  */
 public class MultiBlockHandler implements Listener{
     
-    private ChestGUI NewPlotMenu;
+    private static ChestGUI NewPlotMenu;
     
-    private ChestGUI ViewPlotMenu;
+    private static ChestGUI ViewPlotMenu;
     
-    private HashMap<Player, Long> cooldown = new HashMap<Player, Long>();
+    private static HashMap<Player, Long> cooldown = new HashMap<Player, Long>();
     
     @Getter
     private static MBOptions optionHandler;
@@ -254,7 +256,7 @@ public class MultiBlockHandler implements Listener{
                         }else{
                             int loc = 0;
                             for(Contract ct : p.getContracts()){
-                                ViewPlotMenu.setOption(loc, new ItemStack(Material.ENCHANTED_BOOK), "some contract");
+                                ViewPlotMenu.setOption(loc, ct.getContractItem(), ct.getContractItem().getItemMeta().getDisplayName(), ct.getID());
                                 loc++;
                             }
                             ViewPlotMenu.sendMenu(e.getPlayer());
@@ -285,7 +287,7 @@ public class MultiBlockHandler implements Listener{
     
         @Override
         public void onOptionClick(OptionClickEvent e){
-            if(e.getMenuName().equalsIgnoreCase("New Plot")){
+            if(e.getMenuName().equals(NewPlotMenu.getName())){
                 if(e.getName().equalsIgnoreCase("Confirm and Claim Plot")){
                     NewPlot np = (NewPlot) e.getData();
                     Plot p = new Plot(np.Base, np.center, e.getPlayer());
@@ -324,6 +326,22 @@ public class MultiBlockHandler implements Listener{
                             p.setMunicipal(m);
                             m.addStructure(p);
                         }
+                    }
+                }
+            }else if(e.getMenuName().equals(ViewPlotMenu.getName())){
+                int id = (int) e.getData();
+                PlayerData pd =  PlayerData.getData(e.getPlayer());
+                Contract c = ContractHandler.getAllContracts().get(id);
+                pd.getCurrentContracts().add(c);
+                c.setContractee(e.getPlayer());
+                c.setContractTarget(Contract.ContractTarget.PLAYER);
+                e.getPlayer().sendMessage("You have claimed this contract!");
+                e.getPlayer().getInventory().addItem(c.getContractItem());
+                if(c instanceof PlotContract){
+                    PlotContract pc = (PlotContract) c;
+                    pc.getPlot().getContracts().remove(c);
+                    if(pc.getPlot().getMunicipal() != null){
+                        ((TownHall) pc.getPlot().getMunicipal().getCenter()).getContracts().remove(c);
                     }
                 }
             }

@@ -30,6 +30,8 @@ import org.bukkit.inventory.ItemStack;
  */
 public interface Contract {
     
+    public int getID();
+    
     public boolean isFinished();
     
     public ContractTarget getContractTarget();
@@ -48,7 +50,11 @@ public interface Contract {
     
     public ItemStack getContractItem();
     
-    public void interact(PlayerInteractEvent e);
+    public void setContractee(Object o);
+    
+    public void setContractTarget(ContractTarget  o);
+    
+    public void interact(PlayerInteractEvent e, boolean finished);
     
     public static enum ContractTarget{
         PLAYER, NPC, BOTH

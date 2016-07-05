@@ -21,19 +21,23 @@ package io.dallen.Kingdoms.Handlers;
 
 import io.dallen.Kingdoms.Overrides.KingdomMaterial;
 import io.dallen.Kingdoms.RPG.Contract.Contract;
+import io.dallen.Kingdoms.RPG.Contract.Contract.RewardType;
 import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.ChestGUI.OptionClickEventHandler;
+import io.dallen.Kingdoms.Util.ItemUtil;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import lombok.Getter;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 
 /**
  *
@@ -73,9 +77,31 @@ public class ContractHandler implements Listener, OptionClickEventHandler{
                 createContract.sendMenu(e.getPlayer());
             }else if(KingdomMaterial.CONTRACT_UNFINISHED.getItemStack().isSimilar(e.getItem())){
                 try {
-                    int id = Integer.parseInt(e.getItem().getItemMeta().getLore().get(0).split(":")[1]);
-                    if(allContracts.containsKey(id)){
-                        allContracts.get(id).interact(e);
+                    for(Contract c : allContracts.values()){
+                        if(c.getContractItem() == e.getItem()){
+                            c.interact(e, false);
+                        }
+                    }
+                } catch (Exception ex) {
+                    Logger.getLogger(ContractHandler.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }else if(KingdomMaterial.CONTRACT_FILLED.getItemStack().isSimilar(e.getItem())){
+                try {
+                    for(Contract c : allContracts.values()){
+                        if(c.getContractItem() == e.getItem()){
+                            if(c.getContractee() != null){
+                                e.getPlayer().sendMessage("Maked Contract as completed!");
+                                e.getItem().setType(Material.AIR);
+                                if(c.getRewardType().equals(RewardType.ITEM)){
+                                    e.getPlayer().getInventory().addItem((ItemStack[]) c.getReward());
+                                }else if(c.getRewardType().equals(RewardType.GOLD)){
+                                    //Add gold to player
+                                }
+                                allContracts.remove(c.getID());
+                            }else{
+                                c.interact(e, false);
+                            }
+                        }
                     }
                 } catch (Exception ex) {
                     Logger.getLogger(ContractHandler.class.getName()).log(Level.SEVERE, null, ex);
@@ -87,10 +113,11 @@ public class ContractHandler implements Listener, OptionClickEventHandler{
     @Override
     @SuppressWarnings("CallToPrintStackTrace")
     public void onOptionClick(ChestGUI.OptionClickEvent e){
-        if(e.getName().equals(createContract.getName())){
+        if(e.getMenuName().equals(createContract.getName())){
             try {
                 Class<?> contract = Class.forName("io.dallen.Kingdoms.Kingdom.RPG.Contract.Types."+e.getName().replace(" ", "").replace("'", "") + "Contract");
                 contract.getConstructor(Player.class, ChestGUI.OptionClickEvent.class).newInstance(e.getPlayer(), e);
+                e.getPlayer().setItemInHand(ItemUtil.setItemNameAndLore(KingdomMaterial.CONTRACT_UNFINISHED.getItemStack(), e.getName() + " - Unfinished"));
             } catch (ClassNotFoundException | IllegalArgumentException | SecurityException | NoSuchMethodException | IllegalAccessException 
                     | InvocationTargetException | InstantiationException ex) {
                 ex.printStackTrace();
