@@ -23,6 +23,6 @@ package io.dallen.Kingdoms.RPG.Contract.Types;
  *
  * @author Donovan Allen
  */
-public class Transport {
+public class GuardContract {
     
 }

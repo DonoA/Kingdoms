@@ -50,7 +50,7 @@ import org.bukkit.inventory.ItemStack;
  *
  * @author Donovan Allen
  */
-public class DemolishContract implements PlotContract, ChestGUI.OptionClickEventHandler {
+public class DemolishContract implements PlotContract{
     
     @Getter
     private int ID;
@@ -64,16 +64,16 @@ public class DemolishContract implements PlotContract, ChestGUI.OptionClickEvent
     @Getter @Setter
     private Object contractee;
     
-    @Getter
+    @Getter @Setter
     private RewardType rewardType;
     
-    @Getter
+    @Getter @Setter
     private Object reward;
     
     @Getter
     private Plot plot;
     
-    @Getter
+    @Getter @Setter
     private ItemStack contractItem;
     
     @Getter @Setter
@@ -81,9 +81,6 @@ public class DemolishContract implements PlotContract, ChestGUI.OptionClickEvent
     
     @Getter @Setter
     private boolean contractorFinished;
-    
-    @Getter
-    private static HashMap<String, DemolishContract> openInputs = new HashMap<String, DemolishContract>();
     
     public DemolishContract(Player contractor, ChestGUI.OptionClickEvent e){
         this.contractor = contractor;
@@ -95,7 +92,7 @@ public class DemolishContract implements PlotContract, ChestGUI.OptionClickEvent
             this.plot = p;
             this.contractItem = e.getPlayer().getItemInHand();
             ContractHandler.getAllContracts().put(ID, this);
-            e.setNext(new ChestGUI("Select Reward Type", InventoryType.HOPPER, this){{
+            e.setNext(new ChestGUI("Select Reward Type", InventoryType.HOPPER, ContractHandler.getInst()){{
                 setOption(2, KingdomMaterial.DEFAULT.getItemStack(), "Gold");
                 setOption(4, KingdomMaterial.DEFAULT.getItemStack(), "Item");
             }});
@@ -110,30 +107,7 @@ public class DemolishContract implements PlotContract, ChestGUI.OptionClickEvent
     }
     
     public void selectReward(Player p){
-        new ChestGUI("Select Reward Type", InventoryType.HOPPER, this){{
-            setOption(2, KingdomMaterial.DEFAULT.getItemStack(), "Gold");
-            setOption(4, KingdomMaterial.DEFAULT.getItemStack(), "Item");
-        }}.sendMenu(p);
-    }
-    
-    @Override
-    public void onOptionClick(ChestGUI.OptionClickEvent e){
-        if(e.getMenuName().equals("Select Reward Type")){
-            if(e.getName().equals("Gold")){
-                e.getPlayer().sendMessage("Enter amount of gold in chat");
-                openInputs.put(e.getPlayer().getName(), this);
-            }else if(e.getName().equals("Item")){
-                final Inventory itm = Bukkit.createInventory(e.getPlayer(), 9*2, "Contract Reward");
-                final ChestGUI.OptionClickEvent ev = e;
-                Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), new Runnable(){
-                    @Override
-                    public void run(){
-                        ev.getPlayer().openInventory(itm);
-                        openInputs.put(ev.getPlayer().getName(), DemolishContract.this);
-                    }
-                }, 2);
-            }
-        }
+        ContractHandler.setReward(this, p);
     }
     
     @Override
@@ -148,48 +122,6 @@ public class DemolishContract implements PlotContract, ChestGUI.OptionClickEvent
                 ((TownHall) plot.getMunicipal().getCenter()).getContracts().add(this);
             }
             e.getPlayer().setItemInHand(new ItemStack(Material.AIR));
-        }
-    }
-    
-    public static class DemolishHandler implements Listener{
-        
-        @EventHandler(priority = EventPriority.HIGHEST)
-        public void onInventoryClose(InventoryCloseEvent event){
-            if(openInputs.containsKey(event.getPlayer().getName())){
-                DemolishContract demolishContract = openInputs.get(event.getPlayer().getName());
-                demolishContract.rewardType = RewardType.ITEM;
-                demolishContract.reward = event.getInventory().getContents();
-                LogUtil.printDebug(Arrays.toString(event.getInventory().getContents()));
-                demolishContract.contractItem = ItemUtil.setItemNameAndLore(KingdomMaterial.CONTRACT_FILLED.getItemStack(), 
-                        "Demolish Contract", String.valueOf(demolishContract.ID));
-                event.getPlayer().setItemInHand(demolishContract.contractItem);
-                openInputs.remove(event.getPlayer().getName());
-            }
-        }
-        
-        @EventHandler(priority = EventPriority.HIGHEST)
-        public void onChat(AsyncPlayerChatEvent ev){
-            if(openInputs.containsKey(ev.getPlayer().getName())){
-                ev.setCancelled(true);
-                Integer amount = -1;
-                boolean failed = false;
-                try{
-                    amount = Integer.parseInt(ev.getMessage());
-                } catch (NumberFormatException ex){
-                    ev.getPlayer().sendMessage("That is not a valid gold amount, exiting contract setup");
-                    openInputs.remove(ev.getPlayer().getName());
-                    failed = true;
-                }
-                if(!failed){
-                    DemolishContract demolishContract = openInputs.get(ev.getPlayer().getName());
-                    demolishContract.rewardType = RewardType.GOLD;
-                    demolishContract.reward = amount;
-                    demolishContract.contractItem = ItemUtil.setItemNameAndLore(KingdomMaterial.CONTRACT_FILLED.getItemStack(), 
-                            "Demolish Contract", String.valueOf(demolishContract.ID));
-                    ev.getPlayer().setItemInHand(demolishContract.contractItem);
-                    openInputs.remove(ev.getPlayer().getName());
-                }
-            }
         }
     }
 }

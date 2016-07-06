@@ -19,42 +19,58 @@
  */
 package io.dallen.Kingdoms.RPG.Contract.Types;
 
+import io.dallen.Kingdoms.Handlers.BuildingHandler;
+import io.dallen.Kingdoms.Handlers.ContractHandler;
 import io.dallen.Kingdoms.Kingdom.Structures.Blueprint;
 import io.dallen.Kingdoms.Kingdom.Structures.Plot;
+import io.dallen.Kingdoms.Kingdom.Structures.Types.TownHall;
+import io.dallen.Kingdoms.Overrides.KingdomMaterial;
+import io.dallen.Kingdoms.RPG.Contract.Contract;
 import io.dallen.Kingdoms.RPG.Contract.Contract.ContractTarget;
 import io.dallen.Kingdoms.RPG.Contract.Contract.RewardType;
+import io.dallen.Kingdoms.RPG.Contract.PlotContract;
 import io.dallen.Kingdoms.Util.ChestGUI;
+import io.dallen.Kingdoms.Util.ItemUtil;
+import io.dallen.Kingdoms.Util.LogUtil;
+import java.util.HashMap;
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 
 /**
  *
  * @author Donovan Allen
  */
-public class BuildContract implements /*Contract, */Listener{
+public class BuildContract implements PlotContract{
     
     @Getter
+    private int ID;
+    
+    @Getter @Setter
     private ContractTarget contractTarget;
     
     @Getter
     private Player contractor;
     
-    @Getter
+    @Getter @Setter
     private Object contractee;
     
-    @Getter
+    @Getter @Setter
     private RewardType rewardType;
     
-    @Getter
+    @Getter @Setter
     private Object reward;
     
     @Getter
-    private Blueprint building;
-    
-    @Getter
     private Plot plot;
+    
+    @Getter @Setter
+    private ItemStack contractItem;
     
     @Getter @Setter
     private boolean workerFinished;
@@ -66,17 +82,48 @@ public class BuildContract implements /*Contract, */Listener{
         this.contractor = contractor;
         Plot p = Plot.inPlot(e.getPlayer().getLocation());
         if(p != null){
-//            new ChestGUI("Select Reward Type", InventoryType.HOPPER, this){{
-                
-//            }};
+            this.ID = ContractHandler.geCurrentID();
+            e.getPlayer().setItemInHand(ItemUtil.setItemNameAndLore(KingdomMaterial.CONTRACT_UNFINISHED.getItemStack(), 
+                    e.getName() + " - Unfinished", String.valueOf(ID)));
+            this.plot = p;
+            this.contractItem = e.getPlayer().getItemInHand();
+            ContractHandler.getAllContracts().put(ID, this);
+            e.setNext(new ChestGUI("Select Reward Type", InventoryType.HOPPER, ContractHandler.getInst()){{
+                setOption(2, KingdomMaterial.DEFAULT.getItemStack(), "Gold");
+                setOption(4, KingdomMaterial.DEFAULT.getItemStack(), "Item");
+            }});
         }else{
             e.getPlayer().sendMessage("You must be in a plot to create this type of contract");
         }
     }
     
-//    @Override
+    @Override
     public boolean isFinished(){
-        return false;
+        return true;
     }
     
+    public void selectReward(Player p){
+        ContractHandler.setReward(this, p);
+    }
+    
+    public void selectBuilding(Player p){
+       p.sendMessage("To start a building contruction type the schematic name and tick in chat");
+        BuildingHandler.StringInput in = new BuildingHandler.StringInput("buildConst", plot);
+        BuildingHandler.getOpenInputs().put(p.getName(), in);
+    }
+    
+    @Override
+    public void interact(PlayerInteractEvent e, boolean finished){
+        LogUtil.printDebug("Interact Called, " + finished);
+        if(!finished){
+//            selectReward(e.getPlayer());
+        }else{
+            e.getPlayer().sendMessage("added contract to plot");
+            plot.getContracts().add(this);
+            if(plot.getMunicipal() != null){
+                ((TownHall) plot.getMunicipal().getCenter()).getContracts().add(this);
+            }
+            e.getPlayer().setItemInHand(new ItemStack(Material.AIR));
+        }
+    }
 }

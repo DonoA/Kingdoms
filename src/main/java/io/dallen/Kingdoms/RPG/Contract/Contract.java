@@ -52,7 +52,13 @@ public interface Contract {
     
     public void setContractee(Object o);
     
-    public void setContractTarget(ContractTarget  o);
+    public void setContractTarget(ContractTarget  ct);
+    
+    public void setRewardType(RewardType rt);
+    
+    public void setReward(Object o);
+    
+    public void setContractItem(ItemStack is);
     
     public void interact(PlayerInteractEvent e, boolean finished);
     
