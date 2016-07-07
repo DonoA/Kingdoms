@@ -29,6 +29,8 @@ import io.dallen.Kingdoms.Kingdom.Vaults.BuildingVault;
 import io.dallen.Kingdoms.Main;
 import io.dallen.Kingdoms.NPCs.Traits.Builder;
 import io.dallen.Kingdoms.Overrides.KingdomMaterial;
+import io.dallen.Kingdoms.RPG.Contract.Contract;
+import io.dallen.Kingdoms.RPG.Contract.Types.BuildContract;
 import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.DBmanager;
 import io.dallen.Kingdoms.Util.HotbarMenu;
@@ -93,15 +95,14 @@ public class BuildingHandler implements Listener{
         }};
     }
     
-    public static class BuildChestOptions implements ChestGUI.OptionClickEventHandler{
+    public static class BuildChestOptions{
     
-        @Override
-        public void onOptionClick(ChestGUI.OptionClickEvent e){
-            Structure s = (Structure) e.getMenuData();
+        public void onOptionClick(ChestGUI.OptionClickEvent e, Structure struct){
+            Structure s = struct;
             if(e.getName().equalsIgnoreCase("Other")){
                 e.getPlayer().sendMessage("To start a building contruction type the schematic name and tick in chat");
                 Plot p = (Plot) s;
-                StringInput in = new StringInput("buildConst", p);
+                StringInput in = new StringInput("buildConst", p, (BuildContract) e.getMenuData());
                 openInputs.put(e.getPlayer().getName(), in);
             }else{
                 try {
@@ -164,7 +165,7 @@ public class BuildingHandler implements Listener{
                     }
 
                     RotateMenu.sendMenu(e.getPlayer());
-                    BuildFrame frame = new BuildFrame(building, p, Integer.parseInt(args[1]));
+                    BuildFrame frame = new BuildFrame(building, p, Integer.parseInt(args[1]), openInputs.get(e.getPlayer().getName()).getContract());
                     openBuilds.put(e.getPlayer().getName(), frame);
                     openInputs.remove(e.getPlayer().getName());
                 } catch (IOException | DataFormatException ex) {
@@ -217,7 +218,7 @@ public class BuildingHandler implements Listener{
                         return;
                     }
                 }
-                BuildTask buildTask = new BuildTask(building, startCorner, openBuilds.get(e.getPlayer().getName()).getSpeed(), BuildHut);
+                openBuilds.get(e.getPlayer().getName()).getContract().finishSelectBuilding(building);
                 openBuilds.remove(e.getPlayer().getName());
             }else if(e.getName().equalsIgnoreCase("Rotate Clockwise")){
                 e.setClose(false);
@@ -376,6 +377,8 @@ public class BuildingHandler implements Listener{
         private String name;
         @Getter
         private Object data;
+        @Getter
+        private BuildContract contract;
     }
     
     @AllArgsConstructor
@@ -386,6 +389,8 @@ public class BuildingHandler implements Listener{
         private Plot plot;
         @Getter
         private int speed;
+        @Getter
+        private BuildContract contract;
     }
     
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -463,7 +468,7 @@ public class BuildingHandler implements Listener{
                             }
                             
                             RotateMenu.sendMenu(e.getPlayer());
-                            BuildFrame frame = new BuildFrame(building, p, Integer.parseInt(args[1]));
+                            BuildFrame frame = new BuildFrame(building, p, Integer.parseInt(args[1]), openInputs.get(e.getPlayer().getName()).getContract());
                             openBuilds.put(e.getPlayer().getName(), frame);
                             openInputs.remove(e.getPlayer().getName());
                         } catch (IOException | DataFormatException ex) {

@@ -117,7 +117,7 @@ public class Armory extends Plot implements Storage{
             if(e.getMenuName().equals(EditPlot.getName())){
                 BuildingHandler.chestBuildOptions(e, BuildMenu, Armory.this);
             }else if(e.getMenuName().equals(BuildMenu.getName())){
-                BuildingHandler.getBuildChestHandler().onOptionClick(e);
+                BuildingHandler.getBuildChestHandler().onOptionClick(e, Armory.this);
             }
         }
     }

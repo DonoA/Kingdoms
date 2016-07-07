@@ -78,6 +78,9 @@ public class BuildContract implements PlotContract{
     @Getter @Setter
     private boolean contractorFinished;
     
+    @Getter @Setter
+    private Blueprint building;
+    
     public BuildContract(Player contractor, ChestGUI.OptionClickEvent e){
         this.contractor = contractor;
         Plot p = Plot.inPlot(e.getPlayer().getLocation());
@@ -88,10 +91,7 @@ public class BuildContract implements PlotContract{
             this.plot = p;
             this.contractItem = e.getPlayer().getItemInHand();
             ContractHandler.getAllContracts().put(ID, this);
-            e.setNext(new ChestGUI("Select Reward Type", InventoryType.HOPPER, ContractHandler.getInst()){{
-                setOption(2, KingdomMaterial.DEFAULT.getItemStack(), "Gold");
-                setOption(4, KingdomMaterial.DEFAULT.getItemStack(), "Item");
-            }});
+            selectBuilding(contractor);
         }else{
             e.getPlayer().sendMessage("You must be in a plot to create this type of contract");
         }
@@ -107,16 +107,23 @@ public class BuildContract implements PlotContract{
     }
     
     public void selectBuilding(Player p){
-       p.sendMessage("To start a building contruction type the schematic name and tick in chat");
-        BuildingHandler.StringInput in = new BuildingHandler.StringInput("buildConst", plot);
-        BuildingHandler.getOpenInputs().put(p.getName(), in);
+        plot.getBuildMenu().setMenuData(this).sendMenu(p);
+    }
+    
+    public void finishSelectBuilding(Blueprint building){
+        //rename item and things
+        this.building = building;
+        selectReward(contractor);
     }
     
     @Override
     public void interact(PlayerInteractEvent e, boolean finished){
-        LogUtil.printDebug("Interact Called, " + finished);
         if(!finished){
-//            selectReward(e.getPlayer());
+            if(reward == null){
+                selectReward(e.getPlayer());
+            }else{
+                selectBuilding(e.getPlayer());
+            }
         }else{
             e.getPlayer().sendMessage("added contract to plot");
             plot.getContracts().add(this);
@@ -126,4 +133,6 @@ public class BuildContract implements PlotContract{
             e.getPlayer().setItemInHand(new ItemStack(Material.AIR));
         }
     }
+    
+    
 }

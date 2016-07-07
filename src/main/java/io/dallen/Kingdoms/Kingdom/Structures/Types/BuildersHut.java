@@ -121,7 +121,7 @@ public class BuildersHut extends Plot implements Storage{
                     BuildingHandler.chestBuildOptions(e, BuildMenu, BuildersHut.this);
                 }
             }else if(e.getMenuName().equals(BuildMenu.getName())){
-                BuildingHandler.getBuildChestHandler().onOptionClick(e);
+                BuildingHandler.getBuildChestHandler().onOptionClick(e, BuildersHut.this);
             }
         }
     }

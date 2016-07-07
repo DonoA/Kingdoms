@@ -73,7 +73,7 @@ public class Castle extends Plot{
                 BuildingHandler.chestBuildOptions(e, BuildMenu, Castle.this);
             }else if(e.getMenuName().equals(BuildMenu.getName())){
                 if(e.getName().equalsIgnoreCase("Other")){
-                    BuildingHandler.getBuildChestHandler().onOptionClick(e);
+//                    BuildingHandler.getBuildChestHandler().onOptionClick(e);
                 }else{
                     e.getPlayer().sendMessage("Default option called");
                 }

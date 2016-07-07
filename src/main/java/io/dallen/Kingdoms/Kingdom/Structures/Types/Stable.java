@@ -92,7 +92,7 @@ public class Stable extends Plot{
                     BuildingHandler.chestBuildOptions(e, BuildMenu, Stable.this);
                 }
             }else if(e.getMenuName().equals(BuildMenu.getName())){
-                BuildingHandler.getBuildChestHandler().onOptionClick(e);
+                BuildingHandler.getBuildChestHandler().onOptionClick(e, Stable.this);
             }
         }
     }

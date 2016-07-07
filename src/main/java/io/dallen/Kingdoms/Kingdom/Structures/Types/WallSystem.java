@@ -153,7 +153,7 @@ public class WallSystem implements SaveType.Saveable{
                     BuildingHandler.chestBuildOptions(e, BuildMenu, Wall.this);
                 }else if(e.getMenuName().equals(BuildMenu.getName())){
                     if(e.getName().equalsIgnoreCase("Other")){
-                        BuildingHandler.getBuildChestHandler().onOptionClick(e);
+                        BuildingHandler.getBuildChestHandler().onOptionClick(e, Wall.this);
                     }else{
                         e.getPlayer().sendMessage("Default option called");
                     }

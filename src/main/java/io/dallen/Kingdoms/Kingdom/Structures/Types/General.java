@@ -63,7 +63,7 @@ public class General extends Plot {
             if(e.getMenuName().equals(EditPlot.getName())){
                 BuildingHandler.chestBuildOptions(e, BuildMenu, General.this);
             }else if(e.getMenuName().equals(BuildMenu.getName())){
-                BuildingHandler.getBuildChestHandler().onOptionClick(e);
+                BuildingHandler.getBuildChestHandler().onOptionClick(e, General.this);
             }
         }
     }

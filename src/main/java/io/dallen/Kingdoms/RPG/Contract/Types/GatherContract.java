@@ -19,10 +19,122 @@
  */
 package io.dallen.Kingdoms.RPG.Contract.Types;
 
+import io.dallen.Kingdoms.Handlers.ContractHandler;
+import io.dallen.Kingdoms.Kingdom.Municipality;
+import io.dallen.Kingdoms.Kingdom.Structures.Plot;
+import io.dallen.Kingdoms.Kingdom.Structures.Types.TownHall;
+import io.dallen.Kingdoms.Overrides.KingdomMaterial;
+import io.dallen.Kingdoms.RPG.Contract.Contract;
+import io.dallen.Kingdoms.RPG.Contract.PlotContract;
+import io.dallen.Kingdoms.Util.ChestGUI;
+import io.dallen.Kingdoms.Util.ItemUtil;
+import io.dallen.Kingdoms.Util.LogUtil;
+import java.util.Arrays;
+import java.util.HashMap;
+import lombok.Getter;
+import lombok.Setter;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
+
 /**
  *
  * @author Donovan Allen
  */
-public class GatherContract {
+public class GatherContract implements Contract{
     
+    @Getter
+    private int ID;
+    
+    @Getter @Setter
+    private ContractTarget contractTarget;
+    
+    @Getter
+    private Player contractor;
+    
+    @Getter @Setter
+    private Object contractee;
+    
+    @Getter @Setter
+    private RewardType rewardType;
+    
+    @Getter @Setter
+    private Object reward;
+    
+    @Getter @Setter
+    private ItemStack contractItem;
+    
+    @Getter @Setter
+    private boolean workerFinished;
+    
+    @Getter @Setter
+    private boolean contractorFinished;
+    
+    @Getter @Setter
+    private ItemStack[] requiredItems;
+    
+    @Getter
+    private static HashMap<String, GatherContract> openInputs = new HashMap<String, GatherContract>();
+    
+    public GatherContract(Player contractor, ChestGUI.OptionClickEvent e){
+        this.contractor = contractor;
+        this.ID = ContractHandler.geCurrentID();
+        e.getPlayer().setItemInHand(ItemUtil.setItemNameAndLore(KingdomMaterial.CONTRACT_UNFINISHED.getItemStack(), 
+                e.getName() + " - Unfinished", String.valueOf(ID)));
+        this.contractItem = e.getPlayer().getItemInHand();
+        ContractHandler.getAllContracts().put(ID, this);
+        
+        
+    }
+    
+    @Override
+    public boolean isFinished(){
+        return true;
+    }
+    
+    public void selectReward(Player p){
+        ContractHandler.setReward(this, p);
+    }
+    
+    public void selectRequiredItems(Player p){
+        
+    }
+    
+    @Override
+    public void interact(PlayerInteractEvent e, boolean finished){
+        LogUtil.printDebug("Interact Called, " + finished);
+        if(!finished){
+            selectReward(e.getPlayer());
+        }else{
+            Municipality mun = Municipality.inMunicipal(e.getPlayer().getLocation());
+            e.getPlayer().sendMessage("added contract to plot");
+            if(mun != null){
+                ((TownHall) mun.getCenter()).getContracts().add(this);
+            }
+            e.getPlayer().setItemInHand(new ItemStack(Material.AIR));
+        }
+    }
+    
+    public static class GatherContractHandler implements Listener{
+    
+        @EventHandler(priority = EventPriority.HIGHEST)
+        public void onInventoryClose(InventoryCloseEvent event){
+            if(openInputs.containsKey(event.getPlayer().getName())){
+                GatherContract contract = openInputs.get(event.getPlayer().getName());
+                contract.setRequiredItems(event.getInventory().getContents());
+                LogUtil.printDebug(Arrays.toString(event.getInventory().getContents()));
+                contract.setContractItem(ItemUtil.setItemNameAndLore(KingdomMaterial.CONTRACT_FILLED.getItemStack(), 
+                        contract.getClass().getSimpleName(), String.valueOf(contract.getID())));
+                event.getPlayer().setItemInHand(contract.getContractItem());
+                openInputs.remove(event.getPlayer().getName());
+                contract.selectReward((Player) event.getPlayer());
+            }
+        }
+    }
 }

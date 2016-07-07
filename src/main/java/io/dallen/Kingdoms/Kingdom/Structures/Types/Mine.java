@@ -133,7 +133,7 @@ public class Mine extends Plot implements Storage{
                     BuildingHandler.chestBuildOptions(e, BuildMenu, Mine.this);
                 }
             }else if(e.getMenuName().equals(BuildMenu.getName())){
-                BuildingHandler.getBuildChestHandler().onOptionClick(e);
+                BuildingHandler.getBuildChestHandler().onOptionClick(e, Mine.this);
             }
         }
     }

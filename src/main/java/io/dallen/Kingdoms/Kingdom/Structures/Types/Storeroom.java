@@ -100,7 +100,7 @@ public class Storeroom extends Plot implements Storage{
             if(e.getMenuName().equals(EditPlot.getName())){
                 BuildingHandler.chestBuildOptions(e, BuildMenu, Storeroom.this);
             }else if(e.getMenuName().equals(BuildMenu.getName())){
-                BuildingHandler.getBuildChestHandler().onOptionClick(e);
+                BuildingHandler.getBuildChestHandler().onOptionClick(e, Storeroom.this);
             }
         }
     }

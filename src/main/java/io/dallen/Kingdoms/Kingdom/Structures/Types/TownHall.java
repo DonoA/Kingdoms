@@ -126,7 +126,7 @@ public class TownHall extends Plot{
                     BuildingHandler.chestBuildOptions(e, BuildMenu, TownHall.this);
                 }
             }else if(e.getMenuName().equals(BuildMenu.getName())){
-                BuildingHandler.getBuildChestHandler().onOptionClick(e);
+                BuildingHandler.getBuildChestHandler().onOptionClick(e, TownHall.this);
             }
         }
     }

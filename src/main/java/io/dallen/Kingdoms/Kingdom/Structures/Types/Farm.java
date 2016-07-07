@@ -120,7 +120,7 @@ public class Farm extends Plot implements Storage{
                         BuildingHandler.chestBuildOptions(e, BuildMenu, Farm.this);
                     }
             }else if(e.getMenuName().equals(BuildMenu.getName())){
-                BuildingHandler.getBuildChestHandler().onOptionClick(e);
+                BuildingHandler.getBuildChestHandler().onOptionClick(e, Farm.this);
             }
         }
     }

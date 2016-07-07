@@ -94,7 +94,7 @@ public class Blacksmith extends Plot implements Storage{
             if(e.getMenuName().equals(EditPlot.getName())){
                 BuildingHandler.chestBuildOptions(e, BuildMenu, Blacksmith.this);
             }else if(e.getMenuName().equals(BuildMenu.getName())){
-                BuildingHandler.getBuildChestHandler().onOptionClick(e);
+                BuildingHandler.getBuildChestHandler().onOptionClick(e, Blacksmith.this);
             }else if(e.getMenuName().equals(ForgeMenu.getName())){
                 ItemStack craft = new ItemStack(Material.valueOf(e.getName().replace(" ", "_")));
                 Blacksmith.this.getStorage().addItem(craft);

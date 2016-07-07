@@ -180,7 +180,7 @@ public abstract class Structure implements SaveType.Saveable{
         public void onOptionClick(OptionClickEvent e){
             if(e.getMenuName().equalsIgnoreCase("Build Options")){
                 if(e.getName().equalsIgnoreCase("Other")){
-                    BuildingHandler.getBuildChestHandler().onOptionClick(e);
+                    BuildingHandler.getBuildChestHandler().onOptionClick(e, Structure.this);
                 }else{
                     e.getPlayer().sendMessage("Default option called");
                 }

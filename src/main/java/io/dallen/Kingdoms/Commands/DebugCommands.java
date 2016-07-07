@@ -23,7 +23,9 @@ import io.dallen.Kingdoms.Handlers.BuildingHandler;
 import io.dallen.Kingdoms.Handlers.DecayHandler.ChangeTracker;
 import io.dallen.Kingdoms.Kingdom.Structures.Plot;
 import io.dallen.Kingdoms.Main;
+import io.dallen.Kingdoms.RPG.Contract.Types.BuildContract;
 import io.dallen.Kingdoms.Storage.DataLoadHelper;
+import io.dallen.Kingdoms.Util.ChestGUI;
 import io.dallen.Kingdoms.Util.DBmanager;
 import java.io.File;
 import java.util.Map;
@@ -57,7 +59,9 @@ public class DebugCommands implements CommandExecutor{
             Player plr = (Player) sender;
             plr.sendMessage("To start a building contruction type the schematic name and build speed in chat");
             Plot p = Plot.inPlot(plr.getLocation());
-            BuildingHandler.StringInput in = new BuildingHandler.StringInput("buildConst", p);
+            BuildingHandler.StringInput in = new BuildingHandler.StringInput("buildConst", p, new BuildContract((Player) sender,
+                    new ChestGUI.OptionClickEvent((Player) sender, -1, null, 
+                            "Build", null, null)));
             BuildingHandler.getOpenInputs().put(plr.getName(), in);
         }else if(cmd.getName().equalsIgnoreCase("setskins")){
             if(args[0].equalsIgnoreCase("default")){
