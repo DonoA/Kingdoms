@@ -66,6 +66,8 @@
                                     <exclude>org.spigotmc:spigot-api</exclude>
                                     <exclude>net.citizensnpcs:citizensapi</exclude>
                                     <exclude>com.comphenix.protocol:ProtocolLib</exclude>
+                                    <exclude>io.dallen:KingdomsUtilities</exclude>
+                                    <exclude>io.dallen:KingdomsCore</exclude>
                                 </excludes>
                             </artifactSet>
                         </configuration>
