@@ -19,7 +19,6 @@
  */
 package io.dallen.kingdoms.core.Structures.Types;
 
-
 import io.dallen.kingdoms.core.Handlers.BuildMenuHandler;
 import io.dallen.kingdoms.core.Structures.Plot;
 import io.dallen.kingdoms.core.Structures.Storage;
@@ -39,45 +38,52 @@ import org.bukkit.inventory.ItemStack;
 
 /**
  * Allows the kingdom to store raw and refined materials
- * 
+ *
  * @author donoa_000
  */
-public class Storeroom extends Plot implements Storage{
+public class Storeroom extends Plot implements Storage {
+
     @Getter
     private int maxCapacity;
-    @Getter @Setter @SaveData
+    @Getter
+    @Setter
+    @SaveData
     private BuildingVault Storage;
     @Getter
     private ChestGUI EditPlot;
     @Getter
     private ChestGUI BuildMenu;
-    
+
     public Storeroom(Plot p) {
         super(p);
 //        maxCapacity = p.getArea() * 100;
         Storage = new BuildingVault(30, 30 * 100, this);
-        EditPlot = new ChestGUI("Storeroom", 2, new MenuHandler()){{
-            setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
-            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
-            setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
-        }};
-        
-        BuildMenu = new ChestGUI("Build Options", 2, new MenuHandler()){{
-            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Other");
-        }};
+        EditPlot = new ChestGUI("Storeroom", 2, new MenuHandler()) {
+            {
+                setOption(1 * 9 + 3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
+                setOption(1 * 9 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
+                setOption(1 * 9 + 5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
+            }
+        };
+
+        BuildMenu = new ChestGUI("Build Options", 2, new MenuHandler()) {
+            {
+                setOption(1 * 9 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Other");
+            }
+        };
     }
-    
+
     @Override
-    public boolean interact(PlayerInteractEvent e){
-        if(e.getClickedBlock().getType().equals(Material.CHEST)){
-            if(e.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
-                if(Storage.CanOpen(e.getPlayer())){
+    public boolean interact(PlayerInteractEvent e) {
+        if (e.getClickedBlock().getType().equals(Material.CHEST)) {
+            if (e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+                if (Storage.CanOpen(e.getPlayer())) {
                     Storage.SendToPlayer(e.getPlayer());
                     return true;
                 }
-            }else if(e.getAction().equals(Action.LEFT_CLICK_BLOCK)){
-                if(e.hasItem() && this.hasSpace()){
-                    if(Storage.addItem(e.getItem())){
+            } else if (e.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
+                if (e.hasItem() && this.hasSpace()) {
+                    if (Storage.addItem(e.getItem())) {
                         e.getPlayer().getInventory().setItemInMainHand(new ItemStack(Material.AIR));
                         return true;
                     }
@@ -86,65 +92,79 @@ public class Storeroom extends Plot implements Storage{
         }
         return false;
     }
-    
+
     @Override
-    public void sendEditMenu(Player p){
+    public void sendEditMenu(Player p) {
         EditPlot.sendMenu(p);
     }
-    
-    public class MenuHandler implements OptionClickEventHandler{
-        
+
+    public class MenuHandler implements OptionClickEventHandler {
+
         @Override
-        public void onOptionClick(OptionClickEvent e){
-            if(e.getMenuName().equals(EditPlot.getName())){
+        public void onOptionClick(OptionClickEvent e) {
+            if (e.getMenuName().equals(EditPlot.getName())) {
                 BuildMenuHandler.chestBuildOptions(e, Storeroom.this);
             }
         }
     }
-    
+
     @Override
-    public boolean hasSpace(){
+    public boolean hasSpace() {
         return Storage.getFullSlots() < Storage.getUniqueSize() && Storage.getAmountFull() < Storage.getCapacity();
     }
-    
+
     @Override
-    public boolean supplyNPC(NPC npc){
+    public boolean supplyNPC(NPC npc) {
         return true;
     }
-    
-    private static class ResourceStats{
-        @Getter @Setter
+
+    private static class ResourceStats {
+
+        @Getter
+        @Setter
         private int Wealth;
-        @Getter @Setter
+        @Getter
+        @Setter
         private int Grain;
-        @Getter @Setter
+        @Getter
+        @Setter
         private int Sand;
-        @Getter @Setter
+        @Getter
+        @Setter
         private int Wood;
-        @Getter @Setter
+        @Getter
+        @Setter
         private int Ores;
-        @Getter @Setter
+        @Getter
+        @Setter
         private int Stone;
-        @Getter @Setter
+        @Getter
+        @Setter
         private int RefinedWood;
-        @Getter @Setter
+        @Getter
+        @Setter
         private int Brick;
-        @Getter @Setter
+        @Getter
+        @Setter
         private int Metal;
-        @Getter @Setter
+        @Getter
+        @Setter
         private int Corps;
-        @Getter @Setter
+        @Getter
+        @Setter
         private int Glass;
-        
-        @Getter @Setter
+
+        @Getter
+        @Setter
         private int StorageSpace;
-        @Getter @Setter
+        @Getter
+        @Setter
         private int Population;
-        
-        public ResourceStats(){
-            
+
+        public ResourceStats() {
+
         }
-        
+
     }
-    
+
 }

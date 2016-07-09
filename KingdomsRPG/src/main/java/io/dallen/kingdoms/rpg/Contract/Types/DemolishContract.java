@@ -39,75 +39,84 @@ import org.bukkit.inventory.ItemStack;
  *
  * @author Donovan Allen
  */
-public class DemolishContract implements PlotContract{
-    
+public class DemolishContract implements PlotContract {
+
     @Getter
     private int ID;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private ContractTarget contractTarget;
-    
+
     @Getter
     private Player contractor;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private Object contractee;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private RewardType rewardType;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private Object reward;
-    
+
     @Getter
     private Plot plot;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private ItemStack contractItem;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private boolean workerFinished;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private boolean contractorFinished;
-    
-    public DemolishContract(Player contractor, ChestGUI.OptionClickEvent e){
+
+    public DemolishContract(Player contractor, ChestGUI.OptionClickEvent e) {
         this.contractor = contractor;
         Plot p = Plot.inPlot(e.getPlayer().getLocation());
-        if(p != null){
+        if (p != null) {
             this.ID = ContractHandler.geCurrentID();
-            e.getPlayer().setItemInHand(ItemUtil.setItemNameAndLore(KingdomMaterial.CONTRACT_UNFINISHED.getItemStack(), 
+            e.getPlayer().setItemInHand(ItemUtil.setItemNameAndLore(KingdomMaterial.CONTRACT_UNFINISHED.getItemStack(),
                     e.getName() + " - Unfinished", String.valueOf(ID)));
             this.plot = p;
             this.contractItem = e.getPlayer().getItemInHand();
             ContractHandler.getAllContracts().put(ID, this);
-            e.setNext(new ChestGUI("Select Reward Type", InventoryType.HOPPER, ContractHandler.getInst()){{
-                setOption(2, KingdomMaterial.DEFAULT.getItemStack(), "Gold");
-                setOption(4, KingdomMaterial.DEFAULT.getItemStack(), "Item");
-            }});
-        }else{
+            e.setNext(new ChestGUI("Select Reward Type", InventoryType.HOPPER, ContractHandler.getInst()) {
+                {
+                    setOption(2, KingdomMaterial.DEFAULT.getItemStack(), "Gold");
+                    setOption(4, KingdomMaterial.DEFAULT.getItemStack(), "Item");
+                }
+            });
+        } else {
             e.getPlayer().sendMessage("You must be in a plot to create this type of contract");
         }
     }
-    
+
     @Override
-    public boolean isFinished(){
+    public boolean isFinished() {
         return true;
     }
-    
-    public void selectReward(Player p){
+
+    public void selectReward(Player p) {
         ContractHandler.setReward(this, p);
     }
-    
+
     @Override
-    public void interact(PlayerInteractEvent e, boolean finished){
+    public void interact(PlayerInteractEvent e, boolean finished) {
         LogUtil.printDebug("Interact Called, " + finished);
-        if(!finished){
+        if (!finished) {
             selectReward(e.getPlayer());
-        }else{
+        } else {
             e.getPlayer().sendMessage("added contract to plot");
             plot.getContracts().add(this);
-            if(plot.getMunicipal() != null){
+            if (plot.getMunicipal() != null) {
                 ((TownHall) plot.getMunicipal().getCenter()).getContracts().add(this);
             }
             e.getPlayer().setItemInHand(new ItemStack(Material.AIR));

@@ -39,72 +39,74 @@ import org.bukkit.entity.Player;
  *
  * @author donoa_000
  */
-public class MuteCommand implements CommandExecutor{
-    
+public class MuteCommand implements CommandExecutor {
+
     @Getter
     private static HashMap<Player, ArrayList<Player>> localMutes = new HashMap<Player, ArrayList<Player>>();
-    
+
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String lbl, String[] args){
+    public boolean onCommand(CommandSender sender, Command cmd, String lbl, String[] args) {
         Player m;
-        if(args.length > 0 && (m = Bukkit.getPlayer(args[0])) != null){
-            if(sender.hasPermission(PermissionManager.getModPermission()) && args.length > 1 && 
-                    (args[1].equalsIgnoreCase("global") || args[1].equalsIgnoreCase("g"))){
+        if (args.length > 0 && (m = Bukkit.getPlayer(args[0])) != null) {
+            if (sender.hasPermission(PermissionManager.getModPermission()) && args.length > 1
+                    && (args[1].equalsIgnoreCase("global") || args[1].equalsIgnoreCase("g"))) {
                 PlayerData pd = (PlayerData) PlayerData.getData(m);
-                if(pd.getMuted() != null){
+                if (pd.getMuted() != null) {
                     pd.setMuted(null);
                     sender.sendMessage("You have unmuted " + args[0]);
-                }else{
-                    if(args.length == 2){
+                } else {
+                    if (args.length == 2) {
                         pd.setMuted(new MuteClass(args[1]));
                         sender.sendMessage("You have muted " + args[0] + " for " + args[1]);
                         m.sendMessage("You have been muted for " + args[1]);
-                    }else if(args.length == 3){
+                    } else if (args.length == 3) {
                         pd.setMuted(new MuteClass(args[1], TimeUtil.getDate(args[2])));
                         sender.sendMessage("You have muted " + args[0] + " for " + args[1] + " for " + args[2]);
                         m.sendMessage("You have been muted for " + args[1] + " for " + args[2]);
                     }
                 }
-            }else{
-                if(sender instanceof Player){
+            } else {
+                if (sender instanceof Player) {
                     Player p = (Player) sender;
                     PlayerData pd = (PlayerData) PlayerData.getData(p);
-                    if(localMutes.containsKey(m)){
-                        if(localMutes.get(m).contains(p)){
+                    if (localMutes.containsKey(m)) {
+                        if (localMutes.get(m).contains(p)) {
                             localMutes.get(m).remove(m);
                             p.sendMessage("You have unmuted " + args[0]);
-                        }else{
+                        } else {
                             localMutes.get(m).add(m);
                             p.sendMessage("You have muted " + args[0]);
                         }
-                    }else{
-                        localMutes.put(m, new ArrayList<Player>(Arrays.asList(new Player[] {p})));
+                    } else {
+                        localMutes.put(m, new ArrayList<Player>(Arrays.asList(new Player[]{p})));
                         p.sendMessage("You have muted " + args[0]);
                     }
-                }else{
-                     sender.sendMessage("Console can only mute global");
+                } else {
+                    sender.sendMessage("Console can only mute global");
                 }
             }
-        }else{
+        } else {
             sender.sendMessage("Player not found");
         }
         return true;
     }
-    
+
     @NoArgsConstructor
     public static class MuteClass {
-        
-        @Getter @Setter
+
+        @Getter
+        @Setter
         private String reason;
-        
-        @Getter @Setter
+
+        @Getter
+        @Setter
         private Date time;
-        
-        public MuteClass(String r){
+
+        public MuteClass(String r) {
             reason = r;
         }
-        
-        public MuteClass(String r, Date time){
+
+        public MuteClass(String r, Date time) {
             reason = r;
             this.time = time;
         }

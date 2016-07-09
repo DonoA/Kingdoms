@@ -26,20 +26,21 @@ import java.util.Date;
  * @author donoa_000
  */
 public class TimeUtil {
-    public static Date getDate(String d){//only works for hours:min:sec needs to expand at some point
+
+    public static Date getDate(String d) {//only works for hours:min:sec needs to expand at some point
         String[] args = d.split(":");
-        if(args.length!=3){
+        if (args.length != 3) {
             LogUtil.printDebug("Invalid Date Time format!");
             return null;
         }
-        
-        return new Date(System.currentTimeMillis() + 
-                       (Long.parseLong(args[0])*1000*60*60) +  
-                       (Long.parseLong(args[1])*1000*60) + 
-                       (Long.parseLong(args[2])*1000));
+
+        return new Date(System.currentTimeMillis()
+                + (Long.parseLong(args[0]) * 1000 * 60 * 60)
+                + (Long.parseLong(args[1]) * 1000 * 60)
+                + (Long.parseLong(args[2]) * 1000));
     }
-    
-    public static String asTime(Date d1, Date d2){ // This seems like a really bad way of doing this, need to fix at some point
+
+    public static String asTime(Date d1, Date d2) { // This seems like a really bad way of doing this, need to fix at some point
         long Time = d2.getTime() - d1.getTime();
         Time /= 60000;
         long m = Time % 60;
@@ -49,5 +50,5 @@ public class TimeUtil {
         long d = Time;
         return (d > 0 ? String.valueOf(d) + " days, " : "") + (h > 0 ? String.valueOf(h) + " hours " : "") + (m > 0 ? String.valueOf(m) + " minutes" : "");
     }
-    
+
 }

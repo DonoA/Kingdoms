@@ -17,7 +17,6 @@
  * 
  * 
  */
-
 package io.dallen.kingdoms.utilities.Storage.JsonClasses;
 
 import io.dallen.kingdoms.utilities.Storage.SaveType;
@@ -32,39 +31,44 @@ import org.bukkit.inventory.ItemStack;
  * @author Donovan Allen
  */
 @NoArgsConstructor
-public class JsonArmor implements SaveType.NativeType{
-    
-    @Getter @Setter
+public class JsonArmor implements SaveType.NativeType {
+
+    @Getter
+    @Setter
     private JsonItemStack Helm;
-    @Getter @Setter
+    @Getter
+    @Setter
     private JsonItemStack Chest;
-    @Getter @Setter
+    @Getter
+    @Setter
     private JsonItemStack Leg;
-    @Getter @Setter
+    @Getter
+    @Setter
     private JsonItemStack Boot;
-    
-    public JsonArmor(ItemStack[] is){
+
+    public JsonArmor(ItemStack[] is) {
         Helm = new JsonItemStack(is[3]);
         Chest = new JsonItemStack(is[2]);
         Leg = new JsonItemStack(is[1]);
         Boot = new JsonItemStack(is[0]);
     }
-    
+
     /**
      * sets Player armor to this save
+     *
      * @param p The player who should be set to the save
      */
-    public void GiveTo(Player p){
+    public void GiveTo(Player p) {
         p.getInventory().setHelmet(Helm.toJavaObject());
         p.getInventory().setChestplate(Chest.toJavaObject());
         p.getInventory().setLeggings(Leg.toJavaObject());
         p.getInventory().setBoots(Boot.toJavaObject());
         p.updateInventory();
     }
-    
+
     @Override
-    public Object toJavaObject(){
+    public Object toJavaObject() {
         throw new UnsupportedOperationException("Not supported for EnchantmentMeta");
     }
-    
+
 }

@@ -49,55 +49,57 @@ import org.reflections.Reflections;
  *
  * @author Donovan Allen
  */
-public class KingdomsCore extends JavaPlugin{
-    
+public class KingdomsCore extends JavaPlugin {
+
     @Getter
     private static KingdomsCore Plugin;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private static NpcManager NPCs;
-    
+
     @Getter
     private static Set<Class<? extends Plot>> StructureClasses;
-    
+
     @Getter
     private static Set<Class<? extends SaveType.NativeType>> NativeTypes;
-    
+
     @Getter
     private static ProtocolManager protocolManager;
-    
+
     @Getter
     private static ArrayList<Kingdom> Kingdoms = new ArrayList<Kingdom>();
-    
+
     @Getter
     private static ArrayList<Municipality> Municipals = new ArrayList<Municipality>();
-    
+
     @Getter
     private static SkinPacketHandler skinHandler;
-    
+
     @Getter
     private static ArrayList<KingdomModual> registeredModuals = new ArrayList<KingdomModual>();
-    
+
     @Getter
     private static ChangeTracker changes;
-    
+
     @Override
-    public void onEnable(){
+    public void onEnable() {
         Plugin = this;
         Reflections reflections = new Reflections("io.dallen.Kingdoms.core");
         Set<Class<? extends Listener>> lstn = reflections.getSubTypesOf(Listener.class);
-        for(Class<? extends Listener> l : lstn){
+        for (Class<? extends Listener> l : lstn) {
             boolean hasEventHandler = false;
-            for(Method m : l.getDeclaredMethods()){
-                if(m.isAnnotationPresent(EventHandler.class)){
+            for (Method m : l.getDeclaredMethods()) {
+                if (m.isAnnotationPresent(EventHandler.class)) {
                     hasEventHandler = true;
                 }
             }
-            if(hasEventHandler){
+            if (hasEventHandler) {
                 try {
                     l.getConstructor();
                     Bukkit.getPluginManager().registerEvents((Listener) l.newInstance(), this);
-                } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | SecurityException ex) {}
+                } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | SecurityException ex) {
+                }
             }
         }
         reflections = new Reflections("io.dallen.Kingdoms.core.Structures.Types");
@@ -111,16 +113,16 @@ public class KingdomsCore extends JavaPlugin{
         Bukkit.getScheduler().runTaskAsynchronously(this, SkinHandler);
         skinHandler = SkinHandler;
         CraftingHandler crafting = new CraftingHandler(this);
-        for(Class<MultiBlock> mb : MultiBlock.getMultiBlockClasses()){
+        for (Class<MultiBlock> mb : MultiBlock.getMultiBlockClasses()) {
             try {
                 mb.getMethod("loadForm").invoke(mb);
             } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
                 LogUtil.printErr("error loading multiblock forms");
             }
         }
-        for(String d : this.getDescription().getDepend()){
-            if((this.getServer().getPluginManager().getPlugin(d) == null) || 
-                (!this.getServer().getPluginManager().getPlugin(d).isEnabled())){
+        for (String d : this.getDescription().getDepend()) {
+            if ((this.getServer().getPluginManager().getPlugin(d) == null)
+                    || (!this.getServer().getPluginManager().getPlugin(d).isEnabled())) {
                 //Check version
                 LogUtil.printErr(d + " not found!");
                 LogUtil.printErr("Shutting Down!");
@@ -128,7 +130,7 @@ public class KingdomsCore extends JavaPlugin{
                 return;
             }
         }
-        if(this.getConfig().getBoolean("decay")){
+        if (this.getConfig().getBoolean("decay")) {
             changes = new ChangeTracker(Plugin);
         }
         NPCs = new NpcManager();
@@ -136,7 +138,7 @@ public class KingdomsCore extends JavaPlugin{
 //        GeneralCommands general = new GeneralCommands();
 //        AdminCommands admin = new AdminCommands();
         MainMenuHandler mmh = new MainMenuHandler();
-        if(this.getConfig().getBoolean("debug.enabled")){
+        if (this.getConfig().getBoolean("debug.enabled")) {
             DebugCommands dbg = new DebugCommands(new File(this.getConfig().getString("debug.buildfolder")));
             this.getCommand("fillplot").setExecutor(dbg);
             this.getCommand("setskins").setExecutor(dbg);
@@ -174,84 +176,84 @@ public class KingdomsCore extends JavaPlugin{
 //        this.getCommand("mute").setExecutor(new MuteCommand());
 //        RedisManager RM = new RedisManager();
     }
-    
+
     @Override
-    public void onDisable(){
+    public void onDisable() {
         DataLoadHelper.SaveKingdomData();
     }
-    
-    public void registerModule(KingdomModual modual){
+
+    public void registerModule(KingdomModual modual) {
         registeredModuals.add(modual);
         Reflections reflections = new Reflections(modual.getClassPath());
         Set<Class<? extends Listener>> lstn = reflections.getSubTypesOf(Listener.class);
-        for(Class<? extends Listener> l : lstn){
+        for (Class<? extends Listener> l : lstn) {
             boolean hasEventHandler = false;
-            for(Method m : l.getDeclaredMethods()){
-                if(m.isAnnotationPresent(EventHandler.class)){
+            for (Method m : l.getDeclaredMethods()) {
+                if (m.isAnnotationPresent(EventHandler.class)) {
                     hasEventHandler = true;
                 }
             }
-            if(hasEventHandler){
+            if (hasEventHandler) {
                 try {
                     l.getConstructor();
                     Bukkit.getPluginManager().registerEvents((Listener) l.newInstance(), this);
-                } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | SecurityException ex) {}
+                } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | SecurityException ex) {
+                }
             }
         }
-        if(modual.isHasStructures()){
+        if (modual.isHasStructures()) {
             reflections = new Reflections(modual.getStructurePath());
             StructureClasses.addAll(reflections.getSubTypesOf(Plot.class));
         }
         reflections = new Reflections(modual.getStoragePath());
         NativeTypes.addAll(reflections.getSubTypesOf(SaveType.NativeType.class));
     }
-    
+
     /*
-    Kingdoms
-    |   config.yml
-    |
-    +---multiblock
-    |   \---Forge
-    +---playerdata
-    +---prefabs
-    |   +---Armory
-    |   +---Bank
-    |   +---Barracks
-    |   +---Blacksmith
-    |   +---BuildersHut
-    |   +---Castle
-    |   +---Dungeon
-    |   +---Farm
-    |   +---Marketplace
-    |   +---Stable
-    |   +---Storeroom
-    |   +---TownHall
-    |   \---TrainingGround
-    \---savedata
-        +---kingdoms
-        +---municipals
-        \---plots
+     Kingdoms
+     |   config.yml
+     |
+     +---multiblock
+     |   \---Forge
+     +---playerdata
+     +---prefabs
+     |   +---Armory
+     |   +---Bank
+     |   +---Barracks
+     |   +---Blacksmith
+     |   +---BuildersHut
+     |   +---Castle
+     |   +---Dungeon
+     |   +---Farm
+     |   +---Marketplace
+     |   +---Stable
+     |   +---Storeroom
+     |   +---TownHall
+     |   \---TrainingGround
+     \---savedata
+     +---kingdoms
+     +---municipals
+     \---plots
      */
-    
-    public static void setupDatabase(){
+    public static void setupDatabase() {
         File plugin = KingdomsCore.getPlugin().getDataFolder();
-        for(String s : new String[] {"prefabs", "playerdata", "multiblock", "savedata"}){
-            if(!new File(plugin.getPath() + DBmanager.getFileSep() + s).exists()){
+        for (String s : new String[]{"prefabs", "playerdata", "multiblock", "savedata"}) {
+            if (!new File(plugin.getPath() + DBmanager.getFileSep() + s).exists()) {
                 new File(plugin.getPath() + DBmanager.getFileSep() + s).mkdir();
             }
         }
-        for(Class<?> c : StructureClasses){
-            if(!new File(plugin.getPath() + DBmanager.getFileSep() + "prefabs" + DBmanager.getFileSep() + c.getSimpleName()).exists()){
+        for (Class<?> c : StructureClasses) {
+            if (!new File(plugin.getPath() + DBmanager.getFileSep() + "prefabs" + DBmanager.getFileSep() + c.getSimpleName()).exists()) {
                 new File(plugin.getPath() + DBmanager.getFileSep() + "prefabs" + DBmanager.getFileSep() + c.getSimpleName()).mkdir();
             }
         }
-        for(Class<?> c : MultiBlock.getMultiBlockClasses()){
-            if(!new File(plugin.getPath() + DBmanager.getFileSep() + "multiblock" + DBmanager.getFileSep() + c.getSimpleName()).exists()){
+        for (Class<?> c : MultiBlock.getMultiBlockClasses()) {
+            if (!new File(plugin.getPath() + DBmanager.getFileSep() + "multiblock" + DBmanager.getFileSep() + c.getSimpleName()).exists()) {
                 new File(plugin.getPath() + DBmanager.getFileSep() + "multiblock" + DBmanager.getFileSep() + c.getSimpleName()).mkdir();
             }
         }
-        for(String s : new String[] {"kingdoms", "municipals", "plots"}){
-            if(!new File(plugin.getPath() + DBmanager.getFileSep() + "savedata" + DBmanager.getFileSep() + s).exists()){
+        for (String s : new String[]{"kingdoms", "municipals", "plots"}) {
+            if (!new File(plugin.getPath() + DBmanager.getFileSep() + "savedata" + DBmanager.getFileSep() + s).exists()) {
                 new File(plugin.getPath() + DBmanager.getFileSep() + "savedata" + DBmanager.getFileSep() + s).mkdir();
             }
         }

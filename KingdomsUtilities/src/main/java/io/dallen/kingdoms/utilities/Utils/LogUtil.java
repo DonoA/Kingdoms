@@ -32,36 +32,37 @@ import org.bukkit.ChatColor;
  * @author Donovan
  */
 public class LogUtil {
-    
+
     private static boolean isDebug = true;
-    
-    public static void printDebug(Object msg){
-        if(isDebug)
+
+    public static void printDebug(Object msg) {
+        if (isDebug) {
             Bukkit.getLogger().log(Level.INFO, "[Kingdoms] [DEBUG] {0}", msg.toString());
+        }
     }
-    
-    public static void printDebugJson(Object obj){
+
+    public static void printDebugJson(Object obj) {
         try {
             printDebug(DBmanager.getJSonParser().writeValueAsString(obj));
         } catch (JsonProcessingException ex) {
             Logger.getLogger(LogUtil.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    public static void printDebugStack(Exception ex){
-        if(isDebug){
+
+    public static void printDebugStack(Exception ex) {
+        if (isDebug) {
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
             ex.printStackTrace(pw);
             Bukkit.getLogger().log(Level.INFO, "[Kingdoms] [DEBUG] [ERROR] {0}", sw.toString());
         }
     }
-    
-    public static void printInfo(Object msg){
+
+    public static void printInfo(Object msg) {
         Bukkit.getLogger().log(Level.INFO, "[Kingdoms] {0}", msg.toString());
     }
-    
-    public static void printErr(Object msg){
+
+    public static void printErr(Object msg) {
         Bukkit.getLogger().log(Level.SEVERE, "[Kingdoms]{0} [ERROR] {1}", new Object[]{ChatColor.RED, msg.toString()});
     }
 }

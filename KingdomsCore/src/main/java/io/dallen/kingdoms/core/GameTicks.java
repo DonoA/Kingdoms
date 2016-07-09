@@ -29,23 +29,22 @@ import java.util.logging.Logger;
  *
  * @author donoa_000
  */
-public class GameTicks{
-    
-    public static void StartGameTicks(){
+public class GameTicks {
+
+    public static void StartGameTicks() {
         new NPCTick().start();
         new MainTick().start();
         new DailyTick().start();
     }
-    
-    public static class NPCTick extends Thread{
-    
+
+    public static class NPCTick extends Thread {
+
         @Override
-        public void run(){
-            while(true){
+        public void run() {
+            while (true) {
                 //Check for players in range of building places
-                
+
                 //update building build amount
-                
                 //update NPC targets for tasks
                 try {
                     Thread.sleep(100);
@@ -55,28 +54,26 @@ public class GameTicks{
             }
         }
     }
-    
-    public static class MainTick extends Thread{
-    
+
+    public static class MainTick extends Thread {
+
         @Override
-        public void run(){
-            while(true){
-                for(Kingdom k : KingdomsCore.getKingdoms()){
+        public void run() {
+            while (true) {
+                for (Kingdom k : KingdomsCore.getKingdoms()) {
                     //recalculate population
 
                     //spawn attacking mobs
-
                     //add resources
-                    for(Municipality m : k.getMunicipals()){
+                    for (Municipality m : k.getMunicipals()) {
                         //add resources
-                        
+
                         //recalculate chaos levels
-                        for(Entry<Class, ArrayList<Structure>> buildings : m.getStructures().entrySet()){
-                            for(Structure building : buildings.getValue()){
+                        for (Entry<Class, ArrayList<Structure>> buildings : m.getStructures().entrySet()) {
+                            for (Structure building : buildings.getValue()) {
                                 //move added resources around
-                                
+
                                 //check overflows
-                                
                                 //
                             }
                         }
@@ -90,16 +87,15 @@ public class GameTicks{
             }
         }
     }
-    
-    public static class DailyTick extends Thread{
-    
+
+    public static class DailyTick extends Thread {
+
         @Override
-        public void run(){
-            while(true){
+        public void run() {
+            while (true) {
                 //update kingdom taxes
-                
+
                 //think about mob siege
-                
                 //
                 try {
                     Thread.sleep(1000 * 60 * 60 * 24);

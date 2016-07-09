@@ -1,10 +1,8 @@
 /**
- * 
- * This file is unlicensed so as not to conflict with the existing
- * WorldEdit copyright held by sk89q <http://www.sk89q.com> and
- * the WorldEdit team and contributors who wrote most of the code
- * found within this file
- * 
+ *
+ * This file is unlicensed so as not to conflict with the existing WorldEdit copyright held by sk89q <http://www.sk89q.com> and the
+ * WorldEdit team and contributors who wrote most of the code found within this file
+ *
  */
 package io.dallen.kingdoms.utilities.Utils;
 
@@ -30,18 +28,16 @@ import org.bukkit.util.Vector;
 
 /**
  * Based on code from sk98q's WorldEdit
- * 
+ *
  * @author donoa_000
  */
 public class NBTmanager {
-    
+
     //Width = X direction
     //Length = Z direction
     //Height = Y direction
-
     //Starts at smallest x y and z
     //Starts in X direction, then Z, then Y
-    
     public static Blueprint loadData(File f) throws IOException, DataFormatException {
         FileInputStream stream = new FileInputStream(f);
         NBTInputStream nbtStream = new NBTInputStream(new GZIPInputStream(stream));
@@ -102,7 +98,9 @@ public class NBTmanager {
         Map<BlockVector, Map<String, Tag>> tileEntitiesMap = new HashMap<BlockVector, Map<String, Tag>>();
 
         for (Tag tag : tileEntities) {
-            if (!(tag instanceof CompoundTag)) continue;
+            if (!(tag instanceof CompoundTag)) {
+                continue;
+            }
             CompoundTag t = (CompoundTag) tag;
 
             int x = 0;
@@ -144,7 +142,7 @@ public class NBTmanager {
      * @return child tag casted to the expected type
      * @throws DataException if the tag does not exist or the tag is not of the expected type
      */
-    private static <T extends Tag> T getChildTag(Map<String, Tag> items, String key, Class<T> expected) throws DataFormatException{
+    private static <T extends Tag> T getChildTag(Map<String, Tag> items, String key, Class<T> expected) throws DataFormatException {
         if (!items.containsKey(key)) {
             throw new DataFormatException("Schematic file is missing a \"" + key + "\" tag");
         }

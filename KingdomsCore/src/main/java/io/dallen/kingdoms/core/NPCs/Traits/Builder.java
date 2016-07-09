@@ -34,63 +34,64 @@ import org.bukkit.inventory.Inventory;
  *
  * @author Donovan Allen
  */
-public class Builder extends Trait{
-    
+public class Builder extends Trait {
+
     @Getter
     private Inventory buildInventory;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private BuildersHut BuildHut;
-    
+
     private final FiniteStateMachine brain;
-    
+
     private static HashMap<Integer, Location> gettingSupplies = new HashMap<Integer, Location>();
-    
-    public Builder(){
+
+    public Builder() {
         super("Builder");
         brain = new FiniteStateMachine();
     }
-    
-    public class getSupplies implements FsmState{
-        
+
+    public class getSupplies implements FsmState {
+
         private Location target;
-        
+
         private long ticksTilNextPatrol = 0;
-        
+
         @Override
-        public void invoke(){
-            if(!npc.getNavigator().isNavigating() && ticksTilNextPatrol <= 0){
-               
-            }else{
+        public void invoke() {
+            if (!npc.getNavigator().isNavigating() && ticksTilNextPatrol <= 0) {
+
+            } else {
                 ticksTilNextPatrol--;
             }
         }
-        
+
         @Override
-        public boolean isComplete(){
+        public boolean isComplete() {
             return false;
         }
     }
-    
-    public class placeBlock implements FsmState{
-        
+
+    public class placeBlock implements FsmState {
+
         private Location target;
-        
+
         private BlueBlock block;
-        
+
         private long ticksTilNextPatrol = 0;
-        
+
         @Override
-        public void invoke(){
-            if(!npc.getNavigator().isNavigating() && ticksTilNextPatrol <= 0){
-               
-            }else{
+        public void invoke() {
+            if (!npc.getNavigator().isNavigating() && ticksTilNextPatrol <= 0) {
+
+            } else {
                 ticksTilNextPatrol--;
             }
         }
-        
+
         @Override
-        public boolean isComplete(){
+        public boolean isComplete() {
             return false;
         }
     }

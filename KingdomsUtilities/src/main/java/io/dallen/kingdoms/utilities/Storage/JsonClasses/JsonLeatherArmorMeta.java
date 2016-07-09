@@ -17,7 +17,6 @@
  * 
  * 
  */
-
 package io.dallen.kingdoms.utilities.Storage.JsonClasses;
 
 import io.dallen.kingdoms.utilities.Storage.SaveType;
@@ -32,13 +31,16 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
  * @author Donovan Allen
  */
 @NoArgsConstructor
-public class JsonLeatherArmorMeta implements SaveType.NativeType{
-    
-    @Getter @Setter
+public class JsonLeatherArmorMeta implements SaveType.NativeType {
+
+    @Getter
+    @Setter
     private int rgb;
-    @Getter @Setter
+    @Getter
+    @Setter
     private String displayName;
-    @Getter @Setter
+    @Getter
+    @Setter
     private List<String> lore;
 
     public JsonLeatherArmorMeta(LeatherArmorMeta meta) {
@@ -50,9 +52,9 @@ public class JsonLeatherArmorMeta implements SaveType.NativeType{
             this.lore = meta.getLore();
         }
     }
-    
+
     @Override
-    public Object toJavaObject(){
+    public Object toJavaObject() {
         throw new UnsupportedOperationException("Not supported for LeatherArmorMeta");
     }
 }

@@ -35,48 +35,46 @@ import org.bukkit.plugin.java.JavaPlugin;
  *
  * @author Donovan Allen
  */
-public class CraftingHandler implements Listener{
-    
-    public CraftingHandler(JavaPlugin p){
+public class CraftingHandler implements Listener {
+
+    public CraftingHandler(JavaPlugin p) {
         ItemStack crown = ItemUtil.setItemNameAndLore(Material.GOLD_HELMET, "Crown", "The crown of a lord");
         ShapedRecipe Crown = new ShapedRecipe(crown);
-        Crown.shape("GDG","GGG");
+        Crown.shape("GDG", "GGG");
         Crown.setIngredient('G', Material.GOLD_INGOT);
         Crown.setIngredient('D', Material.DIAMOND);
         p.getServer().addRecipe(Crown);
-        
+
         ShapedRecipe itm = new ShapedRecipe(KingdomMaterial.MULTI_TOOL.getItemStack());
-        itm.shape("IiI"," S "," C ");
+        itm.shape("IiI", " S ", " C ");
         itm.setIngredient('I', Material.IRON_BLOCK);
         itm.setIngredient('i', Material.IRON_INGOT);
         itm.setIngredient('S', Material.STICK);
         itm.setIngredient('C', Material.WATCH);
         p.getServer().addRecipe(itm);
-        
+
         itm = new ShapedRecipe(KingdomMaterial.CONTRACT_EMPTY.getItemStack());
-        itm.shape(" q "," p "," b ");
+        itm.shape(" q ", " p ", " b ");
         itm.setIngredient('q', Material.FEATHER);
         itm.setIngredient('p', Material.PAPER);
         itm.setIngredient('b', Material.BOOK);
         p.getServer().addRecipe(itm);
-        
+
         ItemStack CommandStick = ItemUtil.setItemNameAndLore(Material.STICK, "Command Stick", "Used for managing troops");
         ShapedRecipe cStick = new ShapedRecipe(CommandStick);
-        cStick.shape(" I "," S "," S ");
+        cStick.shape(" I ", " S ", " S ");
         cStick.setIngredient('I', Material.WATCH);
         cStick.setIngredient('S', Material.STICK);
         p.getServer().addRecipe(cStick);
-        
-        
-        
+
         Bukkit.getPluginManager().registerEvents(this, p);
     }
-    
+
     @EventHandler
-    public void onEnchantItem(EnchantItemEvent e){
-        if(e.getItem().getType().name().contains("_HELMET")){
+    public void onEnchantItem(EnchantItemEvent e) {
+        if (e.getItem().getType().name().contains("_HELMET")) {
             e.getEnchantsToAdd().put(Enchantment.DURABILITY, 2);
         }
     }
-    
+
 }

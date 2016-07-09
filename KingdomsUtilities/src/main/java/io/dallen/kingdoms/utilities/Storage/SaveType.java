@@ -29,26 +29,32 @@ import lombok.Setter;
  * @author Donovan Allen
  */
 public interface SaveType {
-    
-    public static interface NativeType extends SaveType{
+
+    public static interface NativeType extends SaveType {
+
         public <T> T toJavaObject();
-            
-        public static interface JsonType extends NativeType{
+
+        public static interface JsonType extends NativeType {
 
             public <T extends Saveable> T toJavaObject();
         }
     }
-    
-    public static interface Saveable extends SaveType{
+
+    public static interface Saveable extends SaveType {
+
         public <T extends NativeType> T toJsonObject();
     }
-    
-    @AllArgsConstructor @NoArgsConstructor
-    public static class SaveAttr{
-        @Getter @Setter
+
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class SaveAttr {
+
+        @Getter
+        @Setter
         private Class type;
-        
-        @Getter @Setter
+
+        @Getter
+        @Setter
         private Object data;
     }
 }

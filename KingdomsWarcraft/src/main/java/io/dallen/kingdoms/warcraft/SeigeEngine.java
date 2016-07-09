@@ -27,24 +27,24 @@ import org.bukkit.event.Listener;
  *
  * @author Donovan Allen
  */
-public class SeigeEngine extends MultiBlock{
-    
+public class SeigeEngine extends MultiBlock {
+
     private int direction;
 
     public SeigeEngine(Location cent, int l, int w, int h) {
         super(cent, l, w, h);
     }
-    
-    public void push(int distance){
-        
+
+    public void push(int distance) {
+
     }
-    
-    public void deploy(){
-        
+
+    public void deploy() {
+
     }
-    
-    public static class SeigeEngineHandler implements Listener{
-        
+
+    public static class SeigeEngineHandler implements Listener {
+
     }
-    
+
 }

@@ -19,7 +19,6 @@
  */
 package io.dallen.kingdoms.core.Structures.Types;
 
-
 import io.dallen.kingdoms.core.Handlers.BuildMenuHandler;
 import io.dallen.kingdoms.core.KingdomsCore;
 import io.dallen.kingdoms.core.NPCs.Traits.Miner;
@@ -48,54 +47,62 @@ import org.bukkit.inventory.ItemStack;
  *
  * @author Donovan Allen
  */
-public class Mine extends Plot implements Storage{
-    
-    @Getter @Setter @SaveData
+public class Mine extends Plot implements Storage {
+
+    @Getter
+    @Setter
+    @SaveData
     private boolean digging;
-    
-    @Getter @Setter @SaveData
+
+    @Getter
+    @Setter
+    @SaveData
     private BuildingVault Storage;
-    
+
     private Location currentBlock;
-    
+
     private MineTask mineTask = null;
-    
+
     @Getter
     private ChestGUI EditPlot;
     @Getter
     private ChestGUI BuildMenu;
-    
+
     public Mine(Plot p) {
         super(p);
         digging = false;
-        EditPlot = new ChestGUI("Mine", 2, new MenuHandler()){{
-            setOption(0*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Start Mining");
-            setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
-            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
-            setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
-        }};
-        BuildMenu = new ChestGUI("Build Options", 2, new MenuHandler()){{
-            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Other");
-        }};
-        Storage = new BuildingVault(18,18*64, this);
+        EditPlot = new ChestGUI("Mine", 2, new MenuHandler()) {
+            {
+                setOption(0 * 9 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Start Mining");
+                setOption(1 * 9 + 3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
+                setOption(1 * 9 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
+                setOption(1 * 9 + 5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
+            }
+        };
+        BuildMenu = new ChestGUI("Build Options", 2, new MenuHandler()) {
+            {
+                setOption(1 * 9 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Other");
+            }
+        };
+        Storage = new BuildingVault(18, 18 * 64, this);
     }
-    
+
     @Override
-    public void sendEditMenu(Player p){
+    public void sendEditMenu(Player p) {
         EditPlot.sendMenu(p);
     }
-    
+
     @Override
-    public boolean interact(PlayerInteractEvent e){
-        if(e.getClickedBlock().getType().equals(Material.CHEST)){
-            if(e.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
-                if(Storage.CanOpen(e.getPlayer())){
+    public boolean interact(PlayerInteractEvent e) {
+        if (e.getClickedBlock().getType().equals(Material.CHEST)) {
+            if (e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+                if (Storage.CanOpen(e.getPlayer())) {
                     Storage.SendToPlayer(e.getPlayer());
                     return true;
                 }
-            }else if(e.getAction().equals(Action.LEFT_CLICK_BLOCK)){
-                if(e.hasItem() && this.hasSpace()){
-                    if(Storage.addItem(e.getItem())){
+            } else if (e.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
+                if (e.hasItem() && this.hasSpace()) {
+                    if (Storage.addItem(e.getItem())) {
                         e.getPlayer().getInventory().setItemInMainHand(new ItemStack(Material.AIR));
                         return true;
                     }
@@ -104,113 +111,113 @@ public class Mine extends Plot implements Storage{
         }
         return false;
     }
-    
+
     @Override
-    public boolean hasSpace(){
+    public boolean hasSpace() {
         return Storage.getFullSlots() < Storage.getUniqueSize() && Storage.getAmountFull() < Storage.getCapacity();
     }
-    
+
     @Override
-    public boolean supplyNPC(NPC npc){
+    public boolean supplyNPC(NPC npc) {
         return true;
     }
-    
-    public class MenuHandler implements ChestGUI.OptionClickEventHandler{
-        
+
+    public class MenuHandler implements ChestGUI.OptionClickEventHandler {
+
         @Override
-        public void onOptionClick(ChestGUI.OptionClickEvent e){
-            if(e.getMenuName().equals(EditPlot.getName())){
-                if(e.getName().equals("Start Mining")){
+        public void onOptionClick(ChestGUI.OptionClickEvent e) {
+            if (e.getMenuName().equals(EditPlot.getName())) {
+                if (e.getName().equals("Start Mining")) {
                     digging = !digging;
-                    EditPlot.setOption(0*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Stop Mining");
-                    if(mineTask == null){
-                        mineTask = new MineTask(new Location(getCenter().getWorld(), getCenter().getX() - getWidth()/2  + (getWidth() % 2 == 0 ? 1 : 0),
-                        getCenter().getBlockY(), getCenter().getBlockZ() - getLength()/2 + (getLength() % 2 == 0 ? 1 : 0)), 10);
+                    EditPlot.setOption(0 * 9 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Stop Mining");
+                    if (mineTask == null) {
+                        mineTask = new MineTask(new Location(getCenter().getWorld(), getCenter().getX() - getWidth() / 2 + (getWidth() % 2 == 0 ? 1 : 0),
+                                getCenter().getBlockY(), getCenter().getBlockZ() - getLength() / 2 + (getLength() % 2 == 0 ? 1 : 0)), 10);
                     }
-                }else if(e.getName().equals("Stop Mining")){
+                } else if (e.getName().equals("Stop Mining")) {
                     digging = !digging;
-                    EditPlot.setOption(0*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Start Mining");
-                }else{
+                    EditPlot.setOption(0 * 9 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Start Mining");
+                } else {
                     BuildMenuHandler.chestBuildOptions(e, Mine.this);
                 }
             }
         }
     }
-    
-    public class MineTask implements Runnable{
-        
+
+    public class MineTask implements Runnable {
+
         private int x = 0;
-        
-        private int y = -1; 
-        
+
+        private int y = -1;
+
         private int z = 0;
-        
+
         private Rectangle currentHole;
-        
+
         private Location startCorner;
-        
+
         private NPC Miner;
-        
+
         private boolean finished = false;
-        
+
         private int step = 64;
-        
-        public MineTask(Location start, int speed){
+
+        public MineTask(Location start, int speed) {
             LogUtil.printDebug(LocationUtil.asPoint(Mine.this.getCenter()));
-            currentHole = new Rectangle(-(getWidth()/2  + (getWidth() % 2 == 0 ? 1 : 0)), -(getLength()/2 + (getLength() % 2 == 0 ? 1 : 0)), 
-                    getWidth()/2  + (getWidth() % 2 == 0 ? 1 : 0), getLength()/2 + (getLength() % 2 == 0 ? 1 : 0));
+            currentHole = new Rectangle(-(getWidth() / 2 + (getWidth() % 2 == 0 ? 1 : 0)), -(getLength() / 2 + (getLength() % 2 == 0 ? 1 : 0)),
+                    getWidth() / 2 + (getWidth() % 2 == 0 ? 1 : 0), getLength() / 2 + (getLength() % 2 == 0 ? 1 : 0));
             Miner = KingdomsCore.getNPCs().spawnBuilder("BingRazor", Mine.this.getCenter());
             Miner.getNavigator().setTarget(start);
             this.startCorner = start;
             Bukkit.getScheduler().scheduleSyncRepeatingTask(KingdomsCore.getPlugin(), this, speed, speed);
         }
-        
+
         @Override
-        public void run(){
-            if(!Miner.getNavigator().isNavigating() && Mine.this.digging){
-                if(!finished){
-                    if(step == 0){
+        public void run() {
+            if (!Miner.getNavigator().isNavigating() && Mine.this.digging) {
+                if (!finished) {
+                    if (step == 0) {
                         Miner.getTrait(Miner.class).getSupplies(startCorner);
                         step = 64;
                     }
-                    if(x < Mine.this.getWidth() - (Mine.this.getWidth() % 2 == 0 ? 1 : 0)){
-                        Location nLoc = startCorner.clone().add(x,y,z);
+                    if (x < Mine.this.getWidth() - (Mine.this.getWidth() % 2 == 0 ? 1 : 0)) {
+                        Location nLoc = startCorner.clone().add(x, y, z);
                         Collection<ItemStack> drops = nLoc.getBlock().getDrops();
-                        for(ItemStack drop : drops){
+                        for (ItemStack drop : drops) {
                             Mine.this.getStorage().addItem(drop);
                         }
                         nLoc.getBlock().setType(Material.AIR);
                         Miner.teleport(nLoc.add(0, 1, 0), PlayerTeleportEvent.TeleportCause.PLUGIN);
                         x++;
-                    }else{
+                    } else {
                         x = 0;
-                        if(z < Mine.this.getLength() - 1){ // this is a bit strange, it seems to work tho
-                            Location nLoc = startCorner.clone().add(x,y,z);
+                        if (z < Mine.this.getLength() - 1) { // this is a bit strange, it seems to work tho
+                            Location nLoc = startCorner.clone().add(x, y, z);
                             Collection<ItemStack> drops = nLoc.getBlock().getDrops();
-                            for(ItemStack drop : drops){
+                            for (ItemStack drop : drops) {
                                 Mine.this.getStorage().addItem(drop);
                             }
                             nLoc.getBlock().setType(Material.AIR);
                             Miner.teleport(nLoc.add(0, 1, 0), PlayerTeleportEvent.TeleportCause.PLUGIN);
                             z++;
-                        }else{
+                        } else {
                             z = 0;
-                            if(y >= -30 || startCorner.clone().getBlockY() + y > 3){
-                                Location nLoc = startCorner.clone().add(x,y,z);
+                            if (y >= -30 || startCorner.clone().getBlockY() + y > 3) {
+                                Location nLoc = startCorner.clone().add(x, y, z);
                                 Collection<ItemStack> drops = nLoc.getBlock().getDrops();
-                                for(ItemStack drop : drops){
+                                for (ItemStack drop : drops) {
                                     Mine.this.getStorage().addItem(drop);
                                 }
                                 nLoc.getBlock().setType(Material.AIR);
                                 Miner.teleport(nLoc.add(0, 1, 0), PlayerTeleportEvent.TeleportCause.PLUGIN);
                                 y--;
-                            }else{
+                            } else {
                                 Mine.this.digging = false;
                                 finished = true;
                             }
                         }
                     }
-                }else{
+                } else {
                     Miner.despawn();
                 }
             }

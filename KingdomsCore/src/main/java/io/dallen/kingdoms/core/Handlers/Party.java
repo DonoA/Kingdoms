@@ -34,98 +34,98 @@ import org.bukkit.entity.Player;
  *
  * @author donoa_000
  */
-public class Party{
-    
+public class Party {
+
     @Getter
     private static HashMap<String, Party> Parties = new HashMap<String, Party>();
-    
+
     @Getter
     private Player Owner;
-    
+
     @Getter
     private ArrayList<Player> Members = new ArrayList<Player>();
-    
+
     @Getter
     private HashMap<Player, Date> Invites = new HashMap<Player, Date>();
-    
-    public Party(Player invite, Player owner){
+
+    public Party(Player invite, Player owner) {
         Owner = owner;
         Invites.put(invite, new Date());
     }
-    
-    public boolean join(Player p){
-        if(Invites.containsKey(p)){
-            if(Invites.get(p).after(new Date(System.currentTimeMillis() - (120000)))){ //less than 2 min ago
+
+    public boolean join(Player p) {
+        if (Invites.containsKey(p)) {
+            if (Invites.get(p).after(new Date(System.currentTimeMillis() - (120000)))) { //less than 2 min ago
                 Invites.remove(p);
                 Members.add(p);
                 return true;
-            }else{
+            } else {
                 Invites.remove(p);
             }
         }
         return false;
     }
-    
-    public static class PartyCommands implements CommandExecutor{
-        
+
+    public static class PartyCommands implements CommandExecutor {
+
         @Override
-        public boolean onCommand(CommandSender sender, Command cmd, String lbl, String[] args){
-            if(sender instanceof Player){
+        public boolean onCommand(CommandSender sender, Command cmd, String lbl, String[] args) {
+            if (sender instanceof Player) {
                 Player p = (Player) sender;
                 PlayerData pd = PlayerData.getData(p);
-                if(pd != null){
-                    if(args.length == 0){
+                if (pd != null) {
+                    if (args.length == 0) {
                         p.sendMessage("Current Party Members");
                         p.sendMessage("=====================");
-                        if(pd.getCurrParty() != null){
-                            for(Player m : pd.getCurrParty().getMembers()){
+                        if (pd.getCurrParty() != null) {
+                            for (Player m : pd.getCurrParty().getMembers()) {
                                 p.sendMessage(" - " + m.getName());
                             }
-                        }else{
+                        } else {
                             p.sendMessage("Your Party is currently empty");
                         }
-                    }else{
-                        if(args[0].equalsIgnoreCase("leave") && pd.getCurrParty() != null){
-                            for(Player m : pd.getCurrParty().getMembers()){
+                    } else {
+                        if (args[0].equalsIgnoreCase("leave") && pd.getCurrParty() != null) {
+                            for (Player m : pd.getCurrParty().getMembers()) {
                                 m.sendMessage(p.getName() + " has left your party");
                             }
                             p.sendMessage("You have left the party");
                             pd.setPartyID(null);
-                        }else if(args[0].equalsIgnoreCase("join") && args.length > 1){
+                        } else if (args[0].equalsIgnoreCase("join") && args.length > 1) {
                             PlayerData joinDat;
-                            if(Bukkit.getPlayer(args[1]) != null && (joinDat = PlayerData.getData(Bukkit.getPlayer(args[1]))) != null){
-                                if(joinDat.getCurrParty() != null && joinDat.getCurrParty().join(p)){
+                            if (Bukkit.getPlayer(args[1]) != null && (joinDat = PlayerData.getData(Bukkit.getPlayer(args[1]))) != null) {
+                                if (joinDat.getCurrParty() != null && joinDat.getCurrParty().join(p)) {
                                     p.sendMessage("Joined " + args[1] + "'s party");
-                                }else{
+                                } else {
                                     p.sendMessage("You do not have a current invite to that party!");
                                 }
-                            }else{
+                            } else {
                                 p.sendMessage("That player is not online!");
                             }
-                        }else if(args[0].equalsIgnoreCase("invite") && args.length > 1){
+                        } else if (args[0].equalsIgnoreCase("invite") && args.length > 1) {
                             Player r;
-                            if((r = Bukkit.getPlayer(args[1])) != null){
-                                if(pd.getCurrParty() == null){
+                            if ((r = Bukkit.getPlayer(args[1])) != null) {
+                                if (pd.getCurrParty() == null) {
                                     Parties.put(p.getName(), new Party(r, p));
                                     pd.setPartyID(p.getName());
-                                }else{
+                                } else {
                                     pd.getCurrParty().getInvites().put(r, new Date());
                                 }
                                 r.sendMessage(p.getName() + " has invited you to a party");
                                 r.sendMessage("Type /party join " + p.getName());
                             }
-                        }else if(args[0].equalsIgnoreCase("kick") && args.length > 1){
+                        } else if (args[0].equalsIgnoreCase("kick") && args.length > 1) {
                             Player r;
-                            if((r = Bukkit.getPlayer(args[1])) != null && pd.getCurrParty() != null 
-                                                                       && pd.getCurrParty().getOwner().equals(p)){
+                            if ((r = Bukkit.getPlayer(args[1])) != null && pd.getCurrParty() != null
+                                    && pd.getCurrParty().getOwner().equals(p)) {
                                 pd.getCurrParty().getMembers().remove(r);
                             }
                         }
                     }
-                }else{
+                } else {
                     p.sendMessage("[Parties] No Player Data found...");
                 }
-            }else{
+            } else {
                 sender.sendMessage("[Parties] Only players can be in parties");
             }
             return true;

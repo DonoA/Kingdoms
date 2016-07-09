@@ -28,24 +28,24 @@ import org.bukkit.inventory.ItemStack;
  *
  * @author Donovan Allen
  */
-public class PlayerTrade extends Trade{
-    
+public class PlayerTrade extends Trade {
+
     private ArrayList<Object> Items1 = new ArrayList<Object>();
     private ArrayList<Object> Items2 = new ArrayList<Object>();
     private Player player1;
     private Player player2;
     private boolean readyToComplete = false;
-    
-    public PlayerTrade(ItemStack[] Items1, ItemStack[] Items2, Player player1, Player player2){
+
+    public PlayerTrade(ItemStack[] Items1, ItemStack[] Items2, Player player1, Player player2) {
         super(Items1, Items2);
         this.player1 = player1;
         this.player2 = player2;
     }
-    
-    public boolean completeTrade(){
+
+    public boolean completeTrade() {
         //Check if Items can be moved and move said items if they can
         //also check if the trade has expired
         return true;
     }
-    
+
 }

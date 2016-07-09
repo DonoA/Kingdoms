@@ -36,33 +36,33 @@ import org.bukkit.inventory.ItemStack;
  * @author Donovan Allen
  */
 @NoArgsConstructor
-public class Forge extends MultiBlock{
-    
+public class Forge extends MultiBlock {
+
     @Getter
     private static Blueprint basicForm = null;
-    
+
     @Getter
     private Blueprint form;
-    
+
     @Getter
     private ItemStack fuel;
 
     @Getter
     private ItemStack input;
-    
+
     @Getter
     private ItemStack output;
-    
+
     public Forge(Location cent, Blueprint form) {
         super(cent, form.getWid(), form.getHigh(), form.getLen());
     }
-    
-    public void interact(PlayerInteractEvent e){
-        
+
+    public void interact(PlayerInteractEvent e) {
+
     }
-    
-    public static void loadForm(){
-        if(basicForm == null){
+
+    public static void loadForm() {
+        if (basicForm == null) {
 //            try {
 //                basicForm = NBTmanager.loadData(new File(KingdomsCore.getPlugin().getDataFolder() + DBmanager.getFileSep() + "multiblock" + 
 //                        DBmanager.getFileSep() + "forge.schematic"));

@@ -17,7 +17,6 @@
  * 
  * 
  */
-
 package io.dallen.kingdoms.utilities.Storage.JsonClasses;
 
 import io.dallen.kingdoms.utilities.Storage.SaveType;
@@ -32,8 +31,8 @@ import org.bukkit.inventory.meta.BookMeta;
  * @author Donovan Allen
  */
 @NoArgsConstructor
-public class JsonBookMeta implements SaveType.NativeType{
-    
+public class JsonBookMeta implements SaveType.NativeType {
+
     @Getter
     @Setter
     private String author;
@@ -55,10 +54,10 @@ public class JsonBookMeta implements SaveType.NativeType{
             this.lore = meta.getLore();
         }
     }
-    
+
     @Override
-    public Object toJavaObject(){
+    public Object toJavaObject() {
         throw new UnsupportedOperationException("Not supported for EnchantmentMeta");
     }
-    
+
 }

@@ -30,14 +30,15 @@ import org.bukkit.event.player.PlayerQuitEvent;
  *
  * @author donoa_000
  */
-public class JoinLeaveHandler implements Listener{
+public class JoinLeaveHandler implements Listener {
+
     @EventHandler
-    public void onJoin(PlayerJoinEvent e){
+    public void onJoin(PlayerJoinEvent e) {
         PlayerData.getPlayerDat().put(e.getPlayer(), DataLoadHelper.LoadPlayerData(e.getPlayer()));
     }
-    
+
     @EventHandler
-    public void onQuit(PlayerQuitEvent e){ //This should do some kind of fancy cache for relogs (maybe like 5 min ttl)
+    public void onQuit(PlayerQuitEvent e) { //This should do some kind of fancy cache for relogs (maybe like 5 min ttl)
         DataLoadHelper.SavePlayerData(PlayerData.getData(e.getPlayer()));
         PlayerData.getPlayerDat().remove(e.getPlayer());
     }

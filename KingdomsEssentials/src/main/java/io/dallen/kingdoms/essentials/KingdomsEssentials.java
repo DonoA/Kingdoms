@@ -32,16 +32,16 @@ import org.bukkit.plugin.java.JavaPlugin;
  *
  * @author Donovan Allen
  */
-public class KingdomsEssentials extends JavaPlugin{
-    
+public class KingdomsEssentials extends JavaPlugin {
+
     @Getter
     private static Runtime runtime = Runtime.getRuntime();
-    
+
     @Getter
     private static KingdomsEssentials Plugin;
-    
+
     @Override
-    public void onEnable(){
+    public void onEnable() {
         Plugin = this;
         ModerationCommands moderation = new ModerationCommands();
         GeneralCommands general = new GeneralCommands();
@@ -74,8 +74,8 @@ public class KingdomsEssentials extends JavaPlugin{
         this.getCommand("party").setExecutor(new Party.PartyCommands());
         this.getCommand("mute").setExecutor(new MuteCommand());
     }
-    
+
     @Override
-    public void onDisable(){
+    public void onDisable() {
     }
 }

@@ -30,16 +30,16 @@ import org.bukkit.inventory.meta.BannerMeta;
  *
  * @author donoa_000
  */
-public class BannerUtil{
-    
-    public static ItemStack setBannerLetter(char l, ItemStack item){
-        if(!item.getType().equals(Material.BANNER)){
+public class BannerUtil {
+
+    public static ItemStack setBannerLetter(char l, ItemStack item) {
+        if (!item.getType().equals(Material.BANNER)) {
             LogUtil.printErr("Cannot set letter of non banner item");
             return null;
         }
         BannerMeta b = (BannerMeta) item.getItemMeta();
         b.setBaseColor(DyeColor.WHITE);
-        switch(l){ //https://imgur.com/gallery/D9KhL
+        switch (l) { //https://imgur.com/gallery/D9KhL
             case 'a':
                 b.addPattern(new Pattern(DyeColor.BLACK, PatternType.STRIPE_LEFT));
                 b.addPattern(new Pattern(DyeColor.BLACK, PatternType.STRIPE_RIGHT));
@@ -55,10 +55,10 @@ public class BannerUtil{
                 break;
             case 'e':
                 break;
-                
+
         }
         item.setItemMeta(b);
         return item;
     }
-    
+
 }

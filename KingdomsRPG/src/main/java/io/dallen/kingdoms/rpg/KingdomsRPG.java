@@ -26,16 +26,17 @@ import org.bukkit.plugin.java.JavaPlugin;
  *
  * @author Donovan Allen
  */
-public class KingdomsRPG extends JavaPlugin{
+public class KingdomsRPG extends JavaPlugin {
+
     @Getter
     private static KingdomsRPG Plugin;
-    
+
     @Override
-    public void onEnable(){
+    public void onEnable() {
         Plugin = this;
     }
-    
+
     @Override
-    public void onDisable(){
+    public void onDisable() {
     }
 }

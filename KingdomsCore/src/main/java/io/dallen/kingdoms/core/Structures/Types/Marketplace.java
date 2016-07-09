@@ -19,7 +19,6 @@
  */
 package io.dallen.kingdoms.core.Structures.Types;
 
-
 import io.dallen.kingdoms.core.Handlers.BuildMenuHandler;
 import io.dallen.kingdoms.core.Structures.Plot;
 import io.dallen.kingdoms.core.Structures.Vaults.BuildingVault;
@@ -36,54 +35,60 @@ import org.bukkit.inventory.ItemStack;
 
 /**
  * Allows the kingdom to set trade restrictions
- * 
+ *
  * @author donoa_000
  */
-public class Marketplace extends Plot{
+public class Marketplace extends Plot {
 
     private int space;
-    
-    @Getter @Setter @SaveData
+
+    @Getter
+    @Setter
+    @SaveData
     private ArrayList<Stall> stalls = new ArrayList<Stall>();
-    
+
     @Getter
     private ChestGUI EditPlot;
     @Getter
     private ChestGUI BuildMenu;
-    
+
     public Marketplace(Plot p) {
         super(p);
-        EditPlot = new ChestGUI("Marketplace", 2, new MenuHandler()){{
-            setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
-            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
-            setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
-        }};
-        
-        BuildMenu = new ChestGUI("Build Options", 2, new MenuHandler()){{
-            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Other");
-        }};
+        EditPlot = new ChestGUI("Marketplace", 2, new MenuHandler()) {
+            {
+                setOption(1 * 9 + 3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
+                setOption(1 * 9 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
+                setOption(1 * 9 + 5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
+            }
+        };
+
+        BuildMenu = new ChestGUI("Build Options", 2, new MenuHandler()) {
+            {
+                setOption(1 * 9 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Other");
+            }
+        };
     }
-    
+
     @Override
-    public void sendEditMenu(Player p){
+    public void sendEditMenu(Player p) {
         EditPlot.sendMenu(p);
     }
-    
-    public class MenuHandler implements OptionClickEventHandler{
-        
+
+    public class MenuHandler implements OptionClickEventHandler {
+
         @Override
-        public void onOptionClick(OptionClickEvent e){
-            if(e.getMenuName().equals(EditPlot.getName())){
+        public void onOptionClick(OptionClickEvent e) {
+            if (e.getMenuName().equals(EditPlot.getName())) {
                 BuildMenuHandler.chestBuildOptions(e, Marketplace.this);
             }
         }
     }
-    
-    public class Stall{
-        
+
+    public class Stall {
+
         private BuildingVault stallStock;
-        
-        private Player owner; 
+
+        private Player owner;
     }
 
 }

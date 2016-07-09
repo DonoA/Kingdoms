@@ -28,44 +28,46 @@ import org.bukkit.inventory.ItemStack;
  * @author Donovan Allen
  */
 public interface Contract {
-    
+
     public int getID();
-    
+
     public boolean isFinished();
-    
+
     public ContractTarget getContractTarget();
-    
+
     public Player getContractor();
-    
+
     public Object getContractee();
-    
+
     public RewardType getRewardType();
-    
+
     public Object getReward();
-    
+
     public boolean isContractorFinished();
-    
+
     public boolean isWorkerFinished();
-    
+
     public ItemStack getContractItem();
-    
+
     public void setContractee(Object o);
-    
-    public void setContractTarget(ContractTarget  ct);
-    
+
+    public void setContractTarget(ContractTarget ct);
+
     public void setRewardType(RewardType rt);
-    
+
     public void setReward(Object o);
-    
+
     public void setContractItem(ItemStack is);
-    
+
     public void interact(PlayerInteractEvent e, boolean finished);
-    
-    public static enum ContractTarget{
+
+    public static enum ContractTarget {
+
         PLAYER, NPC, BOTH
     }
-    
-    public static enum RewardType{
+
+    public static enum RewardType {
+
         PLOT, GOLD, ITEM
     }
 }

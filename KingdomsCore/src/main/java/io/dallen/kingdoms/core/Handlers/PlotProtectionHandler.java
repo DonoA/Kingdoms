@@ -36,8 +36,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
  *
  * @author Donovan Allen
  */
-public class PlotProtectionHandler implements Listener{
-    
+public class PlotProtectionHandler implements Listener {
+
     @EventHandler
     public void onPlace(BlockPlaceEvent event) {
         if (event.isCancelled()) {
@@ -47,7 +47,7 @@ public class PlotProtectionHandler implements Listener{
             event.setCancelled(false);
         } else {
             Plot p = Plot.inPlot(event.getBlockPlaced().getLocation());
-            if(p != null && p.getMunicipal()!=null){
+            if (p != null && p.getMunicipal() != null) {
                 event.setCancelled(true);
             }
         }
@@ -62,7 +62,7 @@ public class PlotProtectionHandler implements Listener{
             event.setCancelled(false);
         } else {
             Plot p = Plot.inPlot(event.getBlock().getLocation());
-            if(p != null && p.getMunicipal()!=null){
+            if (p != null && p.getMunicipal() != null) {
                 event.setCancelled(true);
             }
         }
@@ -73,15 +73,16 @@ public class PlotProtectionHandler implements Listener{
         if (event.isCancelled()) {
             return;
         }
-        if (event.getRemover() instanceof Player && ((Player)event.getRemover()).hasPermission(PermissionManager.getBuildPermission())) {
+        if (event.getRemover() instanceof Player && ((Player) event.getRemover()).hasPermission(PermissionManager.getBuildPermission())) {
             event.setCancelled(false);
         } else {
             Plot p = Plot.inPlot(event.getEntity().getLocation());
-            if(p != null && p.getMunicipal()!=null){
+            if (p != null && p.getMunicipal() != null) {
                 event.setCancelled(true);
             }
         }
     }
+
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
         if (event.isCancelled()) {
@@ -127,19 +128,19 @@ public class PlotProtectionHandler implements Listener{
                         || event.getItem().getType() == Material.LONG_GRASS
                         || event.getItem().getType() == Material.DEAD_BUSH) {
                     restricted = true;
-                    player.sendBlockChange(event.getClickedBlock().getLocation(), Material.STONE, (byte)0);
+                    player.sendBlockChange(event.getClickedBlock().getLocation(), Material.STONE, (byte) 0);
                 }
             }
-            if(event.getItem().getType().getId() == halfSlab.getId()){
+            if (event.getItem().getType().getId() == halfSlab.getId()) {
                 restricted = true;
             }
-            if(event.getItem().getType().equals(Material.WATER_LILY)){
+            if (event.getItem().getType().equals(Material.WATER_LILY)) {
                 event.setCancelled(true);
-                restricted=true;
+                restricted = true;
             }
         }
         if (event.hasBlock() && relativeBlock.getType() == fireMaterial) {
-            player.sendBlockChange(relativeBlock.getLocation(), fireMaterial, (byte)0);
+            player.sendBlockChange(relativeBlock.getLocation(), fireMaterial, (byte) 0);
             event.setCancelled(true);
             restricted = true;
         }
@@ -148,5 +149,5 @@ public class PlotProtectionHandler implements Listener{
         } else {
         }
     }
-    
+
 }

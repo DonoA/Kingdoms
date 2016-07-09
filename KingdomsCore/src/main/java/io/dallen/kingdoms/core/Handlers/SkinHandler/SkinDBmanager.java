@@ -24,5 +24,5 @@ package io.dallen.kingdoms.core.Handlers.SkinHandler;
  * @author donoa_000
  */
 public class SkinDBmanager {
-    
+
 }

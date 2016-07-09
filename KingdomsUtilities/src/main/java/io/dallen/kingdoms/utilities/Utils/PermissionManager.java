@@ -28,17 +28,17 @@ import org.bukkit.permissions.PermissionDefault;
  * @author donoa_000
  */
 public class PermissionManager {
-    
+
     @Getter
     private static final Permission ownerPermission = new Permission("kingdom.owner", PermissionDefault.OP);
-    
+
     @Getter
     private static final Permission staffPermission = new Permission("kingdom.staff", PermissionDefault.OP);
-    
+
     @Getter
     private static final Permission modPermission = new Permission("kingdom.mod", PermissionDefault.OP);
-    
+
     @Getter
     private static final Permission buildPermission = new Permission("kingdom.build", PermissionDefault.OP);
-    
+
 }

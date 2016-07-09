@@ -35,13 +35,12 @@ package io.dallen.kingdoms.core.NPCs;
 //import org.bukkit.craftbukkit.entity.CraftPlayer;
 //import org.bukkit.entity.Player;
 //import org.bukkit.inventory.ItemStack;
-
 /**
  *
  * @author donoa_000
  */
 public class NpcDisguise {
-    
+
 //  public void killCarcass(Player p1){
 //    CraftPlayer p22 = (CraftPlayer)p1;
 //    Packet29DestroyEntity p29 = new Packet29DestroyEntity(p22.getEntityId());

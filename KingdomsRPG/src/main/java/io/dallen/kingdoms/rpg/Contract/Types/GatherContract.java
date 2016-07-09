@@ -45,89 +45,96 @@ import org.bukkit.inventory.ItemStack;
  *
  * @author Donovan Allen
  */
-public class GatherContract implements Contract{
-    
+public class GatherContract implements Contract {
+
     @Getter
     private int ID;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private ContractTarget contractTarget;
-    
+
     @Getter
     private Player contractor;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private Object contractee;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private RewardType rewardType;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private Object reward;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private ItemStack contractItem;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private boolean workerFinished;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private boolean contractorFinished;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private ItemStack[] requiredItems;
-    
+
     @Getter
     private static HashMap<String, GatherContract> openInputs = new HashMap<String, GatherContract>();
-    
-    public GatherContract(Player contractor, ChestGUI.OptionClickEvent e){
+
+    public GatherContract(Player contractor, ChestGUI.OptionClickEvent e) {
         this.contractor = contractor;
         this.ID = ContractHandler.geCurrentID();
-        e.getPlayer().setItemInHand(ItemUtil.setItemNameAndLore(KingdomMaterial.CONTRACT_UNFINISHED.getItemStack(), 
+        e.getPlayer().setItemInHand(ItemUtil.setItemNameAndLore(KingdomMaterial.CONTRACT_UNFINISHED.getItemStack(),
                 e.getName() + " - Unfinished", String.valueOf(ID)));
         this.contractItem = e.getPlayer().getItemInHand();
         ContractHandler.getAllContracts().put(ID, this);
-        
-        
+
     }
-    
+
     @Override
-    public boolean isFinished(){
+    public boolean isFinished() {
         return true;
     }
-    
-    public void selectReward(Player p){
+
+    public void selectReward(Player p) {
         ContractHandler.setReward(this, p);
     }
-    
-    public void selectRequiredItems(Player p){
-        
+
+    public void selectRequiredItems(Player p) {
+
     }
-    
+
     @Override
-    public void interact(PlayerInteractEvent e, boolean finished){
+    public void interact(PlayerInteractEvent e, boolean finished) {
         LogUtil.printDebug("Interact Called, " + finished);
-        if(!finished){
+        if (!finished) {
             selectReward(e.getPlayer());
-        }else{
+        } else {
             Municipality mun = Municipality.inMunicipal(e.getPlayer().getLocation());
             e.getPlayer().sendMessage("added contract to plot");
-            if(mun != null){
+            if (mun != null) {
                 ((TownHall) mun.getCenter()).getContracts().add(this);
             }
             e.getPlayer().setItemInHand(new ItemStack(Material.AIR));
         }
     }
-    
-    public static class GatherContractHandler implements Listener{
-    
+
+    public static class GatherContractHandler implements Listener {
+
         @EventHandler(priority = EventPriority.HIGHEST)
-        public void onInventoryClose(InventoryCloseEvent event){
-            if(openInputs.containsKey(event.getPlayer().getName())){
+        public void onInventoryClose(InventoryCloseEvent event) {
+            if (openInputs.containsKey(event.getPlayer().getName())) {
                 GatherContract contract = openInputs.get(event.getPlayer().getName());
                 contract.setRequiredItems(event.getInventory().getContents());
                 LogUtil.printDebug(Arrays.toString(event.getInventory().getContents()));
-                contract.setContractItem(ItemUtil.setItemNameAndLore(KingdomMaterial.CONTRACT_FILLED.getItemStack(), 
+                contract.setContractItem(ItemUtil.setItemNameAndLore(KingdomMaterial.CONTRACT_FILLED.getItemStack(),
                         contract.getClass().getSimpleName(), String.valueOf(contract.getID())));
                 event.getPlayer().setItemInHand(contract.getContractItem());
                 openInputs.remove(event.getPlayer().getName());

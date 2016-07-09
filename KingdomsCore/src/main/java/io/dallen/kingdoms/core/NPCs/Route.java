@@ -21,10 +21,9 @@ package io.dallen.kingdoms.core.NPCs;
 
 /**
  * Routes of NPCs to follow when the patrol or move around from time to time
- * 
+ *
  * @author donoa_000
  */
 public class Route {
 
-    
 }

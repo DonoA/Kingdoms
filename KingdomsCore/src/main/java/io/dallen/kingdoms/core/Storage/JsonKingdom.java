@@ -32,60 +32,80 @@ import lombok.Setter;
  * @author Donovan Allen
  */
 @NoArgsConstructor
-public class JsonKingdom implements SaveType.NativeType.JsonType{
-    
-    @Getter @Setter
+public class JsonKingdom implements SaveType.NativeType.JsonType {
+
+    @Getter
+    @Setter
     private String Leader;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private int CapitolID;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private String Name;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private ArrayList<JsonEllipse> Base;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private ResourceStats Resources;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private ArrayList<String> Municipals;
-    
+
     @Override
-    public Kingdom toJavaObject(){
+    public Kingdom toJavaObject() {
         throw new UnsupportedOperationException();
     }
-    
+
     @NoArgsConstructor
-    private static class ResourceStats{
-        @Getter @Setter
+    private static class ResourceStats {
+
+        @Getter
+        @Setter
         private int Wealth;
-        @Getter @Setter
+        @Getter
+        @Setter
         private int Grain;
-        @Getter @Setter
+        @Getter
+        @Setter
         private int Sand;
-        @Getter @Setter
+        @Getter
+        @Setter
         private int Wood;
-        @Getter @Setter
+        @Getter
+        @Setter
         private int Ores;
-        @Getter @Setter
+        @Getter
+        @Setter
         private int Stone;
-        @Getter @Setter
+        @Getter
+        @Setter
         private int RefinedWood;
-        @Getter @Setter
+        @Getter
+        @Setter
         private int Brick;
-        @Getter @Setter
+        @Getter
+        @Setter
         private int Metal;
-        @Getter @Setter
+        @Getter
+        @Setter
         private int Corps;
-        @Getter @Setter
+        @Getter
+        @Setter
         private int Glass;
-        
-        @Getter @Setter
+
+        @Getter
+        @Setter
         private int StorageSpace;
-        @Getter @Setter
+        @Getter
+        @Setter
         private int Population;
-        
+
     }
 }

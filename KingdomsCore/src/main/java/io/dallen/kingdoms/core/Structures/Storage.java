@@ -27,12 +27,13 @@ import org.bukkit.event.player.PlayerInteractEvent;
  *
  * @author Donovan Allen
  */
-public interface Storage{
+public interface Storage {
+
     public Vault getStorage();
-    
+
     public boolean interact(PlayerInteractEvent e);
-    
+
     public boolean hasSpace();
-    
+
     public boolean supplyNPC(NPC npc);
 }

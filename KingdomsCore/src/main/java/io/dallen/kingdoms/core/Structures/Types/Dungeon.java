@@ -19,7 +19,6 @@
  */
 package io.dallen.kingdoms.core.Structures.Types;
 
-
 import io.dallen.kingdoms.core.Handlers.BuildMenuHandler;
 import io.dallen.kingdoms.core.Structures.Plot;
 import io.dallen.kingdoms.utilities.Utils.ChestGUI;
@@ -32,51 +31,55 @@ import org.bukkit.inventory.ItemStack;
 
 /**
  * Allows the kingdom to imprison those that deserve it
- * 
+ *
  * @author donoa_000
  */
-public class Dungeon extends Plot{
+public class Dungeon extends Plot {
 
     private int capacity;
-    
+
     private int security;
-    
+
     private int guards;
-    
+
     private int cells;
-    
+
     private int currentInmates;
-    
+
     private int currentGuards;
-    
+
     @Getter
     private ChestGUI EditPlot;
     @Getter
     private ChestGUI BuildMenu;
-    
+
     public Dungeon(Plot p) {
         super(p);
-        EditPlot = new ChestGUI("Dungeon", 2, new MenuHandler()){{
-            setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
-            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
-            setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
-        }};
-        
-        BuildMenu = new ChestGUI("Build Options", 2, new MenuHandler()){{
-            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Other");
-        }};
+        EditPlot = new ChestGUI("Dungeon", 2, new MenuHandler()) {
+            {
+                setOption(1 * 9 + 3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
+                setOption(1 * 9 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
+                setOption(1 * 9 + 5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
+            }
+        };
+
+        BuildMenu = new ChestGUI("Build Options", 2, new MenuHandler()) {
+            {
+                setOption(1 * 9 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Other");
+            }
+        };
     }
-    
+
     @Override
-    public void sendEditMenu(Player p){
+    public void sendEditMenu(Player p) {
         EditPlot.sendMenu(p);
     }
-    
-    public class MenuHandler implements OptionClickEventHandler{
-        
+
+    public class MenuHandler implements OptionClickEventHandler {
+
         @Override
-        public void onOptionClick(OptionClickEvent e){
-            if(e.getMenuName().equals(EditPlot.getName())){
+        public void onOptionClick(OptionClickEvent e) {
+            if (e.getMenuName().equals(EditPlot.getName())) {
                 BuildMenuHandler.chestBuildOptions(e, Dungeon.this);
             }
         }

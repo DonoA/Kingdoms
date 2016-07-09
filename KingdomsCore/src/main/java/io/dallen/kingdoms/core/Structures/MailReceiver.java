@@ -27,39 +27,42 @@ import lombok.Getter;
  * @author Donovan Allen
  */
 public class MailReceiver {
+
     @Getter
     private String address;
-    
+
     @Getter
     private ArrayList<Letter> currentLetters = new ArrayList<Letter>();
-    
-    public static class Letter{
+
+    public static class Letter {
+
         @Getter
         private String message;
-        
+
         @Getter
         private String to;
-        
+
         @Getter
         private String from;
-        
+
         @Getter
         private AttachmentType attachmentType;
-        
+
         @Getter
         private Object attachment;
-        
-        public Letter(String from, String to, String message){
+
+        public Letter(String from, String to, String message) {
             this.from = from;
             this.to = to;
             this.message = message;
         }
-        
-        public void setAttachment(AttachmentType type, Object attachment){
-            
+
+        public void setAttachment(AttachmentType type, Object attachment) {
+
         }
-        
-        public static enum AttachmentType{
+
+        public static enum AttachmentType {
+
             ITEMSTACK, GOLD
         }
     }

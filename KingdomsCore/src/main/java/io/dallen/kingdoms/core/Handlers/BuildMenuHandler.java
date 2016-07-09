@@ -35,53 +35,52 @@ import org.bukkit.inventory.ItemStack;
  * @author Donovan Allen
  */
 public class BuildMenuHandler {
-    
-    public static void chestBuildOptions(ChestGUI.OptionClickEvent e, Structure struc){
+
+    public static void chestBuildOptions(ChestGUI.OptionClickEvent e, Structure struc) {
         ChestGUI buildMenu = null;
-        if(e.getName().equalsIgnoreCase("Build")){
-            if(struc.getMunicipal() != null && 
-                !struc.getMunicipal().getStructures().get(BuildersHut.class).isEmpty()){
+        if (e.getName().equalsIgnoreCase("Build")) {
+            if (struc.getMunicipal() != null
+                    && !struc.getMunicipal().getStructures().get(BuildersHut.class).isEmpty()) {
                 buildMenu.setMenuData(struc);
                 int i = 0;
-                for(File f : new File(KingdomsCore.getPlugin().getDataFolder() + DBmanager.getFileSep() + "prefabs" + DBmanager.getFileSep() + 
-                        struc.getClass().getName() + DBmanager.getFileSep()).listFiles()){
-                    if(i<9){
-                        buildMenu.setOption(0*9+i, new ItemStack(Material.ENCHANTED_BOOK), f.getName());
-                    }else{
+                for (File f : new File(KingdomsCore.getPlugin().getDataFolder() + DBmanager.getFileSep() + "prefabs" + DBmanager.getFileSep()
+                        + struc.getClass().getName() + DBmanager.getFileSep()).listFiles()) {
+                    if (i < 9) {
+                        buildMenu.setOption(0 * 9 + i, new ItemStack(Material.ENCHANTED_BOOK), f.getName());
+                    } else {
                         break;
                     }
                 }
                 e.setNext(buildMenu);
-            }else{
+            } else {
                 e.getPlayer().sendMessage("You have no NPCs to build this!");
             }
-        }else if(e.getName().equalsIgnoreCase("Erase")){
+        } else if (e.getName().equalsIgnoreCase("Erase")) {
             Plot p = (Plot) e.getMenuData();
-            double halfWidth = p.getWidth()/2;
-            double halfLength = p.getLength()/2;
-            for(int x = (int) -halfWidth; x <= Math.ceil(halfWidth)+1; x++){
-                for(int z = (int) -halfLength; z <= Math.ceil(halfLength)+1; z++){
-                    for(int y = 0; y < 50; y++){
-                        if(!p.getCenter().clone().add(x, y, z).getBlock().getType().equals(Material.AIR)){
+            double halfWidth = p.getWidth() / 2;
+            double halfLength = p.getLength() / 2;
+            for (int x = (int) -halfWidth; x <= Math.ceil(halfWidth) + 1; x++) {
+                for (int z = (int) -halfLength; z <= Math.ceil(halfLength) + 1; z++) {
+                    for (int y = 0; y < 50; y++) {
+                        if (!p.getCenter().clone().add(x, y, z).getBlock().getType().equals(Material.AIR)) {
                             p.getCenter().clone().add(x, y, z).getBlock().setType(Material.AIR);
                         }
                     }
                 }
             }
-        }else if(e.getName().equalsIgnoreCase("Demolish")){
+        } else if (e.getName().equalsIgnoreCase("Demolish")) {
             Plot p = (Plot) struc;
-            if(Plot.getAllPlots().contains(p))
+            if (Plot.getAllPlots().contains(p)) {
                 Plot.getAllPlots().remove(p);
-            if(p.getMunicipal() != null){
-                for(ArrayList<Structure> structs : p.getMunicipal().getStructures().values()){
-                    if(structs.contains(p)){
+            }
+            if (p.getMunicipal() != null) {
+                for (ArrayList<Structure> structs : p.getMunicipal().getStructures().values()) {
+                    if (structs.contains(p)) {
                         structs.remove(p);
                     }
                 }
             }
         }
     }
-    
-    
-    
+
 }

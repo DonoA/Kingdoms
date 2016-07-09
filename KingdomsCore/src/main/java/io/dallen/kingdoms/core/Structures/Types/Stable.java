@@ -19,7 +19,6 @@
  */
 package io.dallen.kingdoms.core.Structures.Types;
 
-
 import io.dallen.kingdoms.core.Handlers.BuildMenuHandler;
 import io.dallen.kingdoms.core.Structures.Plot;
 import io.dallen.kingdoms.utilities.Utils.ChestGUI;
@@ -35,65 +34,69 @@ import org.bukkit.inventory.ItemStack;
 
 /**
  * Allows the kingdom to train and hold horses
- * 
+ *
  * @author donoa_000
  */
-public class Stable extends Plot{
-    
+public class Stable extends Plot {
+
     private int horseCapacity;
-    
+
     private int workerCapacity;
-    
+
     private int currentHorses; // may be changed if horses are going to owned personally (which they should be)
-    
+
     private int currentWorkers;
-    
+
     @Getter
     private ChestGUI EditPlot;
     @Getter
     private ChestGUI BuildMenu;
-    
+
     public Stable(Plot p) {
         super(p);
-        EditPlot = new ChestGUI("Stable", 2, new MenuHandler()){{
-            setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
-            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
-            setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
-            setOption(3, new ItemStack(Material.ENCHANTED_BOOK), "Mount Horse");
-            setOption(4, new ItemStack(Material.ENCHANTED_BOOK), "Mount Army Horse");
-            setOption(5, new ItemStack(Material.ENCHANTED_BOOK), "Mount King Horse");
-        }};
-        
-        BuildMenu = new ChestGUI("Build Options", 2, new MenuHandler()){{
-            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Other");
-        }};
+        EditPlot = new ChestGUI("Stable", 2, new MenuHandler()) {
+            {
+                setOption(1 * 9 + 3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
+                setOption(1 * 9 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
+                setOption(1 * 9 + 5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
+                setOption(3, new ItemStack(Material.ENCHANTED_BOOK), "Mount Horse");
+                setOption(4, new ItemStack(Material.ENCHANTED_BOOK), "Mount Army Horse");
+                setOption(5, new ItemStack(Material.ENCHANTED_BOOK), "Mount King Horse");
+            }
+        };
+
+        BuildMenu = new ChestGUI("Build Options", 2, new MenuHandler()) {
+            {
+                setOption(1 * 9 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Other");
+            }
+        };
     }
-    
+
     @Override
-    public void sendEditMenu(Player p){
+    public void sendEditMenu(Player p) {
         EditPlot.sendMenu(p);
     }
-    
-    public class MenuHandler implements OptionClickEventHandler{
-        
+
+    public class MenuHandler implements OptionClickEventHandler {
+
         @Override
-        public void onOptionClick(OptionClickEvent e){
-            if(e.getMenuName().equals(EditPlot.getName())){
-                if(e.getName().contains("Mount")){
+        public void onOptionClick(OptionClickEvent e) {
+            if (e.getMenuName().equals(EditPlot.getName())) {
+                if (e.getName().contains("Mount")) {
                     Horse horse = (Horse) e.getPlayer().getLocation().getWorld().spawnEntity(e.getPlayer().getLocation(), EntityType.HORSE);
                     horse.getInventory().setSaddle(new ItemStack(Material.SADDLE));
-                    if(e.getName().equalsIgnoreCase("Mount Army Horse")){
+                    if (e.getName().equalsIgnoreCase("Mount Army Horse")) {
                         horse.getInventory().setArmor(new ItemStack(Material.IRON_BARDING));
-                    }else if(e.getName().equalsIgnoreCase("Mount King Horse")){
+                    } else if (e.getName().equalsIgnoreCase("Mount King Horse")) {
                         horse.getInventory().setArmor(new ItemStack(Material.DIAMOND_BARDING));
                     }
                     horse.setOwner((AnimalTamer) e.getPlayer());
                     horse.setPassenger(e.getPlayer());
-                }else{
+                } else {
                     BuildMenuHandler.chestBuildOptions(e, Stable.this);
                 }
             }
         }
     }
-    
+
 }

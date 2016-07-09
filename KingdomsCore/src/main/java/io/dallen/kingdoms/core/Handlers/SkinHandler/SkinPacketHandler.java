@@ -54,37 +54,39 @@ import org.apache.commons.io.IOUtils;
  *
  * @author donoa_000
  */
-public class SkinPacketHandler implements Runnable{
-    
+public class SkinPacketHandler implements Runnable {
+
     @Getter
     private PacketAdapter adapter;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private String skin = "Dinnerbone";
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private boolean running = false;
-    
+
     @Getter
     private volatile Collection<WrappedSignedProperty> properties;
 
-    public SkinPacketHandler(){
-        adapter = new PacketAdapter(KingdomsCore.getPlugin(), PacketType.Play.Server.PLAYER_INFO){
+    public SkinPacketHandler() {
+        adapter = new PacketAdapter(KingdomsCore.getPlugin(), PacketType.Play.Server.PLAYER_INFO) {
             @Override
-            public void onPacketSending(PacketEvent event){
-                if(properties == null){
+            public void onPacketSending(PacketEvent event) {
+                if (properties == null) {
                     return;
                 }
-                if(!running){
+                if (!running) {
                     return;
                 }
                 PacketContainer packet = event.getPacket();
                 EnumWrappers.PlayerInfoAction action = packet.getPlayerInfoAction().read(0);
-                if(action != EnumWrappers.PlayerInfoAction.ADD_PLAYER){
+                if (action != EnumWrappers.PlayerInfoAction.ADD_PLAYER) {
                     return;
                 }
                 List<PlayerInfoData> data = packet.getPlayerInfoDataLists().read(0);
-                for(PlayerInfoData pid : data){
+                for (PlayerInfoData pid : data) {
                     WrappedGameProfile profile = pid.getProfile();
                     profile.getProperties().removeAll("textures");
                     profile.getProperties().putAll("textures", properties);
@@ -92,16 +94,16 @@ public class SkinPacketHandler implements Runnable{
             }
         };
     }
-    
+
     @Override
-    public void run(){
+    public void run() {
         WrappedGameProfile profile = WrappedGameProfile.fromOfflinePlayer(Bukkit.getOfflinePlayer(skin));
         Object handle = profile.getHandle();
         Object sessionService = getSessionService();
-        try{
+        try {
             Method method = getFillMethod(sessionService);
             method.invoke(sessionService, handle, true);
-        }catch (InvocationTargetException ex){
+        } catch (InvocationTargetException ex) {
             LogUtil.printErr("Mojang are dicks about requests! Skins won't work");
             return;
         } catch (IllegalAccessException | IllegalArgumentException ex) {
@@ -125,7 +127,7 @@ public class SkinPacketHandler implements Runnable{
         } catch (Exception ex) {
             LogUtil.printErr("Failed to load the skin, player skins won't be affected.");
         }
-        if(properties == null){
+        if (properties == null) {
             LogUtil.printErr("Failed to load the skin, player skins won't be affected.");
         }
 //        try {
@@ -140,25 +142,25 @@ public class SkinPacketHandler implements Runnable{
 //            Logger.getLogger(SkinPacketHandler.class.getName()).log(Level.SEVERE, null, ex);
 //        }
     }
-        
-    private Object getSessionService(){
+
+    private Object getSessionService() {
         Server server = Bukkit.getServer();
-        try{
+        try {
             Object mcServer = server.getClass().getDeclaredMethod("getServer").invoke(server);
-            for (Method m : mcServer.getClass().getMethods()){
-                if (m.getReturnType().getSimpleName().equalsIgnoreCase("MinecraftSessionService")){
+            for (Method m : mcServer.getClass().getMethods()) {
+                if (m.getReturnType().getSimpleName().equalsIgnoreCase("MinecraftSessionService")) {
                     return m.invoke(mcServer);
                 }
             }
-        }catch (Exception ex){
+        } catch (Exception ex) {
             throw new IllegalStateException("An error occurred while trying to get the session service", ex);
         }
         throw new IllegalStateException("No session service found");
     }
 
-    private Method getFillMethod(Object sessionService){
-        for(Method m : sessionService.getClass().getDeclaredMethods()){
-            if(m.getName().equals("fillProfileProperties")){
+    private Method getFillMethod(Object sessionService) {
+        for (Method m : sessionService.getClass().getDeclaredMethods()) {
+            if (m.getName().equals("fillProfileProperties")) {
                 return m;
             }
         }

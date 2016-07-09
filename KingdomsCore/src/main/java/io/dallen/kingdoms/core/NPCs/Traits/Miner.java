@@ -34,30 +34,31 @@ import org.bukkit.inventory.Inventory;
  *
  * @author Donovan Allen
  */
-public class Miner extends Trait{
-    
+public class Miner extends Trait {
+
     @Getter
     private Inventory buildInventory;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private Mine Mine;
-    
+
     private static HashMap<Integer, Location> gettingSupplies = new HashMap<Integer, Location>();
-    
-    public Miner(){
+
+    public Miner() {
         super("Miner");
     }
-    
-    public void getSupplies(Location rtnLoc){
+
+    public void getSupplies(Location rtnLoc) {
         super.npc.getNavigator().setTarget(Mine.getCenter());
         gettingSupplies.put(super.npc.getId(), rtnLoc);
     }
-    
-    public static class navigationEvents implements Listener{
-        
+
+    public static class navigationEvents implements Listener {
+
         @EventHandler
-        public void onNavigationComplete(NavigationCompleteEvent e){
-            if(gettingSupplies.containsKey(e.getNPC().getId())){
+        public void onNavigationComplete(NavigationCompleteEvent e) {
+            if (gettingSupplies.containsKey(e.getNPC().getId())) {
                 e.getNavigator().setTarget(gettingSupplies.get(e.getNPC().getId()));
                 gettingSupplies.remove(e.getNPC().getId());
             }

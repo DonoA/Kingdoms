@@ -26,19 +26,19 @@ import lombok.Getter;
  * @author Donovan Allen
  */
 public abstract class KingdomModual {
-    
+
     @Getter
     private Class<? extends PlayerData> playerData;
-    
+
     @Getter
     private String classPath;
-    
+
     @Getter
     private String storagePath;
-    
+
     @Getter
     private String structurePath;
-    
+
     @Getter
     private boolean hasStructures;
 }

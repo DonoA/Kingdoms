@@ -29,40 +29,42 @@ import org.bukkit.inventory.ItemStack;
  * @author Donovan Allen
  */
 public class MaterialWrapper {
+
     @Getter
     private int StackSize;
-    @Getter @Setter
+    @Getter
+    @Setter
     private Material Material;
     @Getter
     private byte Data;
-    
-    public MaterialWrapper(ItemStack is){
+
+    public MaterialWrapper(ItemStack is) {
         this.StackSize = is.getAmount();
         this.Material = is.getType();
         this.Data = is.getData().getData();
     }
-    
-    public MaterialWrapper(Material mat, int number){
+
+    public MaterialWrapper(Material mat, int number) {
         this.Material = mat;
         this.StackSize = number;
     }
-    
-    public void addToStack(int amount){
+
+    public void addToStack(int amount) {
         StackSize += amount;
     }
-    
-    public void removeFromStack(int amount){
+
+    public void removeFromStack(int amount) {
         StackSize -= amount;
     }
-    
-    public ItemStack asBukkitItem(){
+
+    public ItemStack asBukkitItem() {
         ItemStack is = new ItemStack(Material);
         is.setAmount((StackSize > 64 ? 64 : StackSize));
         is.getData().setData(Data);
         return is;
     }
-    
-    public String toString(){
+
+    public String toString() {
         return Material.name() + ":" + StackSize;
     }
 }

@@ -34,52 +34,57 @@ import org.bukkit.inventory.ItemStack;
  *
  * @author Donovan Allen
  */
-public class General extends Trait{
+public class General extends Trait {
+
     @Setter
     private Municipality municipal;
 
     private NPC master;
 
-    private Runnable newPatrol = new Runnable(){
-        
+    private Runnable newPatrol = new Runnable() {
+
         @Override
         public void run() {
             boolean found = false;
             Location testSpot = null;
-            while(!found){
+            while (!found) {
                 double Radius = 15;
-                double angle = Math.random()*Math.PI*2;
-                double x = Math.cos(angle)*Math.random()*Radius;
-                double z = Math.sin(angle)*Math.random()*Radius;
-                testSpot = new Location(municipal.getCenter().getCenter().getWorld(), municipal.getCenter().getCenter().getX() + x, 
+                double angle = Math.random() * Math.PI * 2;
+                double x = Math.cos(angle) * Math.random() * Radius;
+                double z = Math.sin(angle) * Math.random() * Radius;
+                testSpot = new Location(municipal.getCenter().getCenter().getWorld(), municipal.getCenter().getCenter().getX() + x,
                         municipal.getCenter().getCenter().getY() + 1, municipal.getCenter().getCenter().getZ() + z);
-                for(int y = -30; y <= 30 && !found; y++){
-                    if(testSpot.clone().add(0, y, 0).getBlock().getType().equals(Material.AIR) && 
-                            !testSpot.clone().add(0, y-1, 0).getBlock().getType().equals(Material.AIR)){
+                for (int y = -30; y <= 30 && !found; y++) {
+                    if (testSpot.clone().add(0, y, 0).getBlock().getType().equals(Material.AIR)
+                            && !testSpot.clone().add(0, y - 1, 0).getBlock().getType().equals(Material.AIR)) {
                         testSpot.add(0, y, 0);
                         found = true;
                     }
                 }
             }
             final Location spot = testSpot;
-            Bukkit.getScheduler().runTask(KingdomsCore.getPlugin(), new Runnable(){public void run(){master.getNavigator().setTarget(spot);}});
-            Bukkit.getScheduler().scheduleAsyncDelayedTask(KingdomsCore.getPlugin(), newPatrol, 200 + Math.round(Math.random()*1200));
+            Bukkit.getScheduler().runTask(KingdomsCore.getPlugin(), new Runnable() {
+                public void run() {
+                    master.getNavigator().setTarget(spot);
+                }
+            });
+            Bukkit.getScheduler().scheduleAsyncDelayedTask(KingdomsCore.getPlugin(), newPatrol, 200 + Math.round(Math.random() * 1200));
         }
     };
 
-    public General(){
+    public General() {
         super("General");
     }
 
     @Override
-    public void onAttach(){
-        ((LivingEntity)super.npc.getEntity()).getEquipment().setHelmet(new ItemStack(Material.LEATHER_HELMET));
-        ((LivingEntity)super.npc.getEntity()).getEquipment().setChestplate(new ItemStack(Material.LEATHER_CHESTPLATE));
-        ((LivingEntity)super.npc.getEntity()).getEquipment().setLeggings(new ItemStack(Material.LEATHER_LEGGINGS));
-        ((LivingEntity)super.npc.getEntity()).getEquipment().setBoots(new ItemStack(Material.LEATHER_BOOTS));
-        ((LivingEntity)super.npc.getEntity()).getEquipment().setItemInMainHand(new ItemStack(Material.STICK));
+    public void onAttach() {
+        ((LivingEntity) super.npc.getEntity()).getEquipment().setHelmet(new ItemStack(Material.LEATHER_HELMET));
+        ((LivingEntity) super.npc.getEntity()).getEquipment().setChestplate(new ItemStack(Material.LEATHER_CHESTPLATE));
+        ((LivingEntity) super.npc.getEntity()).getEquipment().setLeggings(new ItemStack(Material.LEATHER_LEGGINGS));
+        ((LivingEntity) super.npc.getEntity()).getEquipment().setBoots(new ItemStack(Material.LEATHER_BOOTS));
+        ((LivingEntity) super.npc.getEntity()).getEquipment().setItemInMainHand(new ItemStack(Material.STICK));
         master = super.npc;
-        Bukkit.getScheduler().scheduleAsyncDelayedTask(KingdomsCore.getPlugin(), newPatrol, Math.round(Math.random()*1200));
+        Bukkit.getScheduler().scheduleAsyncDelayedTask(KingdomsCore.getPlugin(), newPatrol, Math.round(Math.random() * 1200));
     }
 
 }

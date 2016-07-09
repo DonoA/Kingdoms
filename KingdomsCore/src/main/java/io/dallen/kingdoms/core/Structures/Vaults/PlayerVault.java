@@ -34,56 +34,57 @@ import org.bukkit.inventory.ItemStack;
  *
  * @author donoa_000
  */
-public class PlayerVault implements Vault, SaveType.Saveable{
+public class PlayerVault implements Vault, SaveType.Saveable {
+
     @Getter
     private Player Owner;
-    
+
     private Inventory storage;
-    
+
     @Override
-    public boolean SendToPlayer(Player p){
+    public boolean SendToPlayer(Player p) {
         p.openInventory(storage);
         return true;
     }
-    
+
     @Override
-    public boolean CanOpen(Player p){
+    public boolean CanOpen(Player p) {
         return p.equals(Owner);
     }
-    
+
     @Override
-    public double getUniqueSize(){
+    public double getUniqueSize() {
         return storage.getSize();
     }
-    
+
     @Override
-    public int getCapacity(){
+    public int getCapacity() {
         return (int) getUniqueSize();
     }
-    
+
     @Override
-    public int getAmountFull(){
-        return storage.firstEmpty()-1;
+    public int getAmountFull() {
+        return storage.firstEmpty() - 1;
     }
-    
-    public PlayerVault(Player p, int size){
+
+    public PlayerVault(Player p, int size) {
         this.Owner = p;
         this.storage = Bukkit.createInventory(p, size, p.getName() + "'s Vault");
     }
-    
+
     @Override
-    public JsonPlayerVault toJsonObject(){
+    public JsonPlayerVault toJsonObject() {
         JsonPlayerVault jpv = new JsonPlayerVault();
         jpv.setOwner(Owner.getUniqueId());
         ArrayList<JsonItemStack> content = new ArrayList<JsonItemStack>();
-        for(ItemStack is : storage.getContents()){
-            if(is != null){
+        for (ItemStack is : storage.getContents()) {
+            if (is != null) {
                 content.add(new JsonItemStack(is));
-            }else{
+            } else {
                 content.add(null);
             }
         }
-        jpv.setStorage(content.toArray(new JsonItemStack[] {}));
+        jpv.setStorage(content.toArray(new JsonItemStack[]{}));
         return jpv;
     }
 }

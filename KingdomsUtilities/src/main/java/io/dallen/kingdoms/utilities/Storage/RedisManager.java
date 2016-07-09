@@ -28,17 +28,17 @@ import com.lambdaworks.redis.api.sync.RedisCommands;
  * @author donoa_000
  */
 public class RedisManager {
-    
+
     private RedisCommands<String, String> sync;
-    
-    public RedisManager(){
+
+    public RedisManager() {
         RedisClient redisClient = RedisClient.create("redis://52.11.242.231:6379/0"); // test redis server b/c redis server not on windows
         try (StatefulRedisConnection<String, String> connection = redisClient.connect()) {
             RedisCommands<String, String> syncCommands = connection.sync();
         }
         redisClient.shutdown();
     }
-    
+
 //    public PlayerData loadPlayerDat(String username){
 //        if(sync.get(username).equalsIgnoreCase("")){
 //            return new PlayerData();
@@ -50,20 +50,19 @@ public class RedisManager {
 //    public void savePlayerDat(String username, PlayerData pd){
 //        sync.append(username, pd.toString());
 //    }
-    
-    public void saveKingdoms(){
-        
+    public void saveKingdoms() {
+
     }
-    
-    public void loadKingdoms(){
-        
+
+    public void loadKingdoms() {
+
     }
-    
-    public void saveInstanceData(){
-        
+
+    public void saveInstanceData() {
+
     }
-    
-    public void loadInstanceData(){
-        
+
+    public void loadInstanceData() {
+
     }
 }

@@ -40,53 +40,64 @@ import org.bukkit.Bukkit;
  * @author Donovan Allen
  */
 @NoArgsConstructor
-public class JsonStructure implements SaveType.NativeType.JsonType{
-    
-    @Getter @Setter
+public class JsonStructure implements SaveType.NativeType.JsonType {
+
+    @Getter
+    @Setter
     private int Width; // X
-    @Getter @Setter
+    @Getter
+    @Setter
     private int Height; // Y
-    @Getter @Setter
+    @Getter
+    @Setter
     private int Length; // Z
-    @Getter @Setter
+    @Getter
+    @Setter
     private JsonPolygon Base; // Z
-    @Getter @Setter
+    @Getter
+    @Setter
     private JsonLocation Center;
-    @Getter @Setter
+    @Getter
+    @Setter
     private UUID Owner;
-    @Getter @Setter
+    @Getter
+    @Setter
     private int Kingdom;
-    @Getter @Setter
+    @Getter
+    @Setter
     private int Municipal;
 //    @Getter @Setter
 //    private int Rank;
 //    @Getter @Setter
 //    private int maxRank;
-    @Getter @Setter
+    @Getter
+    @Setter
     private int StructureID;
-    @Getter @Setter
+    @Getter
+    @Setter
     private String Type;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private HashMap<String, Object> attr = new HashMap<String, Object>();
-    
+
     @Override
-    public Structure toJavaObject(){
+    public Structure toJavaObject() {
         try {
             Plot p = new Plot();
             p.setLength(Length);
             p.setWidth(Width);
             p.setHeight(Height);
-            if(Base != null){
+            if (Base != null) {
                 p.setBase(Base.toJavaObject());
-            }else{
+            } else {
                 p.setBase(null);
             }
             p.setCenter(Center.toJavaObject());
             p.setOwner(Bukkit.getOfflinePlayer(Owner));
             p.setStructureID(StructureID);
             Class structure = Class.forName(Type);
-            Constructor constructor = structure.getConstructor(new Class[] {Plot.class});
+            Constructor constructor = structure.getConstructor(new Class[]{Plot.class});
             Plot newPlot = (Plot) constructor.newInstance(p);
             return newPlot;
         } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | ClassNotFoundException ex) {
@@ -94,5 +105,5 @@ public class JsonStructure implements SaveType.NativeType.JsonType{
         }
         return null;
     }
-    
+
 }

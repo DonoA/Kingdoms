@@ -62,99 +62,101 @@ import org.bukkit.inventory.ItemStack;
  *
  * @author Donovan Allen
  */
-public class BuildingHandler implements Listener{
-    
+public class BuildingHandler implements Listener {
+
     @Getter
     private static BuildChestOptions BuildChestHandler;
-    
+
     @Getter
     private static BuildHotbarOptions BuildHotbarHandler;
-    
+
     @Getter
     private static HashMap<String, StringInput> openInputs = new HashMap<String, StringInput>();
-    
+
     @Getter
     private static HashMap<String, BuildFrame> openBuilds = new HashMap<String, BuildFrame>();
-    
+
     private static HotbarMenu RotateMenu;
-            
+
     static {
         BuildChestHandler = new BuildChestOptions();
         BuildHotbarHandler = new BuildHotbarOptions();
-        RotateMenu = new HotbarMenu("RotateBuildMenu", BuildHotbarHandler){{
-            setOption(4, KingdomMaterial.START_BUILD.getItemStack(), "Build");
-            setOption(5, KingdomMaterial.ARROW_CLOCKWISE.getItemStack(), "Rotate Clockwise");
-            setOption(3, KingdomMaterial.ARROW_COUNTER_CLOCKWISE.getItemStack(), "Rotate Counter Clockwise");
-            
-            setOption(2, KingdomMaterial.ARROW_RIGHT.getItemStack(), "Shift East");
-            setOption(6, KingdomMaterial.ARROW_LEFT.getItemStack(), "Shift West");
-            
-            setOption(1, KingdomMaterial.ARROW_UP.getItemStack(), "Shift North");
-            setOption(7, KingdomMaterial.ARROW_DOWN.getItemStack(), "Shift South");
-        }};
+        RotateMenu = new HotbarMenu("RotateBuildMenu", BuildHotbarHandler) {
+            {
+                setOption(4, KingdomMaterial.START_BUILD.getItemStack(), "Build");
+                setOption(5, KingdomMaterial.ARROW_CLOCKWISE.getItemStack(), "Rotate Clockwise");
+                setOption(3, KingdomMaterial.ARROW_COUNTER_CLOCKWISE.getItemStack(), "Rotate Counter Clockwise");
+
+                setOption(2, KingdomMaterial.ARROW_RIGHT.getItemStack(), "Shift East");
+                setOption(6, KingdomMaterial.ARROW_LEFT.getItemStack(), "Shift West");
+
+                setOption(1, KingdomMaterial.ARROW_UP.getItemStack(), "Shift North");
+                setOption(7, KingdomMaterial.ARROW_DOWN.getItemStack(), "Shift South");
+            }
+        };
     }
-    
-    public static class BuildChestOptions{
-    
-        public void onOptionClick(ChestGUI.OptionClickEvent e, Structure struct){
+
+    public static class BuildChestOptions {
+
+        public void onOptionClick(ChestGUI.OptionClickEvent e, Structure struct) {
             Structure s = struct;
-            if(e.getName().equalsIgnoreCase("Other")){
+            if (e.getName().equalsIgnoreCase("Other")) {
                 e.getPlayer().sendMessage("To start a building contruction type the schematic name and tick in chat");
                 Plot p = (Plot) s;
                 StringInput in = new StringInput("buildConst", p, (BuildContract) e.getMenuData());
                 openInputs.put(e.getPlayer().getName(), in);
-            }else{
+            } else {
                 try {
                     String[] args = new String[]{e.getName().replace(".schematic", ""), "5"};
                     Blueprint building = NBTmanager.loadData(new File(KingdomsCore.getPlugin().getDataFolder() + DBmanager.getFileSep() + "prefabs" + DBmanager.getFileSep() + args[0] + ".schematic"));
                     Plot p = (Plot) openInputs.get(e.getPlayer().getName()).getData();
-                    if(p.getLength() + 1 <= building.getLen() || p.getWidth() + 1 <= building.getWid()){
+                    if (p.getLength() + 1 <= building.getLen() || p.getWidth() + 1 <= building.getWid()) {
                         building.Rotate(90);
                     }
-                    if(p.getLength() + 1 <= building.getLen() || p.getWidth() + 1 <= building.getWid()){
+                    if (p.getLength() + 1 <= building.getLen() || p.getWidth() + 1 <= building.getWid()) {
                         e.getPlayer().sendMessage("That structure is too large for this plot");
                         return;
                     }
                     List<ItemStack> mats = new ArrayList<ItemStack>();
-                    for(Blueprint.BlueBlock[][] bbarr1 : building.getBlocks()){
-                        for(Blueprint.BlueBlock[] bbarr2: bbarr1){
-                            for(Blueprint.BlueBlock bb : bbarr2){
+                    for (Blueprint.BlueBlock[][] bbarr1 : building.getBlocks()) {
+                        for (Blueprint.BlueBlock[] bbarr2 : bbarr1) {
+                            for (Blueprint.BlueBlock bb : bbarr2) {
                                 ItemStack is = new ItemStack(bb.getBlock());
                                 is.getData().setData(bb.getData());
                                 boolean found = false;
-                                for(ItemStack mat : mats){
-                                    if(mat.isSimilar(is)){
-                                        mat.setAmount(mat.getAmount()+1);
+                                for (ItemStack mat : mats) {
+                                    if (mat.isSimilar(is)) {
+                                        mat.setAmount(mat.getAmount() + 1);
                                         found = true;
                                     }
                                 }
-                                if(!found){
+                                if (!found) {
                                     mats.add(is);
                                 }
                             }
                         }
                     }
                     List<Structure> locs = new ArrayList<Structure>();
-                    for(ItemStack is : mats){
+                    for (ItemStack is : mats) {
                         locs = p.getMunicipal().materialLocation(is);
-                        for(Structure st : locs){
-                            is.setAmount(is.getAmount()-((BuildingVault)((Storage) st).getStorage()).getMaterial(is).getAmount());
+                        for (Structure st : locs) {
+                            is.setAmount(is.getAmount() - ((BuildingVault) ((Storage) st).getStorage()).getMaterial(is).getAmount());
                         }
-                        if(is.getAmount() > 0){
+                        if (is.getAmount() > 0) {
                             e.getPlayer().sendMessage("Your municipality does not have the materials to build this structure");
                             return;
                         }
                     }
-                    Location startCorner = new Location(p.getCenter().getWorld(), p.getCenter().getX() - building.getWid()/2  + (building.getWid() % 2 == 0 ? 1 : 0),
-                            p.getCenter().getBlockY(), p.getCenter().getBlockZ() - building.getLen()/2 + (building.getLen() % 2 == 0 ? 1 : 0));
-                    for(int y = 0; y < building.getHigh(); y++){
-                        for(int z = 0; z < building.getLen(); z++){
-                            for(int x = 0; x < building.getWid(); x++){
-                                Location nLoc = startCorner.clone().add(x,y,z);
+                    Location startCorner = new Location(p.getCenter().getWorld(), p.getCenter().getX() - building.getWid() / 2 + (building.getWid() % 2 == 0 ? 1 : 0),
+                            p.getCenter().getBlockY(), p.getCenter().getBlockZ() - building.getLen() / 2 + (building.getLen() % 2 == 0 ? 1 : 0));
+                    for (int y = 0; y < building.getHigh(); y++) {
+                        for (int z = 0; z < building.getLen(); z++) {
+                            for (int x = 0; x < building.getWid(); x++) {
+                                Location nLoc = startCorner.clone().add(x, y, z);
                                 Material covMat = building.getBlocks()[x][y][z].getBlock();
-                                if(covMat.name().contains("STAIRS")){
+                                if (covMat.name().contains("STAIRS")) {
                                     covMat = Material.QUARTZ_STAIRS;
-                                }else if(!covMat.equals(Material.AIR)){
+                                } else if (!covMat.equals(Material.AIR)) {
                                     covMat = Material.QUARTZ_BLOCK;
                                 }
                                 nLoc.getBlock().setType(covMat, false);
@@ -173,162 +175,161 @@ public class BuildingHandler implements Listener{
             }
         }
     }
-    
-    public static class BuildHotbarOptions implements HotbarMenu.OptionClickEventHandler{
-        
+
+    public static class BuildHotbarOptions implements HotbarMenu.OptionClickEventHandler {
+
         @Override
-        public void onOptionClick(HotbarMenu.OptionClickEvent e){
+        public void onOptionClick(HotbarMenu.OptionClickEvent e) {
 //            LogUtil.printDebug("Hotbar event called");
-            if(e.getName().equalsIgnoreCase("Build")){
+            if (e.getName().equalsIgnoreCase("Build")) {
                 Blueprint building = openBuilds.get(e.getPlayer().getName()).getBlueprint();
                 Plot p = openBuilds.get(e.getPlayer().getName()).getPlot();
                 BuildersHut BuildHut = (BuildersHut) p.getMunicipal().getStructures().get(BuildersHut.class).get(0);
                 Point offSet = building.getOffSet();
-                Location startCorner = new Location(p.getCenter().getWorld(), (p.getCenter().getX() + offSet.x) - building.getWid()/2  + (building.getWid() % 2 == 0 ? 1 : 0),
-                        p.getCenter().getBlockY(), (p.getCenter().getBlockZ() + offSet.y) - building.getLen()/2 + (building.getLen() % 2 == 0 ? 1 : 0));
+                Location startCorner = new Location(p.getCenter().getWorld(), (p.getCenter().getX() + offSet.x) - building.getWid() / 2 + (building.getWid() % 2 == 0 ? 1 : 0),
+                        p.getCenter().getBlockY(), (p.getCenter().getBlockZ() + offSet.y) - building.getLen() / 2 + (building.getLen() % 2 == 0 ? 1 : 0));
                 building.build(startCorner, Blueprint.buildType.CLEAR);
                 List<ItemStack> mats = new ArrayList<ItemStack>();
-                for(BlueBlock[][] bbarr1 : building.getBlocks()){
-                    for(BlueBlock[] bbarr2: bbarr1){
-                        for(BlueBlock bb : bbarr2){
+                for (BlueBlock[][] bbarr1 : building.getBlocks()) {
+                    for (BlueBlock[] bbarr2 : bbarr1) {
+                        for (BlueBlock bb : bbarr2) {
                             ItemStack is = new ItemStack(bb.getBlock());
                             is.getData().setData(bb.getData());
                             boolean found = false;
-                            for(ItemStack mat : mats){
-                                if(mat.isSimilar(is)){
-                                    mat.setAmount(mat.getAmount()+1);
+                            for (ItemStack mat : mats) {
+                                if (mat.isSimilar(is)) {
+                                    mat.setAmount(mat.getAmount() + 1);
                                     found = true;
                                 }
                             }
-                            if(!found){
+                            if (!found) {
                                 mats.add(is);
                             }
                         }
                     }
                 }
                 List<Structure> locs = new ArrayList<Structure>();
-                for(ItemStack is : mats){
+                for (ItemStack is : mats) {
                     locs = p.getMunicipal().materialLocation(is);
-                    for(Structure s : locs){
-                        is.setAmount(((BuildingVault)((Storage) s).getStorage()).removeItem(is));
+                    for (Structure s : locs) {
+                        is.setAmount(((BuildingVault) ((Storage) s).getStorage()).removeItem(is));
                     }
-                    if(is.getAmount() > 0){
+                    if (is.getAmount() > 0) {
                         e.getPlayer().sendMessage("Your municipality does not have the materials to build this structure");
                         return;
                     }
                 }
                 openBuilds.get(e.getPlayer().getName()).getContract().finishSelectBuilding(building);
                 openBuilds.remove(e.getPlayer().getName());
-            }else if(e.getName().equalsIgnoreCase("Rotate Clockwise")){
+            } else if (e.getName().equalsIgnoreCase("Rotate Clockwise")) {
                 e.setClose(false);
                 Blueprint building = openBuilds.get(e.getPlayer().getName()).getBlueprint();
                 Plot p = openBuilds.get(e.getPlayer().getName()).getPlot();
                 Point offSet = building.getOffSet();
-                Location startCorner = new Location(p.getCenter().getWorld(), (p.getCenter().getX() + offSet.x) - building.getWid()/2  + (building.getWid() % 2 == 0 ? 1 : 0),
-                        p.getCenter().getBlockY(), (p.getCenter().getBlockZ() + offSet.y) - building.getLen()/2 + (building.getLen() % 2 == 0 ? 1 : 0));
+                Location startCorner = new Location(p.getCenter().getWorld(), (p.getCenter().getX() + offSet.x) - building.getWid() / 2 + (building.getWid() % 2 == 0 ? 1 : 0),
+                        p.getCenter().getBlockY(), (p.getCenter().getBlockZ() + offSet.y) - building.getLen() / 2 + (building.getLen() % 2 == 0 ? 1 : 0));
                 building.build(startCorner, Blueprint.buildType.CLEAR);
                 building.Rotate(90);
-                if(p.getLength() + 1 <= building.getLen() || p.getWidth() + 1  <= building.getWid()){
+                if (p.getLength() + 1 <= building.getLen() || p.getWidth() + 1 <= building.getWid()) {
                     building.Rotate(90);
                 }
-                startCorner = new Location(p.getCenter().getWorld(), (p.getCenter().getX() + offSet.x) - building.getWid()/2  + (building.getWid() % 2 == 0 ? 1 : 0),
-                        p.getCenter().getBlockY(), (p.getCenter().getBlockZ() + offSet.y) - building.getLen()/2 + (building.getLen() % 2 == 0 ? 1 : 0));
+                startCorner = new Location(p.getCenter().getWorld(), (p.getCenter().getX() + offSet.x) - building.getWid() / 2 + (building.getWid() % 2 == 0 ? 1 : 0),
+                        p.getCenter().getBlockY(), (p.getCenter().getBlockZ() + offSet.y) - building.getLen() / 2 + (building.getLen() % 2 == 0 ? 1 : 0));
                 building.build(startCorner, Blueprint.buildType.FRAME);
-            }else if(e.getName().equalsIgnoreCase("Rotate Counter Clockwise")){
+            } else if (e.getName().equalsIgnoreCase("Rotate Counter Clockwise")) {
                 e.setClose(false);
                 Blueprint building = openBuilds.get(e.getPlayer().getName()).getBlueprint();
                 Plot p = openBuilds.get(e.getPlayer().getName()).getPlot();
                 Point offSet = building.getOffSet();
-                Location startCorner = new Location(p.getCenter().getWorld(), (p.getCenter().getX() + offSet.x) - building.getWid()/2  + (building.getWid() % 2 == 0 ? 1 : 0),
-                        p.getCenter().getBlockY(), (p.getCenter().getBlockZ() + offSet.y) - building.getLen()/2 + (building.getLen() % 2 == 0 ? 1 : 0));
+                Location startCorner = new Location(p.getCenter().getWorld(), (p.getCenter().getX() + offSet.x) - building.getWid() / 2 + (building.getWid() % 2 == 0 ? 1 : 0),
+                        p.getCenter().getBlockY(), (p.getCenter().getBlockZ() + offSet.y) - building.getLen() / 2 + (building.getLen() % 2 == 0 ? 1 : 0));
                 building.build(startCorner, Blueprint.buildType.CLEAR);
                 building.Rotate(-90);
-                if(p.getLength() + 1 <= building.getLen() || p.getWidth() + 1 <= building.getWid()){
+                if (p.getLength() + 1 <= building.getLen() || p.getWidth() + 1 <= building.getWid()) {
                     building.Rotate(-90);
                 }
-                startCorner = new Location(p.getCenter().getWorld(), (p.getCenter().getX() + offSet.x) - building.getWid()/2  + (building.getWid() % 2 == 0 ? 1 : 0),
-                        p.getCenter().getBlockY(), (p.getCenter().getBlockZ() + offSet.y) - building.getLen()/2 + (building.getLen() % 2 == 0 ? 1 : 0));
+                startCorner = new Location(p.getCenter().getWorld(), (p.getCenter().getX() + offSet.x) - building.getWid() / 2 + (building.getWid() % 2 == 0 ? 1 : 0),
+                        p.getCenter().getBlockY(), (p.getCenter().getBlockZ() + offSet.y) - building.getLen() / 2 + (building.getLen() % 2 == 0 ? 1 : 0));
                 building.build(startCorner, Blueprint.buildType.FRAME);
-            }else if(e.getName().equalsIgnoreCase("Shift East")){
+            } else if (e.getName().equalsIgnoreCase("Shift East")) {
                 e.setClose(false);
                 Blueprint building = openBuilds.get(e.getPlayer().getName()).getBlueprint();
                 Plot p = openBuilds.get(e.getPlayer().getName()).getPlot();
                 Point offSet = building.getOffSet();
-                Location startCorner = new Location(p.getCenter().getWorld(), (p.getCenter().getX() + offSet.x) - building.getWid()/2  + (building.getWid() % 2 == 0 ? 1 : 0),
-                        p.getCenter().getBlockY(), (p.getCenter().getBlockZ() + offSet.y) - building.getLen()/2 + (building.getLen() % 2 == 0 ? 1 : 0));
-                if((p.getWidth() - building.getWid())/2 + 1 < offSet.x + 1){
+                Location startCorner = new Location(p.getCenter().getWorld(), (p.getCenter().getX() + offSet.x) - building.getWid() / 2 + (building.getWid() % 2 == 0 ? 1 : 0),
+                        p.getCenter().getBlockY(), (p.getCenter().getBlockZ() + offSet.y) - building.getLen() / 2 + (building.getLen() % 2 == 0 ? 1 : 0));
+                if ((p.getWidth() - building.getWid()) / 2 + 1 < offSet.x + 1) {
                     return;
                 }
                 building.build(startCorner, Blueprint.buildType.CLEAR);
                 offSet.x += 1;
                 // ROTATE
-                startCorner = new Location(p.getCenter().getWorld(), (p.getCenter().getX() + offSet.x) - building.getWid()/2  + (building.getWid() % 2 == 0 ? 1 : 0),
-                        p.getCenter().getBlockY(), (p.getCenter().getBlockZ() + offSet.y) - building.getLen()/2 + (building.getLen() % 2 == 0 ? 1 : 0));
+                startCorner = new Location(p.getCenter().getWorld(), (p.getCenter().getX() + offSet.x) - building.getWid() / 2 + (building.getWid() % 2 == 0 ? 1 : 0),
+                        p.getCenter().getBlockY(), (p.getCenter().getBlockZ() + offSet.y) - building.getLen() / 2 + (building.getLen() % 2 == 0 ? 1 : 0));
                 building.build(startCorner, Blueprint.buildType.FRAME);
-            }else if(e.getName().equalsIgnoreCase("Shift West")){
+            } else if (e.getName().equalsIgnoreCase("Shift West")) {
                 e.setClose(false);
                 Blueprint building = openBuilds.get(e.getPlayer().getName()).getBlueprint();
                 Plot p = openBuilds.get(e.getPlayer().getName()).getPlot();
                 Point offSet = building.getOffSet();
-                Location startCorner = new Location(p.getCenter().getWorld(), (p.getCenter().getX() + offSet.x) - building.getWid()/2  + (building.getWid() % 2 == 0 ? 1 : 0),
-                        p.getCenter().getBlockY(), (p.getCenter().getBlockZ() + offSet.y) - building.getLen()/2 + (building.getLen() % 2 == 0 ? 1 : 0));
-                if((p.getWidth() - building.getWid())/2 < Math.abs(offSet.x - 1)){
+                Location startCorner = new Location(p.getCenter().getWorld(), (p.getCenter().getX() + offSet.x) - building.getWid() / 2 + (building.getWid() % 2 == 0 ? 1 : 0),
+                        p.getCenter().getBlockY(), (p.getCenter().getBlockZ() + offSet.y) - building.getLen() / 2 + (building.getLen() % 2 == 0 ? 1 : 0));
+                if ((p.getWidth() - building.getWid()) / 2 < Math.abs(offSet.x - 1)) {
                     return;
                 }
                 building.build(startCorner, Blueprint.buildType.CLEAR);
                 offSet.x -= 1;
                 // ROTATE
-                startCorner = new Location(p.getCenter().getWorld(), (p.getCenter().getX() + offSet.x) - building.getWid()/2  + (building.getWid() % 2 == 0 ? 1 : 0),
-                        p.getCenter().getBlockY(), (p.getCenter().getBlockZ() + offSet.y) - building.getLen()/2 + (building.getLen() % 2 == 0 ? 1 : 0));
+                startCorner = new Location(p.getCenter().getWorld(), (p.getCenter().getX() + offSet.x) - building.getWid() / 2 + (building.getWid() % 2 == 0 ? 1 : 0),
+                        p.getCenter().getBlockY(), (p.getCenter().getBlockZ() + offSet.y) - building.getLen() / 2 + (building.getLen() % 2 == 0 ? 1 : 0));
                 building.build(startCorner, Blueprint.buildType.FRAME);
-            }else if(e.getName().equalsIgnoreCase("Shift North")){
+            } else if (e.getName().equalsIgnoreCase("Shift North")) {
                 e.setClose(false);
                 Blueprint building = openBuilds.get(e.getPlayer().getName()).getBlueprint();
                 Plot p = openBuilds.get(e.getPlayer().getName()).getPlot();
                 Point offSet = building.getOffSet();
-                Location startCorner = new Location(p.getCenter().getWorld(), (p.getCenter().getX() + offSet.x) - building.getWid()/2  + (building.getWid() % 2 == 0 ? 1 : 0),
-                        p.getCenter().getBlockY(), (p.getCenter().getBlockZ() + offSet.y) - building.getLen()/2 + (building.getLen() % 2 == 0 ? 1 : 0));
-                if((p.getLength() - building.getLen())/2 < Math.abs(offSet.y - 1)){
+                Location startCorner = new Location(p.getCenter().getWorld(), (p.getCenter().getX() + offSet.x) - building.getWid() / 2 + (building.getWid() % 2 == 0 ? 1 : 0),
+                        p.getCenter().getBlockY(), (p.getCenter().getBlockZ() + offSet.y) - building.getLen() / 2 + (building.getLen() % 2 == 0 ? 1 : 0));
+                if ((p.getLength() - building.getLen()) / 2 < Math.abs(offSet.y - 1)) {
                     return;
                 }
                 building.build(startCorner, Blueprint.buildType.CLEAR);
                 offSet.y -= 1;
                 // ROTATE
-                startCorner = new Location(p.getCenter().getWorld(), (p.getCenter().getX() + offSet.x) - building.getWid()/2  + (building.getWid() % 2 == 0 ? 1 : 0),
-                        p.getCenter().getBlockY(), (p.getCenter().getBlockZ() + offSet.y) - building.getLen()/2 + (building.getLen() % 2 == 0 ? 1 : 0));
+                startCorner = new Location(p.getCenter().getWorld(), (p.getCenter().getX() + offSet.x) - building.getWid() / 2 + (building.getWid() % 2 == 0 ? 1 : 0),
+                        p.getCenter().getBlockY(), (p.getCenter().getBlockZ() + offSet.y) - building.getLen() / 2 + (building.getLen() % 2 == 0 ? 1 : 0));
                 building.build(startCorner, Blueprint.buildType.FRAME);
-            }else if(e.getName().equalsIgnoreCase("Shift South")){
+            } else if (e.getName().equalsIgnoreCase("Shift South")) {
                 e.setClose(false);
                 Blueprint building = openBuilds.get(e.getPlayer().getName()).getBlueprint();
                 Plot p = openBuilds.get(e.getPlayer().getName()).getPlot();
                 Point offSet = building.getOffSet();
-                Location startCorner = new Location(p.getCenter().getWorld(), (p.getCenter().getX() + offSet.x) - building.getWid()/2  + (building.getWid() % 2 == 0 ? 1 : 0),
-                        p.getCenter().getBlockY(), (p.getCenter().getBlockZ() + offSet.y) - building.getLen()/2 + (building.getLen() % 2 == 0 ? 1 : 0));
-                if((p.getLength() - building.getLen())/2 + 1 < offSet.y + 1){
+                Location startCorner = new Location(p.getCenter().getWorld(), (p.getCenter().getX() + offSet.x) - building.getWid() / 2 + (building.getWid() % 2 == 0 ? 1 : 0),
+                        p.getCenter().getBlockY(), (p.getCenter().getBlockZ() + offSet.y) - building.getLen() / 2 + (building.getLen() % 2 == 0 ? 1 : 0));
+                if ((p.getLength() - building.getLen()) / 2 + 1 < offSet.y + 1) {
                     return;
                 }
                 building.build(startCorner, Blueprint.buildType.CLEAR);
                 offSet.y += 1;
                 // ROTATE
-                startCorner = new Location(p.getCenter().getWorld(), (p.getCenter().getX() + offSet.x) - building.getWid()/2  + (building.getWid() % 2 == 0 ? 1 : 0),
-                        p.getCenter().getBlockY(), (p.getCenter().getBlockZ() + offSet.y) - building.getLen()/2 + (building.getLen() % 2 == 0 ? 1 : 0));
+                startCorner = new Location(p.getCenter().getWorld(), (p.getCenter().getX() + offSet.x) - building.getWid() / 2 + (building.getWid() % 2 == 0 ? 1 : 0),
+                        p.getCenter().getBlockY(), (p.getCenter().getBlockZ() + offSet.y) - building.getLen() / 2 + (building.getLen() % 2 == 0 ? 1 : 0));
                 building.build(startCorner, Blueprint.buildType.FRAME);
-            }else if(e.getName().equalsIgnoreCase("Cancel")){
+            } else if (e.getName().equalsIgnoreCase("Cancel")) {
                 Blueprint building = openBuilds.get(e.getPlayer().getName()).getBlueprint();
                 Plot p = openBuilds.get(e.getPlayer().getName()).getPlot();
                 Point offSet = building.getOffSet();
-                Location startCorner = new Location(p.getCenter().getWorld(), (p.getCenter().getX() + offSet.x) - building.getWid()/2  + (building.getWid() % 2 == 0 ? 1 : 0),
-                        p.getCenter().getBlockY(), (p.getCenter().getBlockZ() + offSet.y) - building.getLen()/2 + (building.getLen() % 2 == 0 ? 1 : 0));
+                Location startCorner = new Location(p.getCenter().getWorld(), (p.getCenter().getX() + offSet.x) - building.getWid() / 2 + (building.getWid() % 2 == 0 ? 1 : 0),
+                        p.getCenter().getBlockY(), (p.getCenter().getBlockZ() + offSet.y) - building.getLen() / 2 + (building.getLen() % 2 == 0 ? 1 : 0));
                 building.build(startCorner, Blueprint.buildType.CLEAR);
                 openBuilds.remove(e.getPlayer().getName());
             }
         }
     }
-    
-    
-    
+
     @AllArgsConstructor
-    public static class StringInput{
+    public static class StringInput {
+
         @Getter
         private String name;
         @Getter
@@ -336,9 +337,10 @@ public class BuildingHandler implements Listener{
         @Getter
         private BuildContract contract;
     }
-    
+
     @AllArgsConstructor
-    public static class BuildFrame{
+    public static class BuildFrame {
+
         @Getter
         private Blueprint Blueprint;
         @Getter
@@ -348,73 +350,73 @@ public class BuildingHandler implements Listener{
         @Getter
         private BuildContract contract;
     }
-    
+
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onChat(AsyncPlayerChatEvent ev){
-        if(openInputs.containsKey(ev.getPlayer().getName())){
+    public void onChat(AsyncPlayerChatEvent ev) {
+        if (openInputs.containsKey(ev.getPlayer().getName())) {
             ev.setCancelled(true);
-            if(openInputs.get(ev.getPlayer().getName()).getName().equalsIgnoreCase("buildConst")){
-                if(!new File(KingdomsCore.getPlugin().getDataFolder() + DBmanager.getFileSep() + "multiblock" + DBmanager.getFileSep() + ev.getMessage().split(" ")[0] + ".schematic").exists()){
+            if (openInputs.get(ev.getPlayer().getName()).getName().equalsIgnoreCase("buildConst")) {
+                if (!new File(KingdomsCore.getPlugin().getDataFolder() + DBmanager.getFileSep() + "multiblock" + DBmanager.getFileSep() + ev.getMessage().split(" ")[0] + ".schematic").exists()) {
                     ev.getPlayer().sendMessage("That schemaic cannot be found!");
                     ev.getPlayer().sendMessage("Exiting build setup!");
                     openInputs.remove(ev.getPlayer().getName());
                     return;
                 }
                 final AsyncPlayerChatEvent e = ev;
-                Bukkit.getScheduler().runTask(KingdomsCore.getPlugin(), new Runnable(){
+                Bukkit.getScheduler().runTask(KingdomsCore.getPlugin(), new Runnable() {
                     @Override
-                    public void run(){
+                    public void run() {
                         try {
                             String[] args = e.getMessage().split(" ");
                             Blueprint building = NBTmanager.loadData(new File(KingdomsCore.getPlugin().getDataFolder() + DBmanager.getFileSep() + "prefabs" + DBmanager.getFileSep() + args[0] + ".schematic"));
                             Plot p = (Plot) openInputs.get(e.getPlayer().getName()).getData();
-                            if(p.getLength() + 1 <= building.getLen() || p.getWidth() + 1 <= building.getWid()){
+                            if (p.getLength() + 1 <= building.getLen() || p.getWidth() + 1 <= building.getWid()) {
                                 building.Rotate(90);
                             }
-                            if(p.getLength() + 1 <= building.getLen() || p.getWidth() + 1 <= building.getWid()){
+                            if (p.getLength() + 1 <= building.getLen() || p.getWidth() + 1 <= building.getWid()) {
                                 e.getPlayer().sendMessage("That structure is too large for this plot");
                                 return;
                             }
                             List<ItemStack> mats = new ArrayList<ItemStack>();
-                            for(BlueBlock[][] bbarr1 : building.getBlocks()){
-                                for(BlueBlock[] bbarr2: bbarr1){
-                                    for(BlueBlock bb : bbarr2){
+                            for (BlueBlock[][] bbarr1 : building.getBlocks()) {
+                                for (BlueBlock[] bbarr2 : bbarr1) {
+                                    for (BlueBlock bb : bbarr2) {
                                         ItemStack is = new ItemStack(bb.getBlock());
                                         is.getData().setData(bb.getData());
                                         boolean found = false;
-                                        for(ItemStack mat : mats){
-                                            if(mat.isSimilar(is)){
-                                                mat.setAmount(mat.getAmount()+1);
+                                        for (ItemStack mat : mats) {
+                                            if (mat.isSimilar(is)) {
+                                                mat.setAmount(mat.getAmount() + 1);
                                                 found = true;
                                             }
                                         }
-                                        if(!found){
+                                        if (!found) {
                                             mats.add(is);
                                         }
                                     }
                                 }
                             }
                             List<Structure> locs = new ArrayList<Structure>();
-                            for(ItemStack is : mats){
+                            for (ItemStack is : mats) {
                                 locs = p.getMunicipal().materialLocation(is);
-                                for(Structure s : locs){
-                                    is.setAmount(is.getAmount()-((BuildingVault)((Storage) s).getStorage()).getMaterial(is).getAmount());
+                                for (Structure s : locs) {
+                                    is.setAmount(is.getAmount() - ((BuildingVault) ((Storage) s).getStorage()).getMaterial(is).getAmount());
                                 }
-                                if(is.getAmount() > 0){
+                                if (is.getAmount() > 0) {
                                     e.getPlayer().sendMessage("Your municipality does not have the materials to build this structure");
                                     return;
                                 }
                             }
-                            Location startCorner = new Location(p.getCenter().getWorld(), p.getCenter().getX() - building.getWid()/2  + (building.getWid() % 2 == 0 ? 1 : 0),
-                                    p.getCenter().getBlockY(), p.getCenter().getBlockZ() - building.getLen()/2 + (building.getLen() % 2 == 0 ? 1 : 0));
-                            for(int y = 0; y < building.getHigh(); y++){
-                                for(int z = 0; z < building.getLen(); z++){
-                                    for(int x = 0; x < building.getWid(); x++){
-                                        Location nLoc = startCorner.clone().add(x,y,z);
+                            Location startCorner = new Location(p.getCenter().getWorld(), p.getCenter().getX() - building.getWid() / 2 + (building.getWid() % 2 == 0 ? 1 : 0),
+                                    p.getCenter().getBlockY(), p.getCenter().getBlockZ() - building.getLen() / 2 + (building.getLen() % 2 == 0 ? 1 : 0));
+                            for (int y = 0; y < building.getHigh(); y++) {
+                                for (int z = 0; z < building.getLen(); z++) {
+                                    for (int x = 0; x < building.getWid(); x++) {
+                                        Location nLoc = startCorner.clone().add(x, y, z);
                                         Material covMat = building.getBlocks()[x][y][z].getBlock();
-                                        if(covMat.name().contains("STAIRS")){
+                                        if (covMat.name().contains("STAIRS")) {
                                             covMat = Material.QUARTZ_STAIRS;
-                                        }else if(!covMat.equals(Material.AIR)){
+                                        } else if (!covMat.equals(Material.AIR)) {
                                             covMat = Material.QUARTZ_BLOCK;
                                         }
                                         nLoc.getBlock().setType(covMat, false);
@@ -422,7 +424,7 @@ public class BuildingHandler implements Listener{
                                     }
                                 }
                             }
-                            
+
                             RotateMenu.sendMenu(e.getPlayer());
                             BuildFrame frame = new BuildFrame(building, p, Integer.parseInt(args[1]), openInputs.get(e.getPlayer().getName()).getContract());
                             openBuilds.put(e.getPlayer().getName(), frame);
@@ -430,37 +432,37 @@ public class BuildingHandler implements Listener{
                         } catch (IOException | DataFormatException ex) {
                             Logger.getLogger(MultiBlockHandler.class.getName()).log(Level.SEVERE, null, ex);
                         }
-                    } 
+                    }
                 });
             }
         }
     }
-    
-    public static class BuildTask implements Runnable{
-        
+
+    public static class BuildTask implements Runnable {
+
         private ArrayList<BlueBlock> blocks = new ArrayList<BlueBlock>();
-        
+
         private ArrayList<Location> blockLocations = new ArrayList<Location>();
-        
+
         private Location startCorner;
-        
+
         private BuildersHut BuildHut;
-        
+
         private NPC Builder;
-        
+
         private boolean running = true;
-        
+
         private int step = 0;
-        
-        public BuildTask(Blueprint building, Location start, int speed, BuildersHut BuildHut){
+
+        public BuildTask(Blueprint building, Location start, int speed, BuildersHut BuildHut) {
             LogUtil.printDebug(LocationUtil.asPoint(BuildHut.getCenter()));
             Builder = KingdomsCore.getNPCs().spawnBuilder("BingRazer", BuildHut.getCenter());
             Builder.getNavigator().setTarget(start);
-            for(int y = 0; y < building.getHigh(); y++){
-                for(int z = 0; z < building.getLen(); z++){
-                    for(int x = 0; x < building.getWid(); x++){
-                        if(!building.getBlocks()[x][y][z].getBlock().equals(Material.AIR)){
-                            blockLocations.add(start.clone().add(x,y,z));
+            for (int y = 0; y < building.getHigh(); y++) {
+                for (int z = 0; z < building.getLen(); z++) {
+                    for (int x = 0; x < building.getWid(); x++) {
+                        if (!building.getBlocks()[x][y][z].getBlock().equals(Material.AIR)) {
+                            blockLocations.add(start.clone().add(x, y, z));
                             blocks.add(building.getBlocks()[x][y][z]);
                         }
                     }
@@ -470,24 +472,26 @@ public class BuildingHandler implements Listener{
             this.BuildHut = BuildHut;
             Bukkit.getScheduler().scheduleSyncRepeatingTask(KingdomsCore.getPlugin(), this, speed, speed);
         }
-        
+
         @Override
-        public void run(){
-            if(!Builder.getNavigator().isNavigating()){
-                if(running){
-                    if(step < blocks.size()){
+        public void run() {
+            if (!Builder.getNavigator().isNavigating()) {
+                if (running) {
+                    if (step < blocks.size()) {
                         Builder.teleport(blockLocations.get(step).clone().add(0, 1, 0), PlayerTeleportEvent.TeleportCause.PLUGIN);
                         blockLocations.get(step).getBlock().setType(blocks.get(step).getBlock(), false);
                         blockLocations.get(step).getBlock().setData(blocks.get(step).getData(), false);
                         step++;
-                    }else{
-                        if(Builder.isSpawned())
+                    } else {
+                        if (Builder.isSpawned()) {
                             Builder.getNavigator().setTarget(BuildHut.getCenter());
+                        }
                         running = false;
                     }
-                }else{
-                    if(Builder.isSpawned())
+                } else {
+                    if (Builder.isSpawned()) {
                         Builder.despawn();
+                    }
                 }
             }
         }

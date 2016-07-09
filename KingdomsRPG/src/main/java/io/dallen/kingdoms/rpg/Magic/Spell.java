@@ -24,5 +24,5 @@ package io.dallen.Kingdoms.RPG.Magic;
  * @author Donovan Allen
  */
 public class Spell {
-    
+
 }

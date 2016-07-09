@@ -32,13 +32,14 @@ import lombok.Setter;
  * @author Donovan Allen
  */
 @NoArgsConstructor
-public class JsonWallSystem implements SaveType.NativeType.JsonType{
+public class JsonWallSystem implements SaveType.NativeType.JsonType {
 
-    @Getter @Setter
+    @Getter
+    @Setter
     private HashMap<String, ArrayList<Integer>> Parts = new HashMap<String, ArrayList<Integer>>();
-    
+
     @Override
-    public WallSystem toJavaObject(){
+    public WallSystem toJavaObject() {
         throw new UnsupportedOperationException();
     }
 }

@@ -39,84 +39,85 @@ import org.bukkit.inventory.ItemStack;
  * @author Donovan Allen
  */
 public class Trade {
-    
+
     private static HashMap<String, Trade> openTrades = new HashMap<String, Trade>();
-    
+
     private static HashMap<String, Long> cooldown = new HashMap<String, Long>();
-    
+
     private ArrayList<ItemStack> Items1 = new ArrayList<ItemStack>();
     private ArrayList<ItemStack> Items2 = new ArrayList<ItemStack>();
-    
+
     private TradeChestGUI gui;
-    
-    public Trade(ItemStack[] Items1, ItemStack[] Items2){
+
+    public Trade(ItemStack[] Items1, ItemStack[] Items2) {
         this.Items1 = new ArrayList<ItemStack>(Arrays.asList(Items1));
         this.Items2 = new ArrayList<ItemStack>(Arrays.asList(Items2));
     }
-    
-    public boolean completeTrade(){
+
+    public boolean completeTrade() {
         throw new UnsupportedOperationException();
 //        return true;
     }
-    
+
     public static class TradeChestGUI {
-        
+
         private boolean confirm1 = false;
         private boolean confirm2 = false;
-        
+
         private ArrayList<Player> viewers = new ArrayList<Player>();
-        
+
         private String title;
-        
+
         private Trade trade;
-        
-        public TradeChestGUI(String title, Trade trade){
+
+        public TradeChestGUI(String title, Trade trade) {
             this.title = title;
             this.trade = trade;
         }
-                
-        public void sendToPlayer(Player...p){
-            Inventory view = Bukkit.createInventory(null, 9*3, title);
-            for(int i = 0; i <= 3; i++){
-                view.setItem(9*i + 4, KingdomMaterial.TRADE_DIVIDER.getItemStack());
+
+        public void sendToPlayer(Player... p) {
+            Inventory view = Bukkit.createInventory(null, 9 * 3, title);
+            for (int i = 0; i <= 3; i++) {
+                view.setItem(9 * i + 4, KingdomMaterial.TRADE_DIVIDER.getItemStack());
             }
-            view.setItem(9*3 + 3, KingdomMaterial.TRADE_CONFIRM.getItemStack());
-            view.setItem(9*3 + 5, KingdomMaterial.TRADE_CONFIRM.getItemStack());
-            for(Player plr : p){
+            view.setItem(9 * 3 + 3, KingdomMaterial.TRADE_CONFIRM.getItemStack());
+            view.setItem(9 * 3 + 5, KingdomMaterial.TRADE_CONFIRM.getItemStack());
+            for (Player plr : p) {
                 plr.openInventory(view);
                 viewers.add(plr);
                 openTrades.put(plr.getName(), trade);
             }
         }
-        
-        public void updateForPlayers(){
-            
+
+        public void updateForPlayers() {
+
         }
-        
+
         public static class TradeChestHandler implements Listener {
-            
+
             @EventHandler(priority = EventPriority.HIGHEST)
-            public void onInventoryClick(InventoryClickEvent event){
-                if((!cooldown.containsKey(event.getWhoClicked().getName())) || 
-                    (cooldown.containsKey(event.getWhoClicked().getName()) && cooldown.get(event.getWhoClicked().getName()) < System.currentTimeMillis() - 100)){
+            public void onInventoryClick(InventoryClickEvent event) {
+                if ((!cooldown.containsKey(event.getWhoClicked().getName()))
+                        || (cooldown.containsKey(event.getWhoClicked().getName()) && cooldown.get(event.getWhoClicked().getName()) < System.currentTimeMillis() - 100)) {
                     cooldown.put(event.getWhoClicked().getName(), System.currentTimeMillis());
-                    if(!openTrades.containsKey(event.getWhoClicked().getName()))
+                    if (!openTrades.containsKey(event.getWhoClicked().getName())) {
                         return;
+                    }
                     Trade trade = openTrades.get(event.getWhoClicked().getName());
-                    if(event.getInventory().getTitle().equals(trade.gui.title)){
-                        if(event.getRawSlot() % 9 < 4){
-                            if(event.getRawSlot() == 9*3 + 3){
+                    if (event.getInventory().getTitle().equals(trade.gui.title)) {
+                        if (event.getRawSlot() % 9 < 4) {
+                            if (event.getRawSlot() == 9 * 3 + 3) {
                                 //toggle confirm for this player
-                            }else{
+                            } else {
                                 trade.gui.updateForPlayers();
                             }
-                        }else{
+                        } else {
                             event.setCancelled(true);
                         }
                     }
                 }
             }
-            
+
         }
     }
 }

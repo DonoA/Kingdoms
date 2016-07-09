@@ -37,13 +37,14 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
  *
  * @author donoa_000
  */
-public class ChatHandler implements Listener, CommandExecutor{
-    
-    @Getter @Setter//      player, chat mode
+public class ChatHandler implements Listener, CommandExecutor {
+
+    @Getter
+    @Setter//      player, chat mode
     private static HashMap<Player, Integer> PlayerChatModes = new HashMap<Player, Integer>();
-    
+
     @EventHandler
-    public void onChat(AsyncPlayerChatEvent e){
+    public void onChat(AsyncPlayerChatEvent e) {
         PlayerData pd = PlayerData.getData(e.getPlayer());
 //        if(pd.getMuted() == null){
 //            e.setFormat(ChatColor.WHITE + "[%c]" + PlayerData.getPlayerDat().get(e.getPlayer()).getTitle() + "%s" + ChatColor.WHITE + ": %s");
@@ -81,13 +82,13 @@ public class ChatHandler implements Listener, CommandExecutor{
 //            e.setCancelled(true);
 //        }
     }
-    
+
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String lbl, String[] args){
-        if(sender instanceof Player){
+    public boolean onCommand(CommandSender sender, Command cmd, String lbl, String[] args) {
+        if (sender instanceof Player) {
             Player p = (Player) sender;
-            if(args.length >= 1){
-                switch(args[0]){
+            if (args.length >= 1) {
+                switch (args[0]) {
                     case "global":
                         PlayerChatModes.put(p, 0);
                         break;
@@ -107,14 +108,14 @@ public class ChatHandler implements Listener, CommandExecutor{
                         PlayerChatModes.put(p, 2);
                         break;
                 }
-            }else{
-                if(PlayerChatModes.get(p) == 2){
+            } else {
+                if (PlayerChatModes.get(p) == 2) {
                     PlayerChatModes.put(p, 0);
-                }else{
-                    PlayerChatModes.put(p, PlayerChatModes.get(p)+1);
+                } else {
+                    PlayerChatModes.put(p, PlayerChatModes.get(p) + 1);
                 }
             }
-            switch(PlayerChatModes.get(p)){
+            switch (PlayerChatModes.get(p)) {
                 case 0:
                     p.sendMessage("[ChatHandler] Switched to global chat");
                     break;
@@ -123,13 +124,13 @@ public class ChatHandler implements Listener, CommandExecutor{
                     break;
                 case 2:
                     p.sendMessage("[ChatHandler] Switched to party chat");
-                    if(PlayerData.getPlayerDat().get(p).getCurrParty() == null){
+                    if (PlayerData.getPlayerDat().get(p).getCurrParty() == null) {
                         p.sendMessage("[ChatHandler] Your party is currently empty!");
                     }
                     break;
             }
             return true;
-        }else{
+        } else {
             sender.sendMessage(ChatColor.RED + "[ChatHandler] Console chat modes is not allowed!");
             return true;
         }

@@ -1,6 +1,5 @@
 package io.dallen.kingdoms.utilities.Utils;
 
-
 import io.dallen.kingdoms.utilities.KingdomsUtilities;
 import org.bukkit.Material;
 import org.bukkit.material.MaterialData;
@@ -13,6 +12,7 @@ import java.util.ArrayList;
  * Created by Icy on 6/30/16.
  */
 public class SetPostUtil {
+
     public void setPost(Player playah, String[] args) {
         //get the block a player is looking at
         BlockIterator iterator = new BlockIterator(playah, 5);
@@ -23,7 +23,7 @@ public class SetPostUtil {
 
         //If the player is looking at a chest, see if they have a name in the args
         if (selectBlock.getType() == Material.CHEST) {
-            if(args.length < 1){
+            if (args.length < 1) {
                 playah.sendMessage("§cGive a name for the post office!");
             } else {
                 //take the name in the args and make it one string
@@ -32,9 +32,9 @@ public class SetPostUtil {
                 String word = args[0];
                 while (wordLength > wordIter && args.length > 1) {
                     word = word.concat(" " + args[wordIter]);
-                    wordIter ++;
+                    wordIter++;
                 }
-                if(word.contains(".")) {
+                if (word.contains(".")) {
                     playah.sendMessage("§cYou can't put \".\" in the name!");
                 } else {
                     //put the xyz of the chest in the config

@@ -32,16 +32,19 @@ import lombok.Setter;
  * @author Donovan Allen
  */
 @NoArgsConstructor
-public class JsonPlayerVault implements SaveType.NativeType.JsonType{
-    @Getter @Setter
+public class JsonPlayerVault implements SaveType.NativeType.JsonType {
+
+    @Getter
+    @Setter
     private UUID owner;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private JsonItemStack[] storage;
-    
+
     @Override
-    public PlayerVault toJavaObject(){
+    public PlayerVault toJavaObject() {
         throw new UnsupportedOperationException();
     }
-    
+
 }

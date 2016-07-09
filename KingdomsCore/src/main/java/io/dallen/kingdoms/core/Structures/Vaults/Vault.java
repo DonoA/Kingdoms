@@ -26,17 +26,17 @@ import org.bukkit.entity.Player;
  * @author donoa_000
  */
 public interface Vault {
-    
+
     public boolean SendToPlayer(Player p);
-    
+
     public boolean CanOpen(Player p);
-    
+
     public double getUniqueSize();
-    
+
     public int getCapacity();
-    
+
     public int getAmountFull();
-    
+
     public Object getOwner();
-    
+
 }

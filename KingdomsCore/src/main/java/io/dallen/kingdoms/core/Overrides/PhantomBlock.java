@@ -43,41 +43,41 @@ import org.bukkit.event.block.BlockPlaceEvent;
  *
  * @author Donovan Allen
  */
-public class PhantomBlock{
-    
+public class PhantomBlock {
+
     private static HashMap<Location, PhantomBlock> openBlocks = new HashMap<Location, PhantomBlock>();
-    
+
     private Location bLoc;
-    
+
     private BlueBlock block;
-    
+
     private ArrayList<Player> viewers = new ArrayList<Player>();
-    
+
     /**
      * do not add players that do not have this chunk rendered, there may be unexpected results
      */
-    public PhantomBlock(BlueBlock b, Location l, Player...p){
+    public PhantomBlock(BlueBlock b, Location l, Player... p) {
         this.bLoc = l;
         this.block = b;
         this.viewers.addAll(Arrays.asList(p));
         openBlocks.put(l, this);
         sendToPlayers();
     }
-    
-    public void sendToPlayers(){
+
+    public void sendToPlayers() {
         PacketContainer updatePacket = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.BLOCK_CHANGE, false);
         updatePacket.getBlockPositionModifier().write(0, BlockPosition.getConverter().getSpecific(bLoc));
         updatePacket.getBlockData().write(0, WrappedBlockData.createData(block.getBlock(), block.getData()));
         try {
-            for(Player p : viewers){
+            for (Player p : viewers) {
                 KingdomsCore.getProtocolManager().sendServerPacket(p, updatePacket);
             }
         } catch (InvocationTargetException ex) {
             Logger.getLogger(PhantomBlock.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    public void removeViewer(Player p){
+
+    public void removeViewer(Player p) {
         viewers.remove(p);
         PacketContainer updatePacket = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.BLOCK_CHANGE, false);
         updatePacket.getBlockPositionModifier().write(0, BlockPosition.getConverter().getSpecific(bLoc));
@@ -87,29 +87,28 @@ public class PhantomBlock{
         } catch (InvocationTargetException ex) {
             Logger.getLogger(PhantomBlock.class.getName()).log(Level.SEVERE, null, ex);
         }
-        if(viewers.isEmpty()){
+        if (viewers.isEmpty()) {
             openBlocks.remove(bLoc);
         }
     }
-    
-    
-    public static class UpdateHandler  implements Listener {
-        
+
+    public static class UpdateHandler implements Listener {
+
         @EventHandler
-        public void onBlockPlace(BlockPlaceEvent e){
-            if(openBlocks.containsKey(e.getBlock().getLocation())){
+        public void onBlockPlace(BlockPlaceEvent e) {
+            if (openBlocks.containsKey(e.getBlock().getLocation())) {
                 e.setCancelled(true);
                 openBlocks.get(e.getBlock().getLocation()).sendToPlayers();
             }
         }
 
         @EventHandler
-        public void onBlockBreak(BlockBreakEvent e){
-            if(openBlocks.containsKey(e.getBlock().getLocation())){
+        public void onBlockBreak(BlockBreakEvent e) {
+            if (openBlocks.containsKey(e.getBlock().getLocation())) {
                 e.setCancelled(true);
                 openBlocks.get(e.getBlock().getLocation()).sendToPlayers();
             }
         }
     }
-    
+
 }

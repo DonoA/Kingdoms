@@ -17,7 +17,6 @@
  * 
  * 
  */
-
 package io.dallen.kingdoms.utilities.Storage.JsonClasses;
 
 import io.dallen.kingdoms.utilities.Storage.SaveType;
@@ -39,22 +38,31 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
  * @author Donovan Allen
  */
 @NoArgsConstructor
-public class JsonItemStack implements SaveType.NativeType{
-    @Getter @Setter
+public class JsonItemStack implements SaveType.NativeType {
+
+    @Getter
+    @Setter
     private String material;
-    @Getter @Setter
+    @Getter
+    @Setter
     private int amount;
-    @Getter @Setter
+    @Getter
+    @Setter
     private String displayName;
-    @Getter @Setter
+    @Getter
+    @Setter
     private short durability;
-    @Getter @Setter
+    @Getter
+    @Setter
     private List<String> lore;
-    @Getter @Setter
+    @Getter
+    @Setter
     private JsonBookMeta bookMeta;
-    @Getter @Setter
+    @Getter
+    @Setter
     private JsonLeatherArmorMeta armorMeta;
-    @Getter @Setter
+    @Getter
+    @Setter
     private JsonEnchantmentMeta enchantmentMeta;
 
     public JsonItemStack(ItemStack i) {
@@ -84,10 +92,11 @@ public class JsonItemStack implements SaveType.NativeType{
             }
         }
     }
-    
+
     /**
      * Get a bukkit copy of this object
-     * @return  A bukkit ItemStack object of this object
+     *
+     * @return A bukkit ItemStack object of this object
      */
     public ItemStack toJavaObject() {
         ItemStack out = new ItemStack(Material.valueOf(material));

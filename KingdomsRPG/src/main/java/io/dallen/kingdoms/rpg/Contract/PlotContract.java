@@ -26,8 +26,8 @@ import io.dallen.kingdoms.core.Structures.Plot;
  *
  * @author Donovan Allen
  */
-public interface PlotContract extends Contract{
-    
+public interface PlotContract extends Contract {
+
     public Plot getPlot();
-    
+
 }

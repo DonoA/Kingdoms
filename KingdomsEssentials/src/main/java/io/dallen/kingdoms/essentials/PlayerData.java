@@ -27,9 +27,10 @@ import lombok.Setter;
  *
  * @author Donovan Allen
  */
-public class PlayerData extends io.dallen.kingdoms.core.PlayerData{
-    
-    @Getter @Setter
+public class PlayerData extends io.dallen.kingdoms.core.PlayerData {
+
+    @Getter
+    @Setter
     private MuteClass muted;
-    
+
 }

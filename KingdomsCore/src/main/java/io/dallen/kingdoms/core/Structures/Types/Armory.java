@@ -42,10 +42,10 @@ import org.bukkit.inventory.ItemStack;
 
 /**
  * Allows the kingdom to store weapons and armor for its subjects
- * 
+ *
  * @author donoa_000
  */
-public class Armory extends Plot implements Storage{
+public class Armory extends Plot implements Storage {
 
     @Getter
     private int maxCapacity;
@@ -53,53 +53,59 @@ public class Armory extends Plot implements Storage{
     private int currentCapacity;
     @Getter
     private int amountFull;
-    
+
     @Getter
     private int readySpeed;
-    
+
     @Getter
     private WeaponStats stats;
-    
-    @Getter @Setter @SaveData
+
+    @Getter
+    @Setter
+    @SaveData
     private BuildingVault Storage;
-    
+
     @Getter
     private ChestGUI EditPlot;
-    
+
     @Getter
     private ChestGUI BuildMenu;
-    
+
     public Armory(Plot p) {
         super(p);
-        Storage = new BuildingVault(18,18*64, this);
-        EditPlot = new ChestGUI("Armory", 2, new MenuHandler()){{
-            setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
-            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
-            setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
-        }};
-        
-        BuildMenu = new ChestGUI("Build Options", 2, new MenuHandler()){{
-            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Other");
-        }};
+        Storage = new BuildingVault(18, 18 * 64, this);
+        EditPlot = new ChestGUI("Armory", 2, new MenuHandler()) {
+            {
+                setOption(1 * 9 + 3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
+                setOption(1 * 9 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
+                setOption(1 * 9 + 5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
+            }
+        };
+
+        BuildMenu = new ChestGUI("Build Options", 2, new MenuHandler()) {
+            {
+                setOption(1 * 9 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Other");
+            }
+        };
         Storage.setFilter(BuildingVault.ListType.WHITELIST, "_HELMET", "_CHESTPLATE", "_LEGGINGS", "_BOOTS");
     }
-    
+
     @Override
-    public void sendEditMenu(Player p){
+    public void sendEditMenu(Player p) {
         EditPlot.sendMenu(p);
     }
-    
+
     @Override
-    public boolean interact(PlayerInteractEvent e){
-        if(e.getClickedBlock().getType().equals(Material.CHEST)){
-            if(e.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
-                if(Storage.CanOpen(e.getPlayer())){
+    public boolean interact(PlayerInteractEvent e) {
+        if (e.getClickedBlock().getType().equals(Material.CHEST)) {
+            if (e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+                if (Storage.CanOpen(e.getPlayer())) {
                     Storage.SendToPlayer(e.getPlayer());
                     return true;
                 }
-            }else if(e.getAction().equals(Action.LEFT_CLICK_BLOCK)){
-                if(e.hasItem() && this.hasSpace()){
-                    if(Storage.addItem(e.getItem())){
+            } else if (e.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
+                if (e.hasItem() && this.hasSpace()) {
+                    if (Storage.addItem(e.getItem())) {
                         e.getPlayer().getInventory().setItemInMainHand(new ItemStack(Material.AIR));
                         return true;
                     }
@@ -108,41 +114,42 @@ public class Armory extends Plot implements Storage{
         }
         return false;
     }
-    
-    public class MenuHandler implements OptionClickEventHandler{
-        
+
+    public class MenuHandler implements OptionClickEventHandler {
+
         @Override
-        public void onOptionClick(OptionClickEvent e){
-            if(e.getMenuName().equals(EditPlot.getName())){
+        public void onOptionClick(OptionClickEvent e) {
+            if (e.getMenuName().equals(EditPlot.getName())) {
                 BuildMenuHandler.chestBuildOptions(e, Armory.this);
             }
         }
     }
-    
+
     @Override
-    public boolean hasSpace(){
+    public boolean hasSpace() {
         return Storage.getFullSlots() < Storage.getUniqueSize() && Storage.getAmountFull() < Storage.getCapacity();
     }
-    
+
     @Override
-    public boolean supplyNPC(NPC npc){
-        
+    public boolean supplyNPC(NPC npc) {
+
         return true;
     }
 
     @NoArgsConstructor
-    public static class WeaponStats{
+    public static class WeaponStats {
+
         @Getter
         private int infantry;
-        
+
         @Getter
         private int calvalry;
-        
+
         @Getter
         private int archers;
-        
+
         @Getter
         private int other;
     }
-    
+
 }

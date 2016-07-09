@@ -17,7 +17,6 @@
  * 
  * 
  */
-
 package io.dallen.kingdoms.utilities.Storage.JsonClasses;
 
 import io.dallen.kingdoms.utilities.Storage.SaveType;
@@ -32,18 +31,25 @@ import org.bukkit.Location;
  * @author Donovan Allen
  */
 @NoArgsConstructor
-public class JsonLocation implements SaveType.NativeType{
-    @Getter @Setter
+public class JsonLocation implements SaveType.NativeType {
+
+    @Getter
+    @Setter
     private double x;
-    @Getter @Setter
+    @Getter
+    @Setter
     private double y;
-    @Getter @Setter
+    @Getter
+    @Setter
     private double z;
-    @Getter @Setter
+    @Getter
+    @Setter
     private float yaw;
-    @Getter @Setter
+    @Getter
+    @Setter
     private float pitch;
-    @Getter @Setter
+    @Getter
+    @Setter
     private String world;
 
     public JsonLocation(Location loc) {
@@ -54,13 +60,14 @@ public class JsonLocation implements SaveType.NativeType{
         this.pitch = loc.getPitch();
         this.world = loc.getWorld().getName();
     }
-    
+
     /**
      * Get a bukkit copy of this object
-     * @return  A bukkit Location object of this object
+     *
+     * @return A bukkit Location object of this object
      */
     @Override
-    public Location toJavaObject(){
+    public Location toJavaObject() {
         return new Location(Bukkit.getWorld(world), x, y, z, yaw, pitch);
     }
 }

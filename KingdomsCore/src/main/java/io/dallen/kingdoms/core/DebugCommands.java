@@ -39,68 +39,68 @@ import org.bukkit.Location;
  *
  * @author Donovan Allen
  */
-public class DebugCommands implements CommandExecutor{
-    
+public class DebugCommands implements CommandExecutor {
+
     private PluginUpdateThread update;
-    
-    public DebugCommands(File build){
-        if(KingdomsCore.getPlugin().getConfig().getBoolean("debug.autoupdate")){
+
+    public DebugCommands(File build) {
+        if (KingdomsCore.getPlugin().getConfig().getBoolean("debug.autoupdate")) {
             update = new PluginUpdateThread(build);
             update.start();
         }
     }
-    
+
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
-        if(cmd.getName().equalsIgnoreCase("setskins")){
-            if(args[0].equalsIgnoreCase("default")){
+    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+        if (cmd.getName().equalsIgnoreCase("setskins")) {
+            if (args[0].equalsIgnoreCase("default")) {
                 KingdomsCore.getSkinHandler().setRunning(false);
-            }else{
+            } else {
                 KingdomsCore.getSkinHandler().setRunning(true);
                 KingdomsCore.getSkinHandler().setSkin(args[0]);
                 Bukkit.getScheduler().runTaskAsynchronously(KingdomsCore.getPlugin(), KingdomsCore.getSkinHandler());
             }
-        }else if(cmd.getName().equalsIgnoreCase("cleannpcs")){
+        } else if (cmd.getName().equalsIgnoreCase("cleannpcs")) {
             KingdomsCore.getNPCs().getNPCReg().deregisterAll();
-        }else if(cmd.getName().equalsIgnoreCase("decayall")){
-            if(!ChangeTracker.getChanges().isEmpty()){
-                for(Map.Entry<Location, ChangeTracker.SaveBlock> e : ChangeTracker.getChanges().entrySet()){
+        } else if (cmd.getName().equalsIgnoreCase("decayall")) {
+            if (!ChangeTracker.getChanges().isEmpty()) {
+                for (Map.Entry<Location, ChangeTracker.SaveBlock> e : ChangeTracker.getChanges().entrySet()) {
                     ChangeTracker.getForDecay().add(e.getKey());
                 }
             }
-        }else if(cmd.getName().equalsIgnoreCase("save-kingdoms")){
+        } else if (cmd.getName().equalsIgnoreCase("save-kingdoms")) {
             DataLoadHelper.SaveKingdomData();
         }
         return true;
     }
-    
-    public static class PluginUpdateThread extends Thread{
-        
+
+    public static class PluginUpdateThread extends Thread {
+
         private final File buildFolder;
-        
+
         private final File buildTests;
-        
+
         private final File buildFile;
-             
-        public PluginUpdateThread(File build){
+
+        public PluginUpdateThread(File build) {
             this.buildFolder = build;
             this.buildFile = new File(build.getAbsolutePath() + DBmanager.getFileSep() + "Kingdoms-1.0-SNAPSHOT.jar");
             this.buildTests = new File(build.getAbsolutePath() + DBmanager.getFileSep() + "test-classes");
         }
-        
+
         @Override
-        public void run(){
-            while(true){
-               if(buildFile.exists() && buildTests.exists() && buildTests.isDirectory()){
-                   try {
-                       Thread.sleep(100);
-                   } catch (InterruptedException ex) {
-                       Logger.getLogger(DebugCommands.class.getName()).log(Level.SEVERE, null, ex);
-                   }
-                   Bukkit.shutdown();
-               }
+        public void run() {
+            while (true) {
+                if (buildFile.exists() && buildTests.exists() && buildTests.isDirectory()) {
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(DebugCommands.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Bukkit.shutdown();
+                }
             }
         }
-        
+
     }
 }

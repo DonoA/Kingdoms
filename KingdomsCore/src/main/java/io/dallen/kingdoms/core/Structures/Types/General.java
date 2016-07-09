@@ -19,7 +19,6 @@
  */
 package io.dallen.kingdoms.core.Structures.Types;
 
-
 import io.dallen.kingdoms.core.Handlers.BuildMenuHandler;
 import io.dallen.kingdoms.core.Structures.Plot;
 import io.dallen.kingdoms.utilities.Utils.ChestGUI;
@@ -33,38 +32,42 @@ import org.bukkit.inventory.ItemStack;
  * @author Donovan Allen
  */
 public class General extends Plot {
-    
+
     @Getter
     private ChestGUI EditPlot;
     @Getter
     private ChestGUI BuildMenu;
-    
+
     public General(Plot p) {
         super(p);
-        EditPlot = new ChestGUI("Marketplace", 2, new MenuHandler()){{
-            setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
-            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
-            setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
-        }};
-        
-        BuildMenu = new ChestGUI("Build Options", 2, new MenuHandler()){{
-            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Other");
-        }};
+        EditPlot = new ChestGUI("Marketplace", 2, new MenuHandler()) {
+            {
+                setOption(1 * 9 + 3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
+                setOption(1 * 9 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
+                setOption(1 * 9 + 5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
+            }
+        };
+
+        BuildMenu = new ChestGUI("Build Options", 2, new MenuHandler()) {
+            {
+                setOption(1 * 9 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Other");
+            }
+        };
     }
-    
+
     @Override
-    public void sendEditMenu(Player p){
+    public void sendEditMenu(Player p) {
         EditPlot.sendMenu(p);
     }
-    
-    public class MenuHandler implements ChestGUI.OptionClickEventHandler{
-        
+
+    public class MenuHandler implements ChestGUI.OptionClickEventHandler {
+
         @Override
-        public void onOptionClick(ChestGUI.OptionClickEvent e){
-            if(e.getMenuName().equals(EditPlot.getName())){
+        public void onOptionClick(ChestGUI.OptionClickEvent e) {
+            if (e.getMenuName().equals(EditPlot.getName())) {
                 BuildMenuHandler.chestBuildOptions(e, General.this);
             }
         }
     }
-    
+
 }

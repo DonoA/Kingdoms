@@ -29,7 +29,8 @@ import org.bukkit.inventory.ItemStack;
  *
  * @author Donovan Allen
  */
-public class KingdomTrade extends Trade{
+public class KingdomTrade extends Trade {
+
     private ArrayList<KingdomTrade> allActiveKingdomTrades = new ArrayList<KingdomTrade>();
     private ArrayList<ItemStack> Items1 = new ArrayList<ItemStack>();
     private ArrayList<ItemStack> Items2 = new ArrayList<ItemStack>();
@@ -38,18 +39,18 @@ public class KingdomTrade extends Trade{
     private Date expires;
     private int interval;
     private boolean active;
-    
-    public KingdomTrade(ItemStack[] Items1, ItemStack[] Items2, Kingdom kingdom1, Kingdom kingdom2){
+
+    public KingdomTrade(ItemStack[] Items1, ItemStack[] Items2, Kingdom kingdom1, Kingdom kingdom2) {
         super(Items1, Items2);
         this.kingdom1 = kingdom1;
         this.kingdom2 = kingdom2;
         this.active = false;
     }
-    
-    public boolean completeTrade(){
+
+    public boolean completeTrade() {
         //Check if Items can be moved and move said items if they can
         //also check if the trade has expired
         return true;
     }
-    
+
 }

@@ -24,5 +24,5 @@ package io.dallen.Kingdoms.RPG.Skills;
  * @author Donovan Allen
  */
 public class Skill {
-    
+
 }

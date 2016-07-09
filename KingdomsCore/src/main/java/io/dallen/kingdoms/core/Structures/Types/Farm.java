@@ -19,7 +19,6 @@
  */
 package io.dallen.kingdoms.core.Structures.Types;
 
-
 import io.dallen.kingdoms.core.Handlers.BuildMenuHandler;
 import io.dallen.kingdoms.core.Structures.Plot;
 import io.dallen.kingdoms.core.Structures.Storage;
@@ -39,58 +38,67 @@ import org.bukkit.inventory.ItemStack;
 
 /**
  * Allows the kingdom to create and maintain crops
- * 
+ *
  * @author donoa_000
  */
-public class Farm extends Plot implements Storage{
+public class Farm extends Plot implements Storage {
 
-    @Getter @Setter @SaveData
+    @Getter
+    @Setter
+    @SaveData
     private boolean growing = false;
-    
-    @Getter @Setter @SaveData
+
+    @Getter
+    @Setter
+    @SaveData
     private BuildingVault Storage;
-    
+
     @Getter
     private ChestGUI EditPlot;
     @Getter
     private ChestGUI BuildMenu;
-    
+
     public Farm(Plot p) {
         super(p);
         Storage = new BuildingVault(18, 18 * 100, this);
-        EditPlot = new ChestGUI("Farm", 2, new MenuHandler()){{
-            setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
-            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
-            setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
-        }};
-        
-        BuildMenu = new ChestGUI("Build Options", 2, new MenuHandler()){{
-            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Other");
-        }};
+        EditPlot = new ChestGUI("Farm", 2, new MenuHandler()) {
+            {
+                setOption(1 * 9 + 3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
+                setOption(1 * 9 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
+                setOption(1 * 9 + 5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
+            }
+        };
+
+        BuildMenu = new ChestGUI("Build Options", 2, new MenuHandler()) {
+            {
+                setOption(1 * 9 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Other");
+            }
+        };
         Storage.setFilter(BuildingVault.ListType.WHITELIST, Material.WHEAT, Material.POTATO_ITEM, Material.NETHER_WARTS, Material.CARROT_ITEM);
     }
-    
+
     @Override
-    public void sendEditMenu(Player p){
-        if(growing)
+    public void sendEditMenu(Player p) {
+        if (growing) {
             EditPlot.setOption(4, new ItemStack(Material.ENCHANTED_BOOK), "Stop Growing");
-        else
+        } else {
             EditPlot.setOption(4, new ItemStack(Material.ENCHANTED_BOOK), "Start Growing");
-        
+        }
+
         EditPlot.sendMenu(p);
     }
-    
+
     @Override
-    public boolean interact(PlayerInteractEvent e){
-        if(e.getClickedBlock().getType().equals(Material.CHEST)){
-            if(e.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
-                if(Storage.CanOpen(e.getPlayer())){
+    public boolean interact(PlayerInteractEvent e) {
+        if (e.getClickedBlock().getType().equals(Material.CHEST)) {
+            if (e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+                if (Storage.CanOpen(e.getPlayer())) {
                     Storage.SendToPlayer(e.getPlayer());
                     return true;
                 }
-            }else if(e.getAction().equals(Action.LEFT_CLICK_BLOCK)){
-                if(e.hasItem() && this.hasSpace()){
-                    if(Storage.addItem(e.getItem())){
+            } else if (e.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
+                if (e.hasItem() && this.hasSpace()) {
+                    if (Storage.addItem(e.getItem())) {
                         e.getPlayer().getInventory().setItemInMainHand(new ItemStack(Material.AIR));
                         return true;
                     }
@@ -99,29 +107,29 @@ public class Farm extends Plot implements Storage{
         }
         return false;
     }
-    
+
     @Override
-    public boolean hasSpace(){
+    public boolean hasSpace() {
         return Storage.getFullSlots() < Storage.getUniqueSize() && Storage.getAmountFull() < Storage.getCapacity();
     }
-    
+
     @Override
-    public boolean supplyNPC(NPC npc){
+    public boolean supplyNPC(NPC npc) {
         return true;
     }
-    
-    public class MenuHandler implements OptionClickEventHandler{
-        
+
+    public class MenuHandler implements OptionClickEventHandler {
+
         @Override
-        public void onOptionClick(OptionClickEvent e){
-            if(e.getMenuName().equals(EditPlot.getName())){
-                if(e.getName().equalsIgnoreCase("Stop Growing") || e.getName().equalsIgnoreCase("Start Growing")){
+        public void onOptionClick(OptionClickEvent e) {
+            if (e.getMenuName().equals(EditPlot.getName())) {
+                if (e.getName().equalsIgnoreCase("Stop Growing") || e.getName().equalsIgnoreCase("Start Growing")) {
                     growing = !growing;
-                }else{
+                } else {
                     BuildMenuHandler.chestBuildOptions(e, Farm.this);
                 }
             }
         }
     }
-    
+
 }

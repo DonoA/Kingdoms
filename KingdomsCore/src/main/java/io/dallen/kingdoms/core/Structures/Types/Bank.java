@@ -19,7 +19,6 @@
  */
 package io.dallen.kingdoms.core.Structures.Types;
 
-
 import io.dallen.kingdoms.core.Handlers.BuildMenuHandler;
 import io.dallen.kingdoms.core.PlayerData;
 import io.dallen.kingdoms.core.Structures.Plot;
@@ -42,15 +41,18 @@ import org.bukkit.inventory.ItemStack;
 
 /**
  * Allows the kingdom to store its subjects’ wealth safely
- * 
+ *
  * @author donoa_000
  */
-public class Bank extends Plot implements Storage{
+public class Bank extends Plot implements Storage {
+
     @Getter
     private int securityLevel;
     @Getter
     private int vaultNumber;
-    @Getter @Setter @SaveData
+    @Getter
+    @Setter
+    @SaveData
     private HashMap<Player, BuildingVault> vaults = new HashMap<Player, BuildingVault>();
     @Getter
     private boolean MunicipalBank;
@@ -62,57 +64,59 @@ public class Bank extends Plot implements Storage{
     private ChestGUI EditPlot;
     @Getter
     private ChestGUI BuildMenu;
-    
+
     public Bank(Plot p) {
         super(p);
-        EditPlot = new ChestGUI("Bank", 2, new MenuHandler()){{
-            setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
-            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
-            setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
-        }};
-        
-        BuildMenu = new ChestGUI("Build Options", 2, new MenuHandler()){{
-            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Other");
-        }};
+        EditPlot = new ChestGUI("Bank", 2, new MenuHandler()) {
+            {
+                setOption(1 * 9 + 3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
+                setOption(1 * 9 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
+                setOption(1 * 9 + 5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
+            }
+        };
+
+        BuildMenu = new ChestGUI("Build Options", 2, new MenuHandler()) {
+            {
+                setOption(1 * 9 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Other");
+            }
+        };
     }
-    
+
     @Override
-    public boolean interact(PlayerInteractEvent e){
-        if(e.getClickedBlock().getType().equals(Material.THIN_GLASS)){
-            if(e.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
+    public boolean interact(PlayerInteractEvent e) {
+        if (e.getClickedBlock().getType().equals(Material.THIN_GLASS)) {
+            if (e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
                 PlayerData pd = PlayerData.getData(e.getPlayer());
                 pd.getVault().SendToPlayer(e.getPlayer());
             }
         }
         return false;
     }
-    
+
     @Override
-    public void sendEditMenu(Player p){
+    public void sendEditMenu(Player p) {
         EditPlot.sendMenu(p);
     }
-    
+
     @Override
-    public boolean hasSpace(){
+    public boolean hasSpace() {
         return Storage.getFullSlots() < Storage.getUniqueSize() && Storage.getAmountFull() < Storage.getCapacity();
     }
-    
+
     @Override
-    public boolean supplyNPC(NPC npc){
-        
+    public boolean supplyNPC(NPC npc) {
+
         return true;
     }
-    
-    public class MenuHandler implements OptionClickEventHandler{
-        
+
+    public class MenuHandler implements OptionClickEventHandler {
+
         @Override
-        public void onOptionClick(OptionClickEvent e){
-            if(e.getMenuName().equals(EditPlot.getName())){
+        public void onOptionClick(OptionClickEvent e) {
+            if (e.getMenuName().equals(EditPlot.getName())) {
                 BuildMenuHandler.chestBuildOptions(e, Bank.this);
             }
         }
     }
-    
-    
 
 }

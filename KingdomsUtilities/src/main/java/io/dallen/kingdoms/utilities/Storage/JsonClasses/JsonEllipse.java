@@ -29,7 +29,8 @@ import lombok.NoArgsConstructor;
  * @author Donovan Allen
  */
 @NoArgsConstructor
-public class JsonEllipse implements SaveType.NativeType{
+public class JsonEllipse implements SaveType.NativeType {
+
     @Getter
     private double length;
     @Getter
@@ -38,17 +39,17 @@ public class JsonEllipse implements SaveType.NativeType{
     private double x;
     @Getter
     private double y;
-    
-    public JsonEllipse(Ellipse2D base){
+
+    public JsonEllipse(Ellipse2D base) {
         this.length = base.getHeight();
         this.width = base.getWidth();
         this.x = base.getX();
         this.y = base.getY();
     }
-    
+
     @Override
-    public Ellipse2D.Double toJavaObject(){
+    public Ellipse2D.Double toJavaObject() {
         return new Ellipse2D.Double(x, y, length, width);
     }
-    
+
 }

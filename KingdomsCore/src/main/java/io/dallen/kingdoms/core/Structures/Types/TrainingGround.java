@@ -19,7 +19,6 @@
  */
 package io.dallen.kingdoms.core.Structures.Types;
 
-
 import io.dallen.kingdoms.core.Handlers.BuildMenuHandler;
 import io.dallen.kingdoms.core.KingdomsCore;
 import io.dallen.kingdoms.core.Structures.Plot;
@@ -33,106 +32,111 @@ import org.bukkit.inventory.ItemStack;
 
 /**
  * Allows the kingdom to train its NPCs
- * 
+ *
  * @author donoa_000
  */
-public class TrainingGround extends Plot{
-    
+public class TrainingGround extends Plot {
+
     private int capacity;
-    
+
     private TrainerStats Trainers;
-    
+
     private TraineeStats Trainees;
-    
+
     private int trainingSpeed;
-    
+
     private int trainingArea;
-    
+
     @Getter
     private ChestGUI EditPlot;
     @Getter
     private ChestGUI BuildMenu;
 
-        
-    
     public TrainingGround(Plot p) {
         super(p);
-        EditPlot = new ChestGUI("Training Ground", 2, new MenuHandler()){{
-            setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
-            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
-            setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
-        }};
-        
-        BuildMenu = new ChestGUI("Build Options", 2, new MenuHandler()){{
-            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Other");
-        }};
+        EditPlot = new ChestGUI("Training Ground", 2, new MenuHandler()) {
+            {
+                setOption(1 * 9 + 3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
+                setOption(1 * 9 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
+                setOption(1 * 9 + 5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
+            }
+        };
+
+        BuildMenu = new ChestGUI("Build Options", 2, new MenuHandler()) {
+            {
+                setOption(1 * 9 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Other");
+            }
+        };
     }
-    
-    private static class TrainerStats{
+
+    private static class TrainerStats {
+
         private int Archers;
         private int Infantry;
         private int Cavalry;
         private int Generals;
     }
-    
-    private static class TraineeStats{
+
+    private static class TraineeStats {
+
         private int Archers;
         private int Infantry;
         private int Cavalry;
         private int Generals;
     }
-    
-    public static enum SoldierType{
+
+    public static enum SoldierType {
+
         ARCHER, INFANTRY, CAVALRY, GENERAL
     }
-    
-    public void trainArcher(int number){
+
+    public void trainArcher(int number) {
         this.Trainees.Archers += number;
-        
+
     }
-    
-    public void trainInfantry(int number){
+
+    public void trainInfantry(int number) {
         this.Trainees.Infantry += number;
-        
+
     }
-    
-    public void trainCavalry(int number){
+
+    public void trainCavalry(int number) {
         this.Trainees.Cavalry += number;
-        
+
     }
-    
-    public void trainGeneral(int number){
+
+    public void trainGeneral(int number) {
         this.Trainees.Generals += number;
-        
+
     }
-    
+
     @Override
-    public void sendEditMenu(Player p){ //TODO make this handle much better
-        if(super.getMunicipal() != null){
+    public void sendEditMenu(Player p) { //TODO make this handle much better
+        if (super.getMunicipal() != null) {
             EditPlot.setOption(2, new ItemStack(Material.ENCHANTED_BOOK), "Train Archer")
                     .setOption(3, new ItemStack(Material.ENCHANTED_BOOK), "Train Infantry")
                     .setOption(4, new ItemStack(Material.ENCHANTED_BOOK), "Train Cavalry")
                     .setOption(5, new ItemStack(Material.ENCHANTED_BOOK), "Train General");
-        }else{
+        } else {
             EditPlot.removeOption(2).removeOption(3).removeOption(4).removeOption(5);
         }
         EditPlot.sendMenu(p);
     }
-    
-    public class MenuHandler implements OptionClickEventHandler{
+
+    public class MenuHandler implements OptionClickEventHandler {
 
         @Override
-        public void onOptionClick(OptionClickEvent e){
-            if(e.getMenuName().equalsIgnoreCase("Training Ground")){
-                if(e.getName().equalsIgnoreCase("Train Archer")){
+        public void onOptionClick(OptionClickEvent e) {
+            if (e.getMenuName().equalsIgnoreCase("Training Ground")) {
+                if (e.getName().equalsIgnoreCase("Train Archer")) {
                     KingdomsCore.getNPCs().spawnSoldier("Dallen", getCenter(), getMunicipal(), SoldierType.ARCHER);
-                }else if(e.getName().equalsIgnoreCase("Train Infantry")){
+                } else if (e.getName().equalsIgnoreCase("Train Infantry")) {
                     KingdomsCore.getNPCs().spawnSoldier("Dallen", getCenter(), getMunicipal(), SoldierType.INFANTRY);
-                }else if(e.getName().equalsIgnoreCase("Train Cavalry")){
+                } else if (e.getName().equalsIgnoreCase("Train Cavalry")) {
                     KingdomsCore.getNPCs().spawnSoldier("Dallen", getCenter(), getMunicipal(), SoldierType.CAVALRY);
-                }else if(e.getName().equalsIgnoreCase("Train General")){
+                } else if (e.getName().equalsIgnoreCase("Train General")) {
                     KingdomsCore.getNPCs().spawnSoldier("Dallen", getCenter(), getMunicipal(), SoldierType.GENERAL);
-                }else{
+                } else {
                     BuildMenuHandler.chestBuildOptions(e, TrainingGround.this);
                 }
             }

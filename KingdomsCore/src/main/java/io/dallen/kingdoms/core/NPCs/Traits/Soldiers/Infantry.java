@@ -39,60 +39,61 @@ import org.bukkit.inventory.ItemStack;
  *
  * @author Donovan Allen
  */
-public class Infantry extends Trait{
+public class Infantry extends Trait {
 //    @Setter
+
     private Municipality municipal;
 
     private NPC master;
-    
+
     private final FiniteStateMachine brain;
 
-    public Infantry(Municipality municipal){
+    public Infantry(Municipality municipal) {
         super("Infantry");
         brain = new FiniteStateMachine(new patrol());
         this.municipal = municipal;
     }
 
     @Override
-    public void onAttach(){
+    public void onAttach() {
         brain.getStateQueue().add(new getArmor());
 
 //        master = super.npc;
 //        Bukkit.getScheduler().scheduleAsyncDelayedTask(KingdomsCore.getPlugin(), newPatrol, Math.round(Math.random()*1200));
     }
-    
-    public class getArmor implements FsmState{
-        
+
+    public class getArmor implements FsmState {
+
         private Armory targetArmory;
-        
+
         private boolean assignedNav = false;
-        
+
         private ItemStack[] toRetrive;
-        
-        public getArmor(){
+
+        public getArmor() {
             targetArmory = null;
         }
-        
-        public getArmor(Armory arm, ItemStack...armor){
+
+        public getArmor(Armory arm, ItemStack... armor) {
             this.targetArmory = arm;
             this.toRetrive = armor;
         }
-        
+
         @Override
-        public void invoke(){
-            if(!Infantry.this.npc.getNavigator().isNavigating() && !assignedNav){
-                if(targetArmory != null){
+        public void invoke() {
+            if (!Infantry.this.npc.getNavigator().isNavigating() && !assignedNav) {
+                if (targetArmory != null) {
                     npc.getNavigator().setTarget(targetArmory.getCenter());
                     assignedNav = true;
-                }else{
-                    ItemStack[] neededArmor = new ItemStack[] {new ItemStack(Material.IRON_HELMET), new ItemStack(Material.IRON_LEGGINGS),
+                } else {
+                    ItemStack[] neededArmor = new ItemStack[]{new ItemStack(Material.IRON_HELMET), new ItemStack(Material.IRON_LEGGINGS),
                         new ItemStack(Material.IRON_CHESTPLATE), new ItemStack(Material.IRON_BOOTS)};
-                    for(ItemStack is : neededArmor){
-                        if(targetArmory == null){
+                    for (ItemStack is : neededArmor) {
+                        if (targetArmory == null) {
                             targetArmory = getClosest(is);
-                        }else{
+                        } else {
                             Armory a = getClosest(is);
-                            if(a != targetArmory){
+                            if (a != targetArmory) {
                                 brain.getStateQueue().add(new getArmor());
                             }
                         }
@@ -100,27 +101,27 @@ public class Infantry extends Trait{
                 }
             }
         }
-        
+
         @Override
-        public boolean isComplete(){
-            if(assignedNav && !npc.getNavigator().isNavigating() && 
-                    targetArmory.getBase().contains(LocationUtil.asPoint(npc.getEntity().getLocation()))){
-                for(ItemStack is : toRetrive){
-                    ((LivingEntity)npc.getEntity()).getEquipment().setHelmet(is);
+        public boolean isComplete() {
+            if (assignedNav && !npc.getNavigator().isNavigating()
+                    && targetArmory.getBase().contains(LocationUtil.asPoint(npc.getEntity().getLocation()))) {
+                for (ItemStack is : toRetrive) {
+                    ((LivingEntity) npc.getEntity()).getEquipment().setHelmet(is);
                 }
                 return true;
             }
             return false;
         }
-        
-        private Armory getClosest(ItemStack is){
+
+        private Armory getClosest(ItemStack is) {
             Armory closest = null;
-            for(Structure s : municipal.getStructures().get(Armory.class)){
-                if(((Armory) s).getStorage().getMaterial(is) != null){
-                    if(closest == null){
+            for (Structure s : municipal.getStructures().get(Armory.class)) {
+                if (((Armory) s).getStorage().getMaterial(is) != null) {
+                    if (closest == null) {
                         closest = (Armory) s;
-                    }else if(closest.getCenter().distance(npc.getEntity().getLocation()) > 
-                            s.getCenter().distance(npc.getEntity().getLocation())){
+                    } else if (closest.getCenter().distance(npc.getEntity().getLocation())
+                            > s.getCenter().distance(npc.getEntity().getLocation())) {
                         closest = (Armory) s;
                     }
                     npc.getNavigator().setTarget(closest.getCenter());
@@ -130,48 +131,48 @@ public class Infantry extends Trait{
             return closest;
         }
     }
-    
-    public class patrol implements FsmState{
-        
+
+    public class patrol implements FsmState {
+
         private Location target;
-        
+
         private long ticksTilNextPatrol = 0;
-        
+
         @Override
-        public void invoke(){
-            if(!npc.getNavigator().isNavigating() && ticksTilNextPatrol <= 0){
+        public void invoke() {
+            if (!npc.getNavigator().isNavigating() && ticksTilNextPatrol <= 0) {
                 boolean found = false;
                 Location testSpot = null;
-                while(!found){
+                while (!found) {
                     double Radius = 15;
-                    double angle = Math.random()*Math.PI*2;
-                    double x = Math.cos(angle)*Math.random()*Radius;
-                    double z = Math.sin(angle)*Math.random()*Radius;
-                    testSpot = new Location(municipal.getCenter().getCenter().getWorld(), municipal.getCenter().getCenter().getX() + x, 
+                    double angle = Math.random() * Math.PI * 2;
+                    double x = Math.cos(angle) * Math.random() * Radius;
+                    double z = Math.sin(angle) * Math.random() * Radius;
+                    testSpot = new Location(municipal.getCenter().getCenter().getWorld(), municipal.getCenter().getCenter().getX() + x,
                             municipal.getCenter().getCenter().getY() + 1, municipal.getCenter().getCenter().getZ() + z);
-                    for(int y = -30; y <= 30 && !found; y++){
-                        if(testSpot.clone().add(0, y, 0).getBlock().getType().equals(Material.AIR) && 
-                                !testSpot.clone().add(0, y-1, 0).getBlock().getType().equals(Material.AIR)){
+                    for (int y = -30; y <= 30 && !found; y++) {
+                        if (testSpot.clone().add(0, y, 0).getBlock().getType().equals(Material.AIR)
+                                && !testSpot.clone().add(0, y - 1, 0).getBlock().getType().equals(Material.AIR)) {
                             testSpot.add(0, y, 0);
                             found = true;
                         }
                     }
                 }
                 target = testSpot;
-                Bukkit.getScheduler().runTask(KingdomsCore.getPlugin(), new Runnable(){
-                    public void run(){
+                Bukkit.getScheduler().runTask(KingdomsCore.getPlugin(), new Runnable() {
+                    public void run() {
                         master.getNavigator().setTarget(target);
-                        ticksTilNextPatrol = 200 + Math.round(Math.random()*1200);
+                        ticksTilNextPatrol = 200 + Math.round(Math.random() * 1200);
                     }
                 });
-            }else{
+            } else {
                 ticksTilNextPatrol--;
             }
             //check for enemies nearby
         }
-        
+
         @Override
-        public boolean isComplete(){
+        public boolean isComplete() {
             return false;
         }
     }

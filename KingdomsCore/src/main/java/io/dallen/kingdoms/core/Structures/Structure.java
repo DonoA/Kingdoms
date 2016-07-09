@@ -49,30 +49,41 @@ import org.bukkit.inventory.ItemStack;
  * @author donoa_000
  */
 @NoArgsConstructor
-public abstract class Structure implements SaveType.Saveable{
-    
-    @Getter @Setter
+public abstract class Structure implements SaveType.Saveable {
+
+    @Getter
+    @Setter
     private static int currentID = 0;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private int Width; // X
-    @Getter @Setter
+    @Getter
+    @Setter
     private int Height; // Y
-    @Getter @Setter
+    @Getter
+    @Setter
     private int Length; // Z
-    @Getter @Setter
+    @Getter
+    @Setter
     private Polygon Base; // Z
-    @Getter @Setter
+    @Getter
+    @Setter
     private Location Center;
-    @Getter @Setter
+    @Getter
+    @Setter
     private OfflinePlayer Owner;
-    @Getter @Setter
+    @Getter
+    @Setter
     private Kingdom Kingdom;
-    @Getter @Setter
+    @Getter
+    @Setter
     private Municipality Municipal;
-    @Getter @Setter
+    @Getter
+    @Setter
     private int Area;
-    @Getter @Setter
+    @Getter
+    @Setter
     private int StructureID;
     @Getter
     private OptionClickEventHandler MenuHandler;
@@ -80,12 +91,11 @@ public abstract class Structure implements SaveType.Saveable{
 //    private int Rank;
 //    @Getter @Setter
 //    private int maxRank;
-    
-    
+
     @Getter
     private long amountBuilt;
-    
-    public Structure(Polygon base, Location cent, OfflinePlayer own){
+
+    public Structure(Polygon base, Location cent, OfflinePlayer own) {
         this.Center = cent;
         this.Owner = own;
         this.Base = base;
@@ -93,84 +103,87 @@ public abstract class Structure implements SaveType.Saveable{
         this.StructureID = currentID;
         currentID++;
         setArea();
-        
+
     }
-    
-    public Structure(Polygon base, Location cent, OfflinePlayer own, int ID){
+
+    public Structure(Polygon base, Location cent, OfflinePlayer own, int ID) {
         this.Base = base;
         this.Center = cent;
         this.Owner = own;
         this.StructureID = ID;
         setArea();
     }
-    
-    public boolean contains(Point p){
-        return Base.contains(p) || (Base.contains(new Point(p.x-1,p.y)) || Base.contains(new Point(p.x,p.y-1)) || 
-               Base.contains(new Point(p.x-1,p.y-1)));
+
+    public boolean contains(Point p) {
+        return Base.contains(p) || (Base.contains(new Point(p.x - 1, p.y)) || Base.contains(new Point(p.x, p.y - 1))
+                || Base.contains(new Point(p.x - 1, p.y - 1)));
     }
-    
-    public void sendEditMenu(Player p){
-        new ChestGUI("Structure", 2, new MenuHandler()){{
-            setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
-            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
-            setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
-        }}.sendMenu(p);
+
+    public void sendEditMenu(Player p) {
+        new ChestGUI("Structure", 2, new MenuHandler()) {
+            {
+                setOption(1 * 9 + 3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
+                setOption(1 * 9 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
+                setOption(1 * 9 + 5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
+            }
+        }.sendMenu(p);
     }
-    
-    public void setArea(){
+
+    public void setArea() {
         this.Width = (int) Math.round(Base.getBounds().getMaxX() - Base.getBounds().getMinX());
         this.Length = (int) Math.round(Base.getBounds().getMaxY() - Base.getBounds().getMinY());
         int Xmax = (int) Math.round(Base.getBounds().getMaxX());
         int Zmax = (int) Math.round(Base.getBounds().getMaxY());
-        for(int x = Ints.min(Base.xpoints); x <= Xmax; x++){
-            for(int z = Ints.min(Base.ypoints); z <= Zmax; z++){
-                if(Base.contains(new Point(x,z)) || (Base.contains(new Point(x-1,z)) || Base.contains(new Point(x,z-1)) || Base.contains(new Point(x-1,z-1)))){
+        for (int x = Ints.min(Base.xpoints); x <= Xmax; x++) {
+            for (int z = Ints.min(Base.ypoints); z <= Zmax; z++) {
+                if (Base.contains(new Point(x, z)) || (Base.contains(new Point(x - 1, z)) || Base.contains(new Point(x, z - 1)) || Base.contains(new Point(x - 1, z - 1)))) {
                     Area++;
                 }
             }
         }
     }
-    
+
     @Override
-    public JsonStructure toJsonObject(){
+    public JsonStructure toJsonObject() {
         JsonStructure js = new JsonStructure();
         js.setHeight(Height);
         js.setWidth(Width);
         js.setLength(Length);
         js.setOwner(Owner.getUniqueId());
-        if(this instanceof WallSystem.Wall){
+        if (this instanceof WallSystem.Wall) {
             js.setType(WallSystem.Wall.class.getName());
         }
         boolean classFound = false;
-        for(Class c : KingdomsCore.getStructureClasses()){
-            if(this.getClass().isAssignableFrom(c) && !classFound){
+        for (Class c : KingdomsCore.getStructureClasses()) {
+            if (this.getClass().isAssignableFrom(c) && !classFound) {
                 js.setType(c.getName());
                 classFound = true;
             }
         }
-        if(this instanceof Plot && !classFound){
+        if (this instanceof Plot && !classFound) {
             js.setType(Plot.class.getName());
         }
-        if(Municipal != null)
+        if (Municipal != null) {
             js.setMunicipal(Municipal.getMunicipalID());
-        else
+        } else {
             js.setMunicipal(-1);
-        if(Kingdom != null)
+        }
+        if (Kingdom != null) {
             js.setKingdom(Kingdom.getKingdomID());
-        else
+        } else {
             js.setKingdom(-1);
+        }
         js.setBase(new JsonPolygon(Base));
         js.setCenter(new JsonLocation(Center));
         js.setStructureID(StructureID);
         return js;
     }
-    
-    
-    public class MenuHandler implements OptionClickEventHandler{
-        
+
+    public class MenuHandler implements OptionClickEventHandler {
+
         @Override
-        public void onOptionClick(OptionClickEvent e){
-            if(e.getMenuName().equalsIgnoreCase("Structure")){
+        public void onOptionClick(OptionClickEvent e) {
+            if (e.getMenuName().equalsIgnoreCase("Structure")) {
                 e.getPlayer().sendMessage("Default option called");
             }
         }

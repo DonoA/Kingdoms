@@ -39,29 +39,30 @@ import org.bukkit.entity.EntityType;
  * @author donoa_000
  */
 public class NpcManager {
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private NPCRegistry NPCReg;
-    
-    public NpcManager(){
+
+    public NpcManager() {
         NPCReg = CitizensAPI.getNPCRegistry();
     }
-    
-    public void CreateNPCs(){
-        
+
+    public void CreateNPCs() {
+
     }
-    
-    public NPC spawnBuilder(String user, Location spawn){
+
+    public NPC spawnBuilder(String user, Location spawn) {
         NPC Builder = NPCReg.createNPC(EntityType.PLAYER, user);
         Builder.spawn(spawn);
         Builder.addTrait(new Builder());
         return Builder;
     }
-    
-    public NPC spawnSoldier(String user, Location spawn, Municipality owner, SoldierType type){
+
+    public NPC spawnSoldier(String user, Location spawn, Municipality owner, SoldierType type) {
         NPC Soldier = NPCReg.createNPC(EntityType.PLAYER, user);
         Soldier.spawn(spawn);
-        switch(type){
+        switch (type) {
             case ARCHER:
                 Archer archer = new Archer();
                 archer.setMunicipal(owner);
@@ -84,6 +85,5 @@ public class NpcManager {
         }
         return Soldier;
     }
-    
-    
+
 }

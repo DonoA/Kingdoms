@@ -30,22 +30,24 @@ import lombok.Setter;
  * @author Donovan Allen
  */
 @NoArgsConstructor
-public class JsonPolygon implements SaveType.NativeType{
-    
-    @Getter @Setter
+public class JsonPolygon implements SaveType.NativeType {
+
+    @Getter
+    @Setter
     private int[] Xs;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private int[] Ys;
-    
-    public JsonPolygon(Polygon Base){
+
+    public JsonPolygon(Polygon Base) {
         this.Xs = Base.xpoints;
         this.Ys = Base.ypoints;
     }
-    
+
     @Override
-    public Polygon toJavaObject(){
+    public Polygon toJavaObject() {
         return new Polygon(Xs, Ys, Xs.length);
     }
-    
+
 }

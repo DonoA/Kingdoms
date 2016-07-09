@@ -41,100 +41,108 @@ import org.bukkit.entity.Player;
  * @author donoa_000
  */
 @NoArgsConstructor
-public class PlayerData implements SaveType.Saveable{
+public class PlayerData implements SaveType.Saveable {
+
     @Getter
     private static HashMap<Player, PlayerData> PlayerDat = new HashMap<Player, PlayerData>();
-    
+
 //    @Getter @Setter
 //    private Role Role;
-    
-    @Getter @Setter
+    @Getter
+    @Setter
     private Kingdom Kingdom;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private Player Player;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private Municipality Municipal;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private PlayerVault Vault;
-    
-    @Getter @Setter @JsonIgnore
+
+    @Getter
+    @Setter
+    @JsonIgnore
     private String PartyID;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private String title = "Testing";
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private int Might;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private Location Spawn;
-    
-    
-    
+
     @Getter
     private Rating contractorRating;
-    
+
     @Getter
     private Rating workerRating;
-    
+
 //    @Getter
     private ArrayList<Contract> currentContracts = new ArrayList<Contract>();
-    
+
     @Getter
     private ArrayList<Plot> Plots = new ArrayList<Plot>();
-    
+
     @Getter
     private int gold = 0;
-    
-    public PlayerData(Player p){
+
+    public PlayerData(Player p) {
         this.Player = p;
         Vault = new PlayerVault(p, 27);
 //        muted = new MuteClass();
     }
-    
-    public static PlayerData getData(Player p){
-        if(PlayerDat.containsKey(p)){
+
+    public static PlayerData getData(Player p) {
+        if (PlayerDat.containsKey(p)) {
             return PlayerDat.get(p);
         }
         return null;
     }
-    
-    public void addGold(int amount){
+
+    public void addGold(int amount) {
         gold += amount;
     }
-    
-    public void removeGold(int amount){
+
+    public void removeGold(int amount) {
         gold -= amount;
     }
-    
-    public Party getCurrParty(){
-        if(PartyID == null){
+
+    public Party getCurrParty() {
+        if (PartyID == null) {
             return null;
         }
         return Party.getParties().get(PartyID);
     }
-    
+
 //    @Override
-    public JsonPlayerData toJsonObject(){
+    public JsonPlayerData toJsonObject() {
         JsonPlayerData jpd = new JsonPlayerData();
         jpd.setKingdom(Kingdom != null ? Kingdom.getKingdomID() : -1);
         jpd.setMight(Might);
         jpd.setMunicipal(Municipal != null ? Municipal.getMunicipalID() : -1);
 //        jpd.setMuted(muted);
 //        jpd.setRole(Role != null ? Role.getRoleName() : null);
-        if(Spawn != null){
+        if (Spawn != null) {
             jpd.setSpawn(new JsonLocation(Spawn));
-        }else{
+        } else {
             jpd.setSpawn(new JsonLocation(Bukkit.getWorlds().get(0).getSpawnLocation()));
         }
         jpd.setVault(Vault.toJsonObject());
         return jpd;
     }
-    
-    public static enum Rating{
+
+    public static enum Rating {
+
         VERY_NEGATIVE, NEGATIVE, POOR, NEUTRAL, FAIR, GOOD, VERY_GOOD, PERFECT
     }
 }

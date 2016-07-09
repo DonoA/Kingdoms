@@ -17,7 +17,6 @@
  * 
  * 
  */
-
 package io.dallen.kingdoms.utilities.Storage.JsonClasses;
 
 import io.dallen.kingdoms.utilities.Storage.SaveType;
@@ -34,9 +33,10 @@ import org.bukkit.inventory.meta.ItemMeta;
  * @author Donovan Allen
  */
 @NoArgsConstructor
-public class JsonEnchantmentMeta implements SaveType.NativeType{
-    
-    @Getter @Setter
+public class JsonEnchantmentMeta implements SaveType.NativeType {
+
+    @Getter
+    @Setter
     private HashMap<String, Integer> enchants = new HashMap();
 
     public JsonEnchantmentMeta(ItemMeta meta) {
@@ -44,9 +44,9 @@ public class JsonEnchantmentMeta implements SaveType.NativeType{
             enchants.put(entry.getKey().getName(), entry.getValue());
         }
     }
-    
+
     @Override
-    public Object toJavaObject(){
+    public Object toJavaObject() {
         throw new UnsupportedOperationException("Not supported for EnchantmentMeta");
     }
 }

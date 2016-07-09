@@ -29,27 +29,39 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor
 public class SkinTexture {
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private long timestamp;
-    @Getter @Setter
+    @Getter
+    @Setter
     private String profileId;
-    @Getter @Setter
+    @Getter
+    @Setter
     private String profileName;
-    @Getter @Setter
+    @Getter
+    @Setter
     private boolean signatureRequired;
-    @Getter @Setter
+    @Getter
+    @Setter
     private TextureUrlArray textures;
-    
+
     @NoArgsConstructor
-    public static class TextureUrlArray{
-        @Getter @Setter
+    public static class TextureUrlArray {
+
+        @Getter
+        @Setter
         private TextureUrl skin;
-        @Getter @Setter
+        @Getter
+        @Setter
         private TextureUrl cape;
     }
+
     @NoArgsConstructor
-    public static class TextureUrl{
-        @Getter @Setter
+    public static class TextureUrl {
+
+        @Getter
+        @Setter
         private String url;
 
     }

@@ -35,38 +35,47 @@ import lombok.Setter;
  * @author Donovan Allen
  */
 @NoArgsConstructor
-public class JsonMunicipality implements SaveType.NativeType.JsonType{
-    
-    @Getter @Setter
+public class JsonMunicipality implements SaveType.NativeType.JsonType {
+
+    @Getter
+    @Setter
     private ArrayList<Integer> Structures;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private int Center;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private int MunicipalID;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private JsonWallSystem walls;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private JsonPolygon Base;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private JsonEllipse Influence;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private String type;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private int kingdom;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private Date creation;
-    
+
     @Override
-    public Municipality toJavaObject(){
+    public Municipality toJavaObject() {
         throw new UnsupportedOperationException();
     }
-    
+
 }

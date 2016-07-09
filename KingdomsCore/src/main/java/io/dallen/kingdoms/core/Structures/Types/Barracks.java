@@ -19,7 +19,6 @@
  */
 package io.dallen.kingdoms.core.Structures.Types;
 
-
 import io.dallen.kingdoms.core.Handlers.BuildMenuHandler;
 import io.dallen.kingdoms.core.Structures.Plot;
 import io.dallen.kingdoms.utilities.Utils.ChestGUI;
@@ -38,10 +37,10 @@ import org.bukkit.inventory.ItemStack;
 
 /**
  * Allows the kingdom to house its NPCs
- * 
+ *
  * @author donoa_000
  */
-public class Barracks extends Plot{
+public class Barracks extends Plot {
 
     @Getter
     private int maxCapacity;
@@ -49,18 +48,18 @@ public class Barracks extends Plot{
     private int currentCapacity;
     @Getter
     private int amountFull;
-    
+
     @Getter
     private int readySpeed;
-    
+
     @Getter
     private PopulationStats people;
-    
+
     @Getter
     private ChestGUI EditPlot;
     @Getter
     private ChestGUI BuildMenu;
-    
+
     public Barracks(Plot p) {
         super(p);
         maxCapacity = p.getArea() / 4;
@@ -68,73 +67,78 @@ public class Barracks extends Plot{
         amountFull = 0;
         people = new PopulationStats();
         readySpeed = 10;
-        EditPlot = new ChestGUI("Barracks", 2, new MenuHandler()){{
-            setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
-            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
-            setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
-        }};
-        
-        BuildMenu = new ChestGUI("Build Options", 2, new MenuHandler()){{
-            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Other");
-        }};
+        EditPlot = new ChestGUI("Barracks", 2, new MenuHandler()) {
+            {
+                setOption(1 * 9 + 3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
+                setOption(1 * 9 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
+                setOption(1 * 9 + 5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
+            }
+        };
+
+        BuildMenu = new ChestGUI("Build Options", 2, new MenuHandler()) {
+            {
+                setOption(1 * 9 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Other");
+            }
+        };
     }
-    
+
     @Override
-    public void sendEditMenu(Player p){
+    public void sendEditMenu(Player p) {
         EditPlot.sendMenu(p);
     }
-    
-    public class MenuHandler implements OptionClickEventHandler{
-        
+
+    public class MenuHandler implements OptionClickEventHandler {
+
         @Override
-        public void onOptionClick(OptionClickEvent e){
-            if(e.getMenuName().equals(EditPlot.getName())){
+        public void onOptionClick(OptionClickEvent e) {
+            if (e.getMenuName().equals(EditPlot.getName())) {
                 BuildMenuHandler.chestBuildOptions(e, Barracks.this);
             }
         }
     }
-    
-    public static class BedHandler implements Listener{
-        
-        public BedHandler(){
+
+    public static class BedHandler implements Listener {
+
+        public BedHandler() {
             LogUtil.printDebug("Loaded BedHandler!");
         }
-        
+
         @EventHandler
-        public void onBlockPlace(BlockPlaceEvent e){
-            if(e.getBlock().getType().equals(Material.BED)){
+        public void onBlockPlace(BlockPlaceEvent e) {
+            if (e.getBlock().getType().equals(Material.BED)) {
                 Plot p = Plot.inPlot(e.getBlock().getLocation());
-                if(p != null && p instanceof Barracks){
+                if (p != null && p instanceof Barracks) {
                     Barracks b = (Barracks) p;
                     b.currentCapacity++;
                 }
             }
         }
-        
+
         @EventHandler
-        public void onBlockBreak(BlockBreakEvent e){
-            if(e.getBlock().getType().equals(Material.BED)){
+        public void onBlockBreak(BlockBreakEvent e) {
+            if (e.getBlock().getType().equals(Material.BED)) {
                 Plot p = Plot.inPlot(e.getBlock().getLocation());
-                if(p != null && p instanceof Barracks){
+                if (p != null && p instanceof Barracks) {
                     Barracks b = (Barracks) p;
                     b.currentCapacity--;
                 }
             }
         }
-        
+
     }
 
     @NoArgsConstructor
-    public static class PopulationStats{
+    public static class PopulationStats {
+
         @Getter
         private int infantry;
-        
+
         @Getter
         private int calvalry;
-        
+
         @Getter
         private int archers;
-        
+
         @Getter
         private int other;
     }

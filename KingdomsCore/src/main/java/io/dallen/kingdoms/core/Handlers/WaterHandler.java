@@ -39,8 +39,8 @@ import org.bukkit.inventory.ItemStack;
  *
  * @author Donovan Allen
  */
-public class WaterHandler implements Listener{
-    
+public class WaterHandler implements Listener {
+
 //    @EventHandler(priority = EventPriority.HIGHEST)
 //    public void onBlockPhysics(BlockPhysicsEvent e){
 //        if(e.getBlock().getType().equals(Material.WATER)){
@@ -54,36 +54,35 @@ public class WaterHandler implements Listener{
 //        e.getToBlock().setData((byte) 1);
 //        e.setCancelled(true);
 //    }
-    
     @EventHandler
-    public void onRain(WeatherChangeEvent e){
-        if(KingdomsCore.getPlugin().getConfig().getBoolean("weatherDisabled", true)){
+    public void onRain(WeatherChangeEvent e) {
+        if (KingdomsCore.getPlugin().getConfig().getBoolean("weatherDisabled", true)) {
             e.setCancelled(true);
         }
     }
-    
+
     @EventHandler
-    public void onPlayerInteract(PlayerInteractEvent e){
-        if(e.getItem()!=null && !e.getPlayer().hasPermission(PermissionManager.getBuildPermission())){
-            if(e.getItem().getType().equals(Material.WATER_BUCKET) && e.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
+    public void onPlayerInteract(PlayerInteractEvent e) {
+        if (e.getItem() != null && !e.getPlayer().hasPermission(PermissionManager.getBuildPermission())) {
+            if (e.getItem().getType().equals(Material.WATER_BUCKET) && e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
                 e.setCancelled(true);
                 e.getItem().setType(Material.BUCKET);
-                if(e.getClickedBlock().getType().equals(Material.GRASS) || e.getClickedBlock().getType().equals(Material.SOIL)){
+                if (e.getClickedBlock().getType().equals(Material.GRASS) || e.getClickedBlock().getType().equals(Material.SOIL)) {
                     e.getClickedBlock().setType(Material.DIRT);
                 }
-                if(!e.getClickedBlock().getRelative(e.getBlockFace()).getType().equals(Material.STATIONARY_WATER)){
+                if (!e.getClickedBlock().getRelative(e.getBlockFace()).getType().equals(Material.STATIONARY_WATER)) {
                     e.getClickedBlock().getRelative(e.getBlockFace()).setType(Material.WATER);
                     e.getClickedBlock().getRelative(e.getBlockFace()).setData((byte) 5);
                 }
-            }else if((e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR) && e.getItem().getType().equals(Material.BUCKET)) {
+            } else if ((e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR) && e.getItem().getType().equals(Material.BUCKET)) {
                 List<Block> los = e.getPlayer().getLineOfSight((Set<Material>) null, 5);
-                for(Block b : los){
-                    if(b.getType() == Material.STATIONARY_WATER){
+                for (Block b : los) {
+                    if (b.getType() == Material.STATIONARY_WATER) {
                         e.setCancelled(true);
-                        if(e.getItem().getAmount() > 1){
+                        if (e.getItem().getAmount() > 1) {
                             e.getItem().setAmount(e.getItem().getAmount() - 1);
                             e.getPlayer().getInventory().addItem(new ItemStack(Material.WATER_BUCKET));
-                        }else{
+                        } else {
                             e.getItem().setType(Material.WATER_BUCKET);
                         }
                         break;
@@ -92,5 +91,5 @@ public class WaterHandler implements Listener{
             }
         }
     }
-    
+
 }

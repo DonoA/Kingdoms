@@ -24,5 +24,5 @@ package io.dallen.kingdoms.core.Handlers.DecayHandler;
  * @author donoa_000
  */
 public class PlotDecay { // for regenerating terrain slowly over time
-    
+
 }

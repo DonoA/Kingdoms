@@ -19,7 +19,6 @@
  */
 package io.dallen.kingdoms.core.Structures.Types;
 
-
 import io.dallen.kingdoms.core.Handlers.BuildMenuHandler;
 import io.dallen.kingdoms.core.KingdomsCore;
 import io.dallen.kingdoms.core.Structures.Plot;
@@ -42,9 +41,11 @@ import org.bukkit.inventory.ItemStack;
  *
  * @author donoa_000
  */
-public class BuildersHut extends Plot implements Storage{
-    
-    @Getter @Setter @SaveData
+public class BuildersHut extends Plot implements Storage {
+
+    @Getter
+    @Setter
+    @SaveData
     private BuildingVault Storage;
     @Getter
     private int workerCapacity;
@@ -52,38 +53,42 @@ public class BuildersHut extends Plot implements Storage{
     private ChestGUI EditPlot;
     @Getter
     private ChestGUI BuildMenu;
-    
+
     public BuildersHut(Plot p) {
         super(p);
         Storage = new BuildingVault(18, 18 * 100, this);
-        EditPlot = new ChestGUI("Builders Hut", 2, new MenuHandler()){{
-            setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
-            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
-            setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
-            setOption(4, new ItemStack(Material.ENCHANTED_BOOK), "Train Builder");
-        }};
-        
-        BuildMenu = new ChestGUI("Build Options", 2, new MenuHandler()){{
-            setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Other");
-        }};
+        EditPlot = new ChestGUI("Builders Hut", 2, new MenuHandler()) {
+            {
+                setOption(1 * 9 + 3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
+                setOption(1 * 9 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
+                setOption(1 * 9 + 5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
+                setOption(4, new ItemStack(Material.ENCHANTED_BOOK), "Train Builder");
+            }
+        };
+
+        BuildMenu = new ChestGUI("Build Options", 2, new MenuHandler()) {
+            {
+                setOption(1 * 9 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Other");
+            }
+        };
     }
-    
-    public boolean hasMaterials(Class type){
+
+    public boolean hasMaterials(Class type) {
         //test if has needed mats
         return true;
     }
-    
+
     @Override
-    public boolean interact(PlayerInteractEvent e){
-        if(e.getClickedBlock().getType().equals(Material.CHEST)){
-            if(e.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
-                if(Storage.CanOpen(e.getPlayer())){
+    public boolean interact(PlayerInteractEvent e) {
+        if (e.getClickedBlock().getType().equals(Material.CHEST)) {
+            if (e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+                if (Storage.CanOpen(e.getPlayer())) {
                     Storage.SendToPlayer(e.getPlayer());
                     return true;
                 }
-            }else if(e.getAction().equals(Action.LEFT_CLICK_BLOCK)){
-                if(e.hasItem() && this.hasSpace()){
-                    if(Storage.addItem(e.getItem())){
+            } else if (e.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
+                if (e.hasItem() && this.hasSpace()) {
+                    if (Storage.addItem(e.getItem())) {
                         e.getPlayer().getInventory().setItemInMainHand(new ItemStack(Material.AIR));
                         return true;
                     }
@@ -92,31 +97,31 @@ public class BuildersHut extends Plot implements Storage{
         }
         return false;
     }
-    
+
     @Override
-    public boolean hasSpace(){
+    public boolean hasSpace() {
         return Storage.getFullSlots() < Storage.getUniqueSize() && Storage.getAmountFull() < Storage.getCapacity();
     }
-    
+
     @Override
-    public boolean supplyNPC(NPC npc){
+    public boolean supplyNPC(NPC npc) {
         return true;
     }
-    
+
     @Override
-    public void sendEditMenu(Player p){
-        
+    public void sendEditMenu(Player p) {
+
         EditPlot.sendMenu(p);
     }
-    
-    public class MenuHandler implements OptionClickEventHandler{
-        
+
+    public class MenuHandler implements OptionClickEventHandler {
+
         @Override
-        public void onOptionClick(OptionClickEvent e){
-            if(e.getMenuName().equals(EditPlot.getName())){
-                if(e.getName().equalsIgnoreCase("Train Builder")){
+        public void onOptionClick(OptionClickEvent e) {
+            if (e.getMenuName().equals(EditPlot.getName())) {
+                if (e.getName().equalsIgnoreCase("Train Builder")) {
                     KingdomsCore.getNPCs().spawnBuilder("Dallen", getCenter());
-                }else{
+                } else {
                     BuildMenuHandler.chestBuildOptions(e, BuildersHut.this);
                 }
             }

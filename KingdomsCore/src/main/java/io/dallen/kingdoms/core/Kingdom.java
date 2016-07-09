@@ -36,80 +36,94 @@ import org.bukkit.entity.Player;
  *
  * @author donoa_000
  */
-public class Kingdom implements SaveType.Saveable{
-    
+public class Kingdom implements SaveType.Saveable {
+
     private static int currID;
-    
+
     private String Leader;
-    
+
     @Getter
     private int KingdomID;
-    
+
 //    @Getter
     private Structure CapitolID;
-    
+
     @Getter
     private String Name;
-    
+
 //    @Getter
 //    private ArrayList<Ellipse2D> Base;
-    
-    @Getter @Setter
+    @Getter
+    @Setter
     private Ellipse2D Influence;
-    
+
     private ResourceStats Resources;
-    
+
     @Getter
     private ArrayList<Municipality> Municipals = new ArrayList<Municipality>();
-    
+
     @Getter
     private HashMap<Class, ArrayList<Structure>> Structures = new HashMap<Class, ArrayList<Structure>>();
-    
+
     @Getter
     private ArrayList<Player> OnlinePlayers = new ArrayList<Player>();
-    
+
     @Getter
     private final static ArrayList<Kingdom> allKingdoms = new ArrayList<Kingdom>();
-    
-    public Kingdom(){
+
+    public Kingdom() {
         this.KingdomID = allKingdoms.size();
         allKingdoms.add(this);
     }
-    
+
     @Override
-    public JsonKingdom toJsonObject(){
+    public JsonKingdom toJsonObject() {
         throw new UnsupportedOperationException();
     }
-    
+
     @NoArgsConstructor
-    private static class ResourceStats{
-        @Getter @Setter
+    private static class ResourceStats {
+
+        @Getter
+        @Setter
         private int Wealth;
-        @Getter @Setter
+        @Getter
+        @Setter
         private int Grain;
-        @Getter @Setter
+        @Getter
+        @Setter
         private int Sand;
-        @Getter @Setter
+        @Getter
+        @Setter
         private int Wood;
-        @Getter @Setter
+        @Getter
+        @Setter
         private int Ores;
-        @Getter @Setter
+        @Getter
+        @Setter
         private int Stone;
-        @Getter @Setter
+        @Getter
+        @Setter
         private int RefinedWood;
-        @Getter @Setter
+        @Getter
+        @Setter
         private int Brick;
-        @Getter @Setter
+        @Getter
+        @Setter
         private int Metal;
-        @Getter @Setter
+        @Getter
+        @Setter
         private int Corps;
-        @Getter @Setter
+        @Getter
+        @Setter
         private int Glass;
-        
-        @Getter @Setter
+
+        @Getter
+        @Setter
         private int StorageSpace;
-        @Getter @Setter
+        @Getter
+        @Setter
         private int Population;
-        
+
     }
 }

@@ -32,18 +32,18 @@ import org.bukkit.entity.Player;
  *
  * @author donoa_000
  */
-public class KingdomCommands implements CommandExecutor{
-    
+public class KingdomCommands implements CommandExecutor {
+
     private static NPC npc;
-    
+
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String lbl, String[] args){
+    public boolean onCommand(CommandSender sender, Command cmd, String lbl, String[] args) {
         Player p = (Player) sender;
-        if(args.length > 0){
-            if(args[0].equalsIgnoreCase("spawn")){
+        if (args.length > 0) {
+            if (args[0].equalsIgnoreCase("spawn")) {
                 npc = KingdomsCore.getNPCs().getNPCReg().createNPC(EntityType.PLAYER, "Dallen");
                 npc.spawn(Bukkit.getWorlds().get(0).getSpawnLocation());
-            }else if(args[0].equalsIgnoreCase("target")){
+            } else if (args[0].equalsIgnoreCase("target")) {
                 npc.getNavigator().setTarget(p.getLocation());
             }
         }

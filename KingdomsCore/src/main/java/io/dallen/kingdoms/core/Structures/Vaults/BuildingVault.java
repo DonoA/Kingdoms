@@ -41,94 +41,100 @@ import org.bukkit.inventory.ItemStack;
  *
  * @author donoa_000
  */
-public class BuildingVault implements Vault, SaveType.Saveable{ // Will start pile from center and add blocks outward
-    @Getter @Setter
+public class BuildingVault implements Vault, SaveType.Saveable { // Will start pile from center and add blocks outward
+
+    @Getter
+    @Setter
     private Structure owner;
-    
+
     @Getter
     private double uniqueSize;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private int fullSlots;
-    
+
     @Getter
     private int capacity;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private int amountFull;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private Polygon floorPlan;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private ItemStack[] contents;
-    
+
     @Getter
     private ResourcePile pile;
-    
+
     @Getter
     private List<Material> list = null;
-    
+
     @Getter
     private List<String> listPatern = null;
-    
+
     private ListType listType = ListType.ALL;
-    
+
     public BuildingVault(int uniqueSize, int capacity, Structure owner) {
         this.owner = owner;
         this.uniqueSize = uniqueSize;
         this.capacity = capacity;
         contents = new ItemStack[uniqueSize];
     }
-    
+
     public BuildingVault(int uniqueSize, int capacity) {
         this.uniqueSize = uniqueSize;
         this.capacity = capacity;
         contents = new ItemStack[uniqueSize];
     }
-    
-    public void setFilter(ListType listType, Material...items){
+
+    public void setFilter(ListType listType, Material... items) {
         this.listType = listType;
-        if(listType.equals(ListType.WHITELIST) || listType.equals(ListType.BLACKLIST)){
+        if (listType.equals(ListType.WHITELIST) || listType.equals(ListType.BLACKLIST)) {
             listPatern = null;
             list = Arrays.asList(items);
         }
     }
-    
-    public void setFilter(ListType listType, String...listPatern){
+
+    public void setFilter(ListType listType, String... listPatern) {
         this.listType = listType;
-        if(listType.equals(ListType.WHITELIST) || listType.equals(ListType.BLACKLIST)){
+        if (listType.equals(ListType.WHITELIST) || listType.equals(ListType.BLACKLIST)) {
             list = null;
             this.listPatern = Arrays.asList(listPatern);
         }
     }
-    
-    public void setFilter(ListType listType){
+
+    public void setFilter(ListType listType) {
         this.listType = listType;
     }
-    
-    public boolean canAdd(Material m){
-        if(listType.equals(ListType.ALL)){
+
+    public boolean canAdd(Material m) {
+        if (listType.equals(ListType.ALL)) {
             return true;
-        }else if(listType.equals(ListType.NONE)){
+        } else if (listType.equals(ListType.NONE)) {
             return false;
-        }else if(listType.equals(ListType.WHITELIST)){
-            if(listPatern == null && list.contains(m)){
+        } else if (listType.equals(ListType.WHITELIST)) {
+            if (listPatern == null && list.contains(m)) {
                 return true;
-            }else if(listPatern != null){
-                for(String s : listPatern){
-                    if(m.name().contains(s)){
+            } else if (listPatern != null) {
+                for (String s : listPatern) {
+                    if (m.name().contains(s)) {
                         return true;
                     }
                 }
             }
             return false;
-        }else if(listType.equals(ListType.BLACKLIST)){
-            if(listPatern == null && list.contains(m)){
+        } else if (listType.equals(ListType.BLACKLIST)) {
+            if (listPatern == null && list.contains(m)) {
                 return false;
-            }else if(listPatern != null){
-                for(String s : listPatern){
-                    if(m.name().contains(s)){
+            } else if (listPatern != null) {
+                for (String s : listPatern) {
+                    if (m.name().contains(s)) {
                         return false;
                     }
                 }
@@ -137,16 +143,16 @@ public class BuildingVault implements Vault, SaveType.Saveable{ // Will start pi
         }
         return true;
     }
-    
+
     @Override
-    public boolean SendToPlayer(Player p){
+    public boolean SendToPlayer(Player p) {
         Inventory inv = Bukkit.createInventory(p, (int) uniqueSize, "Building Inventory");
-        for(ItemStack m : contents){
-            if(m != null){
+        for (ItemStack m : contents) {
+            if (m != null) {
                 ItemStack toAdd = m.clone();
                 toAdd.setAmount((m.getAmount() < 64 ? m.getAmount() : 64));
-                List<String> lore = (toAdd.hasItemMeta() && toAdd.getItemMeta().hasLore() ? 
-                        toAdd.getItemMeta().getLore() : new ArrayList<String>());
+                List<String> lore = (toAdd.hasItemMeta() && toAdd.getItemMeta().hasLore()
+                        ? toAdd.getItemMeta().getLore() : new ArrayList<String>());
                 lore.add(" ");
                 lore.add(m.getAmount() + " total");
                 toAdd.getItemMeta().setLore(lore);
@@ -157,9 +163,9 @@ public class BuildingVault implements Vault, SaveType.Saveable{ // Will start pi
         p.openInventory(inv);
         return false;
     }
-    
+
     @Override
-    public boolean CanOpen(Player p){
+    public boolean CanOpen(Player p) {
 //        if(owner.getMunicipal() != null && PlayerData.getData(p) != null){
 //            PlayerData pd = PlayerData.getData(p);
 //            if(pd.getMunicipal().equals(owner.getMunicipal())){
@@ -173,43 +179,43 @@ public class BuildingVault implements Vault, SaveType.Saveable{ // Will start pi
 //        return false;
         return true;
     }
-    
-    public void updateInventory(Inventory inv){
-        for(int i = 0; i < inv.getSize(); i++){
-            if(contents[i] != null){
-                if(!contents[i].getType().equals(Material.AIR)){
+
+    public void updateInventory(Inventory inv) {
+        for (int i = 0; i < inv.getSize(); i++) {
+            if (contents[i] != null) {
+                if (!contents[i].getType().equals(Material.AIR)) {
                     ItemStack toAdd = contents[i].clone();
                     toAdd.setAmount((contents[i].getAmount() < 64 ? contents[i].getAmount() : 64));
-                    List<String> lore = (toAdd.hasItemMeta() && toAdd.getItemMeta().hasLore() ? 
-                            toAdd.getItemMeta().getLore() : new ArrayList<String>());
+                    List<String> lore = (toAdd.hasItemMeta() && toAdd.getItemMeta().hasLore()
+                            ? toAdd.getItemMeta().getLore() : new ArrayList<String>());
                     lore.add(" ");
                     lore.add(contents[i].getAmount() + " total");
                     toAdd.getItemMeta().setLore(lore);
                     inv.setItem(i, toAdd);
-                }else{
+                } else {
                     inv.setItem(i, new ItemStack(Material.AIR));
                     contents[i] = null;
                 }
-            }else{
+            } else {
                 inv.setItem(i, new ItemStack(Material.AIR));
             }
         }
     }
-    
+
     /**
-     * 
+     *
      * @param is the stack to be removed
      * @return the amount remaining in the passed stack after removal
      */
-    public int removeItem(ItemStack is){
-        for(ItemStack mw : contents) {
-            if(mw != null && mw.isSimilar(is)) {
+    public int removeItem(ItemStack is) {
+        for (ItemStack mw : contents) {
+            if (mw != null && mw.isSimilar(is)) {
                 mw.setAmount(mw.getAmount() - is.getAmount());
-                if(mw.getAmount() == 0){
+                if (mw.getAmount() == 0) {
                     mw.setType(Material.AIR);
                     fullSlots--;
                     return 0;
-                }else{
+                } else {
                     int amnt = -mw.getAmount();
                     mw.setAmount(0);
                     return amnt;
@@ -218,22 +224,22 @@ public class BuildingVault implements Vault, SaveType.Saveable{ // Will start pi
         }
         return is.getAmount();
     }
-    
+
     /**
-     * 
+     *
      * @param is the stack to be added
      * @return if the item could be added
      */
-    public boolean addItem(ItemStack is){
-        if(fullSlots < uniqueSize && amountFull < capacity && canAdd(is.getType())){
+    public boolean addItem(ItemStack is) {
+        if (fullSlots < uniqueSize && amountFull < capacity && canAdd(is.getType())) {
             boolean added = false;
-            for(ItemStack mw : contents) {
-                if(mw != null && mw.isSimilar(is)) {
+            for (ItemStack mw : contents) {
+                if (mw != null && mw.isSimilar(is)) {
                     mw.setAmount(mw.getAmount() + is.getAmount());
                     added = true;
                 }
             }
-            if(!added){
+            if (!added) {
                 contents[fullSlots] = is.clone();
                 fullSlots++;
             }
@@ -241,36 +247,36 @@ public class BuildingVault implements Vault, SaveType.Saveable{ // Will start pi
         }
         return false;
     }
-    
-    public ItemStack getMaterial(ItemStack mat){
-        for(ItemStack mw : contents){
-            if(mw != null && mw.isSimilar(mat) && mw.getAmount() > 0){
+
+    public ItemStack getMaterial(ItemStack mat) {
+        for (ItemStack mw : contents) {
+            if (mw != null && mw.isSimilar(mat) && mw.getAmount() > 0) {
                 return mw;
             }
         }
         return null;
     }
-    
-    public JsonBuildingVault toJsonObject(){
+
+    public JsonBuildingVault toJsonObject() {
         JsonBuildingVault jbv = new JsonBuildingVault();
         jbv.setAmountFull(amountFull);
         jbv.setCapacity(capacity);
         ArrayList<JsonItemStack> content = new ArrayList<JsonItemStack>();
-        for(ItemStack mw : contents){
-            if(mw != null){
+        for (ItemStack mw : contents) {
+            if (mw != null) {
                 content.add(new JsonItemStack(mw));
-            }else{
+            } else {
                 content.add(null);
             }
         }
-        jbv.setContents(content.toArray(new JsonItemStack[] {}));
+        jbv.setContents(content.toArray(new JsonItemStack[]{}));
 //        jbv.setFloorPlan(new JsonPolygon(floorPlan));
         jbv.setFullSlots(fullSlots);
         jbv.setOwner(owner.getStructureID());
         jbv.setUniqueSize(uniqueSize);
         return jbv;
     }
-    
+
 //    public static class InvenHandler implements Listener{
 //        
 //        private static HashMap<String, BuildingVault> openVaults = new HashMap<String, BuildingVault>();
@@ -302,9 +308,8 @@ public class BuildingVault implements Vault, SaveType.Saveable{ // Will start pi
 //            }
 //        }
 //    }
-    
-    public static class ResourcePile implements SaveType.Saveable{
-        
+    public static class ResourcePile implements SaveType.Saveable {
+
         @Getter
         private Location startLoc;
         @Getter
@@ -313,63 +318,63 @@ public class BuildingVault implements Vault, SaveType.Saveable{ // Will start pi
         private double angleA = 0;
         @Getter
         private double angleB = 0;
-        
-        public ResourcePile(Location start){
+
+        public ResourcePile(Location start) {
             this.startLoc = start;
         }
-        
+
         @Override
-        public JsonBuildingVault toJsonObject(){
+        public JsonBuildingVault toJsonObject() {
             throw new UnsupportedOperationException();
         }
-        
-        public void addBlock(){
-            new Thread(new Runnable(){
+
+        public void addBlock() {
+            new Thread(new Runnable() {
                 @Override
-                public void run(){
-                    Location sugLoc = startLoc.clone().add(dist*Math.sin(Math.toRadians(angleA)), dist*Math.sin(Math.toRadians(angleB)), dist*Math.cos(Math.toRadians(angleA)));
-                    while(!sugLoc.getBlock().getType().equals(Material.AIR)){
+                public void run() {
+                    Location sugLoc = startLoc.clone().add(dist * Math.sin(Math.toRadians(angleA)), dist * Math.sin(Math.toRadians(angleB)), dist * Math.cos(Math.toRadians(angleA)));
+                    while (!sugLoc.getBlock().getType().equals(Material.AIR)) {
                         angleA++;
-                        if(angleA >= 360){
+                        if (angleA >= 360) {
                             angleB++;
                             angleA = 0;
                         }
-                        if(angleB >= 180){
+                        if (angleB >= 180) {
                             angleB = 0;
                             dist++;
                         }
                     }
                     final Location bloc = sugLoc.clone();
-                    Bukkit.getScheduler().runTask(KingdomsCore.getPlugin(), new Runnable(){
+                    Bukkit.getScheduler().runTask(KingdomsCore.getPlugin(), new Runnable() {
                         @Override
-                        public void run(){
+                        public void run() {
                             bloc.getBlock().setType(Material.LAPIS_BLOCK);
                         }
                     });
                 }
             }).start();
         }
-        
-        public void removeBlock(){
-            new Thread(new Runnable(){
+
+        public void removeBlock() {
+            new Thread(new Runnable() {
                 @Override
-                public void run(){
-                    Location sugLoc = startLoc.clone().add(dist*Math.sin(Math.toRadians(angleA)), dist*Math.sin(Math.toRadians(angleB)), dist*Math.cos(Math.toRadians(angleA)));
-                    while(!sugLoc.getBlock().getType().equals(Material.LAPIS_BLOCK)){
+                public void run() {
+                    Location sugLoc = startLoc.clone().add(dist * Math.sin(Math.toRadians(angleA)), dist * Math.sin(Math.toRadians(angleB)), dist * Math.cos(Math.toRadians(angleA)));
+                    while (!sugLoc.getBlock().getType().equals(Material.LAPIS_BLOCK)) {
                         angleA--;
-                        if(angleA <= 0){
+                        if (angleA <= 0) {
                             angleB--;
                             angleA = 360;
                         }
-                        if(angleB <= 0){
+                        if (angleB <= 0) {
                             angleB = 180;
                             dist--;
                         }
                     }
                     final Location bloc = sugLoc.clone();
-                    Bukkit.getScheduler().runTask(KingdomsCore.getPlugin(), new Runnable(){
+                    Bukkit.getScheduler().runTask(KingdomsCore.getPlugin(), new Runnable() {
                         @Override
-                        public void run(){
+                        public void run() {
                             bloc.getBlock().setType(Material.AIR);
                         }
                     });
@@ -377,8 +382,9 @@ public class BuildingVault implements Vault, SaveType.Saveable{ // Will start pi
             }).start();
         }
     }
-    
-    public static enum ListType{
+
+    public static enum ListType {
+
         WHITELIST, BLACKLIST, ALL, NONE;
     }
 }

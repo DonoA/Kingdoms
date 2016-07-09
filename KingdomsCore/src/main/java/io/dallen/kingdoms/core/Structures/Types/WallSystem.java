@@ -19,7 +19,6 @@
  */
 package io.dallen.kingdoms.core.Structures.Types;
 
-
 import io.dallen.kingdoms.core.Handlers.BuildMenuHandler;
 import io.dallen.kingdoms.core.Municipality;
 import io.dallen.kingdoms.core.Storage.JsonWallSystem;
@@ -43,14 +42,14 @@ import org.bukkit.inventory.ItemStack;
  *
  * @author donoa_000
  */
-public class WallSystem implements SaveType.Saveable{
-    
+public class WallSystem implements SaveType.Saveable {
+
     @Getter
     private HashMap<WallType, ArrayList<Wall>> Parts = new HashMap<WallType, ArrayList<Wall>>();
-    
+
     @Getter
     private Municipality municipal;
-    
+
     public WallSystem(Municipality m) {
         this.municipal = m;
         Parts.put(WallType.WALL, new ArrayList<Wall>());
@@ -58,15 +57,15 @@ public class WallSystem implements SaveType.Saveable{
         Parts.put(WallType.GATE, new ArrayList<Wall>());
         Parts.put(WallType.TOWER, new ArrayList<Wall>());
     }
-    
-    public boolean recalculateBase(){//Should be called async if possible
+
+    public boolean recalculateBase() {//Should be called async if possible
         ArrayList<Wall> corners = new ArrayList<Wall>();
         corners.addAll(Parts.get(WallType.CORNER));
         corners.addAll(Parts.get(WallType.TOWER));
         int[] Xs = new int[corners.size()];
         int[] Zs = new int[corners.size()];
         int i = 0;
-        for(i = 0; i < corners.size(); i++){
+        for (i = 0; i < corners.size(); i++) {
             Xs[i] = (int) LocationUtil.asPoint(corners.get(i).getCenter()).getX();
             Zs[i] = (int) LocationUtil.asPoint(corners.get(i).getCenter()).getY();
         }
@@ -74,13 +73,13 @@ public class WallSystem implements SaveType.Saveable{
         municipal.setBase(newBase);
         return true;
     }
-    
-    public JsonWallSystem toJsonObject(){
+
+    public JsonWallSystem toJsonObject() {
         JsonWallSystem jws = new JsonWallSystem();
         HashMap<String, ArrayList<Integer>> pts = new HashMap<String, ArrayList<Integer>>();
-        for(Entry<WallType, ArrayList<Wall>> e : Parts.entrySet()){
+        for (Entry<WallType, ArrayList<Wall>> e : Parts.entrySet()) {
             ArrayList<Integer> ids = new ArrayList<Integer>();
-            for(Wall w : e.getValue()){
+            for (Wall w : e.getValue()) {
                 ids.add(w.getStructureID());
             }
             pts.put(e.getKey().name(), ids);
@@ -88,72 +87,76 @@ public class WallSystem implements SaveType.Saveable{
         jws.setParts(pts);
         return jws;
     }
-    
+
     public static enum WallType {
+
         WALL, GATE, TOWER, CORNER
     }
-    
-    public static class Wall extends Plot{
+
+    public static class Wall extends Plot {
+
         @Getter
         private static ArrayList<String> damageBars = new ArrayList<String>();
-        
+
         @Getter
         private ArrayList<Player> currInteracters = new ArrayList<Player>();
-        
+
         @Getter
         private BossBar damageBar;
-        
+
         @Getter
         private WallType type;
-        
+
         @Getter
         private ChestGUI EditPlot;
-        
+
         @Getter
         private ChestGUI BuildMenu;
 
-        
-        
-        public Wall(Plot p, WallType type){
+        public Wall(Plot p, WallType type) {
             super(p);
             this.type = type;
-            EditPlot = new ChestGUI("Wall", 2, new MenuHandler()){{
-                setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
-                setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
-                setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
-            }};
-            
-            BuildMenu = new ChestGUI("Build Options", 2, new MenuHandler()){{
-                setOption(1*9+3, new ItemStack(Material.ENCHANTED_BOOK), "Tall Wall");
-                setOption(1*9+4, new ItemStack(Material.ENCHANTED_BOOK), "Short Wall");
-                setOption(1*9+5, new ItemStack(Material.ENCHANTED_BOOK), "Other");
-            }};
+            EditPlot = new ChestGUI("Wall", 2, new MenuHandler()) {
+                {
+                    setOption(1 * 9 + 3, new ItemStack(Material.ENCHANTED_BOOK), "Demolish");
+                    setOption(1 * 9 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Erase");
+                    setOption(1 * 9 + 5, new ItemStack(Material.ENCHANTED_BOOK), "Build");
+                }
+            };
+
+            BuildMenu = new ChestGUI("Build Options", 2, new MenuHandler()) {
+                {
+                    setOption(1 * 9 + 3, new ItemStack(Material.ENCHANTED_BOOK), "Tall Wall");
+                    setOption(1 * 9 + 4, new ItemStack(Material.ENCHANTED_BOOK), "Short Wall");
+                    setOption(1 * 9 + 5, new ItemStack(Material.ENCHANTED_BOOK), "Other");
+                }
+            };
         }
-        
-        public void damage(){
-            damageBar.setProgress(damageBar.getProgress()-1);
+
+        public void damage() {
+            damageBar.setProgress(damageBar.getProgress() - 1);
         }
-        
-        public void repair(){
-            damageBar.setProgress(damageBar.getProgress()+1);
+
+        public void repair() {
+            damageBar.setProgress(damageBar.getProgress() + 1);
         }
-        
+
         @Override
-        public void sendEditMenu(Player p){
+        public void sendEditMenu(Player p) {
             EditPlot.setOption(4, new ItemStack(Material.ENCHANTED_BOOK), "Train Builder", this);
-            
+
             EditPlot.sendMenu(p);
         }
 
-        public class MenuHandler implements OptionClickEventHandler{
+        public class MenuHandler implements OptionClickEventHandler {
 
             @Override
-            public void onOptionClick(OptionClickEvent e){
-                if(e.getMenuName().equals(EditPlot.getName())){
+            public void onOptionClick(OptionClickEvent e) {
+                if (e.getMenuName().equals(EditPlot.getName())) {
                     BuildMenuHandler.chestBuildOptions(e, Wall.this);
                 }
             }
         }
     }
-    
+
 }

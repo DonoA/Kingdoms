@@ -35,58 +35,58 @@ import org.bukkit.event.player.PlayerInteractEvent;
  * @author donoa_000
  */
 @NoArgsConstructor
-public class MultiBlock implements Listener{
-    
+public class MultiBlock implements Listener {
+
     private String type;
     private Location center;
     private int len; // Z
     private int wid; // X
     private int height; // Y
-    
+
     @Getter
     private static ArrayList<MultiBlock> MultiBlocks = new ArrayList<MultiBlock>();
-    
+
     @Getter
-    private final static Class[] MultiBlockClasses = new Class[] {Forge.class};
-    
-    public MultiBlock(Location cent, int l, int w, int h){
+    private final static Class[] MultiBlockClasses = new Class[]{Forge.class};
+
+    public MultiBlock(Location cent, int l, int w, int h) {
         this.center = cent;
         this.len = l;
         this.wid = w;
         this.height = h;
     }
-    
-    public static void loadForm(){
+
+    public static void loadForm() {
         throw new UnsupportedOperationException();
     }
-    
-    public static MultiBlock getMultiBlock(Location bLoc){
-        for(MultiBlock mb : MultiBlocks){
-            if(bLoc.getBlockX() >= mb.center.getBlockX() - mb.len/2 &&
-               bLoc.getBlockX() <= mb.center.getBlockX() + mb.len/2 &&
-               bLoc.getBlockY() >= mb.center.getBlockY() &&
-               bLoc.getBlockY() <= mb.center.getBlockY() + mb.height &&
-               bLoc.getBlockZ() >= mb.center.getBlockZ() - mb.wid/2 &&
-               bLoc.getBlockZ() <= mb.center.getBlockZ() + mb.wid/2){
+
+    public static MultiBlock getMultiBlock(Location bLoc) {
+        for (MultiBlock mb : MultiBlocks) {
+            if (bLoc.getBlockX() >= mb.center.getBlockX() - mb.len / 2
+                    && bLoc.getBlockX() <= mb.center.getBlockX() + mb.len / 2
+                    && bLoc.getBlockY() >= mb.center.getBlockY()
+                    && bLoc.getBlockY() <= mb.center.getBlockY() + mb.height
+                    && bLoc.getBlockZ() >= mb.center.getBlockZ() - mb.wid / 2
+                    && bLoc.getBlockZ() <= mb.center.getBlockZ() + mb.wid / 2) {
                 return mb;
             }
         }
         return null;
     }
-    
+
     @EventHandler
-    public void onInteract(PlayerInteractEvent e){
-        
+    public void onInteract(PlayerInteractEvent e) {
+
     }
-    
-    public void destroy(){
-        for(int X = center.getBlockX() - wid/2; X < center.getBlockX() + wid/2; X++){
-            for(int Z = center.getBlockZ() - len/2; Z < center.getBlockZ() + len/2; Z++){
-                for(int Y = center.getBlockY() - height/2; Y < center.getBlockY() + height/2; Y++){
+
+    public void destroy() {
+        for (int X = center.getBlockX() - wid / 2; X < center.getBlockX() + wid / 2; X++) {
+            for (int Z = center.getBlockZ() - len / 2; Z < center.getBlockZ() + len / 2; Z++) {
+                for (int Y = center.getBlockY() - height / 2; Y < center.getBlockY() + height / 2; Y++) {
                     MultiBlocks.remove(this);
                 }
             }
         }
     }
-    
+
 }

@@ -30,58 +30,62 @@ import org.bukkit.Location;
  *
  * @author Donovan Allen
  */
-public class FiniteStateMachine{
-    
-    @Getter @Setter
+public class FiniteStateMachine {
+
+    @Getter
+    @Setter
     private Queue<FsmState> stateQueue = new LinkedList<FsmState>();
-    
+
     private FsmState defaultState = null;
-    
-    public FiniteStateMachine(){}
-    
-    public FiniteStateMachine(FsmState defaultState){
+
+    public FiniteStateMachine() {
+    }
+
+    public FiniteStateMachine(FsmState defaultState) {
         this.defaultState = defaultState;
     }
-    
-    public void update(){
-        if(!stateQueue.isEmpty()){
-            if(stateQueue.peek().isComplete()){
+
+    public void update() {
+        if (!stateQueue.isEmpty()) {
+            if (stateQueue.peek().isComplete()) {
                 stateQueue.remove();
             }
             stateQueue.peek().invoke();
-        }else if(defaultState != null){
+        } else if (defaultState != null) {
             defaultState.invoke();
         }
     }
-    
-    public static interface FsmState{
+
+    public static interface FsmState {
+
         public void invoke();
+
         public boolean isComplete();
     }
-    
-    public static class basicNavigation implements FsmState{
-        
+
+    public static class basicNavigation implements FsmState {
+
         private boolean assignedNav = false;
-        
+
         private Location target;
-        
+
         private NPC npc;
-        
-        public basicNavigation(Location target, NPC npc){
+
+        public basicNavigation(Location target, NPC npc) {
             this.target = target;
             this.npc = npc;
         }
-        
+
         @Override
-        public void invoke(){
-            if(!assignedNav && !npc.getNavigator().isNavigating()){
+        public void invoke() {
+            if (!assignedNav && !npc.getNavigator().isNavigating()) {
                 npc.getNavigator().setTarget(target);
                 assignedNav = true;
             }
         }
-        
+
         @Override
-        public boolean isComplete(){
+        public boolean isComplete() {
             return assignedNav && !npc.getNavigator().isNavigating();
         }
     }

@@ -24,5 +24,5 @@ package io.dallen.kingdoms.warcraft;
  * @author Donovan Allen
  */
 public class KingdomsWarcraft {
-    
+
 }

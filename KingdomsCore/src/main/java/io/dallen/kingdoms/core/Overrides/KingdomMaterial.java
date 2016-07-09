@@ -29,6 +29,7 @@ import org.bukkit.inventory.meta.ItemMeta;
  * @author Donovan Allen
  */
 public enum KingdomMaterial {
+
     MULTI_TOOL(Material.DIAMOND_HOE, 1),
     START_BUILD(Material.DIAMOND_HOE, 2),
     ARROW_LEFT(Material.DIAMOND_HOE, 3),
@@ -66,35 +67,35 @@ public enum KingdomMaterial {
     CONTRACT_FILLED(Material.DIAMOND_HOE, 35),
     CONTRACT_UNFINISHED(Material.DIAMOND_HOE, 36),
     DEFAULT(Material.DIAMOND_HOE, 37);
-    
+
     @Getter
     private Material coreItem;
-    
+
     @Getter
     private int dmg;
 
     @Getter
     private ItemMeta Meta;
-    
-    KingdomMaterial(Material coreItem, int dmg){
+
+    KingdomMaterial(Material coreItem, int dmg) {
         this.coreItem = coreItem;
         this.dmg = dmg;
     }
-    
-    public ItemStack getItemStack(){
+
+    public ItemStack getItemStack() {
         ItemStack is = new ItemStack(coreItem);
         is.setDurability((short) dmg);
         return is;
     }
-    
-    public boolean equals(ItemStack is){
+
+    public boolean equals(ItemStack is) {
         return is.getType().equals(coreItem) && is.getDurability() == (short) dmg;
 //        && is.hasItemMeta() && is.getItemMeta().hasDisplayName() && is.getItemMeta().getDisplayName().equals(name);
     }
-    
-    public static KingdomMaterial fromItemStack(ItemStack is){
-        for(KingdomMaterial e : KingdomMaterial.values()){
-            if(e.equals(is)){
+
+    public static KingdomMaterial fromItemStack(ItemStack is) {
+        for (KingdomMaterial e : KingdomMaterial.values()) {
+            if (e.equals(is)) {
                 return e;
             }
         }

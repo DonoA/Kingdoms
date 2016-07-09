@@ -31,30 +31,36 @@ import lombok.Setter;
  * @author Donovan Allen
  */
 @NoArgsConstructor
-public class JsonPlayerData implements SaveType.NativeType.JsonType{
-    @Getter @Setter
+public class JsonPlayerData implements SaveType.NativeType.JsonType {
+
+    @Getter
+    @Setter
     private String Role;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private int Kingdom;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private int Municipal;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private JsonPlayerVault Vault;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private int Might;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private JsonLocation Spawn;
-    
+
 //    @Getter @Setter
 //    private MuteClass muted;
-    
     @Override
-    public PlayerData toJavaObject(){//Must load Kingdoms and plots and things first
+    public PlayerData toJavaObject() {//Must load Kingdoms and plots and things first
         PlayerData pd = new PlayerData();
         pd.setMight(Might);
 //        pd.setMuted(muted);

@@ -50,49 +50,52 @@ import org.reflections.Reflections;
  *
  * @author donoa_000
  */
-public class Municipality implements SaveType.Saveable{
-    
+public class Municipality implements SaveType.Saveable {
+
     private static int currID = 0;
-    
+
     @Getter
     private int MunicipalID;
-    
+
     @Getter
     private final static ArrayList<Municipality> allMunicipals = new ArrayList<Municipality>();
-    
+
     @Getter
     private final HashMap<Class, ArrayList<Structure>> Structures = new HashMap<Class, ArrayList<Structure>>();
-    
+
     @Getter
     private Structure Center;
-    
+
     @Getter
     private WallSystem walls;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private Polygon Base;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private Ellipse2D Influence;
-    
+
     @Getter
     private MunicipalType type;
-    
+
     @Getter
     private Kingdom Kingdom;
-    
+
     @Getter
     private Date creation;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private Location influenceCenter;
-    
-    public Municipality(Structure center){
+
+    public Municipality(Structure center) {
         this.Center = center;
         this.walls = new WallSystem(this);
         this.type = MunicipalType.MANOR;
         this.creation = new Date(System.currentTimeMillis());
-        for(Class c : KingdomsCore.getStructureClasses()){
+        for (Class c : KingdomsCore.getStructureClasses()) {
             Structures.put(c, new ArrayList<Structure>());
         }
         Structures.put(Plot.class, new ArrayList<Structure>());
@@ -101,34 +104,35 @@ public class Municipality implements SaveType.Saveable{
         currID++;
         allMunicipals.add(this);
     }
-    
-    public void createKingdom(){
+
+    public void createKingdom() {
         Kingdom = new Kingdom();
     }
-    
-    public static enum MunicipalType{
+
+    public static enum MunicipalType {
+
         // DAEN
-        VILLAGE(100), 
-        MANOR(150), 
-        TOWN(200), 
-        CITY(250), 
-        KEEP(300), 
+        VILLAGE(100),
+        MANOR(150),
+        TOWN(200),
+        CITY(250),
+        KEEP(300),
         CITIDEL(400);
-        
+
         @Getter
         private int radius;
-        
-        MunicipalType(int radius){
+
+        MunicipalType(int radius) {
             this.radius = radius;
         }
     }
-    
-    public static Municipality inMunicipal(Location l){
+
+    public static Municipality inMunicipal(Location l) {
         Municipality curr = null;
         Date oldDate = new Date(System.currentTimeMillis());
-        for(Municipality m : allMunicipals){
-            if(m.getBase().contains(LocationUtil.asPoint(l))){
-                if(m.getCreation().before(oldDate)){
+        for (Municipality m : allMunicipals) {
+            if (m.getBase().contains(LocationUtil.asPoint(l))) {
+                if (m.getCreation().before(oldDate)) {
                     oldDate = m.getCreation();
                     curr = m;
                 }
@@ -136,32 +140,32 @@ public class Municipality implements SaveType.Saveable{
         }
         return curr;
     }
-    
-    public void addStructure(Structure s){
-        if(s instanceof Wall){
+
+    public void addStructure(Structure s) {
+        if (s instanceof Wall) {
             Wall w = (Wall) s;
             walls.getParts().get(w.getType()).add(w);
             w.setMunicipal(this);
         }
-        for(Class c : KingdomsCore.getStructureClasses()){
-            if(s.getClass().isAssignableFrom(c)){
+        for (Class c : KingdomsCore.getStructureClasses()) {
+            if (s.getClass().isAssignableFrom(c)) {
                 Structures.get(c).add(s);
                 s.setMunicipal(this);
                 return;
             }
         }
-        if(s instanceof Plot){
+        if (s instanceof Plot) {
             Structures.get(Plot.class).add(s);
         }
     }
-    
-    public List<Structure> materialLocation(ItemStack is){
+
+    public List<Structure> materialLocation(ItemStack is) {
         List<Structure> materialLocations = new ArrayList<Structure>();
-        for(Class<? extends Plot> cls : KingdomsCore.getStructureClasses()){
-            if(Storage.class.isAssignableFrom(cls)){
-                for(Structure struct : this.Structures.get(cls)){
+        for (Class<? extends Plot> cls : KingdomsCore.getStructureClasses()) {
+            if (Storage.class.isAssignableFrom(cls)) {
+                for (Structure struct : this.Structures.get(cls)) {
                     Storage s = (Storage) struct;
-                    if(((BuildingVault) s.getStorage()).getMaterial(is) != null){
+                    if (((BuildingVault) s.getStorage()).getMaterial(is) != null) {
                         materialLocations.add(struct);
                     }
                 }
@@ -169,15 +173,15 @@ public class Municipality implements SaveType.Saveable{
         }
         return materialLocations;
     }
-    
-    public void removeMaterial(ItemStack is){
-        for(Class<? extends Plot> cls : KingdomsCore.getStructureClasses()){
-            if(Storage.class.isAssignableFrom(cls)){
-                for(Structure struct : this.Structures.get(cls)){
+
+    public void removeMaterial(ItemStack is) {
+        for (Class<? extends Plot> cls : KingdomsCore.getStructureClasses()) {
+            if (Storage.class.isAssignableFrom(cls)) {
+                for (Structure struct : this.Structures.get(cls)) {
                     Storage s = (Storage) struct;
-                    if(((BuildingVault) s.getStorage()).getMaterial(is) != null){
+                    if (((BuildingVault) s.getStorage()).getMaterial(is) != null) {
                         is.setAmount(((BuildingVault) s.getStorage()).removeItem(is));
-                        if(is.getAmount() == 0){
+                        if (is.getAmount() == 0) {
                             return;
                         }
                     }
@@ -185,28 +189,29 @@ public class Municipality implements SaveType.Saveable{
             }
         }
     }
-    
+
     @Override
-    public JsonMunicipality toJsonObject(){
+    public JsonMunicipality toJsonObject() {
         JsonMunicipality jm = new JsonMunicipality();
-        if(Base != null){
+        if (Base != null) {
             jm.setBase(new JsonPolygon(Base));
-        }else{
+        } else {
             jm.setBase(null);
         }
         jm.setStructures(new ArrayList<Integer>());
-        for(ArrayList<Structure> st : Structures.values()){
-            for(Structure s : st){
+        for (ArrayList<Structure> st : Structures.values()) {
+            for (Structure s : st) {
                 jm.getStructures().add(s.getStructureID());
             }
         }
         jm.setCenter(Center.getStructureID());
         jm.setCreation(creation);
         jm.setInfluence(new JsonEllipse(Influence));
-        if(Kingdom != null)
+        if (Kingdom != null) {
             jm.setKingdom(Kingdom.getKingdomID());
-        else
+        } else {
             jm.setKingdom(-1);
+        }
         jm.setMunicipalID(MunicipalID);
         jm.setType(type.name());
         jm.setWalls(walls.toJsonObject());
