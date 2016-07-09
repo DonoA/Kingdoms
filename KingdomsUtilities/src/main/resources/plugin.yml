@@ -1,0 +1,5 @@
+name: ${project.artifactId}
+main: ${project.groupId}.kingdoms.utilities.${project.artifactId}
+version: ${project.version}
+author: Dallen/Donovan Allen
+depend: [Citizens, ProtocolLib, BarAPI]

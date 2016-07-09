@@ -72,8 +72,7 @@ public class PlayerData implements SaveType.Saveable{
     @Getter @Setter
     private Location Spawn;
     
-//    @Getter @Setter
-//    private MuteClass muted;
+    
     
     @Getter
     private Rating contractorRating;

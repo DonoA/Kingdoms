@@ -1,0 +1,44 @@
+name: ${project.artifactId}
+main: ${project.groupId}.kingdoms.core.${project.artifactId}
+version: ${project.version}
+author: Dallen/Donovan Allen
+depend: [Citizens, ProtocolLib, BarAPI, KingdomsUtilities]
+load: STARTUP
+commands:
+  Party:
+    description: Party Command
+    usage: |
+            /Party
+            /Party invite <player>
+            /Party leave
+            /Party kick <player>
+            /Party join <player>
+  menu:
+    description: opens the server main menu
+    aliases: m
+    usage: |
+            /menu
+            /menu textures
+            /menu disconnect
+            /menu serverSelect
+            /menu connected
+            /menu website
+            /menu donate
+            /menu vote
+            /menu shop
+            /menu ads
+  fillplot:
+    description: debug command
+    usage: /<command>
+  setskins:
+    description: debug command
+    usage: /<command>
+  cleannpcs:
+    description: debug command
+    usage: /<command>
+  decayall:
+    description: debug command
+    usage: /<command>
+  save-kingdoms:
+    description: debug command
+    usage: /<command>

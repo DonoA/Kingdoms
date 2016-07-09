@@ -24,6 +24,7 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketContainer;
 import io.dallen.kingdoms.core.Kingdom;
 import io.dallen.kingdoms.core.KingdomsCore;
+import io.dallen.kingdoms.core.Structures.Plot;
 import io.dallen.kingdoms.essentials.KingdomsEssentials;
 import io.dallen.kingdoms.utilities.Utils.ChestGUI;
 import io.dallen.kingdoms.utilities.Utils.ChestGUI.OptionClickEvent;
@@ -84,6 +85,14 @@ public class AdminCommands implements CommandExecutor, OptionClickEventHandler{
                 }else if(args[0].equalsIgnoreCase("levels")){
                     
                 }
+            }if(cmd.getName().equalsIgnoreCase("fillplot")){
+            Player plr = (Player) sender;
+            plr.sendMessage("To start a building contruction type the schematic name and build speed in chat");
+            Plot p = Plot.inPlot(plr.getLocation());
+//            BuildingHandler.StringInput in = new BuildingHandler.StringInput("buildConst", p, new BuildContract((Player) sender,
+//                    new ChestGUI.OptionClickEvent((Player) sender, -1, null, 
+//                            "Build", null, null)));
+//            BuildingHandler.getOpenInputs().put(plr.getName(), in);
             }else if(cmd.getName().equalsIgnoreCase("crash") && args.length > 0){
                 if(Bukkit.getPlayer(args[0]) != null){
                     Player p = Bukkit.getPlayer(args[0]);
