@@ -37,12 +37,8 @@
               <minimizeJar>true</minimizeJar>
               <relocations>
                 <relocation>
-                  <pattern>com.fasterxml</pattern>
-                  <shadedPattern>libs.com.fasterxml</shadedPattern>
-                </relocation>
-                <relocation>
-                  <pattern>com.lambdaworks.redis</pattern>
-                  <shadedPattern>libs.com.lambdaworks.redis</shadedPattern>
+                  <pattern>org.reflections</pattern>
+                  <shadedPattern>libs.kingdoms.rpg.org.reflections</shadedPattern>
                 </relocation>
               </relocations>
               <artifactSet>

@@ -81,44 +81,48 @@ public class KingdomsCore extends KingdomModual {
 
     @Getter
     private static ChangeTracker changes;
-    
+
     @Getter
-    private static Runnable onServerLoad = new Runnable(){ // great api bukkit... really
-            @Override
-            public void run(){
-                for(String d : Plugin.getDescription().getDepend()){
-                    if((Plugin.getServer().getPluginManager().getPlugin(d) == null) || 
-                        (!Plugin.getServer().getPluginManager().getPlugin(d).isEnabled())){
-                        //Check version
-                        LogUtil.printErr(d + " not found!");
-                        LogUtil.printErr("Shutting Down!");
-                        Plugin.getServer().getPluginManager().disablePlugin(Plugin);
-                        return;
-                    }
-                }
-                NPCs = new NpcManager();
-                if (Plugin.getConfig().getBoolean("debug.enabled")) {
-                    DebugCommands dbg = new DebugCommands(new File(Plugin.getConfig().getString("debug.buildfolder")));
-                    Plugin.getCommand("fillplot").setExecutor(dbg);
-                    Plugin.getCommand("setskins").setExecutor(dbg);
-                    Plugin.getCommand("cleannpcs").setExecutor(dbg);
-                    Plugin.getCommand("decayall").setExecutor(dbg);
-                    Plugin.getCommand("save-kingdoms").setExecutor(dbg);
+    private boolean hasStructures = true;
+
+    @Getter
+    private static Runnable onServerLoad = new Runnable() { // great api bukkit... really
+        @Override
+        public void run() {
+            for (String d : Plugin.getDescription().getDepend()) {
+                if ((Plugin.getServer().getPluginManager().getPlugin(d) == null)
+                        || (!Plugin.getServer().getPluginManager().getPlugin(d).isEnabled())) {
+                    //Check version
+                    LogUtil.printErr(d + " not found!");
+                    LogUtil.printErr("Shutting Down!");
+                    Plugin.getServer().getPluginManager().disablePlugin(Plugin);
+                    return;
                 }
             }
-        };
+            NPCs = new NpcManager();
+            if (Plugin.getConfig().getBoolean("debug.enabled")) {
+                DebugCommands dbg = new DebugCommands(new File(Plugin.getConfig().getString("debug.buildfolder")));
+                Plugin.getCommand("fillplot").setExecutor(dbg);
+                Plugin.getCommand("setskins").setExecutor(dbg);
+                Plugin.getCommand("cleannpcs").setExecutor(dbg);
+                Plugin.getCommand("decayall").setExecutor(dbg);
+                Plugin.getCommand("save-kingdoms").setExecutor(dbg);
+            }
+            SkinPacketHandler SkinHandler = new SkinPacketHandler();
+            protocolManager.addPacketListener(SkinHandler.getAdapter());
+            Bukkit.getScheduler().runTaskAsynchronously(Plugin, SkinHandler);
+            skinHandler = SkinHandler;
+        }
+    };
 
     @Override
+    @SuppressWarnings("unchecked")
     public void onEnable() {
         Plugin = this;
         setupDatabase();
         protocolManager = ProtocolLibrary.getProtocolManager();
-        SkinPacketHandler SkinHandler = new SkinPacketHandler();
-        protocolManager.addPacketListener(SkinHandler.getAdapter());
-        Bukkit.getScheduler().runTaskAsynchronously(this, SkinHandler);
-        skinHandler = SkinHandler;
         CraftingHandler crafting = new CraftingHandler(this);
-        for (Class<MultiBlock> mb : MultiBlock.getMultiBlockClasses()) {
+        for (Class<? extends MultiBlock> mb : MultiBlock.getMultiBlockClasses()) {
             try {
                 mb.getMethod("loadForm").invoke(mb);
             } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
@@ -129,9 +133,12 @@ public class KingdomsCore extends KingdomModual {
             changes = new ChangeTracker(Plugin);
         }
         MainMenuHandler mmh = new MainMenuHandler();
-        
         this.getCommand("menu").setExecutor(mmh);
+        Reflections reflections = new Reflections(getClass().getPackage().getName());
+        setLstn(reflections.getSubTypesOf(Listener.class));
         registerModule(this);
+        StructureClasses.addAll(reflections.getSubTypesOf(Plot.class));
+        NativeTypes.addAll(reflections.getSubTypesOf(SaveType.NativeType.class));
         Bukkit.getScheduler().scheduleSyncDelayedTask(this, onServerLoad);
     }
 
@@ -141,9 +148,7 @@ public class KingdomsCore extends KingdomModual {
     }
 
     public void registerModule(KingdomModual modual) {
-        Reflections reflections = new Reflections(modual.getClass().getPackage().getName());
-        Set<Class<? extends Listener>> lstn = reflections.getSubTypesOf(Listener.class);
-        for (Class<? extends Listener> l : lstn) {
+        for (Class<? extends Listener> l : modual.getLstn()) {
             boolean hasEventHandler = false;
             for (Method m : l.getDeclaredMethods()) {
                 if (m.isAnnotationPresent(EventHandler.class)) {
@@ -154,16 +159,11 @@ public class KingdomsCore extends KingdomModual {
                 try {
                     l.getConstructor();
                     Bukkit.getPluginManager().registerEvents((Listener) l.newInstance(), this);
+                    LogUtil.printDebug("Registered Listener " + l.getSimpleName());
                 } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | SecurityException ex) {
                 }
             }
         }
-        if (modual.isHasStructures()) {
-            reflections = new Reflections(modual.getStructurePath());
-            StructureClasses.addAll(reflections.getSubTypesOf(Plot.class));
-        }
-        reflections = new Reflections(modual.getStoragePath());
-        NativeTypes.addAll(reflections.getSubTypesOf(SaveType.NativeType.class));
         modual.setModualName(modual.getClass().getSimpleName());
         registeredModuals.add(modual);
     }

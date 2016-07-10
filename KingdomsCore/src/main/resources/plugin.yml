@@ -3,7 +3,6 @@ main: ${project.groupId}.kingdoms.core.${project.artifactId}
 version: ${project.version}
 author: Dallen/Donovan Allen
 depend: [Citizens, ProtocolLib, BarAPI, KingdomsUtilities]
-load: STARTUP
 commands:
   Party:
     description: Party Command

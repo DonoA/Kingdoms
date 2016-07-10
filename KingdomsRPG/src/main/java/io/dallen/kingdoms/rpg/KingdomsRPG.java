@@ -22,6 +22,8 @@ package io.dallen.kingdoms.rpg;
 import io.dallen.kingdoms.core.KingdomModual;
 import io.dallen.kingdoms.core.KingdomsCore;
 import lombok.Getter;
+import org.bukkit.event.Listener;
+import org.reflections.Reflections;
 
 /**
  *
@@ -35,6 +37,8 @@ public class KingdomsRPG extends KingdomModual {
     @Override
     public void onEnable() {
         Plugin = this;
+        Reflections reflections = new Reflections(getClass().getPackage().getName());
+        setLstn(reflections.getSubTypesOf(Listener.class));
         KingdomsCore.getPlugin().registerModule(this);
     }
 

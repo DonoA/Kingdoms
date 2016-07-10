@@ -19,29 +19,36 @@
  */
 package io.dallen.kingdoms.core;
 
+import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  *
  * @author Donovan Allen
  */
-public class KingdomModual extends JavaPlugin{
-    
+public class KingdomModual extends JavaPlugin {
+
     @Getter
     private Class<? extends PlayerData> playerData;
 
     @Getter
+    @Setter
+    private Set<Class<? extends Listener>> lstn;
+
+    @Getter
     private String classPath;
-    
+
     @Getter
     private String storagePath;
 
     @Getter
     private String structurePath;
-    
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private String modualName;
 
     @Getter

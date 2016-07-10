@@ -19,8 +19,15 @@
  */
 package io.dallen.kingdoms.utilities;
 
+import io.dallen.kingdoms.utilities.Utils.LogUtil;
+import java.lang.reflect.Method;
+import java.util.Set;
 import lombok.Getter;
+import org.bukkit.Bukkit;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.reflections.Reflections;
 
 /**
  *
@@ -34,6 +41,26 @@ public class KingdomsUtilities extends JavaPlugin {
     @Override
     public void onEnable() {
         Plugin = this;
+        Reflections reflections = new Reflections(getClass().getPackage().getName());
+        LogUtil.printDebug("Loading Utils");
+        Set<Class<? extends Listener>> lstn = reflections.getSubTypesOf(Listener.class);
+        for (Class<? extends Listener> l : lstn) {
+            LogUtil.printDebug("Registered Listener " + l.getSimpleName());
+            boolean hasEventHandler = false;
+            for (Method m : l.getDeclaredMethods()) {
+                if (m.isAnnotationPresent(EventHandler.class)) {
+                    hasEventHandler = true;
+                }
+            }
+            if (hasEventHandler) {
+                try {
+                    l.getConstructor();
+                    Bukkit.getPluginManager().registerEvents((Listener) l.newInstance(), this);
+                    LogUtil.printDebug("Registered Listener " + l.getSimpleName());
+                } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | SecurityException ex) {
+                }
+            }
+        }
     }
 
     @Override

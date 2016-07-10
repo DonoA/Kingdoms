@@ -261,9 +261,9 @@ public class ChestGUI {
                                 }
                             }, 1);
                         }
+                        openMenus.remove(event.getWhoClicked().getName());
                     }
                 }
-                openMenus.remove(event.getWhoClicked().getName());
             }
         }
     }

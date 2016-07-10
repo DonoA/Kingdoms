@@ -53,11 +53,15 @@
                             <relocations>
                                 <relocation>
                                     <pattern>com.fasterxml</pattern>
-                                    <shadedPattern>libs.com.fasterxml</shadedPattern>
+                                    <shadedPattern>libs.kingdoms.core.com.fasterxml</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>com.lambdaworks.redis</pattern>
-                                    <shadedPattern>libs.com.lambdaworks.redis</shadedPattern>
+                                    <shadedPattern>libs.kingdoms.core.com.lambdaworks.redis</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.reflections</pattern>
+                                    <shadedPattern>libs.kingdoms.core.org.reflections</shadedPattern>
                                 </relocation>
                             </relocations>
                             <artifactSet>
@@ -175,9 +179,9 @@
             <type>jar</type>
         </dependency>
         <dependency>
-            <groupId>ai.h2o</groupId>
+            <groupId>org.reflections</groupId>
             <artifactId>reflections</artifactId>
-            <version>0.9.11-SNAPSHOT</version>
+            <version>0.9.10</version>
             <type>jar</type>
         </dependency>
         <dependency>

@@ -28,25 +28,29 @@ import io.dallen.kingdoms.essentials.Commands.KingdomCommands;
 import io.dallen.kingdoms.essentials.Commands.ModerationCommands;
 import io.dallen.kingdoms.essentials.Commands.MuteCommand;
 import lombok.Getter;
+import org.bukkit.event.Listener;
+import org.reflections.Reflections;
 
 /**
  *
  * @author Donovan Allen
  */
-public class KingdomsEssentials extends KingdomModual{
+public class KingdomsEssentials extends KingdomModual {
 
     @Getter
     private final static Runtime runtime = Runtime.getRuntime();
 
     @Getter
     private static KingdomsEssentials Plugin;
-    
+
     @Getter
     private final Class<? extends io.dallen.kingdoms.core.PlayerData> playerData = PlayerData.class;
 
     @Override
     public void onEnable() {
         Plugin = this;
+        Reflections reflections = new Reflections(getClass().getPackage().getName());
+        setLstn(reflections.getSubTypesOf(Listener.class));
         KingdomsCore.getPlugin().registerModule(this);
         ModerationCommands moderation = new ModerationCommands();
         GeneralCommands general = new GeneralCommands();

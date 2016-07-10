@@ -21,16 +21,20 @@ package io.dallen.kingdoms.warcraft;
 
 import io.dallen.kingdoms.core.KingdomModual;
 import io.dallen.kingdoms.core.KingdomsCore;
+import org.bukkit.event.Listener;
+import org.reflections.Reflections;
 
 /**
  *
  * @author Donovan Allen
  */
-public class KingdomsWarcraft extends KingdomModual{
+public class KingdomsWarcraft extends KingdomModual {
 
     @Override
-    public void onEnable(){
+    public void onEnable() {
+        Reflections reflections = new Reflections(getClass().getPackage().getName());
+        setLstn(reflections.getSubTypesOf(Listener.class));
         KingdomsCore.getPlugin().registerModule(this);
     }
-    
+
 }
