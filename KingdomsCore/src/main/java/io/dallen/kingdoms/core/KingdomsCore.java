@@ -36,20 +36,20 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.reflections.Reflections;
 
 /**
  *
  * @author Donovan Allen
  */
-public class KingdomsCore extends JavaPlugin {
+public class KingdomsCore extends KingdomModual {
 
     @Getter
     private static KingdomsCore Plugin;
@@ -59,10 +59,10 @@ public class KingdomsCore extends JavaPlugin {
     private static NpcManager NPCs;
 
     @Getter
-    private static Set<Class<? extends Plot>> StructureClasses;
+    private static List<Class<? extends Plot>> StructureClasses = new ArrayList<Class<? extends Plot>>();
 
     @Getter
-    private static Set<Class<? extends SaveType.NativeType>> NativeTypes;
+    private static List<Class<? extends SaveType.NativeType>> NativeTypes = new ArrayList<Class<? extends SaveType.NativeType>>();
 
     @Getter
     private static ProtocolManager protocolManager;
@@ -81,31 +81,36 @@ public class KingdomsCore extends JavaPlugin {
 
     @Getter
     private static ChangeTracker changes;
+    
+    @Getter
+    private static Runnable onServerLoad = new Runnable(){ // great api bukkit... really
+            @Override
+            public void run(){
+                for(String d : Plugin.getDescription().getDepend()){
+                    if((Plugin.getServer().getPluginManager().getPlugin(d) == null) || 
+                        (!Plugin.getServer().getPluginManager().getPlugin(d).isEnabled())){
+                        //Check version
+                        LogUtil.printErr(d + " not found!");
+                        LogUtil.printErr("Shutting Down!");
+                        Plugin.getServer().getPluginManager().disablePlugin(Plugin);
+                        return;
+                    }
+                }
+                NPCs = new NpcManager();
+                if (Plugin.getConfig().getBoolean("debug.enabled")) {
+                    DebugCommands dbg = new DebugCommands(new File(Plugin.getConfig().getString("debug.buildfolder")));
+                    Plugin.getCommand("fillplot").setExecutor(dbg);
+                    Plugin.getCommand("setskins").setExecutor(dbg);
+                    Plugin.getCommand("cleannpcs").setExecutor(dbg);
+                    Plugin.getCommand("decayall").setExecutor(dbg);
+                    Plugin.getCommand("save-kingdoms").setExecutor(dbg);
+                }
+            }
+        };
 
     @Override
     public void onEnable() {
         Plugin = this;
-        Reflections reflections = new Reflections("io.dallen.Kingdoms.core");
-        Set<Class<? extends Listener>> lstn = reflections.getSubTypesOf(Listener.class);
-        for (Class<? extends Listener> l : lstn) {
-            boolean hasEventHandler = false;
-            for (Method m : l.getDeclaredMethods()) {
-                if (m.isAnnotationPresent(EventHandler.class)) {
-                    hasEventHandler = true;
-                }
-            }
-            if (hasEventHandler) {
-                try {
-                    l.getConstructor();
-                    Bukkit.getPluginManager().registerEvents((Listener) l.newInstance(), this);
-                } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | SecurityException ex) {
-                }
-            }
-        }
-        reflections = new Reflections("io.dallen.Kingdoms.core.Structures.Types");
-        StructureClasses = reflections.getSubTypesOf(Plot.class);
-        reflections = new Reflections("io.dallen.Kingdoms.core.Storage");
-        NativeTypes = reflections.getSubTypesOf(SaveType.NativeType.class);
         setupDatabase();
         protocolManager = ProtocolLibrary.getProtocolManager();
         SkinPacketHandler SkinHandler = new SkinPacketHandler();
@@ -120,61 +125,14 @@ public class KingdomsCore extends JavaPlugin {
                 LogUtil.printErr("error loading multiblock forms");
             }
         }
-        for (String d : this.getDescription().getDepend()) {
-            if ((this.getServer().getPluginManager().getPlugin(d) == null)
-                    || (!this.getServer().getPluginManager().getPlugin(d).isEnabled())) {
-                //Check version
-                LogUtil.printErr(d + " not found!");
-                LogUtil.printErr("Shutting Down!");
-                this.getServer().getPluginManager().disablePlugin(this);
-                return;
-            }
-        }
         if (this.getConfig().getBoolean("decay")) {
             changes = new ChangeTracker(Plugin);
         }
-        NPCs = new NpcManager();
-//        ModerationCommands moderation = new ModerationCommands();
-//        GeneralCommands general = new GeneralCommands();
-//        AdminCommands admin = new AdminCommands();
         MainMenuHandler mmh = new MainMenuHandler();
-        if (this.getConfig().getBoolean("debug.enabled")) {
-            DebugCommands dbg = new DebugCommands(new File(this.getConfig().getString("debug.buildfolder")));
-            this.getCommand("fillplot").setExecutor(dbg);
-            this.getCommand("setskins").setExecutor(dbg);
-            this.getCommand("cleannpcs").setExecutor(dbg);
-            this.getCommand("decayall").setExecutor(dbg);
-            this.getCommand("save-kingdoms").setExecutor(dbg);
-        }
+        
         this.getCommand("menu").setExecutor(mmh);
-//        this.getCommand("crash").setExecutor(admin);
-//        this.getCommand("editschem").setExecutor(admin);
-//        this.getCommand("strack").setExecutor(admin);
-//        this.getCommand("message").setExecutor(general);
-//        this.getCommand("reply").setExecutor(general);
-//        this.getCommand("info").setExecutor(general);
-//        this.getCommand("help").setExecutor(general);
-//        this.getCommand("list").setExecutor(general);
-//        this.getCommand("self").setExecutor(general);
-//        this.getCommand("is").setExecutor(general);
-//        this.getCommand("setpost").setExecutor(general);
-//        this.getCommand("where").setExecutor(moderation);
-//        this.getCommand("ban").setExecutor(moderation);
-//        this.getCommand("unban").setExecutor(moderation);
-//        this.getCommand("ipban").setExecutor(moderation);
-//        this.getCommand("unipban").setExecutor(moderation);
-//        this.getCommand("kick").setExecutor(moderation);
-//        this.getCommand("tmpban").setExecutor(moderation);
-//        this.getCommand("invspy").setExecutor(moderation);
-//        this.getCommand("fjail").setExecutor(moderation);
-//        this.getCommand("vanish").setExecutor(moderation);
-//        this.getCommand("uuid").setExecutor(moderation);
-//        this.getCommand("broadcast").setExecutor(moderation);
-//        this.getCommand("kingdom").setExecutor(new KingdomCommands());
-//        this.getCommand("chat").setExecutor(new ChatHandler());
-//        this.getCommand("party").setExecutor(new Party.PartyCommands());
-//        this.getCommand("mute").setExecutor(new MuteCommand());
-//        RedisManager RM = new RedisManager();
+        registerModule(this);
+        Bukkit.getScheduler().scheduleSyncDelayedTask(this, onServerLoad);
     }
 
     @Override
@@ -183,8 +141,7 @@ public class KingdomsCore extends JavaPlugin {
     }
 
     public void registerModule(KingdomModual modual) {
-        registeredModuals.add(modual);
-        Reflections reflections = new Reflections(modual.getClassPath());
+        Reflections reflections = new Reflections(modual.getClass().getPackage().getName());
         Set<Class<? extends Listener>> lstn = reflections.getSubTypesOf(Listener.class);
         for (Class<? extends Listener> l : lstn) {
             boolean hasEventHandler = false;
@@ -207,6 +164,8 @@ public class KingdomsCore extends JavaPlugin {
         }
         reflections = new Reflections(modual.getStoragePath());
         NativeTypes.addAll(reflections.getSubTypesOf(SaveType.NativeType.class));
+        modual.setModualName(modual.getClass().getSimpleName());
+        registeredModuals.add(modual);
     }
 
     /*

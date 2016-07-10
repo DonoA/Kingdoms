@@ -17,7 +17,7 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.RPG.Skills;
+package io.dallen.kingdoms.rpg.Skills;
 
 /**
  *

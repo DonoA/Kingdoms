@@ -20,29 +20,34 @@
 package io.dallen.kingdoms.essentials;
 
 import io.dallen.kingdoms.core.Handlers.Party;
+import io.dallen.kingdoms.core.KingdomModual;
+import io.dallen.kingdoms.core.KingdomsCore;
 import io.dallen.kingdoms.essentials.Commands.AdminCommands;
 import io.dallen.kingdoms.essentials.Commands.GeneralCommands;
 import io.dallen.kingdoms.essentials.Commands.KingdomCommands;
 import io.dallen.kingdoms.essentials.Commands.ModerationCommands;
 import io.dallen.kingdoms.essentials.Commands.MuteCommand;
 import lombok.Getter;
-import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  *
  * @author Donovan Allen
  */
-public class KingdomsEssentials extends JavaPlugin {
+public class KingdomsEssentials extends KingdomModual{
 
     @Getter
-    private static Runtime runtime = Runtime.getRuntime();
+    private final static Runtime runtime = Runtime.getRuntime();
 
     @Getter
     private static KingdomsEssentials Plugin;
+    
+    @Getter
+    private final Class<? extends io.dallen.kingdoms.core.PlayerData> playerData = PlayerData.class;
 
     @Override
     public void onEnable() {
         Plugin = this;
+        KingdomsCore.getPlugin().registerModule(this);
         ModerationCommands moderation = new ModerationCommands();
         GeneralCommands general = new GeneralCommands();
         AdminCommands admin = new AdminCommands();
@@ -66,12 +71,12 @@ public class KingdomsEssentials extends JavaPlugin {
         this.getCommand("tmpban").setExecutor(moderation);
         this.getCommand("invspy").setExecutor(moderation);
         this.getCommand("fjail").setExecutor(moderation);
-        this.getCommand("vanish").setExecutor(moderation);
+//        this.getCommand("vanish").setExecutor(moderation);
         this.getCommand("uuid").setExecutor(moderation);
         this.getCommand("broadcast").setExecutor(moderation);
         this.getCommand("kingdom").setExecutor(new KingdomCommands());
         this.getCommand("chat").setExecutor(new ChatHandler());
-        this.getCommand("party").setExecutor(new Party.PartyCommands());
+//        this.getCommand("party").setExecutor(new Party.PartyCommands());
         this.getCommand("mute").setExecutor(new MuteCommand());
     }
 

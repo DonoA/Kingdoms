@@ -19,7 +19,6 @@
  */
 package io.dallen.kingdoms.rpg.Contract;
 
-import io.dallen.Kingdoms.RPG.Contract.Types.BuildContract;
 import io.dallen.kingdoms.core.Handlers.MultiBlockHandler;
 import io.dallen.kingdoms.core.KingdomsCore;
 import io.dallen.kingdoms.core.Structures.Types.BuildersHut;
@@ -28,6 +27,7 @@ import io.dallen.kingdoms.core.Structures.Plot;
 import io.dallen.kingdoms.core.Structures.Storage;
 import io.dallen.kingdoms.core.Structures.Structure;
 import io.dallen.kingdoms.core.Structures.Vaults.BuildingVault;
+import io.dallen.kingdoms.rpg.Contract.Types.BuildContract;
 import io.dallen.kingdoms.utilities.Blueprint;
 import io.dallen.kingdoms.utilities.Blueprint.BlueBlock;
 import io.dallen.kingdoms.utilities.Utils.ChestGUI;

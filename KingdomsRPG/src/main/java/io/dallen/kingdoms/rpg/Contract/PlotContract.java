@@ -17,7 +17,7 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.RPG.Contract;
+package io.dallen.kingdoms.rpg.Contract;
 
 import io.dallen.kingdoms.core.Contract;
 import io.dallen.kingdoms.core.Structures.Plot;

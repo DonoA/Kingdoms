@@ -142,7 +142,7 @@ public class ContractHandler implements Listener, OptionClickEventHandler {
     public void onOptionClick(ChestGUI.OptionClickEvent e) {
         if (e.getMenuName().equals(createContract.getName())) {
             try {
-                Class<?> contract = Class.forName("io.dallen.Kingdoms.RPG.Contract.Types." + e.getName().replace(" ", "").replace("'", "") + "Contract");
+                Class<?> contract = Class.forName("io.dallen.kingdoms.rpg.Contract.Types." + e.getName().replace(" ", "").replace("'", "") + "Contract");
                 contract.getConstructor(Player.class, ChestGUI.OptionClickEvent.class).newInstance(e.getPlayer(), e);
             } catch (ClassNotFoundException | IllegalArgumentException | SecurityException | NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException ex) {
                 ex.printStackTrace();

@@ -17,9 +17,9 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.RPG.Contract.Types;
+package io.dallen.kingdoms.rpg.Contract.Types;
 
-import io.dallen.Kingdoms.RPG.Contract.PlotContract;
+import io.dallen.kingdoms.rpg.Contract.PlotContract;
 import io.dallen.kingdoms.core.Overrides.KingdomMaterial;
 import io.dallen.kingdoms.core.Structures.Plot;
 import io.dallen.kingdoms.core.Structures.Types.TownHall;

@@ -100,7 +100,6 @@ public class Barracks extends Plot {
     public static class BedHandler implements Listener {
 
         public BedHandler() {
-            LogUtil.printDebug("Loaded BedHandler!");
         }
 
         @EventHandler

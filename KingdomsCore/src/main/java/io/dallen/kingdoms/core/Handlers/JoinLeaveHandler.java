@@ -21,6 +21,7 @@ package io.dallen.kingdoms.core.Handlers;
 
 import io.dallen.kingdoms.core.PlayerData;
 import io.dallen.kingdoms.core.Storage.DataLoadHelper;
+import io.dallen.kingdoms.utilities.Utils.LogUtil;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -31,7 +32,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
  * @author donoa_000
  */
 public class JoinLeaveHandler implements Listener {
-
+    
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
         PlayerData.getPlayerDat().put(e.getPlayer(), DataLoadHelper.LoadPlayerData(e.getPlayer()));

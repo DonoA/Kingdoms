@@ -20,20 +20,19 @@
 package io.dallen.kingdoms.core;
 
 import io.dallen.kingdoms.core.Handlers.DecayHandler.ChangeTracker;
-import io.dallen.kingdoms.core.KingdomsCore;
 import io.dallen.kingdoms.core.Storage.DataLoadHelper;
-import io.dallen.kingdoms.core.Structures.Plot;
+import io.dallen.kingdoms.utilities.KingdomsUtilities;
 import io.dallen.kingdoms.utilities.Utils.DBmanager;
+import io.dallen.kingdoms.utilities.Utils.LogUtil;
 import java.io.File;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.Location;
 
 /**
  *
@@ -76,28 +75,44 @@ public class DebugCommands implements CommandExecutor {
 
     public static class PluginUpdateThread extends Thread {
 
-        private final File buildFolder;
-
-        private final File buildTests;
-
-        private final File buildFile;
+        private final File coreFolder;
 
         public PluginUpdateThread(File build) {
-            this.buildFolder = build;
-            this.buildFile = new File(build.getAbsolutePath() + DBmanager.getFileSep() + "Kingdoms-1.0-SNAPSHOT.jar");
-            this.buildTests = new File(build.getAbsolutePath() + DBmanager.getFileSep() + "test-classes");
+            this.coreFolder = build;
         }
 
         @Override
         public void run() {
             while (true) {
+                for(KingdomModual km : KingdomsCore.getRegisteredModuals()){
+                    File buildFile = new File(coreFolder.getAbsolutePath() + DBmanager.getFileSep() + km.getModualName() + 
+                            DBmanager.getFileSep() + "target" + DBmanager.getFileSep() + km.getModualName() + "-" + 
+                            km.getDescription().getVersion() + ".jar");
+                    File buildTests = new File(coreFolder.getAbsolutePath() + DBmanager.getFileSep() + km.getModualName() + 
+                            DBmanager.getFileSep() + "target" + DBmanager.getFileSep() + "test-classes");
+                    if (buildFile.exists() && buildTests.exists() && buildTests.isDirectory()) {
+                        try {
+                            Thread.sleep(500);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(DebugCommands.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        Bukkit.shutdown();
+                        break;
+                    }
+                }
+                File buildFile = new File(coreFolder.getAbsolutePath() + DBmanager.getFileSep() + "KingdomsUtilities" + 
+                            DBmanager.getFileSep() + "target" + DBmanager.getFileSep() + "KingdomsUtilities" + "-" + 
+                            KingdomsUtilities.getPlugin().getDescription().getVersion() + ".jar");
+                File buildTests = new File(coreFolder.getAbsolutePath() + DBmanager.getFileSep() + "KingdomsUtilities" + 
+                        DBmanager.getFileSep() + "target" + DBmanager.getFileSep() + "test-classes");
                 if (buildFile.exists() && buildTests.exists() && buildTests.isDirectory()) {
                     try {
-                        Thread.sleep(100);
+                        Thread.sleep(500);
                     } catch (InterruptedException ex) {
                         Logger.getLogger(DebugCommands.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     Bukkit.shutdown();
+                    break;
                 }
             }
         }

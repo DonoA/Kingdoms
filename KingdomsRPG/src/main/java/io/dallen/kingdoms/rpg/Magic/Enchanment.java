@@ -17,7 +17,7 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.RPG.Magic;
+package io.dallen.kingdoms.rpg.Magic;
 
 /**
  *

@@ -17,7 +17,7 @@
  * 
  * 
  */
-package io.dallen.Kingdoms.RPG.Contract.Types;
+package io.dallen.kingdoms.rpg.Contract.Types;
 
 import io.dallen.kingdoms.core.Contract;
 import io.dallen.kingdoms.core.Municipality;

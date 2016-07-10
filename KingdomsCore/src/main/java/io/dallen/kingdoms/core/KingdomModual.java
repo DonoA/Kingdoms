@@ -20,24 +20,29 @@
 package io.dallen.kingdoms.core;
 
 import lombok.Getter;
+import lombok.Setter;
+import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  *
  * @author Donovan Allen
  */
-public abstract class KingdomModual {
-
+public class KingdomModual extends JavaPlugin{
+    
     @Getter
     private Class<? extends PlayerData> playerData;
 
     @Getter
     private String classPath;
-
+    
     @Getter
     private String storagePath;
 
     @Getter
     private String structurePath;
+    
+    @Getter @Setter
+    private String modualName;
 
     @Getter
     private boolean hasStructures;

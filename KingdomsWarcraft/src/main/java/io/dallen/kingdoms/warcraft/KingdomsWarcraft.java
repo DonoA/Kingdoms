@@ -19,10 +19,18 @@
  */
 package io.dallen.kingdoms.warcraft;
 
+import io.dallen.kingdoms.core.KingdomModual;
+import io.dallen.kingdoms.core.KingdomsCore;
+
 /**
  *
  * @author Donovan Allen
  */
-public class KingdomsWarcraft {
+public class KingdomsWarcraft extends KingdomModual{
 
+    @Override
+    public void onEnable(){
+        KingdomsCore.getPlugin().registerModule(this);
+    }
+    
 }

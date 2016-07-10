@@ -22,6 +22,7 @@ package io.dallen.kingdoms.utilities.Utils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.Bukkit;
@@ -37,7 +38,7 @@ public class LogUtil {
 
     public static void printDebug(Object msg) {
         if (isDebug) {
-            Bukkit.getLogger().log(Level.INFO, "[Kingdoms] [DEBUG] {0}", msg.toString());
+                Bukkit.getLogger().log(Level.INFO, "[{0}][DEBUG] {1}", new Object[]{getPluginName(), msg.toString()});
         }
     }
 
@@ -54,15 +55,24 @@ public class LogUtil {
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
             ex.printStackTrace(pw);
-            Bukkit.getLogger().log(Level.INFO, "[Kingdoms] [DEBUG] [ERROR] {0}", sw.toString());
+            Bukkit.getLogger().log(Level.INFO, "[{0}][DEBUG][ERROR] {1}", new Object[]{getPluginName(), sw.toString()});
         }
     }
 
     public static void printInfo(Object msg) {
-        Bukkit.getLogger().log(Level.INFO, "[Kingdoms] {0}", msg.toString());
+        Bukkit.getLogger().log(Level.INFO, "[{0}] {1}", new Object[]{getPluginName(), msg.toString()});
     }
 
     public static void printErr(Object msg) {
-        Bukkit.getLogger().log(Level.SEVERE, "[Kingdoms]{0} [ERROR] {1}", new Object[]{ChatColor.RED, msg.toString()});
+        Bukkit.getLogger().log(Level.SEVERE, "[{0}] [ERROR] {1}", new Object[]{getPluginName(), msg.toString()});
+    }
+    
+    public static String getPluginName(){
+        String[] pkgs = Thread.currentThread().getStackTrace()[3].getClassName().split("\\.");
+        return cap(pkgs[2])+cap(pkgs[3]);
+    }
+    
+    private static String cap(final String line) {
+        return Character.toUpperCase(line.charAt(0)) + line.substring(1);
     }
 }

@@ -19,14 +19,15 @@
  */
 package io.dallen.kingdoms.rpg;
 
+import io.dallen.kingdoms.core.KingdomModual;
+import io.dallen.kingdoms.core.KingdomsCore;
 import lombok.Getter;
-import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  *
  * @author Donovan Allen
  */
-public class KingdomsRPG extends JavaPlugin {
+public class KingdomsRPG extends KingdomModual {
 
     @Getter
     private static KingdomsRPG Plugin;
@@ -34,6 +35,7 @@ public class KingdomsRPG extends JavaPlugin {
     @Override
     public void onEnable() {
         Plugin = this;
+        KingdomsCore.getPlugin().registerModule(this);
     }
 
     @Override
