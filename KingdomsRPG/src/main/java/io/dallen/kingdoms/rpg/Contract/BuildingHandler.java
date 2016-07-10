@@ -31,6 +31,7 @@ import io.dallen.kingdoms.rpg.Contract.Types.BuildContract;
 import io.dallen.kingdoms.utilities.Blueprint;
 import io.dallen.kingdoms.utilities.Blueprint.BlueBlock;
 import io.dallen.kingdoms.utilities.Utils.ChestGUI;
+import io.dallen.kingdoms.utilities.Utils.ChestGUI.OptionClickEventHandler;
 import io.dallen.kingdoms.utilities.Utils.DBmanager;
 import io.dallen.kingdoms.utilities.Utils.HotbarMenu;
 import io.dallen.kingdoms.utilities.Utils.LocationUtil;
@@ -96,20 +97,21 @@ public class BuildingHandler implements Listener {
         };
     }
 
-    public static class BuildChestOptions {
+    public static class BuildChestOptions implements OptionClickEventHandler {
 
-        public void onOptionClick(ChestGUI.OptionClickEvent e, Structure struct) {
-            Structure s = struct;
+        @Override
+        public void onOptionClick(ChestGUI.OptionClickEvent e) {
+            Structure s = (Structure) e.getMenuData();
             if (e.getName().equalsIgnoreCase("Other")) {
                 e.getPlayer().sendMessage("To start a building contruction type the schematic name and tick in chat");
                 Plot p = (Plot) s;
-                StringInput in = new StringInput("buildConst", p, (BuildContract) e.getMenuData());
+                StringInput in = new StringInput("buildConst", p, (BuildContract) e.getData());
                 openInputs.put(e.getPlayer().getName(), in);
             } else {
                 try {
                     String[] args = new String[]{e.getName().replace(".schematic", ""), "5"};
                     Blueprint building = NBTmanager.loadData(new File(KingdomsCore.getPlugin().getDataFolder() + DBmanager.getFileSep() + "prefabs" + DBmanager.getFileSep() + args[0] + ".schematic"));
-                    Plot p = (Plot) openInputs.get(e.getPlayer().getName()).getData();
+                    Plot p = (Plot) e.getMenuData();
                     if (p.getLength() + 1 <= building.getLen() || p.getWidth() + 1 <= building.getWid()) {
                         building.Rotate(90);
                     }
@@ -166,9 +168,8 @@ public class BuildingHandler implements Listener {
                     }
 
                     RotateMenu.sendMenu(e.getPlayer());
-                    BuildFrame frame = new BuildFrame(building, p, Integer.parseInt(args[1]), openInputs.get(e.getPlayer().getName()).getContract());
+                    BuildFrame frame = new BuildFrame(building, p, Integer.parseInt(args[1]), (BuildContract) e.getData());
                     openBuilds.put(e.getPlayer().getName(), frame);
-                    openInputs.remove(e.getPlayer().getName());
                 } catch (IOException | DataFormatException ex) {
                     Logger.getLogger(MultiBlockHandler.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -219,7 +220,7 @@ public class BuildingHandler implements Listener {
                         return;
                     }
                 }
-                openBuilds.get(e.getPlayer().getName()).getContract().finishSelectBuilding(building);
+                openBuilds.get(e.getPlayer().getName()).getContract().finishSelectBuilding(building, BuildHut, startCorner);
                 openBuilds.remove(e.getPlayer().getName());
             } else if (e.getName().equalsIgnoreCase("Rotate Clockwise")) {
                 e.setClose(false);

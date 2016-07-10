@@ -21,7 +21,6 @@ package io.dallen.kingdoms.core.Structures.Types;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.dallen.kingdoms.core.Handlers.BuildMenuHandler;
-
 import io.dallen.kingdoms.core.Structures.Plot;
 import io.dallen.kingdoms.core.Structures.Storage;
 import io.dallen.kingdoms.core.Structures.Vaults.BuildingVault;

@@ -21,16 +21,23 @@ package io.dallen.kingdoms.rpg.Contract.Types;
 
 import io.dallen.kingdoms.core.Contract.ContractTarget;
 import io.dallen.kingdoms.core.Contract.RewardType;
+import io.dallen.kingdoms.core.KingdomsCore;
 import io.dallen.kingdoms.rpg.Contract.PlotContract;
 import io.dallen.kingdoms.core.Overrides.KingdomMaterial;
 import io.dallen.kingdoms.core.Structures.Plot;
+import io.dallen.kingdoms.core.Structures.Types.BuildersHut;
 import io.dallen.kingdoms.core.Structures.Types.TownHall;
+import io.dallen.kingdoms.rpg.Contract.BuildingHandler;
 import io.dallen.kingdoms.rpg.ContractHandler;
 import io.dallen.kingdoms.utilities.Blueprint;
 import io.dallen.kingdoms.utilities.Utils.ChestGUI;
+import io.dallen.kingdoms.utilities.Utils.DBmanager;
 import io.dallen.kingdoms.utilities.Utils.ItemUtil;
+import java.awt.Point;
+import java.io.File;
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -78,6 +85,14 @@ public class BuildContract implements PlotContract {
     @Getter
     @Setter
     private boolean contractorFinished;
+    
+    @Getter
+    @Setter
+    private Location startCorner;
+    
+    @Getter
+    @Setter
+    private BuildersHut supplies;
 
     @Getter
     @Setter
@@ -109,10 +124,26 @@ public class BuildContract implements PlotContract {
     }
 
     public void selectBuilding(Player p) {
-//        plot.getBuildMenu().setMenuData(this).sendMenu(p);
+        if (plot.getMunicipal() != null
+                && !plot.getMunicipal().getStructures().get(BuildersHut.class).isEmpty()) {
+            ChestGUI buildMenu = new ChestGUI("Prefab Build Menu", 18, BuildingHandler.getBuildChestHandler());
+            buildMenu.setMenuData(plot);
+            int i = 0;
+            for (File f : new File(KingdomsCore.getPlugin().getDataFolder() + DBmanager.getFileSep() + "prefabs" + DBmanager.getFileSep()
+                    + plot.getClass().getName() + DBmanager.getFileSep()).listFiles()) {
+                if (i < 9) {
+                    buildMenu.setOption(0 * 9 + i, new ItemStack(Material.ENCHANTED_BOOK), f.getName(), this);
+                } else {
+                    break;
+                }
+            }
+            buildMenu.sendMenu(p);
+        } else {
+            p.sendMessage("You have no NPCs to build this!");
+        }
     }
 
-    public void finishSelectBuilding(Blueprint building) {
+    public void finishSelectBuilding(Blueprint building, BuildersHut buildHut, Location startCorner) {
         //rename item and things
         this.building = building;
         selectReward(contractor);
