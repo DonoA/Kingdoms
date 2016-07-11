@@ -38,21 +38,27 @@ import org.bukkit.entity.Player;
  */
 public class Kingdom implements SaveType.Saveable {
 
-    private static int currID;
+    @Getter
+    @Setter
+    private static int currentID = 0;
+
+    @Getter
+    private int MunicipalID;
 
     private String Leader;
 
     @Getter
     private int KingdomID;
 
-//    @Getter
-    private Structure CapitolID;
+    @Getter
+    private Municipality Capitol;
 
     @Getter
     private String Name;
 
 //    @Getter
 //    private ArrayList<Ellipse2D> Base;
+    
     @Getter
     @Setter
     private Ellipse2D Influence;

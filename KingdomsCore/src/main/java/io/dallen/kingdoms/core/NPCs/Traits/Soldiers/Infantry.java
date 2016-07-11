@@ -61,9 +61,6 @@ public class Infantry extends Trait {
     @Override
     public void onAttach() {
         brain.getStateQueue().add(new getArmor());
-
-//        master = super.npc;
-//        Bukkit.getScheduler().scheduleAsyncDelayedTask(KingdomsCore.getPlugin(), newPatrol, Math.round(Math.random()*1200));
     }
 
     public class getArmor implements FsmState {

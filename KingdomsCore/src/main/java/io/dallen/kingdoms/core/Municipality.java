@@ -41,6 +41,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
@@ -50,22 +51,28 @@ import org.reflections.Reflections;
  *
  * @author donoa_000
  */
+@NoArgsConstructor
 public class Municipality implements SaveType.Saveable {
 
-    private static int currID = 0;
+    @Getter
+    @Setter
+    private static int currentID = 0;
 
     @Getter
     private int MunicipalID;
 
     @Getter
     private final static ArrayList<Municipality> allMunicipals = new ArrayList<Municipality>();
-
+    
+    @Setter
     @Getter
     private final HashMap<Class, ArrayList<Structure>> Structures = new HashMap<Class, ArrayList<Structure>>();
-
+    
+    @Setter
     @Getter
     private Structure Center;
 
+    @Setter
     @Getter
     private WallSystem walls;
 
@@ -77,12 +84,15 @@ public class Municipality implements SaveType.Saveable {
     @Setter
     private Ellipse2D Influence;
 
+    @Setter
     @Getter
     private MunicipalType type;
 
+    @Setter
     @Getter
     private Kingdom Kingdom;
 
+    @Setter
     @Getter
     private Date creation;
 
@@ -100,8 +110,8 @@ public class Municipality implements SaveType.Saveable {
         }
         Structures.put(Plot.class, new ArrayList<Structure>());
         Structures.get(TownHall.class).add(center);
-        this.MunicipalID = currID;
-        currID++;
+        this.MunicipalID = currentID;
+        currentID++;
         allMunicipals.add(this);
     }
 

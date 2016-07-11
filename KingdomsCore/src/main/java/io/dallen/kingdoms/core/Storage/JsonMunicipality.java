@@ -75,7 +75,12 @@ public class JsonMunicipality implements SaveType.NativeType.JsonType {
 
     @Override
     public Municipality toJavaObject() {
-        throw new UnsupportedOperationException();
+        Municipality muni = new Municipality();
+        muni.setBase(Base.toJavaObject());
+        muni.setInfluence(Influence.toJavaObject());
+        muni.setType(Municipality.MunicipalType.valueOf(type));
+        muni.setCreation(creation);
+        return muni;
     }
 
 }

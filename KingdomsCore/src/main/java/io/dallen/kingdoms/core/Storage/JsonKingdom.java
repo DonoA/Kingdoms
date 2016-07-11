@@ -36,11 +36,15 @@ public class JsonKingdom implements SaveType.NativeType.JsonType {
 
     @Getter
     @Setter
+    private int kingdomID;
+    
+    @Getter
+    @Setter
     private String Leader;
 
     @Getter
     @Setter
-    private int CapitolID;
+    private int Capitol;
 
     @Getter
     @Setter
@@ -56,7 +60,11 @@ public class JsonKingdom implements SaveType.NativeType.JsonType {
 
     @Getter
     @Setter
-    private ArrayList<String> Municipals;
+    private ArrayList<Integer> Municipals;
+    
+    @Getter
+    @Setter
+    private ArrayList<Integer> Plots;
 
     @Override
     public Kingdom toJavaObject() {

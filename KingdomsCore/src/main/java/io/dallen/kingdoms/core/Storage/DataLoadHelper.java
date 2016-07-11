@@ -38,6 +38,7 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -122,9 +123,8 @@ public class DataLoadHelper implements Listener {
                         k.getKingdomID() + ".kingdomdata");
             }
             return true;
-        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-            Logger.getLogger(DataLoadHelper.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
+        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException 
+                | InvocationTargetException | InstantiationException ex) {
             Logger.getLogger(DataLoadHelper.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
@@ -133,28 +133,208 @@ public class DataLoadHelper implements Listener {
     @SuppressWarnings("unchecked")
     public static boolean LoadKingdomData() {
         int MaxStructureID = 0;
-        HashMap<String, Object> PlotObjs = DBmanager.loadAllObj(JsonStructure.class, new File(KingdomsCore.getPlugin().getDataFolder() + DBmanager.getFileSep() + "savedata" + DBmanager.getFileSep() + "plots"));
-        for (Object o : PlotObjs.values()) {
-            try {
-                JsonStructure js = (JsonStructure) o;
-                Class type = Class.forName(js.getType());
+        int MaxMunicipalID = 0;
+        int MaxKingdomID = 0;
+        ArrayList<Integer> lonePlots = new ArrayList<>();
+        ArrayList<Integer> loneMunicipals = new ArrayList<>();
+        for(File f : new File(KingdomsCore.getPlugin().getDataFolder() + DBmanager.getFileSep() + "savedata" + DBmanager.getFileSep() + 
+                "municipals").listFiles()){
+            if(f.getName().contains(".municipaldata")){
+                loneMunicipals.add(Integer.parseInt(f.getName().replace(".municipaldata", "")));
+            }
+        }
+        for(File f : new File(KingdomsCore.getPlugin().getDataFolder() + DBmanager.getFileSep() + "savedata" + DBmanager.getFileSep() + 
+                "plots").listFiles()){
+            if(f.getName().contains(".plotdata")){
+                lonePlots.add(Integer.parseInt(f.getName().replace(".plotdata", "")));
+            }
+        }
+        HashMap<String, Object> KingdomObjs = DBmanager.loadAllObj(JsonKingdom.class, new File(KingdomsCore.getPlugin().getDataFolder()
+                + DBmanager.getFileSep() + "savedata" + DBmanager.getFileSep() + "municipals"));
+        for (Object o : KingdomObjs.values()) {
+            JsonKingdom jk = (JsonKingdom) o;
+            Kingdom kingdom = jk.toJavaObject();
+            for(Integer mid : jk.getMunicipals()){
+                loneMunicipals.remove(mid);
+                JsonMunicipality jm = (JsonMunicipality) DBmanager.loadObj(JsonMunicipality.class, new File(KingdomsCore.getPlugin().getDataFolder()
+                        + DBmanager.getFileSep() + "savedata" + DBmanager.getFileSep() + "municipals" + DBmanager.getFileSep() 
+                        + mid + ".municipaldata"));
+                Municipality muni = jm.toJavaObject();
+                for(Integer sid : jm.getStructures()){
+                    lonePlots.remove(sid);
+                    try {
+                        JsonStructure js = (JsonStructure) DBmanager.loadObj(JsonStructure.class, new File(KingdomsCore.getPlugin().getDataFolder()
+                                + DBmanager.getFileSep() + "savedata" + DBmanager.getFileSep() + "plots" + DBmanager.getFileSep() 
+                                + sid + ".plotdata"));;
+                        Class<?> type = Class.forName(js.getType());
+                        Plot p = (Plot) js.toJavaObject();
+                        for (Entry<String, Object> e : js.getAttr().entrySet()) {
+                            Object obj = e.getValue();
+//                            LogUtil.printDebug("obj type: " + e.getValue().getClass().getName());
+//                            LogUtil.printDebug("obj data: " + DBmanager.getJSonParser().writeValueAsString(e.getValue()));
+                            if (e.getValue() instanceof LinkedHashMap && ((LinkedHashMap) e.getValue()).containsKey("type") && ((LinkedHashMap) e.getValue()).containsKey("data")) {
+                                obj = DBmanager.getJSonParser().readValue(DBmanager.getJSonParser().writeValueAsString(((LinkedHashMap) e.getValue()).get("data")),
+                                        Class.forName((String) ((LinkedHashMap) e.getValue()).get("type")));
+//                                LogUtil.printDebug("obj type: " + obj.getClass().getName());
+//                                LogUtil.printDebug("obj data: " + DBmanager.getJSonParser().writeValueAsString(obj));
+                            }
+                            if (obj != null && obj instanceof SaveType.NativeType) {
+//                                LogUtil.printDebug("Save Type");
+                                obj = ((SaveType.NativeType) obj).toJavaObject();
+                            }
+                            if (obj instanceof BuildingVault) {
+//                                LogUtil.printDebug("Building Vault");
+                                ((BuildingVault) obj).setOwner(p);
+                            }
+                            Field dat = type.getDeclaredField(e.getKey());
+                            if (!dat.isAccessible()) {
+                                dat.setAccessible(true);
+                            }
+                            dat.set(p, obj);
+                        }
+                        if (MaxStructureID < js.getStructureID()) {
+                            MaxStructureID++;
+                        }
+                        Plot.getAllPlots().add(p);
+                    } catch (ClassNotFoundException | SecurityException | IllegalAccessException | IllegalArgumentException | NoSuchFieldException ex) {
+                        Logger.getLogger(DataLoadHelper.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (JsonProcessingException ex) {
+                        Logger.getLogger(DataLoadHelper.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (IOException ex) {
+                        Logger.getLogger(DataLoadHelper.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                //TODO load rest of municipal data
+                if (MaxMunicipalID < jm.getMunicipalID()) {
+                    MaxMunicipalID++;
+                }
+            }
+            for(Integer sid : jk.getPlots()){
+                lonePlots.remove(sid);
+                    try {
+                    JsonStructure js = (JsonStructure) DBmanager.loadObj(JsonStructure.class, new File(KingdomsCore.getPlugin().getDataFolder()
+                            + DBmanager.getFileSep() + "savedata" + DBmanager.getFileSep() + "plots" + DBmanager.getFileSep() 
+                            + sid + ".plotdata"));;
+                    Class<?> type = Class.forName(js.getType());
+                    Plot p = (Plot) js.toJavaObject();
+                    for (Entry<String, Object> e : js.getAttr().entrySet()) {
+                        Object obj = e.getValue();
+//                            LogUtil.printDebug("obj type: " + e.getValue().getClass().getName());
+//                            LogUtil.printDebug("obj data: " + DBmanager.getJSonParser().writeValueAsString(e.getValue()));
+                        if (e.getValue() instanceof LinkedHashMap && ((LinkedHashMap) e.getValue()).containsKey("type") && ((LinkedHashMap) e.getValue()).containsKey("data")) {
+                            obj = DBmanager.getJSonParser().readValue(DBmanager.getJSonParser().writeValueAsString(((LinkedHashMap) e.getValue()).get("data")),
+                                    Class.forName((String) ((LinkedHashMap) e.getValue()).get("type")));
+//                                LogUtil.printDebug("obj type: " + obj.getClass().getName());
+//                                LogUtil.printDebug("obj data: " + DBmanager.getJSonParser().writeValueAsString(obj));
+                        }
+                        if (obj instanceof SaveType.NativeType && obj != null) {
+//                                LogUtil.printDebug("Save Type");
+                            obj = ((SaveType.NativeType) obj).toJavaObject();
+                        }
+                        if (obj instanceof BuildingVault) {
+//                                LogUtil.printDebug("Building Vault");
+                            ((BuildingVault) obj).setOwner(p);
+                        }
+                        Field dat = type.getDeclaredField(e.getKey());
+                        if (!dat.isAccessible()) {
+                            dat.setAccessible(true);
+                        }
+                        dat.set(p, obj);
+                    }
+                    if (MaxStructureID < js.getStructureID()) {
+                        MaxStructureID++;
+                    }
+                    Plot.getAllPlots().add(p);
+                } catch (ClassNotFoundException | SecurityException | IllegalAccessException | IllegalArgumentException | NoSuchFieldException ex) {
+                    Logger.getLogger(DataLoadHelper.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (JsonProcessingException ex) {
+                    Logger.getLogger(DataLoadHelper.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(DataLoadHelper.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            //TODO load rest of kingdom data
+            if (MaxKingdomID < jk.getKingdomID()) {
+                MaxKingdomID++;
+            }
+        }
+        for(Integer mid : loneMunicipals){
+            JsonMunicipality jm = (JsonMunicipality) DBmanager.loadObj(JsonMunicipality.class, new File(KingdomsCore.getPlugin().getDataFolder()
+                    + DBmanager.getFileSep() + "savedata" + DBmanager.getFileSep() + "municipals" + DBmanager.getFileSep() 
+                    + mid + ".municipaldata"));
+            Municipality muni = jm.toJavaObject();
+            for(Integer sid : jm.getStructures()){
+                lonePlots.remove(sid);
+                try {
+                    JsonStructure js = (JsonStructure) DBmanager.loadObj(JsonStructure.class, new File(KingdomsCore.getPlugin().getDataFolder()
+                            + DBmanager.getFileSep() + "savedata" + DBmanager.getFileSep() + "plots" + DBmanager.getFileSep() 
+                            + sid + ".plotdata"));;
+                    Class<?> type = Class.forName(js.getType());
+                    Plot p = (Plot) js.toJavaObject();
+                    for (Entry<String, Object> e : js.getAttr().entrySet()) {
+                        Object obj = e.getValue();
+//                            LogUtil.printDebug("obj type: " + e.getValue().getClass().getName());
+//                            LogUtil.printDebug("obj data: " + DBmanager.getJSonParser().writeValueAsString(e.getValue()));
+                        if (e.getValue() instanceof LinkedHashMap && ((LinkedHashMap) e.getValue()).containsKey("type") && ((LinkedHashMap) e.getValue()).containsKey("data")) {
+                            obj = DBmanager.getJSonParser().readValue(DBmanager.getJSonParser().writeValueAsString(((LinkedHashMap) e.getValue()).get("data")),
+                                    Class.forName((String) ((LinkedHashMap) e.getValue()).get("type")));
+//                                LogUtil.printDebug("obj type: " + obj.getClass().getName());
+//                                LogUtil.printDebug("obj data: " + DBmanager.getJSonParser().writeValueAsString(obj));
+                        }
+                        if (obj != null && obj instanceof SaveType.NativeType) {
+//                                LogUtil.printDebug("Save Type");
+                            obj = ((SaveType.NativeType) obj).toJavaObject();
+                        }
+                        if (obj instanceof BuildingVault) {
+//                                LogUtil.printDebug("Building Vault");
+                            ((BuildingVault) obj).setOwner(p);
+                        }
+                        Field dat = type.getDeclaredField(e.getKey());
+                        if (!dat.isAccessible()) {
+                            dat.setAccessible(true);
+                        }
+                        dat.set(p, obj);
+                    }
+                    if (MaxStructureID < js.getStructureID()) {
+                        MaxStructureID++;
+                    }
+                    Plot.getAllPlots().add(p);
+                } catch (ClassNotFoundException | SecurityException | IllegalAccessException | IllegalArgumentException | NoSuchFieldException ex) {
+                    Logger.getLogger(DataLoadHelper.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (JsonProcessingException ex) {
+                    Logger.getLogger(DataLoadHelper.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(DataLoadHelper.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            //TODO load rest of municipal data
+            if (MaxMunicipalID < jm.getMunicipalID()) {
+                MaxMunicipalID++;
+            }
+        }
+        for(Integer sid : lonePlots){
+                try {
+                JsonStructure js = (JsonStructure) DBmanager.loadObj(JsonStructure.class, new File(KingdomsCore.getPlugin().getDataFolder()
+                        + DBmanager.getFileSep() + "savedata" + DBmanager.getFileSep() + "plots" + DBmanager.getFileSep() 
+                        + sid + ".plotdata"));;
+                Class<?> type = Class.forName(js.getType());
                 Plot p = (Plot) js.toJavaObject();
                 for (Entry<String, Object> e : js.getAttr().entrySet()) {
                     Object obj = e.getValue();
-//                    LogUtil.printDebug("obj type: " + e.getValue().getClass().getName());
-//                    LogUtil.printDebug("obj data: " + DBmanager.getJSonParser().writeValueAsString(e.getValue()));
+//                            LogUtil.printDebug("obj type: " + e.getValue().getClass().getName());
+//                            LogUtil.printDebug("obj data: " + DBmanager.getJSonParser().writeValueAsString(e.getValue()));
                     if (e.getValue() instanceof LinkedHashMap && ((LinkedHashMap) e.getValue()).containsKey("type") && ((LinkedHashMap) e.getValue()).containsKey("data")) {
                         obj = DBmanager.getJSonParser().readValue(DBmanager.getJSonParser().writeValueAsString(((LinkedHashMap) e.getValue()).get("data")),
                                 Class.forName((String) ((LinkedHashMap) e.getValue()).get("type")));
-//                        LogUtil.printDebug("obj type: " + obj.getClass().getName());
-//                        LogUtil.printDebug("obj data: " + DBmanager.getJSonParser().writeValueAsString(obj));
+//                                LogUtil.printDebug("obj type: " + obj.getClass().getName());
+//                                LogUtil.printDebug("obj data: " + DBmanager.getJSonParser().writeValueAsString(obj));
                     }
                     if (obj instanceof SaveType.NativeType && obj != null) {
-//                        LogUtil.printDebug("Save Type");
+//                                LogUtil.printDebug("Save Type");
                         obj = ((SaveType.NativeType) obj).toJavaObject();
                     }
                     if (obj instanceof BuildingVault) {
-//                        LogUtil.printDebug("Building Vault");
+//                                LogUtil.printDebug("Building Vault");
                         ((BuildingVault) obj).setOwner(p);
                     }
                     Field dat = type.getDeclaredField(e.getKey());
@@ -175,6 +355,8 @@ public class DataLoadHelper implements Listener {
                 Logger.getLogger(DataLoadHelper.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        Kingdom.setCurrentID(MaxKingdomID + 1);
+        Municipality.setCurrentID(MaxMunicipalID + 1);
         Structure.setCurrentID(MaxStructureID + 1);
         return true;
     }
