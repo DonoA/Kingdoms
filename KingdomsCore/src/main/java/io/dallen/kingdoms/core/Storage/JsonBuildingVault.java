@@ -96,10 +96,10 @@ public class JsonBuildingVault implements SaveType.NativeType.JsonType {
         } else {
             bv.setFloorPlan(null);
         }
-        ArrayList<MaterialWrapper> content = new ArrayList<MaterialWrapper>();
+        ArrayList<ItemStack> content = new ArrayList<ItemStack>();
         for (JsonItemStack jis : contents) {
             if (jis != null) {
-                content.add(new MaterialWrapper(jis.toJavaObject()));
+                content.add(jis.toJavaObject());
             } else {
                 content.add(null);
             }

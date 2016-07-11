@@ -26,6 +26,10 @@ import io.dallen.kingdoms.core.NPCs.FiniteStateMachine;
 import io.dallen.kingdoms.core.NPCs.FiniteStateMachine.FsmState;
 import io.dallen.kingdoms.core.Structures.Structure;
 import io.dallen.kingdoms.utilities.Utils.LocationUtil;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 import lombok.Setter;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.Trait;
@@ -68,7 +72,7 @@ public class Infantry extends Trait {
 
         private boolean assignedNav = false;
 
-        private ItemStack[] toRetrive;
+        private List<ItemStack> toRetrive = new ArrayList<ItemStack>();
 
         public getArmor() {
             targetArmory = null;
@@ -76,7 +80,7 @@ public class Infantry extends Trait {
 
         public getArmor(Armory arm, ItemStack... armor) {
             this.targetArmory = arm;
-            this.toRetrive = armor;
+            this.toRetrive = Arrays.asList(armor);
         }
 
         @Override
@@ -88,13 +92,21 @@ public class Infantry extends Trait {
                 } else {
                     ItemStack[] neededArmor = new ItemStack[]{new ItemStack(Material.IRON_HELMET), new ItemStack(Material.IRON_LEGGINGS),
                         new ItemStack(Material.IRON_CHESTPLATE), new ItemStack(Material.IRON_BOOTS)};
+                    HashMap<Armory, ArrayList<ItemStack>> otherTasks = new HashMap<Armory, ArrayList<ItemStack>>();
                     for (ItemStack is : neededArmor) {
                         if (targetArmory == null) {
                             targetArmory = getClosest(is);
+                            toRetrive.add(is);
                         } else {
                             Armory a = getClosest(is);
                             if (a != targetArmory) {
-                                brain.getStateQueue().add(new getArmor());
+                                if (otherTasks.containsKey(a)) {
+                                    otherTasks.get(a).add(is);
+                                } else {
+                                    otherTasks.put(a, new ArrayList<ItemStack>(Arrays.asList(new ItemStack[]{is})));
+                                }
+                            } else {
+                                toRetrive.add(is);
                             }
                         }
                     }
@@ -104,10 +116,11 @@ public class Infantry extends Trait {
 
         @Override
         public boolean isComplete() {
-            if (assignedNav && !npc.getNavigator().isNavigating()
-                    && targetArmory.getBase().contains(LocationUtil.asPoint(npc.getEntity().getLocation()))) {
+            if (assignedNav && (!npc.getNavigator().isNavigating()
+                    || targetArmory.getBase().contains(LocationUtil.asPoint(npc.getEntity().getLocation())))) {
                 for (ItemStack is : toRetrive) {
                     ((LivingEntity) npc.getEntity()).getEquipment().setHelmet(is);
+                    targetArmory.getStorage().removeItem(is);
                 }
                 return true;
             }

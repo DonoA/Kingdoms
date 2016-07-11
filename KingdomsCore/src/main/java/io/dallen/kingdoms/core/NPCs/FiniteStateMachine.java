@@ -19,6 +19,7 @@
  */
 package io.dallen.kingdoms.core.NPCs;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 import lombok.Getter;
@@ -38,11 +39,16 @@ public class FiniteStateMachine {
 
     private FsmState defaultState = null;
 
+    @Getter
+    private static ArrayList<FiniteStateMachine> brains = new ArrayList<>();
+
     public FiniteStateMachine() {
+        brains.add(this);
     }
 
     public FiniteStateMachine(FsmState defaultState) {
         this.defaultState = defaultState;
+        brains.add(this);
     }
 
     public void update() {

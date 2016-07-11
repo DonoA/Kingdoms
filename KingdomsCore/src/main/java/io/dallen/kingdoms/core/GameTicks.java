@@ -19,6 +19,7 @@
  */
 package io.dallen.kingdoms.core;
 
+import io.dallen.kingdoms.core.NPCs.FiniteStateMachine;
 import io.dallen.kingdoms.core.Structures.Structure;
 import java.util.ArrayList;
 import java.util.Map.Entry;
@@ -42,10 +43,9 @@ public class GameTicks {
         @Override
         public void run() {
             while (true) {
-                //Check for players in range of building places
-
-                //update building build amount
-                //update NPC targets for tasks
+                for (FiniteStateMachine brain : FiniteStateMachine.getBrains()) {
+                    brain.update();
+                }
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException ex) {

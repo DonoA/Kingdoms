@@ -112,6 +112,8 @@ public class KingdomsCore extends KingdomModual {
             protocolManager.addPacketListener(SkinHandler.getAdapter());
             Bukkit.getScheduler().runTaskAsynchronously(Plugin, SkinHandler);
             skinHandler = SkinHandler;
+            GameTicks.StartGameTicks();
+            DataLoadHelper.LoadKingdomData();
         }
     };
 

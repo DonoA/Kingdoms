@@ -24,6 +24,7 @@ import io.dallen.kingdoms.core.Municipality;
 import io.dallen.kingdoms.core.Overrides.KingdomMaterial;
 import io.dallen.kingdoms.core.Structures.Types.TownHall;
 import io.dallen.kingdoms.rpg.ContractHandler;
+import io.dallen.kingdoms.rpg.KingdomsRPG;
 import io.dallen.kingdoms.utilities.Utils.ChestGUI;
 import io.dallen.kingdoms.utilities.Utils.ItemUtil;
 import io.dallen.kingdoms.utilities.Utils.LogUtil;
@@ -31,6 +32,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -39,6 +41,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -46,48 +49,48 @@ import org.bukkit.inventory.ItemStack;
  * @author Donovan Allen
  */
 public class GatherContract implements Contract {
-
+    
     @Getter
     private int ID;
-
+    
     @Getter
     @Setter
     private ContractTarget contractTarget;
-
+    
     @Getter
     private Player contractor;
-
+    
     @Getter
     @Setter
     private Object contractee;
-
+    
     @Getter
     @Setter
     private RewardType rewardType;
-
+    
     @Getter
     @Setter
     private Object reward;
-
+    
     @Getter
     @Setter
     private ItemStack contractItem;
-
+    
     @Getter
     @Setter
     private boolean workerFinished;
-
+    
     @Getter
     @Setter
     private boolean contractorFinished;
-
+    
     @Getter
     @Setter
     private ItemStack[] requiredItems;
-
+    
     @Getter
     private static HashMap<String, GatherContract> openInputs = new HashMap<String, GatherContract>();
-
+    
     public GatherContract(Player contractor, ChestGUI.OptionClickEvent e) {
         this.contractor = contractor;
         this.ID = ContractHandler.geCurrentID();
@@ -95,22 +98,30 @@ public class GatherContract implements Contract {
                 e.getName() + " - Unfinished", String.valueOf(ID)));
         this.contractItem = e.getPlayer().getItemInHand();
         ContractHandler.getAllContracts().put(ID, this);
-
+        
     }
-
+    
     @Override
     public boolean isFinished() {
         return true;
     }
-
+    
     public void selectReward(Player p) {
         ContractHandler.setReward(this, p);
     }
-
-    public void selectRequiredItems(Player p) {
-
+    
+    public void selectRequiredItems(final Player p) {
+        final Inventory itm = Bukkit.createInventory(p, 9 * 2, "Contract Requirement");
+        final GatherContract gc = this;
+        Bukkit.getScheduler().scheduleSyncDelayedTask(KingdomsRPG.getPlugin(), new Runnable() {
+            @Override
+            public void run() {
+                p.openInventory(itm);
+                openInputs.put(p.getName(), gc);
+            }
+        }, 2);
     }
-
+    
     @Override
     public void interact(PlayerInteractEvent e, boolean finished) {
         LogUtil.printDebug("Interact Called, " + finished);
@@ -125,12 +136,12 @@ public class GatherContract implements Contract {
             e.getPlayer().setItemInHand(new ItemStack(Material.AIR));
         }
     }
-
+    
     public static class GatherContractHandler implements Listener {
-
+        
         @EventHandler(priority = EventPriority.HIGHEST)
         public void onInventoryClose(InventoryCloseEvent event) {
-            if (openInputs.containsKey(event.getPlayer().getName())) {
+            if (openInputs.containsKey(event.getPlayer().getName()) && event.getInventory().getName().equals("Contract Requirement")) {
                 GatherContract contract = openInputs.get(event.getPlayer().getName());
                 contract.setRequiredItems(event.getInventory().getContents());
                 LogUtil.printDebug(Arrays.toString(event.getInventory().getContents()));
