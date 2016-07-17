@@ -34,6 +34,7 @@ import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.npc.NPCRegistry;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -41,7 +42,7 @@ import org.bukkit.event.Listener;
  *
  * @author donoa_000
  */
-public class NpcManager implements Listener{
+public class NpcManager implements Listener {
 
     @Getter
     @Setter
@@ -54,10 +55,10 @@ public class NpcManager implements Listener{
     public void CreateNPCs() {
 
     }
-    
+
     @EventHandler
-    public void onNPCDamage(NPCDamageEvent e){
-        e.getNPC().getBukkitEntity().damage(e.getDamage());
+    public void onNPCDamage(NPCDamageEvent e) {
+        ((LivingEntity) e.getNPC().getEntity()).damage(e.getDamage());
     }
 
     public NPC spawnBuilder(String user, Location spawn) {

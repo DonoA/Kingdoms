@@ -198,7 +198,7 @@ public class DataLoadHelper implements Listener {
                         }
                         Plot.getAllPlots().add(p);
                         muni.addStructure(p);
-                        if(jm.getCenter() == sid){
+                        if (jm.getCenter() == sid) {
                             muni.setCenter(p);
                         }
                     } catch (ClassNotFoundException | SecurityException | IllegalAccessException | IllegalArgumentException | NoSuchFieldException ex) {
@@ -310,7 +310,7 @@ public class DataLoadHelper implements Listener {
                     }
                     Plot.getAllPlots().add(p);
                     muni.addStructure(p);
-                    if(jm.getCenter() == sid){
+                    if (jm.getCenter() == sid) {
                         muni.setCenter(p);
                     }
                 } catch (ClassNotFoundException | SecurityException | IllegalAccessException | IllegalArgumentException | NoSuchFieldException ex) {

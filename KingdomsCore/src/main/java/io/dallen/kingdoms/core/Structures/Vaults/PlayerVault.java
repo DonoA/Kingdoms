@@ -37,10 +37,12 @@ import org.bukkit.inventory.ItemStack;
  */
 public class PlayerVault implements Vault, SaveType.Saveable {
 
-    @Getter @Setter
+    @Getter
+    @Setter
     private Player Owner;
 
-    @Getter @Setter
+    @Getter
+    @Setter
     private Inventory storage;
 
     @Override
@@ -73,7 +75,7 @@ public class PlayerVault implements Vault, SaveType.Saveable {
         this.Owner = p;
         this.storage = Bukkit.createInventory(p, size, p.getName() + "'s Vault");
     }
-    
+
     @Override
     public JsonPlayerVault toJsonObject() {
         JsonPlayerVault jpv = new JsonPlayerVault();

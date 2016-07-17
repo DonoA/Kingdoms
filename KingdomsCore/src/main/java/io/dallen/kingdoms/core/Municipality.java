@@ -113,7 +113,7 @@ public class Municipality implements SaveType.Saveable {
         currentID++;
         allMunicipals.add(this);
     }
-    
+
     public Municipality() {
         for (Class c : KingdomsCore.getStructureClasses()) {
             Structures.put(c, new ArrayList<Structure>());

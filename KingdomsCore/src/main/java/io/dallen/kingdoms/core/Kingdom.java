@@ -81,7 +81,7 @@ public class Kingdom implements SaveType.Saveable {
         this.KingdomID = allKingdoms.size();
         allKingdoms.add(this);
     }
-    
+
     public void addStructure(Structure s) {
         for (Class c : KingdomsCore.getStructureClasses()) {
             if (s.getClass().isAssignableFrom(c)) {

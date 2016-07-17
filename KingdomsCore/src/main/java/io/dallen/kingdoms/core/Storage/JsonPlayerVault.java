@@ -44,7 +44,7 @@ public class JsonPlayerVault implements SaveType.NativeType.JsonType {
     @Getter
     @Setter
     private JsonItemStack[] storage;
-    
+
     @Getter
     @Setter
     private int size;
@@ -53,14 +53,14 @@ public class JsonPlayerVault implements SaveType.NativeType.JsonType {
     public PlayerVault toJavaObject() {
         PlayerVault pv = new PlayerVault(Bukkit.getPlayer(owner), size);
         ArrayList<ItemStack> iss = new ArrayList<ItemStack>();
-        for(JsonItemStack jis : storage){
-            if(jis != null){
+        for (JsonItemStack jis : storage) {
+            if (jis != null) {
                 iss.add(jis.toJavaObject());
-            }else{
+            } else {
                 iss.add(null);
             }
         }
-        pv.getStorage().setContents(iss.toArray(new ItemStack[] {}));
+        pv.getStorage().setContents(iss.toArray(new ItemStack[]{}));
         return pv;
     }
 
