@@ -28,22 +28,21 @@ import io.dallen.kingdoms.core.Structures.Structure;
 import io.dallen.kingdoms.core.Structures.Types.Armory;
 import io.dallen.kingdoms.core.Structures.Types.Barracks;
 import io.dallen.kingdoms.utilities.Utils.LocationUtil;
+import io.dallen.kingdoms.utilities.Utils.LogUtil;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import net.citizensnpcs.api.event.NPCDamageEvent;
 import net.citizensnpcs.api.npc.NPC;
-import net.citizensnpcs.api.trait.Trait;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Monster;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Zombie;
+import org.bukkit.event.EventHandler;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -71,28 +70,28 @@ public class Infantry extends Soldier {
                 b.getHoused().add(this);
             }
         }
-    }
+    }    
 
     @Override
     public void onAttach() {
         brain.getStateQueue().add(new getArmor());
     }
-
+    
     public class getArmor implements FsmState {
 
         private Armory targetArmory;
 
         private boolean assignedNav = false;
 
-        private List<ItemStack> toRetrive = new ArrayList<ItemStack>();
+        private ItemStack toRetrive;
 
         public getArmor() {
             targetArmory = null;
         }
 
-        public getArmor(Armory arm, ItemStack... armor) {
+        public getArmor(Armory arm, ItemStack armor) {
             this.targetArmory = arm;
-            this.toRetrive = Arrays.asList(armor);
+            this.toRetrive = armor;
         }
 
         @Override
@@ -102,24 +101,22 @@ public class Infantry extends Soldier {
                     npc.getNavigator().setTarget(targetArmory.getCenter());
                     assignedNav = true;
                 } else {
-                    ItemStack[] neededArmor = new ItemStack[]{new ItemStack(Material.IRON_HELMET), new ItemStack(Material.IRON_LEGGINGS),
-                        new ItemStack(Material.IRON_CHESTPLATE), new ItemStack(Material.IRON_BOOTS)};
-                    HashMap<Armory, ArrayList<ItemStack>> otherTasks = new HashMap<Armory, ArrayList<ItemStack>>();
+                    ItemStack[] neededArmor = new ItemStack[5];
+                    if(((LivingEntity) npc.getEntity()).getEquipment().getHelmet() == null){
+                        neededArmor[0] = new ItemStack(Material.IRON_HELMET);
+                    }else if(((LivingEntity) npc.getEntity()).getEquipment().getChestplate() == null){
+                        neededArmor[1] = new ItemStack(Material.IRON_CHESTPLATE);
+                    }else if(((LivingEntity) npc.getEntity()).getEquipment().getLeggings() == null){
+                        neededArmor[2] = new ItemStack(Material.IRON_LEGGINGS);
+                    }else if(((LivingEntity) npc.getEntity()).getEquipment().getBoots() == null){
+                        neededArmor[3] = new ItemStack(Material.IRON_BOOTS);
+                    }else if(((LivingEntity) npc.getEntity()).getEquipment().getItemInMainHand() == null){
+                        neededArmor[4] = new ItemStack(Material.IRON_SWORD);
+                    }
                     for (ItemStack is : neededArmor) {
-                        if (targetArmory == null) {
-                            targetArmory = getClosest(is);
-                            toRetrive.add(is);
-                        } else {
+                        if(is != null){
                             Armory a = getClosest(is);
-                            if (a != targetArmory) {
-                                if (otherTasks.containsKey(a)) {
-                                    otherTasks.get(a).add(is);
-                                } else {
-                                    otherTasks.put(a, new ArrayList<ItemStack>(Arrays.asList(new ItemStack[]{is})));
-                                }
-                            } else {
-                                toRetrive.add(is);
-                            }
+                            brain.getStateQueue().add(new getArmor(a, is));
                         }
                     }
                 }
@@ -128,12 +125,22 @@ public class Infantry extends Soldier {
 
         @Override
         public boolean isComplete() {
-            if (assignedNav && (!npc.getNavigator().isNavigating()
+            if(targetArmory == null){
+                return true;
+            }else if (assignedNav && (!npc.getNavigator().isNavigating()
                     || targetArmory.getBase().contains(LocationUtil.asPoint(npc.getEntity().getLocation())))) {
-                for (ItemStack is : toRetrive) {
-                    ((LivingEntity) npc.getEntity()).getEquipment().setHelmet(is);
-                    targetArmory.getStorage().removeItem(is);
+                if(toRetrive.getType().equals(Material.IRON_HELMET)){
+                    ((LivingEntity) npc.getEntity()).getEquipment().setHelmet(toRetrive);
+                }else if(toRetrive.getType().equals(Material.IRON_CHESTPLATE)){
+                    ((LivingEntity) npc.getEntity()).getEquipment().setChestplate(toRetrive);
+                }else if(toRetrive.getType().equals(Material.IRON_LEGGINGS)){
+                    ((LivingEntity) npc.getEntity()).getEquipment().setLeggings(toRetrive);
+                }else if(toRetrive.getType().equals(Material.IRON_BOOTS)){
+                    ((LivingEntity) npc.getEntity()).getEquipment().setBoots(toRetrive);
+                }else if(toRetrive.getType().equals(Material.IRON_SWORD)){
+                    ((LivingEntity) npc.getEntity()).getEquipment().setItemInMainHand(toRetrive);
                 }
+                targetArmory.getStorage().removeItem(toRetrive);
                 return true;
             }
             return false;
@@ -155,6 +162,7 @@ public class Infantry extends Soldier {
             }
             return closest;
         }
+        
     }
 
     public class patrol implements FsmState {
@@ -166,30 +174,38 @@ public class Infantry extends Soldier {
         @Override
         public void invoke() {
             if (!npc.getNavigator().isNavigating() && ticksTilNextPatrol <= 0) {
-                boolean found = false;
-                Location testSpot = null;
-                while (!found) {
-                    double Radius = 15;
-                    double angle = Math.random() * Math.PI * 2;
-                    double x = Math.cos(angle) * Math.random() * Radius;
-                    double z = Math.sin(angle) * Math.random() * Radius;
-                    testSpot = new Location(municipal.getCenter().getCenter().getWorld(), municipal.getCenter().getCenter().getX() + x,
-                            municipal.getCenter().getCenter().getY() + 1, municipal.getCenter().getCenter().getZ() + z);
-                    for (int y = -30; y <= 30 && !found; y++) {
-                        if (testSpot.clone().add(0, y, 0).getBlock().getType().equals(Material.AIR)
-                                && !testSpot.clone().add(0, y - 1, 0).getBlock().getType().equals(Material.AIR)) {
-                            testSpot.add(0, y, 0);
-                            found = true;
+                if(((LivingEntity) npc.getEntity()).getEquipment().getHelmet() == null ||
+                        ((LivingEntity) npc.getEntity()).getEquipment().getChestplate() == null ||
+                        ((LivingEntity) npc.getEntity()).getEquipment().getLeggings() == null ||
+                        ((LivingEntity) npc.getEntity()).getEquipment().getBoots() == null ||
+                        ((LivingEntity) npc.getEntity()).getEquipment().getItemInMainHand() == null){
+                    brain.getStateQueue().add(new getArmor());
+                }else{
+                    boolean found = false;
+                    Location testSpot = null;
+                    while (!found) {
+                        double Radius = 15;
+                        double angle = Math.random() * Math.PI * 2;
+                        double x = Math.cos(angle) * Math.random() * Radius;
+                        double z = Math.sin(angle) * Math.random() * Radius;
+                        testSpot = new Location(municipal.getCenter().getCenter().getWorld(), municipal.getCenter().getCenter().getX() + x,
+                                municipal.getCenter().getCenter().getY() + 1, municipal.getCenter().getCenter().getZ() + z);
+                        for (int y = -30; y <= 30 && !found; y++) {
+                            if (testSpot.clone().add(0, y, 0).getBlock().getType().equals(Material.AIR)
+                                    && !testSpot.clone().add(0, y - 1, 0).getBlock().getType().equals(Material.AIR)) {
+                                testSpot.add(0, y, 0);
+                                found = true;
+                            }
                         }
                     }
+                    target = testSpot;
+                    Bukkit.getScheduler().runTask(KingdomsCore.getPlugin(), new Runnable() {
+                        public void run() {
+                            npc.getNavigator().setTarget(target);
+                            ticksTilNextPatrol = 200 + Math.round(Math.random() * 1200);
+                        }
+                    });
                 }
-                target = testSpot;
-                Bukkit.getScheduler().runTask(KingdomsCore.getPlugin(), new Runnable() {
-                    public void run() {
-                        npc.getNavigator().setTarget(target);
-                        ticksTilNextPatrol = 200 + Math.round(Math.random() * 1200);
-                    }
-                });
             } else {
                 ticksTilNextPatrol--;
             }
@@ -200,16 +216,18 @@ public class Infantry extends Soldier {
             boolean complete = false;
             Collection<Zombie> zomb = npc.getEntity().getLocation().getWorld().getEntitiesByClass(Zombie.class);
             for (Zombie z : zomb) {
-                if (!complete && z.getLocation().distance(npc.getEntity().getLocation()) <= 25) {
+                if (!complete && ((LivingEntity) npc.getEntity()).hasLineOfSight(z)) {
                     brain.getStateQueue().add(new KillEnemy(z));
+                    z.setTarget(((LivingEntity) npc.getEntity()));
                     complete = true;
                 }
             }
             if (!npc.getNavigator().isNavigating()) {
                 Collection<Skeleton> skel = npc.getEntity().getLocation().getWorld().getEntitiesByClass(Skeleton.class);
                 for (Skeleton s : skel) {
-                    if (!complete && s.getLocation().distance(npc.getEntity().getLocation()) <= 25) {
+                    if (!complete && ((LivingEntity) npc.getEntity()).hasLineOfSight(s)) {
                         brain.getStateQueue().add(new KillEnemy(s));
+                        s.setTarget(((LivingEntity) npc.getEntity()));
                         complete = true;
                     }
                 }
@@ -237,7 +255,7 @@ public class Infantry extends Soldier {
         public boolean isComplete() {
             if (target.isDead()) {
                 return true;
-            } else if (npc.getBukkitEntity().getHealth() <= 4) {
+            } else if (((LivingEntity) npc.getEntity()).getHealth() <= 4) {
                 brain.getStateQueue().add(new FiniteStateMachine.basicNavigation(home.getCenter(), npc));
                 return true;
             } else {

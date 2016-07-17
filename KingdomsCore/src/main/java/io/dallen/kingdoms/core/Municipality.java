@@ -51,7 +51,6 @@ import org.reflections.Reflections;
  *
  * @author donoa_000
  */
-@NoArgsConstructor
 public class Municipality implements SaveType.Saveable {
 
     @Getter
@@ -113,6 +112,13 @@ public class Municipality implements SaveType.Saveable {
         this.MunicipalID = currentID;
         currentID++;
         allMunicipals.add(this);
+    }
+    
+    public Municipality() {
+        for (Class c : KingdomsCore.getStructureClasses()) {
+            Structures.put(c, new ArrayList<Structure>());
+        }
+        Structures.put(Plot.class, new ArrayList<Structure>());
     }
 
     public void createKingdom() {
@@ -224,7 +230,7 @@ public class Municipality implements SaveType.Saveable {
         }
         jm.setMunicipalID(MunicipalID);
         jm.setType(type.name());
-        jm.setWalls(walls.toJsonObject());
+        jm.setWalls((walls != null ? walls.toJsonObject() : null));
         return jm;
     }
 }

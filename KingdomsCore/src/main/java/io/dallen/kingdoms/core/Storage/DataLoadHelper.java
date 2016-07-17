@@ -133,9 +133,9 @@ public class DataLoadHelper implements Listener {
 
     @SuppressWarnings("unchecked")
     public static boolean LoadKingdomData() {
-        int MaxStructureID = 0;
-        int MaxMunicipalID = 0;
-        int MaxKingdomID = 0;
+        int MaxStructureID = -1;
+        int MaxMunicipalID = -1;
+        int MaxKingdomID = -1;
         ArrayList<Integer> lonePlots = new ArrayList<>();
         ArrayList<Integer> loneMunicipals = new ArrayList<>();
         for (File f : new File(KingdomsCore.getPlugin().getDataFolder() + DBmanager.getFileSep() + "savedata" + DBmanager.getFileSep()
@@ -198,6 +198,9 @@ public class DataLoadHelper implements Listener {
                         }
                         Plot.getAllPlots().add(p);
                         muni.addStructure(p);
+                        if(jm.getCenter() == sid){
+                            muni.setCenter(p);
+                        }
                     } catch (ClassNotFoundException | SecurityException | IllegalAccessException | IllegalArgumentException | NoSuchFieldException ex) {
                         Logger.getLogger(DataLoadHelper.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (JsonProcessingException ex) {
@@ -207,6 +210,7 @@ public class DataLoadHelper implements Listener {
                     }
                 }
                 //TODO load rest of municipal data
+                //TODO setup wall system with newly loaded plots
                 Municipality.getAllMunicipals().add(muni);
                 kingdom.getMunicipals().add(muni);
                 if (MaxMunicipalID < jm.getMunicipalID()) {
@@ -306,6 +310,9 @@ public class DataLoadHelper implements Listener {
                     }
                     Plot.getAllPlots().add(p);
                     muni.addStructure(p);
+                    if(jm.getCenter() == sid){
+                        muni.setCenter(p);
+                    }
                 } catch (ClassNotFoundException | SecurityException | IllegalAccessException | IllegalArgumentException | NoSuchFieldException ex) {
                     Logger.getLogger(DataLoadHelper.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (JsonProcessingException ex) {

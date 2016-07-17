@@ -40,6 +40,6 @@ public class JsonWallSystem implements SaveType.NativeType.JsonType {
 
     @Override
     public WallSystem toJavaObject() {
-        throw new UnsupportedOperationException();
+        return null;
     }
 }

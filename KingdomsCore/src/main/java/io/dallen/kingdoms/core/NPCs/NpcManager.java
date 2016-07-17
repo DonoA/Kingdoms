@@ -29,16 +29,19 @@ import io.dallen.kingdoms.core.NPCs.Traits.Soldiers.Infantry;
 import lombok.Getter;
 import lombok.Setter;
 import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.event.NPCDamageEvent;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.npc.NPCRegistry;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 
 /**
  *
  * @author donoa_000
  */
-public class NpcManager {
+public class NpcManager implements Listener{
 
     @Getter
     @Setter
@@ -50,6 +53,11 @@ public class NpcManager {
 
     public void CreateNPCs() {
 
+    }
+    
+    @EventHandler
+    public void onNPCDamage(NPCDamageEvent e){
+        e.getNPC().getBukkitEntity().damage(e.getDamage());
     }
 
     public NPC spawnBuilder(String user, Location spawn) {

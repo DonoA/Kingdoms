@@ -20,6 +20,7 @@
 package io.dallen.kingdoms.core.Storage;
 
 import io.dallen.kingdoms.core.Municipality;
+import io.dallen.kingdoms.core.Structures.Types.WallSystem;
 import io.dallen.kingdoms.utilities.Storage.JsonClasses.JsonEllipse;
 import io.dallen.kingdoms.utilities.Storage.JsonClasses.JsonPolygon;
 import io.dallen.kingdoms.utilities.Storage.SaveType;
@@ -82,6 +83,7 @@ public class JsonMunicipality implements SaveType.NativeType.JsonType {
         muni.setInfluence(Influence.toJavaObject());
         muni.setType(Municipality.MunicipalType.valueOf(type));
         muni.setCreation(creation);
+        muni.setWalls(new WallSystem(muni));
         return muni;
     }
 
