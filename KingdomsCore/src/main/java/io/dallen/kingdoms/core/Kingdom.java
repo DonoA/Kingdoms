@@ -20,6 +20,7 @@
 package io.dallen.kingdoms.core;
 
 import io.dallen.kingdoms.core.Storage.JsonKingdom;
+import io.dallen.kingdoms.core.Structures.Plot;
 import io.dallen.kingdoms.core.Structures.Structure;
 import io.dallen.kingdoms.utilities.Storage.SaveType;
 import java.awt.Polygon;
@@ -58,7 +59,6 @@ public class Kingdom implements SaveType.Saveable {
 
 //    @Getter
 //    private ArrayList<Ellipse2D> Base;
-    
     @Getter
     @Setter
     private Ellipse2D Influence;
@@ -80,6 +80,19 @@ public class Kingdom implements SaveType.Saveable {
     public Kingdom() {
         this.KingdomID = allKingdoms.size();
         allKingdoms.add(this);
+    }
+    
+    public void addStructure(Structure s) {
+        for (Class c : KingdomsCore.getStructureClasses()) {
+            if (s.getClass().isAssignableFrom(c)) {
+                Structures.get(c).add(s);
+                s.setKingdom(this);
+                return;
+            }
+        }
+        if (s instanceof Plot) {
+            Structures.get(Plot.class).add(s);
+        }
     }
 
     @Override

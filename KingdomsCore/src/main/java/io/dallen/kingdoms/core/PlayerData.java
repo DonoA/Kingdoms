@@ -20,10 +20,7 @@
 package io.dallen.kingdoms.core;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.dallen.kingdoms.core.Contract;
 import io.dallen.kingdoms.core.Handlers.Party;
-import io.dallen.kingdoms.core.Kingdom;
-import io.dallen.kingdoms.core.Municipality;
 import io.dallen.kingdoms.core.Storage.JsonPlayerData;
 import io.dallen.kingdoms.core.Structures.Plot;
 import io.dallen.kingdoms.core.Structures.Vaults.PlayerVault;

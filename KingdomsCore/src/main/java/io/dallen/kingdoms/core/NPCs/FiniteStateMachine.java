@@ -56,7 +56,11 @@ public class FiniteStateMachine {
             if (stateQueue.peek().isComplete()) {
                 stateQueue.remove();
             }
-            stateQueue.peek().invoke();
+            if (!stateQueue.isEmpty()) {
+                stateQueue.peek().invoke();
+            } else if (defaultState != null) {
+                defaultState.invoke();
+            }
         } else if (defaultState != null) {
             defaultState.invoke();
         }

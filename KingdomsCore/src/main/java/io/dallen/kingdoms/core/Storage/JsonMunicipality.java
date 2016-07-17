@@ -23,6 +23,7 @@ import io.dallen.kingdoms.core.Municipality;
 import io.dallen.kingdoms.utilities.Storage.JsonClasses.JsonEllipse;
 import io.dallen.kingdoms.utilities.Storage.JsonClasses.JsonPolygon;
 import io.dallen.kingdoms.utilities.Storage.SaveType;
+import java.awt.Polygon;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -76,7 +77,8 @@ public class JsonMunicipality implements SaveType.NativeType.JsonType {
     @Override
     public Municipality toJavaObject() {
         Municipality muni = new Municipality();
-        muni.setBase(Base.toJavaObject());
+        Polygon pg = (Base != null ? Base.toJavaObject() : null);
+        muni.setBase(pg);
         muni.setInfluence(Influence.toJavaObject());
         muni.setType(Municipality.MunicipalType.valueOf(type));
         muni.setCreation(creation);

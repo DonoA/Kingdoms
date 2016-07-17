@@ -20,11 +20,13 @@
 package io.dallen.kingdoms.core.Structures.Types;
 
 import io.dallen.kingdoms.core.Handlers.BuildMenuHandler;
+import io.dallen.kingdoms.core.NPCs.Traits.Soldiers.Soldier;
 import io.dallen.kingdoms.core.Structures.Plot;
 import io.dallen.kingdoms.utilities.Utils.ChestGUI;
 import io.dallen.kingdoms.utilities.Utils.ChestGUI.OptionClickEvent;
 import io.dallen.kingdoms.utilities.Utils.ChestGUI.OptionClickEventHandler;
 import io.dallen.kingdoms.utilities.Utils.LogUtil;
+import java.util.ArrayList;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.bukkit.Material;
@@ -46,8 +48,6 @@ public class Barracks extends Plot {
     private int maxCapacity;
     @Getter
     private int currentCapacity;
-    @Getter
-    private int amountFull;
 
     @Getter
     private int readySpeed;
@@ -60,11 +60,13 @@ public class Barracks extends Plot {
     @Getter
     private ChestGUI BuildMenu;
 
+    @Getter
+    private ArrayList<Soldier> housed = new ArrayList<Soldier>();
+
     public Barracks(Plot p) {
         super(p);
         maxCapacity = p.getArea() / 4;
         currentCapacity = 0;
-        amountFull = 0;
         people = new PopulationStats();
         readySpeed = 10;
         EditPlot = new ChestGUI("Barracks", 2, new MenuHandler()) {

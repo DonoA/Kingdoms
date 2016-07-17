@@ -85,11 +85,11 @@ public class BuildContract implements PlotContract {
     @Getter
     @Setter
     private boolean contractorFinished;
-    
+
     @Getter
     @Setter
     private Location startCorner;
-    
+
     @Getter
     @Setter
     private BuildersHut supplies;

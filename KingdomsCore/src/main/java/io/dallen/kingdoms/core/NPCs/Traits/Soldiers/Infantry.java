@@ -21,34 +21,42 @@ package io.dallen.kingdoms.core.NPCs.Traits.Soldiers;
 
 import io.dallen.kingdoms.core.KingdomsCore;
 import io.dallen.kingdoms.core.Municipality;
-import io.dallen.kingdoms.core.Structures.Types.Armory;
 import io.dallen.kingdoms.core.NPCs.FiniteStateMachine;
 import io.dallen.kingdoms.core.NPCs.FiniteStateMachine.FsmState;
+import io.dallen.kingdoms.core.Structures.Plot;
 import io.dallen.kingdoms.core.Structures.Structure;
+import io.dallen.kingdoms.core.Structures.Types.Armory;
+import io.dallen.kingdoms.core.Structures.Types.Barracks;
 import io.dallen.kingdoms.utilities.Utils.LocationUtil;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import lombok.Setter;
+import java.util.Set;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.Trait;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Monster;
+import org.bukkit.entity.Skeleton;
+import org.bukkit.entity.Zombie;
 import org.bukkit.inventory.ItemStack;
 
 /**
  *
  * @author Donovan Allen
  */
-public class Infantry extends Trait {
-//    @Setter
+public class Infantry extends Soldier {
 
     private Municipality municipal;
 
     private NPC master;
+
+    private Plot home;
 
     private final FiniteStateMachine brain;
 
@@ -56,6 +64,13 @@ public class Infantry extends Trait {
         super("Infantry");
         brain = new FiniteStateMachine(new patrol());
         this.municipal = municipal;
+        for (Structure s : municipal.getStructures().get(Barracks.class)) {
+            Barracks b = (Barracks) s;
+            if (b.getHoused().size() < b.getCurrentCapacity()) {
+                home = b;
+                b.getHoused().add(this);
+            }
+        }
     }
 
     @Override
@@ -171,19 +186,63 @@ public class Infantry extends Trait {
                 target = testSpot;
                 Bukkit.getScheduler().runTask(KingdomsCore.getPlugin(), new Runnable() {
                     public void run() {
-                        master.getNavigator().setTarget(target);
+                        npc.getNavigator().setTarget(target);
                         ticksTilNextPatrol = 200 + Math.round(Math.random() * 1200);
                     }
                 });
             } else {
                 ticksTilNextPatrol--;
             }
-            //check for enemies nearby
         }
 
         @Override
         public boolean isComplete() {
+            boolean complete = false;
+            Collection<Zombie> zomb = npc.getEntity().getLocation().getWorld().getEntitiesByClass(Zombie.class);
+            for (Zombie z : zomb) {
+                if (!complete && z.getLocation().distance(npc.getEntity().getLocation()) <= 25) {
+                    brain.getStateQueue().add(new KillEnemy(z));
+                    complete = true;
+                }
+            }
+            if (!npc.getNavigator().isNavigating()) {
+                Collection<Skeleton> skel = npc.getEntity().getLocation().getWorld().getEntitiesByClass(Skeleton.class);
+                for (Skeleton s : skel) {
+                    if (!complete && s.getLocation().distance(npc.getEntity().getLocation()) <= 25) {
+                        brain.getStateQueue().add(new KillEnemy(s));
+                        complete = true;
+                    }
+                }
+            }
             return false;
+        }
+    }
+
+    public class KillEnemy implements FsmState {
+
+        private LivingEntity target;
+
+        public KillEnemy(LivingEntity m) {
+            target = m;
+        }
+
+        @Override
+        public void invoke() {
+            if (!npc.getNavigator().isNavigating()) {
+                npc.getNavigator().setTarget(target, true);
+            }
+        }
+
+        @Override
+        public boolean isComplete() {
+            if (target.isDead()) {
+                return true;
+            } else if (npc.getBukkitEntity().getHealth() <= 4) {
+                brain.getStateQueue().add(new FiniteStateMachine.basicNavigation(home.getCenter(), npc));
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 }

@@ -22,10 +22,13 @@ package io.dallen.kingdoms.core.Storage;
 import io.dallen.kingdoms.core.Structures.Vaults.PlayerVault;
 import io.dallen.kingdoms.utilities.Storage.JsonClasses.JsonItemStack;
 import io.dallen.kingdoms.utilities.Storage.SaveType;
+import java.util.ArrayList;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.bukkit.Bukkit;
+import org.bukkit.inventory.ItemStack;
 
 /**
  *
@@ -41,10 +44,24 @@ public class JsonPlayerVault implements SaveType.NativeType.JsonType {
     @Getter
     @Setter
     private JsonItemStack[] storage;
+    
+    @Getter
+    @Setter
+    private int size;
 
     @Override
     public PlayerVault toJavaObject() {
-        throw new UnsupportedOperationException();
+        PlayerVault pv = new PlayerVault(Bukkit.getPlayer(owner), size);
+        ArrayList<ItemStack> iss = new ArrayList<ItemStack>();
+        for(JsonItemStack jis : storage){
+            if(jis != null){
+                iss.add(jis.toJavaObject());
+            }else{
+                iss.add(null);
+            }
+        }
+        pv.getStorage().setContents(iss.toArray(new ItemStack[] {}));
+        return pv;
     }
 
 }

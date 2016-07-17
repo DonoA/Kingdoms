@@ -24,6 +24,7 @@ import io.dallen.kingdoms.utilities.Storage.JsonClasses.JsonItemStack;
 import io.dallen.kingdoms.utilities.Storage.SaveType;
 import java.util.ArrayList;
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
@@ -36,9 +37,10 @@ import org.bukkit.inventory.ItemStack;
  */
 public class PlayerVault implements Vault, SaveType.Saveable {
 
-    @Getter
+    @Getter @Setter
     private Player Owner;
 
+    @Getter @Setter
     private Inventory storage;
 
     @Override
@@ -71,11 +73,12 @@ public class PlayerVault implements Vault, SaveType.Saveable {
         this.Owner = p;
         this.storage = Bukkit.createInventory(p, size, p.getName() + "'s Vault");
     }
-
+    
     @Override
     public JsonPlayerVault toJsonObject() {
         JsonPlayerVault jpv = new JsonPlayerVault();
         jpv.setOwner(Owner.getUniqueId());
+        jpv.setSize(storage.getSize());
         ArrayList<JsonItemStack> content = new ArrayList<JsonItemStack>();
         for (ItemStack is : storage.getContents()) {
             if (is != null) {

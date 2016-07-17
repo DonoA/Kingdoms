@@ -20,6 +20,7 @@
 package io.dallen.kingdoms.core;
 
 import io.dallen.kingdoms.core.NPCs.FiniteStateMachine;
+import io.dallen.kingdoms.core.Storage.DataLoadHelper;
 import io.dallen.kingdoms.core.Structures.Structure;
 import java.util.ArrayList;
 import java.util.Map.Entry;
@@ -35,6 +36,7 @@ public class GameTicks {
     public static void StartGameTicks() {
         new NPCTick().start();
         new MainTick().start();
+        new SaveLoop().start();
         new DailyTick().start();
     }
 
@@ -64,23 +66,39 @@ public class GameTicks {
                     //recalculate population
 
                     //spawn attacking mobs
-                    //add resources
                     for (Municipality m : k.getMunicipals()) {
                         //add resources
 
                         //recalculate chaos levels
                         for (Entry<Class, ArrayList<Structure>> buildings : m.getStructures().entrySet()) {
                             for (Structure building : buildings.getValue()) {
-                                //move added resources around
+                                //schedural for materials to be moved around
 
                                 //check overflows
-                                //
                             }
                         }
                     }
                 }
                 try {
-                    Thread.sleep(10000);//poorly coded game tick :/
+                    Thread.sleep(1000 * 10);//poorly coded game tick :/
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(GameTicks.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+    }
+
+    public static class SaveLoop extends Thread {
+
+        @Override
+        public void run() {
+            while (true) {
+                DataLoadHelper.SaveKingdomData();
+                for (PlayerData pd : PlayerData.getPlayerDat().values()) {
+                    DataLoadHelper.SavePlayerData(pd);
+                }
+                try {
+                    Thread.sleep(1000 * 60 * 10);
                 } catch (InterruptedException ex) {
                     Logger.getLogger(GameTicks.class.getName()).log(Level.SEVERE, null, ex);
                 }

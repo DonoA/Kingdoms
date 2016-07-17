@@ -155,7 +155,7 @@ public class BuildingVault implements Vault, SaveType.Saveable { // Will start p
                         ? toAdd.getItemMeta().getLore() : new ArrayList<String>());
                 lore.add(" ");
                 lore.add(m.getAmount() + " total");
-                toAdd.getItemMeta().setLore(lore);
+//                toAdd.getItemMeta().setLore(lore);
                 inv.addItem(toAdd);
             }
         }

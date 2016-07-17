@@ -37,7 +37,7 @@ public class JsonKingdom implements SaveType.NativeType.JsonType {
     @Getter
     @Setter
     private int kingdomID;
-    
+
     @Getter
     @Setter
     private String Leader;
@@ -61,7 +61,7 @@ public class JsonKingdom implements SaveType.NativeType.JsonType {
     @Getter
     @Setter
     private ArrayList<Integer> Municipals;
-    
+
     @Getter
     @Setter
     private ArrayList<Integer> Plots;

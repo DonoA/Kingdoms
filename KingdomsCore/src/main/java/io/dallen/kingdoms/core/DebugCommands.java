@@ -84,12 +84,12 @@ public class DebugCommands implements CommandExecutor {
         @Override
         public void run() {
             while (true) {
-                for(KingdomModual km : KingdomsCore.getRegisteredModuals()){
-                    File buildFile = new File(coreFolder.getAbsolutePath() + DBmanager.getFileSep() + km.getModualName() + 
-                            DBmanager.getFileSep() + "target" + DBmanager.getFileSep() + km.getModualName() + "-" + 
-                            km.getDescription().getVersion() + ".jar");
-                    File buildTests = new File(coreFolder.getAbsolutePath() + DBmanager.getFileSep() + km.getModualName() + 
-                            DBmanager.getFileSep() + "target" + DBmanager.getFileSep() + "test-classes");
+                for (KingdomModual km : KingdomsCore.getRegisteredModuals()) {
+                    File buildFile = new File(coreFolder.getAbsolutePath() + DBmanager.getFileSep() + km.getModualName()
+                            + DBmanager.getFileSep() + "target" + DBmanager.getFileSep() + km.getModualName() + "-"
+                            + km.getDescription().getVersion() + ".jar");
+                    File buildTests = new File(coreFolder.getAbsolutePath() + DBmanager.getFileSep() + km.getModualName()
+                            + DBmanager.getFileSep() + "target" + DBmanager.getFileSep() + "test-classes");
                     if (buildFile.exists() && buildTests.exists() && buildTests.isDirectory()) {
                         try {
                             Thread.sleep(500);
@@ -100,11 +100,11 @@ public class DebugCommands implements CommandExecutor {
                         break;
                     }
                 }
-                File buildFile = new File(coreFolder.getAbsolutePath() + DBmanager.getFileSep() + "KingdomsUtilities" + 
-                            DBmanager.getFileSep() + "target" + DBmanager.getFileSep() + "KingdomsUtilities" + "-" + 
-                            KingdomsUtilities.getPlugin().getDescription().getVersion() + ".jar");
-                File buildTests = new File(coreFolder.getAbsolutePath() + DBmanager.getFileSep() + "KingdomsUtilities" + 
-                        DBmanager.getFileSep() + "target" + DBmanager.getFileSep() + "test-classes");
+                File buildFile = new File(coreFolder.getAbsolutePath() + DBmanager.getFileSep() + "KingdomsUtilities"
+                        + DBmanager.getFileSep() + "target" + DBmanager.getFileSep() + "KingdomsUtilities" + "-"
+                        + KingdomsUtilities.getPlugin().getDescription().getVersion() + ".jar");
+                File buildTests = new File(coreFolder.getAbsolutePath() + DBmanager.getFileSep() + "KingdomsUtilities"
+                        + DBmanager.getFileSep() + "target" + DBmanager.getFileSep() + "test-classes");
                 if (buildFile.exists() && buildTests.exists() && buildTests.isDirectory()) {
                     try {
                         Thread.sleep(500);

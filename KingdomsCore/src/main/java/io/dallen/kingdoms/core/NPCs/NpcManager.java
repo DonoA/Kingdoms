@@ -64,8 +64,7 @@ public class NpcManager {
         Soldier.spawn(spawn);
         switch (type) {
             case ARCHER:
-                Archer archer = new Archer();
-                archer.setMunicipal(owner);
+                Archer archer = new Archer(owner);
                 Soldier.addTrait(archer);
                 break;
             case INFANTRY:
@@ -73,13 +72,11 @@ public class NpcManager {
                 Soldier.addTrait(infantry);
                 break;
             case CAVALRY:
-                Cavalry cavalry = new Cavalry();
-                cavalry.setMunicipal(owner);
+                Cavalry cavalry = new Cavalry(owner);
                 Soldier.addTrait(cavalry);
                 break;
             case GENERAL:
-                General general = new General();
-                general.setMunicipal(owner);
+                General general = new General(owner);
                 Soldier.addTrait(general);
                 break;
         }

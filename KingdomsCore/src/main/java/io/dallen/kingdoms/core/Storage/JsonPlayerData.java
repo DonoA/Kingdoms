@@ -22,6 +22,7 @@ package io.dallen.kingdoms.core.Storage;
 import io.dallen.kingdoms.core.PlayerData;
 import io.dallen.kingdoms.utilities.Storage.JsonClasses.JsonLocation;
 import io.dallen.kingdoms.utilities.Storage.SaveType;
+import java.util.HashMap;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -57,8 +58,10 @@ public class JsonPlayerData implements SaveType.NativeType.JsonType {
     @Setter
     private JsonLocation Spawn;
 
-//    @Getter @Setter
-//    private MuteClass muted;
+    @Getter
+    @Setter
+    private HashMap<String, HashMap<String, Object>> modualData = new HashMap<String, HashMap<String, Object>>();
+
     @Override
     public PlayerData toJavaObject() {//Must load Kingdoms and plots and things first
         PlayerData pd = new PlayerData();

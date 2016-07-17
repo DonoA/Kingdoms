@@ -38,7 +38,7 @@ public class LogUtil {
 
     public static void printDebug(Object msg) {
         if (isDebug) {
-                Bukkit.getLogger().log(Level.INFO, "[{0}][DEBUG] {1}", new Object[]{getPluginName(), msg.toString()});
+            Bukkit.getLogger().log(Level.INFO, "[{0}][DEBUG] {1}", new Object[]{getPluginName(), msg.toString()});
         }
     }
 
@@ -66,12 +66,12 @@ public class LogUtil {
     public static void printErr(Object msg) {
         Bukkit.getLogger().log(Level.SEVERE, "[{0}] [ERROR] {1}", new Object[]{getPluginName(), msg.toString()});
     }
-    
-    public static String getPluginName(){
+
+    public static String getPluginName() {
         String[] pkgs = Thread.currentThread().getStackTrace()[3].getClassName().split("\\.");
-        return cap(pkgs[2])+cap(pkgs[3]);
+        return cap(pkgs[2]) + cap(pkgs[3]);
     }
-    
+
     private static String cap(final String line) {
         return Character.toUpperCase(line.charAt(0)) + line.substring(1);
     }

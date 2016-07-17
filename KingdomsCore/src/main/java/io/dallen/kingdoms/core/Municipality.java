@@ -63,11 +63,11 @@ public class Municipality implements SaveType.Saveable {
 
     @Getter
     private final static ArrayList<Municipality> allMunicipals = new ArrayList<Municipality>();
-    
+
     @Setter
     @Getter
     private final HashMap<Class, ArrayList<Structure>> Structures = new HashMap<Class, ArrayList<Structure>>();
-    
+
     @Setter
     @Getter
     private Structure Center;
