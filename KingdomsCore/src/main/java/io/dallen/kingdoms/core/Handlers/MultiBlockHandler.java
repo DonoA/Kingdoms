@@ -64,16 +64,16 @@ import org.bukkit.inventory.ItemStack;
  * @author donoa_000
  */
 public class MultiBlockHandler implements Listener {
-    
+
     private static ChestGUI NewPlotMenu;
-    
+
     private static ChestGUI ViewPlotMenu;
-    
+
     private static HashMap<Player, Long> cooldown = new HashMap<Player, Long>();
-    
+
     @Getter
     private static MBOptions optionHandler;
-    
+
     public MultiBlockHandler() {
         optionHandler = new MBOptions();
         NewPlotMenu = new ChestGUI("New Plot", InventoryType.HOPPER, optionHandler) {
@@ -82,22 +82,22 @@ public class MultiBlockHandler implements Listener {
                 setOption(3, new ItemStack(Material.ENCHANTED_BOOK), "Cancel Plot Claim", "");
             }
         };
-        
+
         ViewPlotMenu = new ChestGUI("Plot Info", InventoryType.HOPPER, optionHandler) {
             {
                 setOption(2, new ItemStack(Material.ENCHANTED_BOOK), "No current contracts avalible", "");
             }
         };
-        
+
     }
-    
+
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent e) {
         if (e.getBlock().getType().equals(Material.FURNACE)) {
             Forge.placeForge(e.getBlock().getLocation());
         }
     }
-    
+
     @EventHandler
     public void onMove(PlayerMoveEvent e) {
         if (WallSystem.Wall.getDamageBars().contains(e.getPlayer().getName())) {
@@ -119,7 +119,7 @@ public class MultiBlockHandler implements Listener {
             }).start();
         }
     }
-    
+
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerInteract(PlayerInteractEvent e) {
         if ((!cooldown.containsKey(e.getPlayer()))
@@ -286,7 +286,7 @@ public class MultiBlockHandler implements Listener {
                                 LogUtil.printDebug(Arrays.toString((ItemStack[]) ct.getReward()));
                                 loc++;
                             }
-                            
+
                             ViewPlotMenu.sendMenu(e.getPlayer());
                         }
                     }
@@ -294,13 +294,13 @@ public class MultiBlockHandler implements Listener {
             }
         }
     }
-    
+
     @AllArgsConstructor
     public static class NewPlot {
-        
+
         private Location center;
         private Polygon Base;
-        
+
         public boolean isValid() {
             for (Plot p : Plot.getAllPlots()) {
                 if (p.getBase().intersects(Base.getBounds2D())) {
@@ -310,9 +310,9 @@ public class MultiBlockHandler implements Listener {
             return true;
         }
     }
-    
+
     public static class MBOptions implements OptionClickEventHandler {
-        
+
         @Override
         public void onOptionClick(OptionClickEvent e) {
             if (e.getMenuName().equals(NewPlotMenu.getName())) {

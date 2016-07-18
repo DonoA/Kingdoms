@@ -56,6 +56,7 @@ public class StorageHandler implements Listener {
             add(InventoryAction.PICKUP_HALF);
             add(InventoryAction.PICKUP_ONE);
             add(InventoryAction.PICKUP_SOME);
+            add(InventoryAction.MOVE_TO_OTHER_INVENTORY);
         }
     };
 
@@ -80,8 +81,8 @@ public class StorageHandler implements Listener {
                 //NEED TO HANDLE SHIFT CLICKS
                 Storage s = openStorages.get(((Player) event.getWhoClicked()).getName());
                 BuildingVault bv = (BuildingVault) s.getStorage();
-                LogUtil.printDebug(Arrays.toString(bv.getContents()));
-                LogUtil.printDebug(bv.getFullSlots());
+//                LogUtil.printDebug(Arrays.toString(bv.getContents()));
+//                LogUtil.printDebug(bv.getFullSlots());
                 if (event.getRawSlot() >= 0 && event.getRawSlot() < (int) (Math.ceil(s.getStorage().getUniqueSize() / 9) * 9)) {
                     event.setCancelled(true);
                     if (remove.contains(event.getAction())) {
@@ -95,6 +96,12 @@ public class StorageHandler implements Listener {
                             event.setCursor(null);
                             bv.updateInventory(event.getInventory());
                         }
+                    }
+                } else if (event.getAction().equals(InventoryAction.MOVE_TO_OTHER_INVENTORY)) {
+                    ItemStack insertStack = event.getCurrentItem();
+                    if (bv.addItem(insertStack)) {
+                        event.setCurrentItem(null);
+                        bv.updateInventory(event.getInventory());
                     }
                 }
             }

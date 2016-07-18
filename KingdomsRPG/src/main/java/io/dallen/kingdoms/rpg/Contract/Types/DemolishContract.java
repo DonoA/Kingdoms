@@ -90,8 +90,8 @@ public class DemolishContract implements PlotContract {
             ContractHandler.getAllContracts().put(ID, this);
             e.setNext(new ChestGUI("Select Reward Type", InventoryType.HOPPER, ContractHandler.getInst()) {
                 {
-                    setOption(2, KingdomMaterial.DEFAULT.getItemStack(), "Gold");
-                    setOption(4, KingdomMaterial.DEFAULT.getItemStack(), "Item");
+                    setOption(1, KingdomMaterial.DEFAULT.getItemStack(), "Gold");
+                    setOption(3, KingdomMaterial.DEFAULT.getItemStack(), "Item");
                 }
             });
         } else {

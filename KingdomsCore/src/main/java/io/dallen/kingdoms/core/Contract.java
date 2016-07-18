@@ -19,6 +19,7 @@
  */
 package io.dallen.kingdoms.core;
 
+import io.dallen.kingdoms.utilities.Storage.SaveType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -27,7 +28,7 @@ import org.bukkit.inventory.ItemStack;
  *
  * @author Donovan Allen
  */
-public interface Contract {
+public interface Contract extends SaveType.Saveable {
 
     public int getID();
 

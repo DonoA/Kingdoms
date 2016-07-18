@@ -26,7 +26,10 @@ import io.dallen.kingdoms.utilities.Utils.ChestGUI;
 import io.dallen.kingdoms.utilities.Utils.ChestGUI.OptionClickEvent;
 import io.dallen.kingdoms.utilities.Utils.ChestGUI.OptionClickEventHandler;
 import io.dallen.kingdoms.utilities.Utils.LocationUtil;
+import java.awt.Point;
+import java.awt.Polygon;
 import java.awt.geom.Ellipse2D;
+import java.util.ArrayList;
 import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -81,6 +84,17 @@ public class TownHall extends Plot {
                     getMunicipal().setInfluence(new Ellipse2D.Double(getCenter().getBlockX() - getMunicipal().getType().getRadius() / 2,
                             getCenter().getBlockZ() - getMunicipal().getType().getRadius() / 2, getMunicipal().getType().getRadius(),
                             getMunicipal().getType().getRadius()));
+                    getMunicipal().setBase(new Polygon(new int[]{
+                        getCenter().getBlockX() - getMunicipal().getType().getRadius() / 8,
+                        getCenter().getBlockX() - getMunicipal().getType().getRadius() / 8,
+                        getCenter().getBlockX() + getMunicipal().getType().getRadius() / 8,
+                        getCenter().getBlockX() + getMunicipal().getType().getRadius() / 8
+                    }, new int[]{
+                        getCenter().getBlockZ() - getMunicipal().getType().getRadius() / 8,
+                        getCenter().getBlockZ() + getMunicipal().getType().getRadius() / 8,
+                        getCenter().getBlockZ() + getMunicipal().getType().getRadius() / 8,
+                        getCenter().getBlockZ() - getMunicipal().getType().getRadius() / 8
+                    }, 4));
                     //                e.getPlayer().teleport(getCenter());
                     //                final Ellipse2D cic = getMunicipal().getInfluence();
                     //                final Rectangle bounds = getMunicipal().getInfluence().getBounds();

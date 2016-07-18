@@ -169,8 +169,8 @@ public class ContractHandler implements Listener, OptionClickEventHandler {
     public static void setReward(final Contract c, Player p) {
         new ChestGUI("Select Reward Type", InventoryType.HOPPER, ContractHandler.inst) {
             {
-                setOption(2, KingdomMaterial.DEFAULT.getItemStack(), "Gold");
-                setOption(4, KingdomMaterial.DEFAULT.getItemStack(), "Item");
+                setOption(1, KingdomMaterial.DEFAULT.getItemStack(), "Gold");
+                setOption(3, KingdomMaterial.DEFAULT.getItemStack(), "Item");
                 setMenuData(c);
             }
         }.sendMenu(p);

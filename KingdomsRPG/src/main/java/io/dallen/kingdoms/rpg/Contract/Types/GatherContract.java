@@ -98,7 +98,7 @@ public class GatherContract implements Contract {
                 e.getName() + " - Unfinished", String.valueOf(ID)));
         this.contractItem = e.getPlayer().getItemInHand();
         ContractHandler.getAllContracts().put(ID, this);
-
+        selectRequiredItems(contractor);
     }
 
     @Override

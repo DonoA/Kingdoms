@@ -22,6 +22,7 @@ package io.dallen.kingdoms.core.Handlers.MultiBlocks;
 import io.dallen.kingdoms.core.KingdomsCore;
 import io.dallen.kingdoms.utilities.Blueprint;
 import io.dallen.kingdoms.utilities.Utils.DBmanager;
+import io.dallen.kingdoms.utilities.Utils.LogUtil;
 import io.dallen.kingdoms.utilities.Utils.NBTmanager;
 import java.io.File;
 import java.io.IOException;
@@ -92,10 +93,8 @@ public class Forge extends MultiBlock {
             try {
                 basicForm = NBTmanager.loadData(new File(KingdomsCore.getPlugin().getDataFolder() + DBmanager.getFileSep() + "multiblock"
                         + DBmanager.getFileSep() + "forge.schematic"));
-            } catch (IOException ex) {
-                Logger.getLogger(Forge.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (DataFormatException ex) {
-                Logger.getLogger(Forge.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                LogUtil.printErr("Failed to load form for Forge");
             }
         }
     }

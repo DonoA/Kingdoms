@@ -113,6 +113,7 @@ public class KingdomsCore extends KingdomModual {
             skinHandler = SkinHandler;
             GameTicks.StartGameTicks();
             DataLoadHelper.LoadKingdomData();
+            setupDatabase();
         }
     };
 
@@ -120,7 +121,6 @@ public class KingdomsCore extends KingdomModual {
     @SuppressWarnings("unchecked")
     public void onEnable() {
         Plugin = this;
-        setupDatabase();
         protocolManager = ProtocolLibrary.getProtocolManager();
         CraftingHandler crafting = new CraftingHandler(this);
         for (Class<? extends MultiBlock> mb : MultiBlock.getMultiBlockClasses()) {

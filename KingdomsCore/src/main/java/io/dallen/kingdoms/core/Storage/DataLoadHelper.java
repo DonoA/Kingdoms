@@ -22,19 +22,19 @@ package io.dallen.kingdoms.core.Storage;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.dallen.kingdoms.core.Kingdom;
 import io.dallen.kingdoms.core.KingdomModual;
-import io.dallen.kingdoms.core.Structures.Types.WallSystem;
 import io.dallen.kingdoms.core.KingdomsCore;
 import io.dallen.kingdoms.core.Municipality;
 import io.dallen.kingdoms.core.PlayerData;
 import io.dallen.kingdoms.core.Structures.Plot;
 import io.dallen.kingdoms.core.Structures.Structure;
+import io.dallen.kingdoms.core.Structures.Types.WallSystem;
 import io.dallen.kingdoms.core.Structures.Vaults.BuildingVault;
 import io.dallen.kingdoms.utilities.Annotations.SaveData;
 import io.dallen.kingdoms.utilities.Storage.SaveType;
 import io.dallen.kingdoms.utilities.Storage.SaveType.NativeType;
-import io.dallen.kingdoms.utilities.Storage.SaveType.SaveAttr;
 import io.dallen.kingdoms.utilities.Utils.DBmanager;
 import io.dallen.kingdoms.utilities.Utils.LogUtil;
+import java.awt.Polygon;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -59,7 +59,6 @@ public class DataLoadHelper implements Listener {
     @SuppressWarnings("unchecked")
     public static boolean SaveKingdomData() {
         try {
-            LogUtil.printDebug(Arrays.toString(Plot.getAllPlots().toArray()));
             for (Plot p : Plot.getAllPlots()) {
                 JsonStructure json = null;
                 Class<? extends Plot> typ = null;
@@ -84,9 +83,7 @@ public class DataLoadHelper implements Listener {
                     json = p.toJsonObject();
                     json.setType(Plot.class.getName());
                 }
-                LogUtil.printDebug(Arrays.toString(typ.getDeclaredFields()));
                 for (Field f : typ.getDeclaredFields()) {
-//                    LogUtil.printDebug("Found field " + f.getName() + " of " + f.getType().getName());
                     if (!f.isAccessible()) {
                         f.setAccessible(true);
                     }
@@ -110,7 +107,6 @@ public class DataLoadHelper implements Listener {
                         }
                     }
                 }
-//                LogUtil.printDebug(DBmanager.getJSonParser().writeValueAsString(json));
                 DBmanager.saveObj(json, new File(KingdomsCore.getPlugin().getDataFolder() + DBmanager.getFileSep() + "savedata" + DBmanager.getFileSep() + "plots"),
                         json.getStructureID() + ".plotdata");
             }
@@ -171,20 +167,14 @@ public class DataLoadHelper implements Listener {
                         Plot p = (Plot) js.toJavaObject();
                         for (Entry<String, Object> e : js.getAttr().entrySet()) {
                             Object obj = e.getValue();
-//                            LogUtil.printDebug("obj type: " + e.getValue().getClass().getName());
-//                            LogUtil.printDebug("obj data: " + DBmanager.getJSonParser().writeValueAsString(e.getValue()));
                             if (e.getValue() instanceof LinkedHashMap && ((LinkedHashMap) e.getValue()).containsKey("type") && ((LinkedHashMap) e.getValue()).containsKey("data")) {
                                 obj = DBmanager.getJSonParser().readValue(DBmanager.getJSonParser().writeValueAsString(((LinkedHashMap) e.getValue()).get("data")),
                                         Class.forName((String) ((LinkedHashMap) e.getValue()).get("type")));
-//                                LogUtil.printDebug("obj type: " + obj.getClass().getName());
-//                                LogUtil.printDebug("obj data: " + DBmanager.getJSonParser().writeValueAsString(obj));
                             }
                             if (obj != null && obj instanceof SaveType.NativeType) {
-//                                LogUtil.printDebug("Save Type");
                                 obj = ((SaveType.NativeType) obj).toJavaObject();
                             }
                             if (obj instanceof BuildingVault) {
-//                                LogUtil.printDebug("Building Vault");
                                 ((BuildingVault) obj).setOwner(p);
                             }
                             Field dat = type.getDeclaredField(e.getKey());
@@ -198,6 +188,7 @@ public class DataLoadHelper implements Listener {
                         }
                         Plot.getAllPlots().add(p);
                         muni.addStructure(p);
+                        p.setMunicipal(muni);
                         if (jm.getCenter() == sid) {
                             muni.setCenter(p);
                         }
@@ -208,6 +199,19 @@ public class DataLoadHelper implements Listener {
                     } catch (IOException ex) {
                         Logger.getLogger(DataLoadHelper.class.getName()).log(Level.SEVERE, null, ex);
                     }
+                }
+                if (muni.getBase() == null) {
+                    muni.setBase(new Polygon(new int[]{
+                        muni.getCenter().getCenter().getBlockX() - muni.getType().getRadius() / 8,
+                        muni.getCenter().getCenter().getBlockX() - muni.getType().getRadius() / 8,
+                        muni.getCenter().getCenter().getBlockX() + muni.getType().getRadius() / 8,
+                        muni.getCenter().getCenter().getBlockX() + muni.getType().getRadius() / 8
+                    }, new int[]{
+                        muni.getCenter().getCenter().getBlockZ() - muni.getType().getRadius() / 8,
+                        muni.getCenter().getCenter().getBlockZ() + muni.getType().getRadius() / 8,
+                        muni.getCenter().getCenter().getBlockZ() + muni.getType().getRadius() / 8,
+                        muni.getCenter().getCenter().getBlockZ() - muni.getType().getRadius() / 8
+                    }, 4));
                 }
                 //TODO load rest of municipal data
                 //TODO setup wall system with newly loaded plots
@@ -227,20 +231,14 @@ public class DataLoadHelper implements Listener {
                     Plot p = (Plot) js.toJavaObject();
                     for (Entry<String, Object> e : js.getAttr().entrySet()) {
                         Object obj = e.getValue();
-//                            LogUtil.printDebug("obj type: " + e.getValue().getClass().getName());
-//                            LogUtil.printDebug("obj data: " + DBmanager.getJSonParser().writeValueAsString(e.getValue()));
                         if (e.getValue() instanceof LinkedHashMap && ((LinkedHashMap) e.getValue()).containsKey("type") && ((LinkedHashMap) e.getValue()).containsKey("data")) {
                             obj = DBmanager.getJSonParser().readValue(DBmanager.getJSonParser().writeValueAsString(((LinkedHashMap) e.getValue()).get("data")),
                                     Class.forName((String) ((LinkedHashMap) e.getValue()).get("type")));
-//                                LogUtil.printDebug("obj type: " + obj.getClass().getName());
-//                                LogUtil.printDebug("obj data: " + DBmanager.getJSonParser().writeValueAsString(obj));
                         }
                         if (obj instanceof SaveType.NativeType && obj != null) {
-//                                LogUtil.printDebug("Save Type");
                             obj = ((SaveType.NativeType) obj).toJavaObject();
                         }
                         if (obj instanceof BuildingVault) {
-//                                LogUtil.printDebug("Building Vault");
                             ((BuildingVault) obj).setOwner(p);
                         }
                         Field dat = type.getDeclaredField(e.getKey());
@@ -254,6 +252,7 @@ public class DataLoadHelper implements Listener {
                     }
                     Plot.getAllPlots().add(p);
                     kingdom.addStructure(p);
+                    p.setKingdom(kingdom);
                 } catch (ClassNotFoundException | SecurityException | IllegalAccessException | IllegalArgumentException | NoSuchFieldException ex) {
                     Logger.getLogger(DataLoadHelper.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (JsonProcessingException ex) {
@@ -283,20 +282,14 @@ public class DataLoadHelper implements Listener {
                     Plot p = (Plot) js.toJavaObject();
                     for (Entry<String, Object> e : js.getAttr().entrySet()) {
                         Object obj = e.getValue();
-//                            LogUtil.printDebug("obj type: " + e.getValue().getClass().getName());
-//                            LogUtil.printDebug("obj data: " + DBmanager.getJSonParser().writeValueAsString(e.getValue()));
                         if (e.getValue() instanceof LinkedHashMap && ((LinkedHashMap) e.getValue()).containsKey("type") && ((LinkedHashMap) e.getValue()).containsKey("data")) {
                             obj = DBmanager.getJSonParser().readValue(DBmanager.getJSonParser().writeValueAsString(((LinkedHashMap) e.getValue()).get("data")),
                                     Class.forName((String) ((LinkedHashMap) e.getValue()).get("type")));
-//                                LogUtil.printDebug("obj type: " + obj.getClass().getName());
-//                                LogUtil.printDebug("obj data: " + DBmanager.getJSonParser().writeValueAsString(obj));
                         }
                         if (obj != null && obj instanceof SaveType.NativeType) {
-//                                LogUtil.printDebug("Save Type");
                             obj = ((SaveType.NativeType) obj).toJavaObject();
                         }
                         if (obj instanceof BuildingVault) {
-//                                LogUtil.printDebug("Building Vault");
                             ((BuildingVault) obj).setOwner(p);
                         }
                         Field dat = type.getDeclaredField(e.getKey());
@@ -310,6 +303,7 @@ public class DataLoadHelper implements Listener {
                     }
                     Plot.getAllPlots().add(p);
                     muni.addStructure(p);
+                    p.setMunicipal(muni);
                     if (jm.getCenter() == sid) {
                         muni.setCenter(p);
                     }
@@ -336,20 +330,14 @@ public class DataLoadHelper implements Listener {
                 Plot p = (Plot) js.toJavaObject();
                 for (Entry<String, Object> e : js.getAttr().entrySet()) {
                     Object obj = e.getValue();
-//                            LogUtil.printDebug("obj type: " + e.getValue().getClass().getName());
-//                            LogUtil.printDebug("obj data: " + DBmanager.getJSonParser().writeValueAsString(e.getValue()));
                     if (e.getValue() instanceof LinkedHashMap && ((LinkedHashMap) e.getValue()).containsKey("type") && ((LinkedHashMap) e.getValue()).containsKey("data")) {
                         obj = DBmanager.getJSonParser().readValue(DBmanager.getJSonParser().writeValueAsString(((LinkedHashMap) e.getValue()).get("data")),
                                 Class.forName((String) ((LinkedHashMap) e.getValue()).get("type")));
-//                                LogUtil.printDebug("obj type: " + obj.getClass().getName());
-//                                LogUtil.printDebug("obj data: " + DBmanager.getJSonParser().writeValueAsString(obj));
                     }
                     if (obj instanceof SaveType.NativeType && obj != null) {
-//                                LogUtil.printDebug("Save Type");
                         obj = ((SaveType.NativeType) obj).toJavaObject();
                     }
                     if (obj instanceof BuildingVault) {
-//                                LogUtil.printDebug("Building Vault");
                         ((BuildingVault) obj).setOwner(p);
                     }
                     Field dat = type.getDeclaredField(e.getKey());
