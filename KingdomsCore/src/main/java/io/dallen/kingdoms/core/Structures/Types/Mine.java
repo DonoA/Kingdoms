@@ -166,7 +166,7 @@ public class Mine extends Plot implements Storage {
             LogUtil.printDebug(LocationUtil.asPoint(Mine.this.getCenter()));
             currentHole = new Rectangle(-(getWidth() / 2 + (getWidth() % 2 == 0 ? 1 : 0)), -(getLength() / 2 + (getLength() % 2 == 0 ? 1 : 0)),
                     getWidth() / 2 + (getWidth() % 2 == 0 ? 1 : 0), getLength() / 2 + (getLength() % 2 == 0 ? 1 : 0));
-            Miner = KingdomsCore.getNPCs().spawnBuilder("BingRazor", Mine.this.getCenter());
+            Miner = KingdomsCore.getNPCs().spawnMiner("BingRazor", Mine.this.getCenter(), Mine.this);
             Miner.getNavigator().setTarget(start);
             this.startCorner = start;
             Bukkit.getScheduler().scheduleSyncRepeatingTask(KingdomsCore.getPlugin(), this, speed, speed);

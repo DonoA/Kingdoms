@@ -1,7 +1,7 @@
 /*
- * Copyright 2016 Donovan Allen.
+ * Copyright 2016 Morphics Network.
  * 
- * This file is part of Kingdoms for the Morphics Network.
+ * This file is part of KingdomsCore for the Morphics Network.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,8 +34,8 @@ import org.bukkit.inventory.Inventory;
  *
  * @author Donovan Allen
  */
-public class Miner extends Trait {
-
+public class LumberJack extends Trait{
+    
     @Getter
     private Inventory buildInventory;
 
@@ -45,7 +45,7 @@ public class Miner extends Trait {
 
     private static HashMap<Integer, Location> gettingSupplies = new HashMap<Integer, Location>();
 
-    public Miner(Mine home) {
+    public LumberJack(Mine home) {
         super("Miner");
         this.Mine = home;
     }
@@ -65,4 +65,5 @@ public class Miner extends Trait {
             }
         }
     }
+    
 }

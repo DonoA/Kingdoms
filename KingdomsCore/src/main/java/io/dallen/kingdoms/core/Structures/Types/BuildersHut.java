@@ -120,7 +120,7 @@ public class BuildersHut extends Plot implements Storage {
         public void onOptionClick(OptionClickEvent e) {
             if (e.getMenuName().equals(EditPlot.getName())) {
                 if (e.getName().equalsIgnoreCase("Train Builder")) {
-                    KingdomsCore.getNPCs().spawnBuilder("Dallen", getCenter());
+                    KingdomsCore.getNPCs().spawnBuilder("Dallen", getCenter(), BuildersHut.this);
                 } else {
                     BuildMenuHandler.chestBuildOptions(e, BuildersHut.this);
                 }

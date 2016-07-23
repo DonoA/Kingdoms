@@ -19,16 +19,27 @@
  */
 package io.dallen.kingdoms.core.NPCs.Traits;
 
+import io.dallen.kingdoms.core.Contract;
+import io.dallen.kingdoms.core.KingdomsCore;
 import io.dallen.kingdoms.core.Structures.Types.BuildersHut;
 import io.dallen.kingdoms.core.NPCs.FiniteStateMachine;
 import io.dallen.kingdoms.core.NPCs.FiniteStateMachine.FsmState;
+import io.dallen.kingdoms.core.Overrides.KingdomMaterial;
+import io.dallen.kingdoms.core.Structures.Storage;
+import io.dallen.kingdoms.core.Structures.Structure;
+import io.dallen.kingdoms.core.Structures.Vaults.BuildingVault;
+import io.dallen.kingdoms.utilities.Blueprint;
 import io.dallen.kingdoms.utilities.Blueprint.BlueBlock;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
+import net.citizensnpcs.api.event.NPCRightClickEvent;
 import net.citizensnpcs.api.trait.Trait;
 import org.bukkit.Location;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 /**
  *
@@ -47,11 +58,12 @@ public class Builder extends Trait {
 
     private static HashMap<Integer, Location> gettingSupplies = new HashMap<Integer, Location>();
 
-    public Builder() {
+    public Builder(BuildersHut home) {
         super("Builder");
+        this.BuildHut = home;
         brain = new FiniteStateMachine();
     }
-
+    
     public class getSupplies implements FsmState {
 
         private Location target;

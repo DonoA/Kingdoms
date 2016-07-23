@@ -21,12 +21,10 @@ package io.dallen.kingdoms.rpg.Contract;
 
 import io.dallen.kingdoms.core.Handlers.MultiBlockHandler;
 import io.dallen.kingdoms.core.KingdomsCore;
-import io.dallen.kingdoms.core.Structures.Types.BuildersHut;
 import io.dallen.kingdoms.core.Overrides.KingdomMaterial;
 import io.dallen.kingdoms.core.Structures.Plot;
-import io.dallen.kingdoms.core.Structures.Storage;
 import io.dallen.kingdoms.core.Structures.Structure;
-import io.dallen.kingdoms.core.Structures.Vaults.BuildingVault;
+import io.dallen.kingdoms.core.Structures.Types.BuildersHut;
 import io.dallen.kingdoms.rpg.Contract.Types.BuildContract;
 import io.dallen.kingdoms.utilities.Blueprint;
 import io.dallen.kingdoms.utilities.Blueprint.BlueBlock;
@@ -34,15 +32,12 @@ import io.dallen.kingdoms.utilities.Utils.ChestGUI;
 import io.dallen.kingdoms.utilities.Utils.ChestGUI.OptionClickEventHandler;
 import io.dallen.kingdoms.utilities.Utils.DBmanager;
 import io.dallen.kingdoms.utilities.Utils.HotbarMenu;
-import io.dallen.kingdoms.utilities.Utils.LocationUtil;
-import io.dallen.kingdoms.utilities.Utils.LogUtil;
 import io.dallen.kingdoms.utilities.Utils.NBTmanager;
 import java.awt.Point;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
@@ -57,7 +52,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.inventory.ItemStack;
 
 /**
  *
@@ -119,36 +113,7 @@ public class BuildingHandler implements Listener {
                         e.getPlayer().sendMessage("That structure is too large for this plot");
                         return;
                     }
-                    List<ItemStack> mats = new ArrayList<ItemStack>();
-                    for (Blueprint.BlueBlock[][] bbarr1 : building.getBlocks()) {
-                        for (Blueprint.BlueBlock[] bbarr2 : bbarr1) {
-                            for (Blueprint.BlueBlock bb : bbarr2) {
-                                ItemStack is = new ItemStack(bb.getBlock());
-                                is.getData().setData(bb.getData());
-                                boolean found = false;
-                                for (ItemStack mat : mats) {
-                                    if (mat.isSimilar(is)) {
-                                        mat.setAmount(mat.getAmount() + 1);
-                                        found = true;
-                                    }
-                                }
-                                if (!found) {
-                                    mats.add(is);
-                                }
-                            }
-                        }
-                    }
-                    List<Structure> locs = new ArrayList<Structure>();
-                    for (ItemStack is : mats) {
-                        locs = p.getMunicipal().materialLocation(is);
-                        for (Structure st : locs) {
-                            is.setAmount(is.getAmount() - ((BuildingVault) ((Storage) st).getStorage()).getMaterial(is).getAmount());
-                        }
-                        if (is.getAmount() > 0) {
-                            e.getPlayer().sendMessage("Your municipality does not have the materials to build this structure");
-                            return;
-                        }
-                    }
+
                     Location startCorner = new Location(p.getCenter().getWorld(), p.getCenter().getX() - building.getWid() / 2 + (building.getWid() % 2 == 0 ? 1 : 0),
                             p.getCenter().getBlockY(), p.getCenter().getBlockZ() - building.getLen() / 2 + (building.getLen() % 2 == 0 ? 1 : 0));
                     for (int y = 0; y < building.getHigh(); y++) {
@@ -166,9 +131,8 @@ public class BuildingHandler implements Listener {
                             }
                         }
                     }
-
+                    BuildFrame frame = new BuildFrame(building, p, Integer.parseInt(args[1]), (BuildContract) e.getData(), e.getPlayer().getInventory().getHeldItemSlot());
                     RotateMenu.sendMenu(e.getPlayer());
-                    BuildFrame frame = new BuildFrame(building, p, Integer.parseInt(args[1]), (BuildContract) e.getData());
                     openBuilds.put(e.getPlayer().getName(), frame);
                 } catch (IOException | DataFormatException ex) {
                     Logger.getLogger(MultiBlockHandler.class.getName()).log(Level.SEVERE, null, ex);
@@ -185,42 +149,12 @@ public class BuildingHandler implements Listener {
             if (e.getName().equalsIgnoreCase("Build")) {
                 Blueprint building = openBuilds.get(e.getPlayer().getName()).getBlueprint();
                 Plot p = openBuilds.get(e.getPlayer().getName()).getPlot();
-                BuildersHut BuildHut = (BuildersHut) p.getMunicipal().getStructures().get(BuildersHut.class).get(0);
                 Point offSet = building.getOffSet();
                 Location startCorner = new Location(p.getCenter().getWorld(), (p.getCenter().getX() + offSet.x) - building.getWid() / 2 + (building.getWid() % 2 == 0 ? 1 : 0),
                         p.getCenter().getBlockY(), (p.getCenter().getBlockZ() + offSet.y) - building.getLen() / 2 + (building.getLen() % 2 == 0 ? 1 : 0));
                 building.build(startCorner, Blueprint.buildType.CLEAR);
-                List<ItemStack> mats = new ArrayList<ItemStack>();
-                for (BlueBlock[][] bbarr1 : building.getBlocks()) {
-                    for (BlueBlock[] bbarr2 : bbarr1) {
-                        for (BlueBlock bb : bbarr2) {
-                            ItemStack is = new ItemStack(bb.getBlock());
-                            is.getData().setData(bb.getData());
-                            boolean found = false;
-                            for (ItemStack mat : mats) {
-                                if (mat.isSimilar(is)) {
-                                    mat.setAmount(mat.getAmount() + 1);
-                                    found = true;
-                                }
-                            }
-                            if (!found) {
-                                mats.add(is);
-                            }
-                        }
-                    }
-                }
-                List<Structure> locs = new ArrayList<Structure>();
-                for (ItemStack is : mats) {
-                    locs = p.getMunicipal().materialLocation(is);
-                    for (Structure s : locs) {
-                        is.setAmount(((BuildingVault) ((Storage) s).getStorage()).removeItem(is));
-                    }
-                    if (is.getAmount() > 0) {
-                        e.getPlayer().sendMessage("Your municipality does not have the materials to build this structure");
-                        return;
-                    }
-                }
-                openBuilds.get(e.getPlayer().getName()).getContract().finishSelectBuilding(building, BuildHut, startCorner);
+                e.getPlayer().getInventory().setHeldItemSlot(openBuilds.get(e.getPlayer().getName()).getSlot());
+                openBuilds.get(e.getPlayer().getName()).getContract().finishSelectBuilding(building, startCorner);
                 openBuilds.remove(e.getPlayer().getName());
             } else if (e.getName().equalsIgnoreCase("Rotate Clockwise")) {
                 e.setClose(false);
@@ -350,6 +284,8 @@ public class BuildingHandler implements Listener {
         private int speed;
         @Getter
         private BuildContract contract;
+        @Getter
+        private int slot;
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -378,36 +314,6 @@ public class BuildingHandler implements Listener {
                                 e.getPlayer().sendMessage("That structure is too large for this plot");
                                 return;
                             }
-                            List<ItemStack> mats = new ArrayList<ItemStack>();
-                            for (BlueBlock[][] bbarr1 : building.getBlocks()) {
-                                for (BlueBlock[] bbarr2 : bbarr1) {
-                                    for (BlueBlock bb : bbarr2) {
-                                        ItemStack is = new ItemStack(bb.getBlock());
-                                        is.getData().setData(bb.getData());
-                                        boolean found = false;
-                                        for (ItemStack mat : mats) {
-                                            if (mat.isSimilar(is)) {
-                                                mat.setAmount(mat.getAmount() + 1);
-                                                found = true;
-                                            }
-                                        }
-                                        if (!found) {
-                                            mats.add(is);
-                                        }
-                                    }
-                                }
-                            }
-                            List<Structure> locs = new ArrayList<Structure>();
-                            for (ItemStack is : mats) {
-                                locs = p.getMunicipal().materialLocation(is);
-                                for (Structure s : locs) {
-                                    is.setAmount(is.getAmount() - ((BuildingVault) ((Storage) s).getStorage()).getMaterial(is).getAmount());
-                                }
-                                if (is.getAmount() > 0) {
-                                    e.getPlayer().sendMessage("Your municipality does not have the materials to build this structure");
-                                    return;
-                                }
-                            }
                             Location startCorner = new Location(p.getCenter().getWorld(), p.getCenter().getX() - building.getWid() / 2 + (building.getWid() % 2 == 0 ? 1 : 0),
                                     p.getCenter().getBlockY(), p.getCenter().getBlockZ() - building.getLen() / 2 + (building.getLen() % 2 == 0 ? 1 : 0));
                             for (int y = 0; y < building.getHigh(); y++) {
@@ -427,7 +333,7 @@ public class BuildingHandler implements Listener {
                             }
 
                             RotateMenu.sendMenu(e.getPlayer());
-                            BuildFrame frame = new BuildFrame(building, p, Integer.parseInt(args[1]), openInputs.get(e.getPlayer().getName()).getContract());
+                            BuildFrame frame = new BuildFrame(building, p, Integer.parseInt(args[1]), openInputs.get(e.getPlayer().getName()).getContract(), e.getPlayer().getInventory().getHeldItemSlot());
                             openBuilds.put(e.getPlayer().getName(), frame);
                             openInputs.remove(e.getPlayer().getName());
                         } catch (IOException | DataFormatException ex) {
@@ -455,9 +361,8 @@ public class BuildingHandler implements Listener {
 
         private int step = 0;
 
-        public BuildTask(Blueprint building, Location start, int speed, BuildersHut BuildHut) {
-            LogUtil.printDebug(LocationUtil.asPoint(BuildHut.getCenter()));
-            Builder = KingdomsCore.getNPCs().spawnBuilder("BingRazer", BuildHut.getCenter());
+        public BuildTask(Blueprint building, Location start, int speed, NPC builder) {
+            Builder = builder;
             Builder.getNavigator().setTarget(start);
             for (int y = 0; y < building.getHigh(); y++) {
                 for (int z = 0; z < building.getLen(); z++) {
@@ -470,7 +375,17 @@ public class BuildingHandler implements Listener {
                 }
             }
             this.startCorner = start;
-            this.BuildHut = BuildHut;
+            this.BuildHut = builder.getTrait(io.dallen.kingdoms.core.NPCs.Traits.Builder.class).getBuildHut();
+            Bukkit.getScheduler().scheduleSyncRepeatingTask(KingdomsCore.getPlugin(), this, speed, speed);
+        }
+        
+        public BuildTask(ArrayList<Location> locs, ArrayList<BlueBlock> blocks, Location start, int speed, NPC builder) {
+            Builder = builder;
+            Builder.getNavigator().setTarget(start);
+            blockLocations = locs;
+            this.blocks = blocks;
+            this.startCorner = start;
+            this.BuildHut = builder.getTrait(io.dallen.kingdoms.core.NPCs.Traits.Builder.class).getBuildHut();
             Bukkit.getScheduler().scheduleSyncRepeatingTask(KingdomsCore.getPlugin(), this, speed, speed);
         }
 

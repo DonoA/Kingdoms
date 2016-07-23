@@ -36,6 +36,7 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
@@ -56,6 +57,9 @@ public class KingdomsCore extends KingdomModual {
     @Getter
     @Setter
     private static NpcManager NPCs;
+    
+    @Getter
+    private static HashMap<Integer, Contract> allContracts = new HashMap<Integer, Contract>();
 
     @Getter
     private static List<Class<? extends Plot>> StructureClasses = new ArrayList<Class<? extends Plot>>();
@@ -197,7 +201,7 @@ public class KingdomsCore extends KingdomModual {
      */
     public static void setupDatabase() {
         File plugin = KingdomsCore.getPlugin().getDataFolder();
-        for (String s : new String[]{"prefabs", "playerdata", "multiblock", "savedata"}) {
+        for (String s : new String[]{"prefabs", "playerdata", "multiblock", "savedata", "contracts"}) {
             if (!new File(plugin.getPath() + DBmanager.getFileSep() + s).exists()) {
                 new File(plugin.getPath() + DBmanager.getFileSep() + s).mkdir();
             }

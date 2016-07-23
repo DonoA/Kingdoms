@@ -19,8 +19,10 @@
  */
 package io.dallen.kingdoms.rpg.Contract.Types;
 
+import io.dallen.kingdoms.core.KingdomsCore;
 import io.dallen.kingdoms.rpg.Contract.PlotContract;
 import io.dallen.kingdoms.core.Overrides.KingdomMaterial;
+import io.dallen.kingdoms.core.Storage.JsonContract;
 import io.dallen.kingdoms.core.Structures.Plot;
 import io.dallen.kingdoms.core.Structures.Types.TownHall;
 import io.dallen.kingdoms.rpg.ContractHandler;
@@ -87,11 +89,12 @@ public class DemolishContract implements PlotContract {
                     e.getName() + " - Unfinished", String.valueOf(ID)));
             this.plot = p;
             this.contractItem = e.getPlayer().getItemInHand();
-            ContractHandler.getAllContracts().put(ID, this);
+            KingdomsCore.getAllContracts().put(ID, this);
             e.setNext(new ChestGUI("Select Reward Type", InventoryType.HOPPER, ContractHandler.getInst()) {
                 {
                     setOption(1, KingdomMaterial.DEFAULT.getItemStack(), "Gold");
                     setOption(3, KingdomMaterial.DEFAULT.getItemStack(), "Item");
+                    setMenuData(DemolishContract.this);
                 }
             });
         } else {
@@ -121,5 +124,10 @@ public class DemolishContract implements PlotContract {
             }
             e.getPlayer().setItemInHand(new ItemStack(Material.AIR));
         }
+    }
+    
+    @Override
+    public JsonContract toJsonObject(){
+        throw new UnsupportedOperationException();
     }
 }

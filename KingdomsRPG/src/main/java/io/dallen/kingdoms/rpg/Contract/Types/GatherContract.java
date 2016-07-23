@@ -20,8 +20,10 @@
 package io.dallen.kingdoms.rpg.Contract.Types;
 
 import io.dallen.kingdoms.core.Contract;
+import io.dallen.kingdoms.core.KingdomsCore;
 import io.dallen.kingdoms.core.Municipality;
 import io.dallen.kingdoms.core.Overrides.KingdomMaterial;
+import io.dallen.kingdoms.core.Storage.JsonContract;
 import io.dallen.kingdoms.core.Structures.Types.TownHall;
 import io.dallen.kingdoms.rpg.ContractHandler;
 import io.dallen.kingdoms.rpg.KingdomsRPG;
@@ -97,7 +99,7 @@ public class GatherContract implements Contract {
         e.getPlayer().setItemInHand(ItemUtil.setItemNameAndLore(KingdomMaterial.CONTRACT_UNFINISHED.getItemStack(),
                 e.getName() + " - Unfinished", String.valueOf(ID)));
         this.contractItem = e.getPlayer().getItemInHand();
-        ContractHandler.getAllContracts().put(ID, this);
+        KingdomsCore.getAllContracts().put(ID, this);
         selectRequiredItems(contractor);
     }
 
@@ -152,5 +154,10 @@ public class GatherContract implements Contract {
                 contract.selectReward((Player) event.getPlayer());
             }
         }
+    }
+    
+    @Override
+    public JsonContract toJsonObject(){
+        throw new UnsupportedOperationException();
     }
 }

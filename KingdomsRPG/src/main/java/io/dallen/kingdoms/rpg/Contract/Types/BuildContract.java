@@ -25,6 +25,7 @@ import io.dallen.kingdoms.core.Contract.RewardType;
 import io.dallen.kingdoms.core.KingdomsCore;
 import io.dallen.kingdoms.rpg.Contract.PlotContract;
 import io.dallen.kingdoms.core.Overrides.KingdomMaterial;
+import io.dallen.kingdoms.core.Storage.JsonContract;
 import io.dallen.kingdoms.core.Structures.Plot;
 import io.dallen.kingdoms.core.Structures.Types.BuildersHut;
 import io.dallen.kingdoms.core.Structures.Types.TownHall;
@@ -111,7 +112,7 @@ public class BuildContract implements PlotContract {
                     e.getName() + " - Unfinished", String.valueOf(ID)));
             this.plot = p;
             this.contractItem = e.getPlayer().getItemInHand();
-            ContractHandler.getAllContracts().put(ID, this);
+            KingdomsCore.getAllContracts().put(ID, this);
             selectBuilding(contractor);
         } else {
             e.getPlayer().sendMessage("You must be in a plot to create this type of contract");
@@ -128,8 +129,6 @@ public class BuildContract implements PlotContract {
     }
 
     public void selectBuilding(final Player p) {
-//        if (plot.getMunicipal() != null
-//                && !plot.getMunicipal().getStructures().get(BuildersHut.class).isEmpty()) {
         ChestGUI buildMenu = new ChestGUI("Prefab Build Menu", 18, BuildingHandler.getBuildChestHandler());
         buildMenu.setMenuData(plot);
         int i = 0;
@@ -150,15 +149,18 @@ public class BuildContract implements PlotContract {
             }
         }, 2);
         buildMenu.sendMenu(p);
-//        } else {
-//            p.sendMessage("You have no NPCs to build this!");
-//        }
     }
 
-    public void finishSelectBuilding(Blueprint building, BuildersHut buildHut, Location startCorner) {
+    public void finishSelectBuilding(Blueprint building, Location startCorner) {
         //rename item and things
         this.building = building;
-        selectReward(contractor);
+        this.startCorner = startCorner;
+        Bukkit.getScheduler().scheduleSyncDelayedTask(KingdomsRPG.getPlugin(), new Runnable() {
+            @Override
+            public void run() {
+                selectReward(contractor);
+            }
+        }, 2);
     }
 
     @Override
@@ -177,6 +179,11 @@ public class BuildContract implements PlotContract {
             }
             e.getPlayer().setItemInHand(new ItemStack(Material.AIR));
         }
+    }
+    
+    @Override
+    public JsonContract toJsonObject(){
+        throw new UnsupportedOperationException();
     }
 
 }

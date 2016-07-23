@@ -21,19 +21,35 @@ package io.dallen.kingdoms.rpg;
 
 import io.dallen.kingdoms.core.Contract;
 import io.dallen.kingdoms.core.Contract.RewardType;
+import io.dallen.kingdoms.core.KingdomsCore;
 import io.dallen.kingdoms.core.Overrides.KingdomMaterial;
 import io.dallen.kingdoms.core.PlayerData;
+import io.dallen.kingdoms.core.Structures.Plot;
+import io.dallen.kingdoms.core.Structures.Storage;
+import io.dallen.kingdoms.core.Structures.Structure;
+import io.dallen.kingdoms.core.Structures.Types.BuildersHut;
+import io.dallen.kingdoms.core.Structures.Vaults.BuildingVault;
+import io.dallen.kingdoms.rpg.Contract.BuildingHandler.BuildTask;
+import io.dallen.kingdoms.rpg.Contract.Types.BuildContract;
+import io.dallen.kingdoms.rpg.Contract.Types.DemolishContract;
+import io.dallen.kingdoms.utilities.Blueprint;
+import io.dallen.kingdoms.utilities.Blueprint.BlueBlock;
 import io.dallen.kingdoms.utilities.Utils.ChestGUI;
 import io.dallen.kingdoms.utilities.Utils.ChestGUI.OptionClickEventHandler;
 import io.dallen.kingdoms.utilities.Utils.ItemUtil;
 import io.dallen.kingdoms.utilities.Utils.LogUtil;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import lombok.Getter;
+import net.citizensnpcs.api.event.NPCLeftClickEvent;
+import net.citizensnpcs.api.event.NPCRightClickEvent;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -56,9 +72,6 @@ public class ContractHandler implements Listener, OptionClickEventHandler {
     private static int currentID = -1;
 
     private static HashMap<String, Long> cooldown = new HashMap<String, Long>();
-
-    @Getter
-    private static HashMap<Integer, Contract> allContracts = new HashMap<Integer, Contract>();
 
     @Getter
     private static HashMap<String, Contract> openInputs = new HashMap<String, Contract>();
@@ -85,6 +98,101 @@ public class ContractHandler implements Listener, OptionClickEventHandler {
         currentID++;
         return currentID;
     }
+    
+    @EventHandler
+    public void onNPCLeftClick(NPCLeftClickEvent e){
+        ItemStack clickedItem = e.getClicker().getInventory().getItemInMainHand();
+        if(KingdomMaterial.CONTRACT_FILLED.equals(clickedItem)){
+            if (KingdomsCore.getAllContracts().containsKey(Integer.parseInt(clickedItem.getItemMeta().getLore().get(0)))) {
+                if(KingdomsCore.getAllContracts().get(Integer.parseInt(clickedItem.getItemMeta().getLore().get(0))) instanceof BuildContract){
+                    BuildContract c = (BuildContract) KingdomsCore.getAllContracts().get(Integer.parseInt(clickedItem.getItemMeta().getLore().get(0)));
+                    e.getClicker().getInventory().setItemInMainHand(null);
+//                    List<ItemStack> mats = new ArrayList<ItemStack>();
+//                    for (Blueprint.BlueBlock[][] bbarr1 : c.getBuilding().getBlocks()) {
+//                        for (Blueprint.BlueBlock[] bbarr2 : bbarr1) {
+//                            for (Blueprint.BlueBlock bb : bbarr2) {
+//                                ItemStack is = new ItemStack(bb.getBlock());
+//                                is.getData().setData(bb.getData());
+//                                boolean found = false;
+//                                for (ItemStack mat : mats) {
+//                                    if (mat.isSimilar(is)) {
+//                                        mat.setAmount(mat.getAmount() + 1);
+//                                        found = true;
+//                                    }
+//                                }
+//                                if (!found) {
+//                                    mats.add(is);
+//                                }
+//                            }
+//                        }
+//                    }
+//                    List<Structure> locs = new ArrayList<Structure>();
+//                    for (ItemStack is : mats) {
+//                        locs = c.getPlot().getMunicipal().materialLocation(is);
+//                        for (Structure st : locs) {
+//                            is.setAmount(is.getAmount() - ((BuildingVault) ((Storage) st).getStorage()).getMaterial(is).getAmount());
+//                        }
+//                        if (is.getAmount() > 0) {
+//                            e.getClicker().sendMessage("Your municipality does not have the materials to build this structure");
+//                            return;
+//                        }
+//                    }
+                    // for removeal of items:
+//                    for (BlueBlock[][] bbarr1 : building.getBlocks()) {
+//                    for (BlueBlock[] bbarr2 : bbarr1) {
+//                        for (BlueBlock bb : bbarr2) {
+//                            ItemStack is = new ItemStack(bb.getBlock());
+//                            is.getData().setData(bb.getData());
+//                            boolean found = false;
+//                            for (ItemStack mat : mats) {
+//                                if (mat.isSimilar(is)) {
+//                                    mat.setAmount(mat.getAmount() + 1);
+//                                    found = true;
+//                                }
+//                            }
+//                            if (!found) {
+//                                mats.add(is);
+//                            }
+//                        }
+//                    }
+//                }
+//                List<Structure> locs = new ArrayList<Structure>();
+//                for (ItemStack is : mats) {
+//                    locs = p.getMunicipal().materialLocation(is);
+//                    for (Structure s : locs) {
+//                        is.setAmount(((BuildingVault) ((Storage) s).getStorage()).removeItem(is));
+//                    }
+//                    if (is.getAmount() > 0) {
+//                        e.getPlayer().sendMessage("Your municipality does not have the materials to build this structure");
+//                        return;
+//                    }
+//                }
+                    new BuildTask(c.getBuilding(), c.getStartCorner(), 5, e.getNPC());
+                }else if(KingdomsCore.getAllContracts().get(Integer.parseInt(clickedItem.getItemMeta().getLore().get(0))) instanceof DemolishContract){
+                    DemolishContract c = (DemolishContract) KingdomsCore.getAllContracts().get(Integer.parseInt(clickedItem.getItemMeta().getLore().get(0)));
+                    Plot p = c.getPlot();
+                    ArrayList<Location> locs = new ArrayList<Location>();
+                    ArrayList<BlueBlock> blocks = new ArrayList<BlueBlock>();
+                    double halfWidth = p.getWidth() / 2;
+                    double halfLength = p.getLength() / 2;
+                    for (int x = (int) -halfWidth; x <= Math.ceil(halfWidth) + 1; x++) {
+                        for (int z = (int) -halfLength; z <= Math.ceil(halfLength) + 1; z++) {
+                            for (int y = 0; y < 50; y++) {
+                                if (!p.getCenter().clone().add(x, y, z).getBlock().getType().equals(Material.AIR)) {
+                                    locs.add(p.getCenter().clone().add(x, y, z));
+                                    blocks.add(new BlueBlock((short) Material.AIR.getId(), (byte) 0));
+                                }
+                            }
+                        }
+                    }
+                    Location startCorner = new Location(p.getCenter().getWorld(), p.getCenter().getX() - p.getWidth() / 2 + (p.getWidth() % 2 == 0 ? 1 : 0),
+                            p.getCenter().getBlockY(), p.getCenter().getBlockZ() - p.getLength() / 2 + (p.getLength() % 2 == 0 ? 1 : 0));
+                    e.getClicker().getInventory().setItemInMainHand(null);
+                    new BuildTask(locs, blocks, startCorner, 5, e.getNPC());
+                }
+            }
+        }
+    }
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent e) {
@@ -98,8 +206,8 @@ public class ContractHandler implements Listener, OptionClickEventHandler {
             } else if (KingdomMaterial.CONTRACT_UNFINISHED.equals(e.getItem())) {
                 try {
                     LogUtil.printDebug("Unfinished Contract Called");
-                    if (allContracts.containsKey(Integer.parseInt(e.getItem().getItemMeta().getLore().get(0)))) {
-                        Contract c = allContracts.get(Integer.parseInt(e.getItem().getItemMeta().getLore().get(0)));
+                    if (KingdomsCore.getAllContracts().containsKey(Integer.parseInt(e.getItem().getItemMeta().getLore().get(0)))) {
+                        Contract c = KingdomsCore.getAllContracts().get(Integer.parseInt(e.getItem().getItemMeta().getLore().get(0)));
                         c.interact(e, false);
                     }
                 } catch (Exception ex) {
@@ -108,8 +216,8 @@ public class ContractHandler implements Listener, OptionClickEventHandler {
             } else if (KingdomMaterial.CONTRACT_FILLED.equals(e.getItem())) {
                 try {
                     LogUtil.printDebug("finished Contract Called");
-                    if (allContracts.containsKey(Integer.parseInt(e.getItem().getItemMeta().getLore().get(0)))) {
-                        Contract c = allContracts.get(Integer.parseInt(e.getItem().getItemMeta().getLore().get(0)));
+                    if (KingdomsCore.getAllContracts().containsKey(Integer.parseInt(e.getItem().getItemMeta().getLore().get(0)))) {
+                        Contract c = KingdomsCore.getAllContracts().get(Integer.parseInt(e.getItem().getItemMeta().getLore().get(0)));
                         if (c.getContractee() != null && c.isFinished()) {
                             e.getPlayer().sendMessage("Maked Contract as completed!");
                             if (c.getRewardType().equals(RewardType.ITEM)) {
@@ -124,7 +232,7 @@ public class ContractHandler implements Listener, OptionClickEventHandler {
                             } else if (c.getRewardType().equals(RewardType.PLOT)) {
 
                             }
-                            allContracts.remove(c.getID());
+                            KingdomsCore.getAllContracts().remove(c.getID());
                             e.getPlayer().setItemInHand(new ItemStack(Material.AIR));
                         } else {
                             c.interact(e, true);
