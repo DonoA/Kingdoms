@@ -21,6 +21,7 @@ package io.dallen.kingdoms.rpg.Contract;
 
 import io.dallen.kingdoms.core.Handlers.MultiBlockHandler;
 import io.dallen.kingdoms.core.KingdomsCore;
+import io.dallen.kingdoms.core.NPCs.Traits.Builder;
 import io.dallen.kingdoms.core.Overrides.KingdomMaterial;
 import io.dallen.kingdoms.core.Structures.Plot;
 import io.dallen.kingdoms.core.Structures.Structure;
@@ -364,19 +365,18 @@ public class BuildingHandler implements Listener {
         public BuildTask(Blueprint building, Location start, int speed, NPC builder) {
             Builder = builder;
             Builder.getNavigator().setTarget(start);
+            this.startCorner = start;
+            this.BuildHut = builder.getTrait(io.dallen.kingdoms.core.NPCs.Traits.Builder.class).getBuildHut();
             for (int y = 0; y < building.getHigh(); y++) {
                 for (int z = 0; z < building.getLen(); z++) {
                     for (int x = 0; x < building.getWid(); x++) {
                         if (!building.getBlocks()[x][y][z].getBlock().equals(Material.AIR)) {
-                            blockLocations.add(start.clone().add(x, y, z));
-                            blocks.add(building.getBlocks()[x][y][z]);
+                            builder.getTrait(io.dallen.kingdoms.core.NPCs.Traits.Builder.class).getBrain().getStateQueue().add(
+                                    builder.getTrait(io.dallen.kingdoms.core.NPCs.Traits.Builder.class).new placeBlock(start.clone().add(x, y, z), building.getBlocks()[x][y][z]));
                         }
                     }
                 }
             }
-            this.startCorner = start;
-            this.BuildHut = builder.getTrait(io.dallen.kingdoms.core.NPCs.Traits.Builder.class).getBuildHut();
-            Bukkit.getScheduler().scheduleSyncRepeatingTask(KingdomsCore.getPlugin(), this, speed, speed);
         }
         
         public BuildTask(ArrayList<Location> locs, ArrayList<BlueBlock> blocks, Location start, int speed, NPC builder) {
@@ -386,7 +386,10 @@ public class BuildingHandler implements Listener {
             this.blocks = blocks;
             this.startCorner = start;
             this.BuildHut = builder.getTrait(io.dallen.kingdoms.core.NPCs.Traits.Builder.class).getBuildHut();
-            Bukkit.getScheduler().scheduleSyncRepeatingTask(KingdomsCore.getPlugin(), this, speed, speed);
+            for (int i = 0; i < locs.size(); i++) {
+                builder.getTrait(io.dallen.kingdoms.core.NPCs.Traits.Builder.class).getBrain().getStateQueue().add(
+                        builder.getTrait(io.dallen.kingdoms.core.NPCs.Traits.Builder.class).new placeBlock(locs.get(i), blocks.get(i)));
+            }
         }
 
         @Override

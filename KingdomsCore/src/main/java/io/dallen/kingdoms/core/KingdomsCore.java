@@ -116,8 +116,8 @@ public class KingdomsCore extends KingdomModual {
             Bukkit.getScheduler().runTaskAsynchronously(Plugin, SkinHandler);
             skinHandler = SkinHandler;
             GameTicks.StartGameTicks();
-            DataLoadHelper.LoadKingdomData();
             setupDatabase();
+            DataLoadHelper.LoadKingdomData();
         }
     };
 

@@ -146,6 +146,7 @@ public class DataLoadHelper implements Listener {
                 lonePlots.add(Integer.parseInt(f.getName().replace(".plotdata", "")));
             }
         }
+        LogUtil.printDebug("loading plots " + Arrays.toString(lonePlots.toArray()));
         HashMap<String, Object> KingdomObjs = DBmanager.loadAllObj(JsonKingdom.class, new File(KingdomsCore.getPlugin().getDataFolder()
                 + DBmanager.getFileSep() + "savedata" + DBmanager.getFileSep() + "kingdoms"));
         for (Object o : KingdomObjs.values()) {
@@ -357,6 +358,11 @@ public class DataLoadHelper implements Listener {
             } catch (IOException ex) {
                 Logger.getLogger(DataLoadHelper.class.getName()).log(Level.SEVERE, null, ex);
             }
+            
+        }
+        LogUtil.printDebug("Plots Loaded:");
+        for(Plot p : Plot.getAllPlots()){
+            LogUtil.printDebug(p.getStructureID());
         }
         Kingdom.setCurrentID(MaxKingdomID + 1);
         Municipality.setCurrentID(MaxMunicipalID + 1);

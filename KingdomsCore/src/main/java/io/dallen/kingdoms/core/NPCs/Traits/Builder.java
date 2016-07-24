@@ -37,6 +37,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 import net.citizensnpcs.api.trait.Trait;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -53,7 +54,8 @@ public class Builder extends Trait {
     @Getter
     @Setter
     private BuildersHut BuildHut;
-
+    
+    @Getter
     private final FiniteStateMachine brain;
 
     private static HashMap<Integer, Location> gettingSupplies = new HashMap<Integer, Location>();
@@ -67,15 +69,20 @@ public class Builder extends Trait {
     public class getSupplies implements FsmState {
 
         private Location target;
+        
+        private ArrayList<ItemStack> neededItems;
+        
+        public getSupplies(ArrayList<ItemStack> neededItems){
+            
+        }
 
-        private long ticksTilNextPatrol = 0;
 
         @Override
         public void invoke() {
-            if (!npc.getNavigator().isNavigating() && ticksTilNextPatrol <= 0) {
+            if (!npc.getNavigator().isNavigating()) {
 
             } else {
-                ticksTilNextPatrol--;
+                
             }
         }
 
@@ -90,20 +97,38 @@ public class Builder extends Trait {
         private Location target;
 
         private BlueBlock block;
-
-        private long ticksTilNextPatrol = 0;
+        
+        private boolean hasPath = false;
+        
+        public placeBlock(Location loc, BlueBlock block){
+            this.target = loc;
+            this.block = block;
+        }
 
         @Override
         public void invoke() {
-            if (!npc.getNavigator().isNavigating() && ticksTilNextPatrol <= 0) {
-
-            } else {
-                ticksTilNextPatrol--;
+            if (!npc.getNavigator().isNavigating()){
+                if(!hasPath){
+                    npc.getNavigator().setTarget(target);
+                    hasPath = true;
+                }else{
+                    Bukkit.getScheduler().runTask(KingdomsCore.getPlugin(), new Runnable() {
+                        @Override
+                        public void run() {
+                            target.getBlock().setType(block.getBlock(), true);
+                            target.getBlock().setData(block.getData());
+                        }
+                    });
+                }
             }
+                
         }
 
         @Override
         public boolean isComplete() {
+            if(hasPath && target.getBlock().getType().equals(block.getBlock())){
+                return true;
+            }
             return false;
         }
     }

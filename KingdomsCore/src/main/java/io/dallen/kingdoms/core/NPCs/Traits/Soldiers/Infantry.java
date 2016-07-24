@@ -28,6 +28,8 @@ import io.dallen.kingdoms.core.Structures.Structure;
 import io.dallen.kingdoms.core.Structures.Types.Armory;
 import io.dallen.kingdoms.core.Structures.Types.Barracks;
 import io.dallen.kingdoms.utilities.Utils.LocationUtil;
+import io.dallen.kingdoms.utilities.Utils.LogUtil;
+import java.util.Arrays;
 import java.util.Collection;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
@@ -67,7 +69,42 @@ public class Infantry extends Soldier {
 
     @Override
     public void onAttach() {
-        brain.getStateQueue().add(new getArmor());
+        ItemStack[] neededArmor = new ItemStack[5];
+        if (((LivingEntity) npc.getEntity()).getEquipment().getHelmet() == null) {
+            neededArmor[0] = new ItemStack(Material.IRON_HELMET);
+        } else if (((LivingEntity) npc.getEntity()).getEquipment().getChestplate() == null) {
+            neededArmor[1] = new ItemStack(Material.IRON_CHESTPLATE);
+        } else if (((LivingEntity) npc.getEntity()).getEquipment().getLeggings() == null) {
+            neededArmor[2] = new ItemStack(Material.IRON_LEGGINGS);
+        } else if (((LivingEntity) npc.getEntity()).getEquipment().getBoots() == null) {
+            neededArmor[3] = new ItemStack(Material.IRON_BOOTS);
+        } else if (((LivingEntity) npc.getEntity()).getEquipment().getItemInMainHand() == null) {
+            neededArmor[4] = new ItemStack(Material.IRON_SWORD);
+        }
+        LogUtil.printDebug(Arrays.toString(neededArmor));
+        for (ItemStack is : neededArmor) {
+            if (is != null) {
+                Armory a = getClosest(is);
+                if(a != null){
+                    brain.getStateQueue().add(new getArmor(a, is));
+                }
+            }
+        }
+    }
+    
+    private Armory getClosest(ItemStack is) {
+        Armory closest = null;
+        for (Structure s : municipal.getStructures().get(Armory.class)) {
+            if (((Armory) s).getStorage().getMaterial(is) != null) {
+                if (closest == null) {
+                    closest = (Armory) s;
+                } else if (closest.getCenter().distance(npc.getEntity().getLocation())
+                        > s.getCenter().distance(npc.getEntity().getLocation())) {
+                    closest = (Armory) s;
+                }
+            }
+        }
+        return closest;
     }
 
     public class getArmor implements FsmState {
@@ -77,11 +114,7 @@ public class Infantry extends Soldier {
         private boolean assignedNav = false;
 
         private ItemStack toRetrive;
-
-        public getArmor() {
-            targetArmory = null;
-        }
-
+        
         public getArmor(Armory arm, ItemStack armor) {
             this.targetArmory = arm;
             this.toRetrive = armor;
@@ -90,37 +123,14 @@ public class Infantry extends Soldier {
         @Override
         public void invoke() {
             if (!Infantry.this.npc.getNavigator().isNavigating() && !assignedNav) {
-                if (targetArmory != null) {
-                    npc.getNavigator().setTarget(targetArmory.getCenter());
-                    assignedNav = true;
-                } else {
-                    ItemStack[] neededArmor = new ItemStack[5];
-                    if (((LivingEntity) npc.getEntity()).getEquipment().getHelmet() == null) {
-                        neededArmor[0] = new ItemStack(Material.IRON_HELMET);
-                    } else if (((LivingEntity) npc.getEntity()).getEquipment().getChestplate() == null) {
-                        neededArmor[1] = new ItemStack(Material.IRON_CHESTPLATE);
-                    } else if (((LivingEntity) npc.getEntity()).getEquipment().getLeggings() == null) {
-                        neededArmor[2] = new ItemStack(Material.IRON_LEGGINGS);
-                    } else if (((LivingEntity) npc.getEntity()).getEquipment().getBoots() == null) {
-                        neededArmor[3] = new ItemStack(Material.IRON_BOOTS);
-                    } else if (((LivingEntity) npc.getEntity()).getEquipment().getItemInMainHand() == null) {
-                        neededArmor[4] = new ItemStack(Material.IRON_SWORD);
-                    }
-                    for (ItemStack is : neededArmor) {
-                        if (is != null) {
-                            Armory a = getClosest(is);
-                            brain.getStateQueue().add(new getArmor(a, is));
-                        }
-                    }
-                }
+                npc.getNavigator().setTarget(targetArmory.getCenter());
+                assignedNav = true;
             }
         }
 
         @Override
         public boolean isComplete() {
-            if (targetArmory == null) {
-                return true;
-            } else if (assignedNav && (!npc.getNavigator().isNavigating()
+            if (assignedNav && (!npc.getNavigator().isNavigating()
                     || targetArmory.getBase().contains(LocationUtil.asPoint(npc.getEntity().getLocation())))) {
                 if (toRetrive.getType().equals(Material.IRON_HELMET)) {
                     ((LivingEntity) npc.getEntity()).getEquipment().setHelmet(toRetrive);
@@ -139,22 +149,7 @@ public class Infantry extends Soldier {
             return false;
         }
 
-        private Armory getClosest(ItemStack is) {
-            Armory closest = null;
-            for (Structure s : municipal.getStructures().get(Armory.class)) {
-                if (((Armory) s).getStorage().getMaterial(is) != null) {
-                    if (closest == null) {
-                        closest = (Armory) s;
-                    } else if (closest.getCenter().distance(npc.getEntity().getLocation())
-                            > s.getCenter().distance(npc.getEntity().getLocation())) {
-                        closest = (Armory) s;
-                    }
-                    npc.getNavigator().setTarget(closest.getCenter());
-                    assignedNav = true;
-                }
-            }
-            return closest;
-        }
+        
 
     }
 
@@ -172,7 +167,7 @@ public class Infantry extends Soldier {
                         || ((LivingEntity) npc.getEntity()).getEquipment().getLeggings() == null
                         || ((LivingEntity) npc.getEntity()).getEquipment().getBoots() == null
                         || ((LivingEntity) npc.getEntity()).getEquipment().getItemInMainHand() == null) {
-                    brain.getStateQueue().add(new getArmor());
+                    onAttach();
                 } else {
                     boolean found = false;
                     Location testSpot = null;
