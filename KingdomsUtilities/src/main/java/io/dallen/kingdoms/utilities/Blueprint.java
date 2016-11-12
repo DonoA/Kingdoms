@@ -150,7 +150,7 @@ public class Blueprint implements Cloneable {
             for (int r = 0; r < M; r++) {
                 for (int c = 0; c < N; c++) {
                     for (int y = 0; y < this.high; y++) {
-                        blocks[r][y][c].Data = (byte) Blueprint.rotate90(blocks[r][y][c].getBlock(), (int) blocks[r][y][c].getData());
+                        blocks[r][y][c].Data = (byte) Blueprint.rotate90Reverse(blocks[r][y][c].getBlock(), (int) blocks[r][y][c].getData());
                         ret[N - 1 - c][y][r] = blocks[r][y][c];
                     }
                 }
@@ -178,6 +178,7 @@ public class Blueprint implements Cloneable {
 
         @Getter
         private Material Block;
+        
         @Getter
         private byte Data;
 
