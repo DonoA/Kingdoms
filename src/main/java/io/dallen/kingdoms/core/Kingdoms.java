@@ -22,6 +22,7 @@ package io.dallen.kingdoms.core;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -40,6 +41,8 @@ public class Kingdoms extends JavaPlugin {
     public void onEnable() {
         plugin = this;
         protocolManager = ProtocolLibrary.getProtocolManager();
-        
+        Debug debug = new Debug();
+        this.getCommand("schem").setExecutor(debug.new Commands());
+        Bukkit.getPluginManager().registerEvents(debug.new Events(), plugin);
     }
 }
