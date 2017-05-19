@@ -1,5 +1,0 @@
-name: ${project.artifactId}
-main: ${project.groupId}.kingdoms.warcraft.${project.artifactId}
-version: ${project.version}
-author: Dallen/Donovan Allen
-depend: [Citizens, ProtocolLib, BarAPI, KingdomsUtilities, KingdomsCore]

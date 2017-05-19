@@ -1,0 +1,9 @@
+name: ${project.artifactId}
+main: ${project.groupId}.kingdoms.${project.artifactId}
+version: ${project.version}
+author: Dallen/Donovan Allen
+depend: [Citizens, ProtocolLib, DallensUtils]
+commands:
+  schem:
+    description: get tool for selecting are for schem
+    usage: /schem

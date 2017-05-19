@@ -1,7 +1,0 @@
-MainWorld: World
-debug:
-  enabled: true
-  autoupdate: true
-  buildfolder: C:\Users\donoa_000\Documents\Projects\Morphics\Kingdoms\
-decay: false
-weatherDisabled: true
