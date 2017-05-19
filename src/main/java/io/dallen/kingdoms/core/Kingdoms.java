@@ -19,8 +19,11 @@
  */
 package io.dallen.kingdoms.core;
 
+import io.dallen.kingdoms.core.Tools.Schem;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
+import io.dallen.utils.Storage.DatabaseInterfaces.JsonInterface;
+import java.io.File;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -36,13 +39,17 @@ public class Kingdoms extends JavaPlugin {
 
     @Getter
     private static ProtocolManager protocolManager;
+    
+    @Getter
+    private static File schemData;
 
     @Override
     public void onEnable() {
         plugin = this;
         protocolManager = ProtocolLibrary.getProtocolManager();
-        Debug debug = new Debug();
-        this.getCommand("schem").setExecutor(debug.new Commands());
-        Bukkit.getPluginManager().registerEvents(debug.new Events(), plugin);
+        Schem schemTool = new Schem();
+        this.getCommand("schem").setExecutor(schemTool.new Commands());
+        Bukkit.getPluginManager().registerEvents(schemTool.new Events(), plugin);
+        schemData = new File(plugin.getDataFolder() + JsonInterface.getFileSep() + "SchemLibrary");
     }
 }

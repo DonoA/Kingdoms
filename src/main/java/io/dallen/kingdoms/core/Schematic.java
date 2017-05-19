@@ -20,6 +20,7 @@
 package io.dallen.kingdoms.core;
 
 import io.dallen.utils.Storage.Blueprint;
+import lombok.Getter;
 
 /**
  *
@@ -27,16 +28,21 @@ import io.dallen.utils.Storage.Blueprint;
  */
 public class Schematic extends Blueprint{
     
-    public Schematic(int l, int w, int h, short[] b, byte[] d) {
+    @Getter
+    private String name;
+    
+    @Getter
+    private String type;
+    
+    public Schematic(int l, int w, int h, short[] b, byte[] d, String name, String type){
         super(l, w, h, b, d);
+        this.name = name;
+        this.type = type;
     }
     
-    public void save(){
-        
+    public Schematic(Blueprint print, String name, String type){
+        super(print.getLen(), print.getWid(), print.getHigh(), print.getBlocks());
+        this.name = name;
+        this.type = type;
     }
-    
-    public static Schematic load(){
-        return null;
-    }
-    
 }
