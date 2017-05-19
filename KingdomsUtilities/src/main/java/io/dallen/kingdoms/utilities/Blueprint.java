@@ -85,14 +85,14 @@ public class Blueprint implements Cloneable {
                     if (type.equals(buildType.CLEAR)) {
                         nLoc.getBlock().setType(Material.AIR, false);
                     } else if (type.equals(buildType.FRAME)) {
-                        Material covMat = blocks[x][y][z].getBlock();
+                        Material covMat = blocks[x][y][z].Block;
                         if (covMat.name().contains("STAIRS")) {
                             covMat = Material.QUARTZ_STAIRS;
                         } else if (!covMat.equals(Material.AIR)) {
                             covMat = Material.QUARTZ_BLOCK;
                         }
                         nLoc.getBlock().setType(covMat, false);
-                        nLoc.getBlock().setData(blocks[x][y][z].getData(), false);
+                        nLoc.getBlock().setData(blocks[x][y][z].Data, false);
                     }
                 }
             }
@@ -107,14 +107,14 @@ public class Blueprint implements Cloneable {
                     if (type.equals(buildType.CLEAR)) {
                         nLoc.getBlock().setType(Material.AIR, false);
                     } else if (type.equals(buildType.FRAME)) {
-                        Material covMat = blocks[x][y][z].getBlock();
+                        Material covMat = blocks[x][y][z].Block;
                         if (covMat.name().contains("STAIRS")) {
                             covMat = Material.QUARTZ_STAIRS;
                         } else if (!covMat.equals(Material.AIR)) {
                             covMat = Material.QUARTZ_BLOCK;
                         }
                         nLoc.getBlock().setType(covMat, false);
-                        nLoc.getBlock().setData(blocks[x][y][z].getData(), false);
+                        nLoc.getBlock().setData(blocks[x][y][z].Data, false);
                     }
                 }
             }
@@ -131,7 +131,6 @@ public class Blueprint implements Cloneable {
         if (angle == 90) {
             final int M = blocks.length;
             final int N = blocks[0][0].length;
-//            printMatrix(blocks);
             ret = new BlueBlock[N][this.high][M];
             for (int r = 0; r < M; r++) {
                 for (int c = 0; c < N; c++) {
@@ -141,11 +140,9 @@ public class Blueprint implements Cloneable {
                     }
                 }
             }
-//            printMatrix(ret);
         } else if (angle == -90) {
             final int M = blocks.length;
             final int N = blocks[0][0].length;
-//            printMatrix(blocks);
             ret = new BlueBlock[N][this.high][M];
             for (int r = 0; r < M; r++) {
                 for (int c = 0; c < N; c++) {
@@ -155,7 +152,6 @@ public class Blueprint implements Cloneable {
                     }
                 }
             }
-//            printMatrix(ret);
         }
         this.blocks = ret;
         this.wid = ret.length;

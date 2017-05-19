@@ -246,15 +246,15 @@ public class ChestGUI {
                         OptionClickEvent e
                                 = new OptionClickEvent((Player) event.getWhoClicked(), slot, menu.optionData[slot], menu.optionNames[slot], menu.name, menu.menuData);
                         menu.handler.onOptionClick(e);
-                        if (e.isClose()) {
+                        if (e.close) {
                             final Player p = (Player) event.getWhoClicked();
                             final OptionClickEvent ev = e;
                             Bukkit.getScheduler().scheduleSyncDelayedTask(KingdomsUtilities.getPlugin(), new Runnable() {
                                 @Override
                                 public void run() {
                                     p.getOpenInventory().getCursor().setType(Material.AIR);
-                                    if (ev.getNext() != null) {
-                                        ev.getNext().sendMenu(p);
+                                    if (ev.next != null) {
+                                        ev.next.sendMenu(p);
                                     } else {
                                         p.closeInventory();
                                     }

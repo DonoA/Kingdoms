@@ -152,7 +152,7 @@ public class SkinPacketHandler implements Runnable {
                     return m.invoke(mcServer);
                 }
             }
-        } catch (Exception ex) {
+        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
             throw new IllegalStateException("An error occurred while trying to get the session service", ex);
         }
         throw new IllegalStateException("No session service found");
