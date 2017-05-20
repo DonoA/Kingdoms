@@ -17,7 +17,7 @@
  * 
  * 
  */
-package io.dallen.kingdoms.core;
+package io.dallen.kingdoms;
 
 import io.dallen.utils.Storage.Blueprint;
 import io.dallen.utils.Storage.Blueprint.BlueBlock;
@@ -54,12 +54,13 @@ public class SchematicLibrary {
         return new File(database + JsonInterface.getFileSep() + name).exists();
     }
 
-    public static void save(Blueprint schem, String name, String type) throws IOException{
+    public static void save(Blueprint schem, String name, String type, String direction) throws IOException{
         HashMap<String, Tag> schematic = new HashMap<String, Tag>();
         schematic.put("Width", new ShortTag((short) schem.getWid()));
         schematic.put("Length", new ShortTag((short) schem.getLen()));
         schematic.put("Height", new ShortTag((short) schem.getHigh()));
         schematic.put("Type", new StringTag(type));
+        schematic.put("Front", new StringTag(direction));
         schematic.put("Materials", new StringTag("Alpha"));
         
         byte[] blocks = new byte[schem.getWid()*schem.getLen()*schem.getHigh()];
@@ -112,7 +113,7 @@ public class SchematicLibrary {
         short length = getChildTag(schematic, "Length", ShortTag.class).getValue();
         short height = getChildTag(schematic, "Height", ShortTag.class).getValue();
         String type = getChildTag(schematic, "Type", StringTag.class).getValue();
-
+        String dir = getChildTag(schematic, "Front", StringTag.class).getValue();
 
         // Check type of Schematic
         String materials = getChildTag(schematic, "Materials", StringTag.class).getValue();
@@ -125,8 +126,7 @@ public class SchematicLibrary {
         byte[] blockData = getChildTag(schematic, "Data", ByteArrayTag.class).getValue();
         short[] blocks = new short[blockId.length]; // Have to later combine IDs
         
-        return new Schematic(new Blueprint(length, width, height, blocks, blockData), name, type);
-        
+        return new Schematic(new Blueprint(length, width, height, blocks, blockData), name, type, dir);
     }
     
 }

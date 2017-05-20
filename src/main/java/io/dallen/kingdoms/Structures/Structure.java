@@ -17,10 +17,10 @@
  * 
  * 
  */
-package io.dallen.kingdoms.core.Structures;
+package io.dallen.kingdoms.Structures;
 
 
-import io.dallen.kingdoms.core.Kingdom;
+import io.dallen.kingdoms.Kingdom;
 import io.dallen.utils.Storage.Blueprint;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

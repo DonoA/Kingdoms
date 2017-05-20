@@ -17,21 +17,23 @@
  * 
  * 
  */
-package io.dallen.kingdoms.core.Tools;
+package io.dallen.kingdoms.Tools;
 
-import io.dallen.kingdoms.core.Kingdoms;
-import io.dallen.kingdoms.core.SchematicLibrary;
+import io.dallen.kingdoms.Kingdoms;
+import io.dallen.kingdoms.SchematicLibrary;
 import io.dallen.utils.BukkitUtils.ItemUtil;
 import io.dallen.utils.Storage.Blueprint;
 import io.dallen.utils.Storage.Blueprint.BlueBlock;
+import java.io.IOException;
 import java.util.HashMap;
-import org.apache.commons.lang.StringUtils;
-import org.bukkit.ChatColor;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.conversations.Conversable;
 import org.bukkit.conversations.ConversationContext;
 import org.bukkit.conversations.ConversationFactory;
 import org.bukkit.conversations.ConversationPrefix;
@@ -86,6 +88,24 @@ public class Schem {
                 context.setSessionData("help", "Palace, Home, Tower");
                 return getType;
             }else{
+                context.setSessionData("type", input);
+                return getDir;
+            }
+        }
+    };
+    
+    private final StringPrompt getDir = new StringPrompt(){
+        @Override
+        public String getPromptText(ConversationContext context) {
+            return (context.getSessionData("help") != null ? context.getSessionData("help") + "\n\n" : "") + "Set the driection of schem (!help for known list)";
+        }
+
+        @Override
+        public Prompt acceptInput(ConversationContext context, String input) {
+            if(input.equalsIgnoreCase("!help")){
+                context.setSessionData("help", "North, South, East, West");
+                return getType;
+            }else{
                 SchemSelect ss = openSchems.get((Player) context.getForWhom());
                 BlueBlock[][][] blocks = new BlueBlock[Math.abs(ss.p1.getBlockX()-ss.p2.getBlockX())]
                                                       [Math.abs(ss.p1.getBlockY()-ss.p2.getBlockY())]
@@ -100,8 +120,20 @@ public class Schem {
                         }
                     }
                 }
-                SchematicLibrary.save(new Blueprint(blocks), (String) context.getSessionData("name"), input);
-                context.getForWhom().sendRawMessage("Saved " + (String) context.getSessionData("name"));
+                boolean failed = false;
+                try {
+                    SchematicLibrary.save(new Blueprint(blocks), (String) context.getSessionData("name"), (String) context.getSessionData("type"), input);
+                } catch (IOException ex) {
+                    failed = true;
+                    Logger.getLogger(Schem.class.getName()).log(Level.SEVERE, null, ex);
+                } finally {
+                    if(failed){
+                        context.getForWhom().sendRawMessage("Failed to save " + (String) context.getSessionData("name"));
+                    }else{
+                        context.getForWhom().sendRawMessage("Saved " + (String) context.getSessionData("name"));
+                    }
+                }
+                openSchems.remove((Player) context.getForWhom());
                 return Prompt.END_OF_CONVERSATION;
             }
         }
@@ -141,8 +173,12 @@ public class Schem {
                     e.getItem().getItemMeta().getDisplayName().equalsIgnoreCase("Schem Wand")){
                 if(e.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
                     openSchems.get(e.getPlayer()).p2 = e.getClickedBlock().getLocation();
+                    e.getPlayer().sendMessage("Set p2");
+                    e.setCancelled(true);
                 }else if(e.getAction().equals(Action.LEFT_CLICK_BLOCK)){
                     openSchems.get(e.getPlayer()).p1 = e.getClickedBlock().getLocation();
+                    e.getPlayer().sendMessage("Set p1");
+                    e.setCancelled(true);
                 }
             }
         }
@@ -152,7 +188,7 @@ public class Schem {
             if(openSchems.containsKey(e.getPlayer()) && e.getItemDrop().getItemStack().hasItemMeta() && 
                     e.getItemDrop().getItemStack().getItemMeta().getDisplayName().equalsIgnoreCase("Schem Wand")){
                 e.getItemDrop().remove();
-                
+                conversationFactory.buildConversation((Conversable) e.getPlayer()).begin();
             }
         }
         

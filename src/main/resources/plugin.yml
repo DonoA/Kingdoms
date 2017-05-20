@@ -7,3 +7,6 @@ commands:
   schem:
     description: get tool for selecting are for schem
     usage: /schem
+  spawnKingdom:
+    description: spawn a kingdom where the player is looking
+    usage: /spawnKingdom

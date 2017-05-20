@@ -17,7 +17,7 @@
  * 
  * 
  */
-package io.dallen.kingdoms.core;
+package io.dallen.kingdoms;
 
 import io.dallen.utils.Storage.Blueprint;
 import lombok.Getter;
@@ -34,15 +34,20 @@ public class Schematic extends Blueprint{
     @Getter
     private String type;
     
-    public Schematic(int l, int w, int h, short[] b, byte[] d, String name, String type){
+    @Getter
+    private String direction;
+    
+    public Schematic(int l, int w, int h, short[] b, byte[] d, String name, String type, String dir){
         super(l, w, h, b, d);
         this.name = name;
         this.type = type;
+        this.direction = dir;
     }
     
-    public Schematic(Blueprint print, String name, String type){
+    public Schematic(Blueprint print, String name, String type, String dir){
         super(print.getLen(), print.getWid(), print.getHigh(), print.getBlocks());
         this.name = name;
         this.type = type;
+        this.direction = dir;
     }
 }
