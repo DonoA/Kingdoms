@@ -49,6 +49,8 @@ public class Kingdom{
         // Precompute squares
         double A2 = A*A;
         double B2 = B*B;
+        // The depth of the path curve
+        double curveDepth = 10.0 + (5.0*Math.random());
         // Get top left and bottom right corners
         Location c1 = center.clone();
         c1.add(-A, 0, -B);
@@ -109,24 +111,20 @@ public class Kingdom{
         }
         // Run path from point on edge to top of hill where slope is at most 1 (ideally 1/2)
         Vector3D path = new Vector3D(palaceFront.getX() - gateCenter.getX(), 0, palaceFront.getZ() - gateCenter.getZ());
-        LogUtil.printDebug(path.toString());
         Vector3D curve = Vector3D.cross(new Vector3D(0, (dir.equals("North")?1:-1), 0), path); // This generates a vector that will push the path in a sin curve
         curve.normalize();
-        // This is scale factor we will need
-        double distScale = Math.PI/(gateCenter.clone().add(0, palaceFront.getBlockY() + 5, 0).distance(palaceFront.clone().add(0, 5, 0))-1); 
-        LogUtil.printDebug(palaceFront.toString());
-        path.normalize(); // Ensure a nice packed path
-        LogUtil.printDebug(path.toString());
-        double t = 0;
-        double oldDist = 0;
-        Location loc = gateCenter.clone().add(0, palaceFront.getBlockY() + 5, 0).add(Vector3D.dot(t, path).toBukkitVector());
+        double t = 0; // This will range from 0-1 so the vector doesnt need to be scalled and error can be kept low
         do{
-            t++;
-            oldDist = loc.distance(palaceFront.clone().add(0, 5, 0));
-            loc = gateCenter.clone().add(0, palaceFront.getBlockY() + 5, 0).add(Vector3D.dot(t, path).toBukkitVector());
-            BuilderThread.add(loc.clone().add(Vector3D.dot(20.0*Math.sin(distScale*t), curve).toBukkitVector()), Material.REDSTONE_BLOCK);
-            LogUtil.printDebug(oldDist);
-            LogUtil.printDebug(loc.distance(palaceFront.clone().add(0, 5, 0)));
-        }while(oldDist >= loc.distance(palaceFront.clone().add(0, 5, 0)));
+            t+=0.01;
+            Location loc = gateCenter.clone().add(0, palaceFront.getBlockY() + 5, 0).add(Vector3D.dot(t, path).toBukkitVector());
+            BuilderThread.add(loc.clone().add(Vector3D.dot(curveDepth*Math.sin(t*Math.PI), curve).toBukkitVector()), Material.REDSTONE_BLOCK);
+        }while(t <= 1);
+        for(int i = -7; i < 7; i++){
+            for(int j = 0; j < 15; j++){
+                for(int k = -1; k < 15; k++){
+                    BuilderThread.add(palaceFront.clone().add(i, k, j), Material.BRICK);
+                }
+            }
+        }
     }
 }

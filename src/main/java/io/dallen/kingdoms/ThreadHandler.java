@@ -44,7 +44,11 @@ public class ThreadHandler {
                 QueuedBlock qb = placeQueue.poll();
                 if(qb == null)
                     return;
-                qb.loc.getBlock().setType(qb.newMat);
+                if(qb.loc instanceof Location){
+                    ((Location) qb.loc).getBlock().setType(qb.newMat);
+                }else if(qb.loc instanceof LocationGenerator){
+                    ((LocationGenerator) qb.loc).run().getBlock().setType(qb.newMat);
+                }
             }
         }
         
@@ -54,15 +58,19 @@ public class ThreadHandler {
         
         public static class QueuedBlock {
             @Getter
-            private Location loc;
+            private Object loc;
             
             @Getter
             private Material newMat;
             
-            public QueuedBlock(Location loc, Material mat){
+            public QueuedBlock(Object loc, Material mat){
                 this.loc = loc;
                 this.newMat = mat;
             }
+        }
+        
+        public static interface LocationGenerator {
+            public Location run();
         }
     }
 }
