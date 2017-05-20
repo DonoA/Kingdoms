@@ -19,10 +19,50 @@
  */
 package io.dallen.kingdoms;
 
+import java.util.LinkedList;
+import java.util.Queue;
+import lombok.Getter;
+import org.bukkit.Location;
+import org.bukkit.Material;
+
 /**
  *
  * @author donoa_000
  */
 public class ThreadHandler {
     
+    public static class BuilderThread implements Runnable {
+        
+        @Getter
+        private static Queue<QueuedBlock> placeQueue = new LinkedList<>();
+        
+        @Override
+        public void run() {
+            if(placeQueue.isEmpty())
+                return;
+            for(int i = 0; i <= 3000; i++){
+                QueuedBlock qb = placeQueue.poll();
+                if(qb == null)
+                    return;
+                qb.loc.getBlock().setType(qb.newMat);
+            }
+        }
+        
+        public static void add(Location loc, Material mat){
+            placeQueue.add(new QueuedBlock(loc, mat));
+        }
+        
+        public static class QueuedBlock {
+            @Getter
+            private Location loc;
+            
+            @Getter
+            private Material newMat;
+            
+            public QueuedBlock(Location loc, Material mat){
+                this.loc = loc;
+                this.newMat = mat;
+            }
+        }
+    }
 }

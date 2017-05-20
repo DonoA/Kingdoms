@@ -47,6 +47,7 @@ public class Kingdoms extends JavaPlugin {
         plugin = this;
         protocolManager = ProtocolLibrary.getProtocolManager();
         threadHandler = new ThreadHandler();
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new ThreadHandler.BuilderThread(), 5, 1);
         
         Schem schemTool = new Schem();
         this.getCommand("schem").setExecutor(schemTool.new Commands());
