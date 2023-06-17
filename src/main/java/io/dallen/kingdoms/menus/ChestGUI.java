@@ -191,42 +191,42 @@ public class ChestGUI {
             }
         }
 
-        @EventHandler(priority = EventPriority.HIGHEST)
-        public void onInventoryClick(InventoryClickEvent event) {
-            if ((!cooldown.containsKey(event.getWhoClicked().getName()))
-                    || (cooldown.containsKey(event.getWhoClicked().getName()) && cooldown.get(event.getWhoClicked().getName()) < System.currentTimeMillis() - 100)) {
-                cooldown.put(event.getWhoClicked().getName(), System.currentTimeMillis());
-                if (!openMenus.containsKey(event.getWhoClicked().getName())) {
-                    return;
-                }
-                MenuInstance menu = openMenus.get(event.getWhoClicked().getName());
-                if (event.getInventory().getTitle().equals(menu.name)) {
-                    event.getCursor().setType(Material.AIR);
-                    event.setCancelled(true);
-                    int slot = event.getRawSlot();
-                    if (slot >= 0 && slot < menu.size && menu.optionNames[slot] != null) {
-                        OptionClickEvent e
-                                = new OptionClickEvent((Player) event.getWhoClicked(), slot, menu.optionData[slot], menu.optionNames[slot], menu.name, menu.menuData);
-                        menu.handler.onOptionClick(e);
-                        if (e.close) {
-                            final Player p = (Player) event.getWhoClicked();
-                            final OptionClickEvent ev = e;
-                            Bukkit.getScheduler().scheduleSyncDelayedTask(Kingdoms.instance, new Runnable() {
-                                @Override
-                                public void run() {
-                                    p.getOpenInventory().getCursor().setType(Material.AIR);
-                                    if (ev.next != null) {
-                                        ev.next.sendMenu(p);
-                                    } else {
-                                        p.closeInventory();
-                                    }
-                                }
-                            }, 1);
-                        }
-                        openMenus.remove(event.getWhoClicked().getName());
-                    }
-                }
-            }
-        }
+//        @EventHandler(priority = EventPriority.HIGHEST)
+//        public void onInventoryClick(InventoryClickEvent event) {
+//            if ((!cooldown.containsKey(event.getWhoClicked().getName()))
+//                    || (cooldown.containsKey(event.getWhoClicked().getName()) && cooldown.get(event.getWhoClicked().getName()) < System.currentTimeMillis() - 100)) {
+//                cooldown.put(event.getWhoClicked().getName(), System.currentTimeMillis());
+//                if (!openMenus.containsKey(event.getWhoClicked().getName())) {
+//                    return;
+//                }
+//                MenuInstance menu = openMenus.get(event.getWhoClicked().getName());
+//                if (event.getInventory().getTitle().equals(menu.name)) {
+//                    event.getCursor().setType(Material.AIR);
+//                    event.setCancelled(true);
+//                    int slot = event.getRawSlot();
+//                    if (slot >= 0 && slot < menu.size && menu.optionNames[slot] != null) {
+//                        OptionClickEvent e
+//                                = new OptionClickEvent((Player) event.getWhoClicked(), slot, menu.optionData[slot], menu.optionNames[slot], menu.name, menu.menuData);
+//                        menu.handler.onOptionClick(e);
+//                        if (e.close) {
+//                            final Player p = (Player) event.getWhoClicked();
+//                            final OptionClickEvent ev = e;
+//                            Bukkit.getScheduler().scheduleSyncDelayedTask(Kingdoms.instance, new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    p.getOpenInventory().getCursor().setType(Material.AIR);
+//                                    if (ev.next != null) {
+//                                        ev.next.sendMenu(p);
+//                                    } else {
+//                                        p.closeInventory();
+//                                    }
+//                                }
+//                            }, 1);
+//                        }
+//                        openMenus.remove(event.getWhoClicked().getName());
+//                    }
+//                }
+//            }
+//        }
     }
 }

@@ -6,3 +6,7 @@ commands:
   update:
     description: rebuild and reload the plugin
     usage: /update
+
+  genworld:
+    description: Generate new kingdoms world
+    usage: /genworld
