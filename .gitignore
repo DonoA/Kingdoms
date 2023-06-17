@@ -1,7 +1,3 @@
 /target/
 /.idea/
-/KingdomsCore/target/
-/KingdomsRPG/target/
-/KingdomsUtilities/target/
-/KingdomsWarcraft/target/
-/KingdomsEssentials/target/
+*.iml
