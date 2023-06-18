@@ -1,5 +1,6 @@
 package io.dallen.kingdoms.worldgen;
 
+import io.dallen.kingdoms.util.ItemUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
@@ -13,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.generator.BiomeProvider;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.generator.WorldInfo;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.noise.NoiseGenerator;
 import org.bukkit.util.noise.PerlinNoiseGenerator;
 import org.bukkit.util.noise.PerlinOctaveGenerator;
@@ -42,6 +44,7 @@ public class WorldGenCommand implements CommandExecutor {
         commandSender.sendMessage("Deleting old world...");
 
         var player = (Player) commandSender;
+        player.getInventory().addItem(new ItemStack(Material.GOLDEN_BOOTS, 1, (short) 90));
         var defaultWorld = Bukkit.getWorld("world");
         player.teleport(defaultWorld.getSpawnLocation());
 
@@ -54,9 +57,9 @@ public class WorldGenCommand implements CommandExecutor {
                     .forEach(File::delete);
         }
 
-        commandSender.sendMessage("Building new world...");
-        var kingdomsWorld = creator.createWorld();
-        player.teleport(kingdomsWorld.getSpawnLocation());
+//        commandSender.sendMessage("Building new world...");
+//        var kingdomsWorld = creator.createWorld();
+//        player.teleport(kingdomsWorld.getSpawnLocation());
 
         return true;
     }

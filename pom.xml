@@ -71,7 +71,7 @@
 <!--        <dependency>-->
 <!--            <groupId>org.bukkit</groupId>-->
 <!--            <artifactId>craftbukkit</artifactId>-->
-<!--            <version>1.9-R0.1-SNAPSHOT</version>-->
+<!--            <version>${spigot.version}</version>-->
 <!--            <type>jar</type>-->
 <!--            <scope>provided</scope>-->
 <!--        </dependency>-->

@@ -10,3 +10,7 @@ commands:
   genworld:
     description: Generate new kingdoms world
     usage: /genworld
+
+  start:
+    description: Start the game
+    usage: /start
