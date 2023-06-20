@@ -1,8 +1,7 @@
 package io.dallen.kingdoms.menus;
 
-import java.util.HashMap;
-
 import io.dallen.kingdoms.Kingdoms;
+import io.dallen.kingdoms.events.AnvilRenameEvent;
 import io.dallen.kingdoms.util.ItemUtil;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,10 +12,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.HashMap;
 
 @Getter
 public class ChestGUI {
@@ -102,62 +104,70 @@ public class ChestGUI {
     }
 
     public void sendMenu(Player player) {
-        Inventory inventory = null;
-        if (type.equals(InventoryType.CHEST)) {
-            inventory = Bukkit.createInventory(player, (int) Math.ceil(((double) size) / 9) * 9, name);
-            for (int i = 0; i < optionIcons.length; i++) {
-                if (optionIcons[i] != null) {
-                    inventory.setItem(i, optionIcons[i]);
-                }
-            }
-        } else {
-            inventory = Bukkit.createInventory(player, type, name);
-            for (int i = 0; i < optionIcons.length; i++) {
-                if (optionIcons[i] != null) {
-                    inventory.setItem(i, optionIcons[i]);
-                }
+//        ContainerAccess access = ContainerAccess.a(((CraftWorld) player.getWorld()).getHandle(),
+//                ((CraftBlock) player.getLocation().getBlock()).getPosition());
+//        ContainerAnvil anvilContainer = new ContainerAnvil(-1, ((CraftInventoryPlayer) player.getInventory()).getInventory(), access);
+//        anvilContainer.setTitle(CraftChatMessage.fromStringOrNull("Claim"));
+//        anvilContainer.maximumRepairCost = 0;
+//        Inventory inventory = anvilContainer.getBukkitView().getTopInventory();
+
+        Inventory inventory = Bukkit.createInventory(player, type, name);
+        for (int i = 0; i < optionIcons.length; i++) {
+            if (optionIcons[i] != null) {
+                inventory.setItem(i, optionIcons[i]);
             }
         }
-        final MenuInstance menu = new MenuInstance(this, inventory);
+        MenuInstance menu;
+        if (type == InventoryType.ANVIL) {
+            menu = new AnvilMenuInstance(this, inventory);
+        } else {
+            menu = new MenuInstance(this, inventory);
+        }
         player.openInventory(inventory);
         openMenus.put(player.getName(), menu);
     }
 
+    @Getter
     public static class MenuInstance {
-
         private String name;
         private int size;
         private OptionClickEventHandler handler;
         private String[] optionNames;
         private ItemStack[] optionIcons;
-        private Object[] optionData;
-        private Object menuData;
         private Inventory inventory;
 
         public MenuInstance(ChestGUI menu, Inventory inv) {
             this.name = menu.name;
             this.size = menu.size;
             this.handler = menu.handler;
-            this.optionData = menu.optionData;
             this.optionNames = menu.optionNames;
             this.optionIcons = menu.optionIcons;
-            this.menuData = menu.menuData;
             this.inventory = inv;
+        }
+    }
+
+    @Getter
+    public static class AnvilMenuInstance extends MenuInstance {
+
+        @Setter
+        private String currentItemName = "";
+
+        public AnvilMenuInstance(ChestGUI menu, Inventory inv) {
+            super(menu, inv);
         }
     }
 
     public interface OptionClickEventHandler {
 
-        public void onOptionClick(OptionClickEvent event);
+        void onOptionClick(OptionClickEvent event);
     }
 
     @Getter
     public static class OptionClickEvent {
 
         private Player player;
-        private int position;
-        private String name;
-        private String menuName;
+        private MenuInstance menu;
+        private ItemStack clicked;
 
         @Setter
         private boolean close;
@@ -168,19 +178,14 @@ public class ChestGUI {
         @Setter
         private boolean destroy;
 
-        private Object data;
-        private Object menuData;
-
-        public OptionClickEvent(Player player, int position, Object data, String name, String menuName, Object menuData) {
+        public OptionClickEvent(Player player, MenuInstance menu, ItemStack clicked) {
             this.player = player;
-            this.position = position;
-            this.name = name;
+            this.menu = menu;
+            this.clicked = clicked;
+
             this.close = true;
             this.destroy = false;
-            this.menuName = menuName;
             this.next = null;
-            this.data = data;
-            this.menuData = menuData;
         }
     }
 
@@ -188,9 +193,34 @@ public class ChestGUI {
 
         @EventHandler
         public void onInventoryOpen(InventoryOpenEvent e) {
-            if (openMenus.containsKey(e.getPlayer().getName())) {
-                openMenus.remove(e.getPlayer().getName());
+            openMenus.remove(e.getPlayer().getName());
+        }
+
+        @EventHandler
+        public void onInventoryClose(InventoryCloseEvent e) {
+            var playerName = e.getPlayer().getName();
+            if (!openMenus.containsKey(playerName)) {
+                return;
             }
+
+            MenuInstance menu = openMenus.get(playerName);
+            // Trigger close event
+        }
+
+
+        @EventHandler
+        public void onRename(AnvilRenameEvent e) {
+            var playerName = e.getPlayer().getName();
+            if (!openMenus.containsKey(playerName)) {
+                return;
+            }
+
+            MenuInstance menu = openMenus.get(playerName);
+            if (!(menu instanceof AnvilMenuInstance)) {
+                return;
+            }
+
+            ((AnvilMenuInstance) menu).setCurrentItemName(e.getNewName());
         }
 
         @EventHandler(priority = EventPriority.HIGHEST)
@@ -208,27 +238,33 @@ public class ChestGUI {
                 return;
             }
 
+            var clicked = event.getCursor();
             event.getCursor().setType(Material.AIR);
             event.setCancelled(true);
             int slot = event.getRawSlot();
-            if (slot >= 0 && slot < menu.size && menu.optionNames[slot] != null) {
-                OptionClickEvent e
-                        = new OptionClickEvent((Player) event.getWhoClicked(), slot, menu.optionData[slot], menu.optionNames[slot], menu.name, menu.menuData);
-                menu.handler.onOptionClick(e);
-                if (e.close) {
-                    final Player p = (Player) event.getWhoClicked();
-                    final OptionClickEvent ev = e;
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(Kingdoms.instance, () -> {
-                        p.getOpenInventory().getCursor().setType(Material.AIR);
-                        if (ev.next != null) {
-                            ev.next.sendMenu(p);
-                        } else {
-                            p.closeInventory();
-                        }
-                    }, 1);
-                }
-                openMenus.remove(event.getWhoClicked().getName());
+            if (slot < 0 || slot >= menu.size) {
+                return;
             }
+
+            if (clicked == null || clicked.getType() == Material.AIR) {
+                clicked = menu.inventory.getItem(slot);
+            }
+            OptionClickEvent e = new OptionClickEvent((Player) event.getWhoClicked(),
+                    menu, clicked);
+            menu.handler.onOptionClick(e);
+            if (e.close) {
+                final Player p = (Player) event.getWhoClicked();
+                final OptionClickEvent ev = e;
+                Bukkit.getScheduler().scheduleSyncDelayedTask(Kingdoms.instance, () -> {
+                    p.getOpenInventory().getCursor().setType(Material.AIR);
+                    if (ev.next != null) {
+                        ev.next.sendMenu(p);
+                    } else {
+                        p.closeInventory();
+                    }
+                }, 1);
+            }
+            openMenus.remove(event.getWhoClicked().getName());
         }
     }
 }

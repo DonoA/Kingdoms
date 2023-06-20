@@ -19,6 +19,9 @@ public class CustomBlock {
     private final Material baseBlock;
 
     public CustomBlock(String name, Material baseBlock) {
+        if (!baseBlock.isBlock()) {
+            throw new UnsupportedOperationException(baseBlock + " must be a block type");
+        }
         this.name = name;
         this.baseBlock = baseBlock;
 

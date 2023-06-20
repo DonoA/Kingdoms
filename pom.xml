@@ -62,19 +62,19 @@
 
     <repositories>
         <repository>
-            <id>spigot-repo</id>
-            <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
+            <id>dmulloy2-repo</id>
+            <url>https://repo.dmulloy2.net/repository/public/</url>
         </repository>
     </repositories>
     <dependencies>
         <!-- CraftBukkit -->
-<!--        <dependency>-->
-<!--            <groupId>org.bukkit</groupId>-->
-<!--            <artifactId>craftbukkit</artifactId>-->
-<!--            <version>${spigot.version}</version>-->
-<!--            <type>jar</type>-->
-<!--            <scope>provided</scope>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>org.bukkit</groupId>
+            <artifactId>craftbukkit</artifactId>
+            <version>${spigot.version}</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
         <!-- Spigot-API -->
         <dependency>
             <groupId>org.spigotmc</groupId>
@@ -82,6 +82,12 @@
             <version>${spigot.version}</version>
             <type>jar</type>
             <scope>provided</scope>
+        </dependency>
+        <!-- ProtocolLib -->
+        <dependency>
+            <groupId>com.comphenix.protocol</groupId>
+            <artifactId>ProtocolLib</artifactId>
+            <version>5.0.0</version>
         </dependency>
         <!--  Gson: Java to Json conversion -->
         <dependency>
