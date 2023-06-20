@@ -6,6 +6,7 @@ import io.dallen.kingdoms.customblocks.CustomBlockIndex;
 import io.dallen.kingdoms.customblocks.CustomBlockListener;
 import io.dallen.kingdoms.kingdom.MobListener;
 import io.dallen.kingdoms.kingdom.MobSpawning;
+import io.dallen.kingdoms.kingdom.MobTargeting;
 import io.dallen.kingdoms.menus.ChestGUI;
 import io.dallen.kingdoms.packets.PacketListeners;
 import io.dallen.kingdoms.update.UpdateCommand;
@@ -32,6 +33,7 @@ public final class Kingdoms extends JavaPlugin {
 
         var mainworld = Bukkit.getWorlds().get(0);
         MobSpawning.startSpawning(this, mainworld);
+        MobTargeting.startTargeting(this);
 
         getServer().getPluginManager().registerEvents(new CustomBlockListener(), this);
         getServer().getPluginManager().registerEvents(new ChestGUI.ChestGUIHandler(), this);

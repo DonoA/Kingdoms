@@ -2,6 +2,8 @@ package io.dallen.kingdoms.kingdom;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.ai.goals.TargetNearbyEntityGoal;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -14,6 +16,7 @@ import org.bukkit.plugin.Plugin;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
@@ -40,9 +43,32 @@ public class MobSpawning {
             }
 
             var targetLoc = iter.next();
-            Entity zombie = kingdom.getClaim().getWorld().spawnEntity(targetLoc.add(0, 1, 0), EntityType.ZOMBIE);
-            // Set target as a the claim block. Attempt to locate the weakest point in the defences
-            kingdom.getAttackers().put(zombie.getEntityId(), zombie);
+            var npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.ZOMBIE, "Attacker");
+            var spawnLoc = targetLoc.clone().add(0, 1, 0);
+            npc.spawn(spawnLoc);
+            npc.setProtected(false);
+
+            var attackKingdomGoal = TargetKingdomClaimGoal.builder()
+                    .npc(npc)
+                    .targetKingdom(kingdom)
+                    .build();
+            npc.getDefaultGoalController().addGoal(attackKingdomGoal, 100);
+
+            var attackPlayerGoal = TargetEntityGoal.builder()
+                    .npc(npc)
+                    .aggressive(true)
+                    .radius(spawnRadius * 2)
+                    .targets(Set.of(EntityType.PLAYER)).build();
+            npc.getDefaultGoalController().addGoal(attackPlayerGoal, 99);
+
+//            var navigator = npc.getNavigator();
+//            navigator.getLocalParameters()
+//                    .attackRange(5D)
+//                    .attackDelayTicks(2)
+//                    .updatePathRate(1)
+//                    .baseSpeed(1F);
+
+            kingdom.getAttackers().put(npc.getEntity().getEntityId(), npc);
         }
     }
 

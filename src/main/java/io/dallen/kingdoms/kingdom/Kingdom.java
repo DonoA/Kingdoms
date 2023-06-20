@@ -2,6 +2,7 @@ package io.dallen.kingdoms.kingdom;
 
 import io.dallen.kingdoms.util.Bounds;
 import lombok.Getter;
+import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -37,7 +38,7 @@ public class Kingdom {
     private List<Material> previousBounds = new ArrayList<>();
 
     @Getter
-    private Map<Integer, Entity> attackers = new HashMap<>();
+    private Map<Integer, NPC> attackers = new HashMap<>();
 
     public Kingdom(String name, Location claim, Player owner) {
         this.name = name;
@@ -62,6 +63,7 @@ public class Kingdom {
 
     public static void unregister(Kingdom kingdom) {
         kingdom.eraseBounds();
+        kingdom.attackers.values().forEach(NPC::destroy);
         allKingdoms.remove(kingdom.getName());
     }
 

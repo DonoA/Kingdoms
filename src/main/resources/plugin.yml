@@ -2,6 +2,7 @@ name: Kingdoms
 version: '${project.version}'
 main: io.dallen.kingdoms.Kingdoms
 api-version: '1.20'
+depend: [Citizens, ProtocolLib]
 commands:
   update:
     description: rebuild and reload the plugin
