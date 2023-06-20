@@ -20,34 +20,43 @@ public class ClaimBlock extends CustomBlock {
         public Player owner;
     }
 
-    ChestGUI gui;
-
     public ClaimBlock(Material base) {
         super("Claim", base);
     }
 
-    void onPlace(BlockPlaceEvent event) {
-        CustomBlockData.setBlockData(event.getBlock().getLocation(), new ClaimBlockData(null, event.getPlayer()));
+    void onPlace(BlockPlaceEvent blockPlaceEvent) {
+        var claimData = new ClaimBlockData(null, blockPlaceEvent.getPlayer());
+        CustomBlockData.setBlockData(blockPlaceEvent.getBlock().getLocation(), claimData);
 
         ChestGUI gui = new ChestGUI("Claim", InventoryType.ANVIL, (menuEvent) -> {
             var anvilMenu = (ChestGUI.AnvilMenuInstance) menuEvent.getMenu();
             var claimName = anvilMenu.getCurrentItemName();
-            var newKingdom = new Kingdom(claimName, event.getBlock().getLocation(), event.getPlayer());
+            var newKingdom = new Kingdom(claimName, blockPlaceEvent.getBlock().getLocation(), blockPlaceEvent.getPlayer());
             Kingdom.register(newKingdom);
-            event.getPlayer().sendMessage("Created kingdom " + newKingdom.getName());
+            newKingdom.placeBounds();
+            claimData.kingdom = newKingdom;
+            blockPlaceEvent.getPlayer().sendMessage("Created kingdom " + newKingdom.getName());
         });
 
         gui.setOption(0, CustomItemIndex.Submit.itemStack(), "Name Claim");
-        gui.sendMenu(event.getPlayer());
+        gui.setCloseEvent((closeEvent -> {
+            blockPlaceEvent.getBlockPlaced().breakNaturally();
+        }));
+        gui.sendMenu(blockPlaceEvent.getPlayer());
     }
 
     void onBreak(BlockBreakEvent event) {
-        if (event.getPlayer().getGameMode() == GameMode.CREATIVE) {
+        if (event.getPlayer().getGameMode() != GameMode.CREATIVE) {
+            event.setCancelled(true);
+            event.getPlayer().sendMessage("Claim cannot be broken");
+        }
+
+        var claimData = CustomBlockData.getBlockData(event.getBlock().getLocation(), ClaimBlockData.class);
+        if (claimData == null || claimData.kingdom == null) {
             return;
         }
 
-        event.setCancelled(true);
-        event.getPlayer().sendMessage("Claim cannot be broken");
+        Kingdom.unregister(claimData.kingdom);
     }
 
     void onInteract(PlayerInteractEvent event) {

@@ -3,10 +3,13 @@ package io.dallen.kingdoms.menus;
 import io.dallen.kingdoms.Kingdoms;
 import io.dallen.kingdoms.events.AnvilRenameEvent;
 import io.dallen.kingdoms.util.ItemUtil;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -19,13 +22,14 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
+import java.util.function.Consumer;
 
 @Getter
 public class ChestGUI {
 
-    private static HashMap<String, MenuInstance> openMenus = new HashMap<String, MenuInstance>();
+    private static HashMap<String, MenuInstance> openMenus = new HashMap<>();
 
-    private static HashMap<String, Long> cooldown = new HashMap<String, Long>();
+    private static HashMap<String, Long> cooldown = new HashMap<>();
 
     @Setter
     private String name;
@@ -34,24 +38,26 @@ public class ChestGUI {
     @Setter
     private InventoryType type;
     @Setter
-    private OptionClickEventHandler handler;
+    private Consumer<OptionClickEvent> clickHandler;
+    @Setter
+    private Consumer<CloseEvent>  closeHandler;
 
     private Object menuData;
     private String[] optionNames;
     private ItemStack[] optionIcons;
     private Object[] optionData;
 
-    public ChestGUI(String name, InventoryType type, OptionClickEventHandler handler) {
+    public ChestGUI(String name, InventoryType type, Consumer<OptionClickEvent> clickHandler) {
         this.type = type;
         this.name = name;
-        this.handler = handler;
+        this.clickHandler = clickHandler;
         this.size = type.getDefaultSize();
         optionNames = new String[this.size];
         optionIcons = new ItemStack[this.size];
         optionData = new Object[this.size];
     }
 
-    public ChestGUI(String name, int size, OptionClickEventHandler handler) {
+    public ChestGUI(String name, int size, Consumer<OptionClickEvent> clickHandler) {
         this.type = InventoryType.CHEST;
         this.name = name;
         if (size > 8) {
@@ -62,7 +68,12 @@ public class ChestGUI {
         optionNames = new String[this.size];
         optionIcons = new ItemStack[this.size];
         optionData = new Object[this.size];
-        this.handler = handler;
+        this.clickHandler = clickHandler;
+    }
+
+    public ChestGUI setCloseEvent(Consumer<CloseEvent> closeHandler) {
+        this.closeHandler = closeHandler;
+        return this;
     }
 
     public ChestGUI setMenuData(Object o) {
@@ -131,7 +142,8 @@ public class ChestGUI {
     public static class MenuInstance {
         private String name;
         private int size;
-        private OptionClickEventHandler handler;
+        private Consumer<OptionClickEvent> clickHandler;
+        private Consumer<CloseEvent>  closeHandler;
         private String[] optionNames;
         private ItemStack[] optionIcons;
         private Inventory inventory;
@@ -139,9 +151,10 @@ public class ChestGUI {
         public MenuInstance(ChestGUI menu, Inventory inv) {
             this.name = menu.name;
             this.size = menu.size;
-            this.handler = menu.handler;
             this.optionNames = menu.optionNames;
             this.optionIcons = menu.optionIcons;
+            this.clickHandler = menu.clickHandler;
+            this.closeHandler = menu.closeHandler;
             this.inventory = inv;
         }
     }
@@ -157,36 +170,28 @@ public class ChestGUI {
         }
     }
 
-    public interface OptionClickEventHandler {
+    @Getter
+    @RequiredArgsConstructor
+    public static class OptionClickEvent {
+        private final Player player;
+        private final MenuInstance menu;
+        private final ItemStack clicked;
 
-        void onOptionClick(OptionClickEvent event);
+        @Setter
+        private boolean close = true;
+
+        @Setter
+        private ChestGUI next = null;
+
+        @Setter
+        private boolean destroy = false;
     }
 
     @Getter
-    public static class OptionClickEvent {
-
-        private Player player;
+    @AllArgsConstructor
+    public static class CloseEvent {
+        private HumanEntity player;
         private MenuInstance menu;
-        private ItemStack clicked;
-
-        @Setter
-        private boolean close;
-
-        @Setter
-        private ChestGUI next;
-
-        @Setter
-        private boolean destroy;
-
-        public OptionClickEvent(Player player, MenuInstance menu, ItemStack clicked) {
-            this.player = player;
-            this.menu = menu;
-            this.clicked = clicked;
-
-            this.close = true;
-            this.destroy = false;
-            this.next = null;
-        }
     }
 
     public static class ChestGUIHandler implements Listener {
@@ -204,6 +209,12 @@ public class ChestGUI {
             }
 
             MenuInstance menu = openMenus.get(playerName);
+            if (menu.closeHandler == null) {
+                return;
+            }
+
+            var closeEvent = new CloseEvent(e.getPlayer(), menu);
+            menu.closeHandler.accept(closeEvent);
             // Trigger close event
         }
 
@@ -251,7 +262,7 @@ public class ChestGUI {
             }
             OptionClickEvent e = new OptionClickEvent((Player) event.getWhoClicked(),
                     menu, clicked);
-            menu.handler.onOptionClick(e);
+            menu.clickHandler.accept(e);
             if (e.close) {
                 final Player p = (Player) event.getWhoClicked();
                 final OptionClickEvent ev = e;
