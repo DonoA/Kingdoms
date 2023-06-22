@@ -4,6 +4,8 @@ import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.BlockPosition;
 import io.dallen.kingdoms.Kingdoms;
+import io.dallen.kingdoms.customblocks.CustomBlockListener;
+import io.dallen.kingdoms.util.LocationUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.bukkit.Bukkit;
@@ -12,6 +14,7 @@ import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.plugin.Plugin;
 
 import java.util.HashMap;
@@ -36,6 +39,7 @@ public class BlockBreakAnimator implements Listener {
 
     public static void setupRefresher(Plugin plugin) {
         Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, BlockBreakAnimator::refresh, 20 * 10, 20 * 10);
+        Bukkit.getServer().getPluginManager().registerEvents(new BlockBreakAnimator(), plugin);
     }
 
     private static void refresh() {
@@ -47,19 +51,35 @@ public class BlockBreakAnimator implements Listener {
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         var blockLoc = event.getBlock().getLocation();
-        breakStageMap.remove(blockLoc);
+        removeBreakdata(blockLoc);
     }
 
-    public static boolean doDamage(Location l, float damage, boolean dropItem) {
-        var blockType = l.getBlock().getType();
+    @EventHandler
+    public void onBlockPlace(BlockPlaceEvent event) {
+        var blockLoc = event.getBlock().getLocation();
+        removeBreakdata(blockLoc);
+    }
+
+    private void removeBreakdata(Location blockLoc) {
+        var breakStage = breakStageMap.remove(blockLoc);
+        if (breakStage != null) {
+            breakStage.stage = 10;
+            sendBreakUpdate(blockLoc, breakStage);
+        }
+    }
+
+    public static boolean doDamage(Location loc, float damage, boolean dropItem) {
+        var blockLoc = LocationUtil.blockLoc(loc);
+        var blockType = blockLoc.getBlock().getType();
         if (!blockType.isSolid()) {
-            return false;
+            return true;
         }
 
-        var breakStage = breakStageMap.get(l);
+        var breakStage = breakStageMap.get(blockLoc);
         if (breakStage == null) {
-            breakStage = new BreakStage(damage, 1, random.nextInt(Integer.MAX_VALUE));
+            breakStage = new BreakStage(0f, 1, random.nextInt(Integer.MAX_VALUE));
         }
+        breakStage.damageDone += damage;
 
         if (breakStage.damageDone > blockType.getHardness()) {
             breakStage.stage += 1;
@@ -68,16 +88,16 @@ public class BlockBreakAnimator implements Listener {
 
         if (breakStage.stage > 9) {
             if (dropItem) {
-                l.getBlock().breakNaturally();
+                blockLoc.getBlock().breakNaturally();
             } else {
-                l.getBlock().setType(Material.AIR);
+                blockLoc.getBlock().setType(Material.AIR);
             }
-            sendBreakUpdate(l, breakStage);
-            breakStageMap.remove(l);
+            sendBreakUpdate(blockLoc, breakStage);
+            breakStageMap.remove(blockLoc);
             return true;
         } else {
-            sendBreakUpdate(l, breakStage);
-            breakStageMap.put(l, breakStage);
+            sendBreakUpdate(blockLoc, breakStage);
+            breakStageMap.put(blockLoc, breakStage);
             return false;
         }
     }

@@ -16,23 +16,19 @@ import org.bukkit.plugin.Plugin;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class MobSpawning {
 
-    private final World overworld;
     private final Plugin plugin;
 
     private int spawnRadius = 15;
 
     private int maxMonsters = 2;
 
-    private ConcurrentLinkedQueue<Location> spawnLocations = new ConcurrentLinkedQueue<>();
-
-    public static void startSpawning(Plugin plugin, World overworld) {
-        var spawning = new MobSpawning(overworld, plugin);
+    public static void startSpawning(Plugin plugin) {
+        var spawning = new MobSpawning(plugin);
         Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, spawning::locateSpawns, 20, 20);
     }
 
@@ -48,7 +44,7 @@ public class MobSpawning {
             npc.spawn(spawnLoc);
             npc.setProtected(false);
 
-            var attackKingdomGoal = new TargetKingdomClaimGoal(kingdom, npc, 10, 5 * 1000, 0.5f);
+            var attackKingdomGoal = new TargetKingdomClaimGoal(kingdom, npc, 0.01f);
             npc.getDefaultGoalController().addGoal(attackKingdomGoal, 99);
 
             kingdom.getAttackers().put(npc.getEntity().getEntityId(), npc);

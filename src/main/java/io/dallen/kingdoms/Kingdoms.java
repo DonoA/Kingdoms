@@ -32,7 +32,7 @@ public final class Kingdoms extends JavaPlugin {
         PacketListeners.registerListeners(this, protocolManager);
 
         var mainworld = Bukkit.getWorlds().get(0);
-        MobSpawning.startSpawning(this, mainworld);
+        MobSpawning.startSpawning(this);
 
         getServer().getPluginManager().registerEvents(new CustomBlockListener(), this);
         getServer().getPluginManager().registerEvents(new ChestGUI.ChestGUIHandler(), this);

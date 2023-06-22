@@ -6,6 +6,9 @@ import org.bukkit.Location;
 import org.bukkit.World;
 
 public class LocationUtil {
+    public static Location blockLoc(Location loc) {
+        return loc.getBlock().getLocation();
+    }
 
     public static Point asPoint(Location l) {
         return new Point(l.getBlockX(), l.getBlockZ());

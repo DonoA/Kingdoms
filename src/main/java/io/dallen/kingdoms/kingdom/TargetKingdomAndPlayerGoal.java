@@ -1,8 +1,6 @@
 package io.dallen.kingdoms.kingdom;
 
-import io.dallen.kingdoms.Kingdoms;
 import io.dallen.kingdoms.packets.BlockBreakAnimator;
-import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import net.citizensnpcs.api.ai.event.CancelReason;
 import net.citizensnpcs.api.ai.tree.BehaviorGoalAdapter;
@@ -11,26 +9,29 @@ import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Random;
 
 @RequiredArgsConstructor
-public class TargetKingdomClaimGoal extends BehaviorGoalAdapter {
-
-    private static Random random = new Random();
+public class TargetKingdomAndPlayerGoal extends BehaviorGoalAdapter {
 
     private enum State {
-        INIT, TARGETING_CLAIM, TARGETING_CLAIM_BLOCK, TARGETING_OBSTRUCTION, STUCK,
+        INIT, TARGETING_PLAYER, TARGETING_CLAIM, TARGETING_CLAIM_BLOCK, TARGETING_OBSTRUCTION, STUCK,
             FINISHED
     }
 
     private final Kingdom targetKingdom;
     private final NPC npc;
+    private final int playerTargetRadius;
+    private final long retargetTime;
     private final float damage;
 
     private State state = State.INIT;
+    private Player targetPlayer;
     private Location targetBlock;
+    private long stuckTime;
 
     private int stuckCounter = 0;
     private Location lastLoc = null;
@@ -38,6 +39,7 @@ public class TargetKingdomClaimGoal extends BehaviorGoalAdapter {
     @Override
     public void reset() {
         state = State.INIT;
+        targetPlayer = null;
         targetBlock = null;
     }
 
@@ -51,15 +53,33 @@ public class TargetKingdomClaimGoal extends BehaviorGoalAdapter {
 
         switch(state) {
             case INIT:
-                state = State.TARGETING_CLAIM;
+                state = State.TARGETING_PLAYER;
+                targetPlayer = getPlayer(playerTargetRadius);
+                break;
+            case TARGETING_PLAYER:
+                if (isStuck) {
+                    state = State.TARGETING_CLAIM;
+                    stuckTime = System.currentTimeMillis();
+                    break;
+                }
+
+                if (canTargetPlayer(targetPlayer, playerTargetRadius)) {
+                    setTargetPlayer(targetPlayer);
+                } else {
+                    state = State.TARGETING_CLAIM;
+                }
                 break;
             case TARGETING_CLAIM:
-                if (isStuck) {
-                    state = State.STUCK;
-                }
                 targetClaim();
                 break;
             case TARGETING_OBSTRUCTION:
+                var player = getPlayer(playerTargetRadius);
+                if (canTargetPlayer(player, playerTargetRadius) && stuckTimerExpired(retargetTime)) {
+                    setTargetPlayer(targetPlayer);
+                    state = State.TARGETING_PLAYER;
+                    break;
+                }
+
                 if (canHitBlock(targetBlock)) {
                     var broken = hitBlock(targetBlock);
                     if (broken) {
@@ -116,20 +136,20 @@ public class TargetKingdomClaimGoal extends BehaviorGoalAdapter {
         }
     }
 
+    private boolean stuckTimerExpired(long requiredElapsed) {
+        return stuckTime + requiredElapsed < System.currentTimeMillis();
+    }
+
     private boolean canHitBlock(Location targetBlock) {
         var npcLoc = npc.getStoredLocation();
         return targetBlock.distance(npcLoc) < 2;
     }
 
     private boolean hitBlock(Location targetBlock) {
-        var blockBroken = BlockBreakAnimator.doDamage(targetBlock, damage, false);
-
-        if (blockBroken || random.nextInt(100) <= 10) {
-            for (var player : Bukkit.getOnlinePlayers()) {
-                player.playSound(targetBlock, Sound.ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, 1f, 1f);
-            }
+        for (var player : Bukkit.getOnlinePlayers()) {
+            player.playSound(targetBlock, Sound.ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, 1f, 1f);
         }
-        return blockBroken;
+        return BlockBreakAnimator.doDamage(targetBlock, damage, false);
     }
 
     private void targetClaim() {
@@ -141,6 +161,7 @@ public class TargetKingdomClaimGoal extends BehaviorGoalAdapter {
         nav.setTarget(targetKingdom.getClaim());
         nav.getLocalParameters().addSingleUseCallback((cancelReason) -> {
             if (cancelReason == CancelReason.STUCK) {
+                stuckTime = System.currentTimeMillis();
                 state = State.STUCK;
             } else if (cancelReason == null) { // finished
                 state = State.TARGETING_CLAIM_BLOCK;
@@ -154,8 +175,8 @@ public class TargetKingdomClaimGoal extends BehaviorGoalAdapter {
         }
 
         var targetVector = targetKingdom.getClaim().clone().subtract(npc.getEntity().getLocation());
-        var offsetX = targetVector.getBlockX() == 0 ? 0 : targetVector.getBlockX() / Math.abs(targetVector.getBlockX());
-        var offsetZ = targetVector.getBlockZ() == 0 ? 0 : targetVector.getBlockZ() / Math.abs(targetVector.getBlockZ());
+        var offsetX = targetVector.getBlockX() / Math.abs(targetVector.getBlockX());
+        var offsetZ = targetVector.getBlockZ() / Math.abs(targetVector.getBlockZ());
 
         var testLocations = List.of(
                 npc.getStoredLocation().clone().add(offsetX, 1 ,0),
@@ -171,6 +192,48 @@ public class TargetKingdomClaimGoal extends BehaviorGoalAdapter {
         }
 
         return null;
+    }
+
+    private void setTargetPlayer(@NotNull Player player) {
+        var nav = npc.getNavigator();
+        if (nav.getEntityTarget() != null && player.equals(nav.getEntityTarget().getTarget())) {
+            return;
+        }
+
+        nav.setTarget(player, true);
+        nav.getLocalParameters().addSingleUseCallback((cancelReason) -> {
+             if (cancelReason == CancelReason.STUCK) {
+                stuckTime = System.currentTimeMillis();
+                state = State.STUCK;
+            }
+        });
+    }
+
+    private Player getPlayer(int radius) {
+        for(var player : Bukkit.getOnlinePlayers()) {
+            var npcLoc = npc.getStoredLocation();
+            if (player.getLocation().distance(npcLoc) > radius) {
+                continue;
+            }
+
+            return player;
+        }
+
+        return null;
+    }
+
+    private boolean canTargetPlayer(Player player, int radius) {
+        if (player == null) {
+            return false;
+        }
+
+        var canNav = npc.getNavigator().canNavigateTo(player.getLocation());
+        if (!canNav) {
+            return false;
+        }
+
+        var npcLoc = npc.getStoredLocation();
+        return !(player.getLocation().distance(npcLoc) > radius);
     }
 
     @Override
