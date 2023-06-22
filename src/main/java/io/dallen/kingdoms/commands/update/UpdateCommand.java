@@ -1,6 +1,5 @@
-package io.dallen.kingdoms.update;
+package io.dallen.kingdoms.commands.update;
 
-import io.dallen.kingdoms.Kingdoms;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;

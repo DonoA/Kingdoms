@@ -1,6 +1,5 @@
-package io.dallen.kingdoms.worldgen;
+package io.dallen.kingdoms.commands.worldgen;
 
-import io.dallen.kingdoms.util.ItemUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
@@ -17,7 +16,6 @@ import org.bukkit.generator.WorldInfo;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.noise.NoiseGenerator;
 import org.bukkit.util.noise.PerlinNoiseGenerator;
-import org.bukkit.util.noise.PerlinOctaveGenerator;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;

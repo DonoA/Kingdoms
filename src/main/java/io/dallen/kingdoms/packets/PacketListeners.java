@@ -7,6 +7,8 @@ public class PacketListeners {
 
     public static void registerListeners(Plugin plugin, ProtocolManager protocolManager) {
         protocolManager.addPacketListener(new CustomGUI(plugin));
+
+        BlockBreakAnimator.setupRefresher(plugin);
     }
 
 }

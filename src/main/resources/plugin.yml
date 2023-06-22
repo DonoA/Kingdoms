@@ -12,6 +12,6 @@ commands:
     description: Generate new kingdoms world
     usage: /genworld
 
-  start:
-    description: Start the game
-    usage: /start
+  test:
+    description: Test something
+    usage: /test

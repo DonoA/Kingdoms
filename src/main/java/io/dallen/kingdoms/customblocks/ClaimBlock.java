@@ -56,7 +56,7 @@ public class ClaimBlock extends CustomBlock {
             return;
         }
 
-        Kingdom.unregister(claimData.kingdom);
+        claimData.kingdom.destroy();
     }
 
     void onInteract(PlayerInteractEvent event) {

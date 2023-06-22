@@ -40,6 +40,9 @@ public class Kingdom {
     @Getter
     private Map<Integer, NPC> attackers = new HashMap<>();
 
+    @Getter
+    private boolean destoryed = false;
+
     public Kingdom(String name, Location claim, Player owner) {
         this.name = name;
         this.claim = claim;
@@ -61,10 +64,12 @@ public class Kingdom {
         allKingdoms.put(kingdom.getName(), kingdom);
     }
 
-    public static void unregister(Kingdom kingdom) {
-        kingdom.eraseBounds();
-        kingdom.attackers.values().forEach(NPC::destroy);
-        allKingdoms.remove(kingdom.getName());
+    public void destroy() {
+        owner.sendMessage("Your kingdom has fallen!");
+        destoryed = true;
+        eraseBounds();
+        attackers.values().forEach(NPC::destroy);
+        allKingdoms.remove(getName());
     }
 
     public void placeBounds() {

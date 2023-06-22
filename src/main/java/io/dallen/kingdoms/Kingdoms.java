@@ -2,15 +2,15 @@ package io.dallen.kingdoms;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
+import io.dallen.kingdoms.commands.TestCommand;
 import io.dallen.kingdoms.customblocks.CustomBlockIndex;
 import io.dallen.kingdoms.customblocks.CustomBlockListener;
 import io.dallen.kingdoms.kingdom.MobListener;
 import io.dallen.kingdoms.kingdom.MobSpawning;
-import io.dallen.kingdoms.kingdom.MobTargeting;
 import io.dallen.kingdoms.menus.ChestGUI;
 import io.dallen.kingdoms.packets.PacketListeners;
-import io.dallen.kingdoms.update.UpdateCommand;
-import io.dallen.kingdoms.worldgen.WorldGenCommand;
+import io.dallen.kingdoms.commands.update.UpdateCommand;
+import io.dallen.kingdoms.commands.worldgen.WorldGenCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.Material;
@@ -33,7 +33,6 @@ public final class Kingdoms extends JavaPlugin {
 
         var mainworld = Bukkit.getWorlds().get(0);
         MobSpawning.startSpawning(this, mainworld);
-        MobTargeting.startTargeting(this);
 
         getServer().getPluginManager().registerEvents(new CustomBlockListener(), this);
         getServer().getPluginManager().registerEvents(new ChestGUI.ChestGUIHandler(), this);
@@ -41,6 +40,7 @@ public final class Kingdoms extends JavaPlugin {
 
         getCommand("update").setExecutor(new UpdateCommand());
         getCommand("genworld").setExecutor(new WorldGenCommand());
+        getCommand("test").setExecutor(new TestCommand());
 
         setupCrafting();
         setGameRules(mainworld);

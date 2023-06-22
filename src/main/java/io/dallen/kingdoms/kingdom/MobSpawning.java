@@ -27,7 +27,7 @@ public class MobSpawning {
 
     private int spawnRadius = 15;
 
-    private int maxMonsters = 10;
+    private int maxMonsters = 2;
 
     private ConcurrentLinkedQueue<Location> spawnLocations = new ConcurrentLinkedQueue<>();
 
@@ -48,25 +48,8 @@ public class MobSpawning {
             npc.spawn(spawnLoc);
             npc.setProtected(false);
 
-            var attackKingdomGoal = TargetKingdomClaimGoal.builder()
-                    .npc(npc)
-                    .targetKingdom(kingdom)
-                    .build();
-            npc.getDefaultGoalController().addGoal(attackKingdomGoal, 100);
-
-            var attackPlayerGoal = TargetEntityGoal.builder()
-                    .npc(npc)
-                    .aggressive(true)
-                    .radius(spawnRadius * 2)
-                    .targets(Set.of(EntityType.PLAYER)).build();
-            npc.getDefaultGoalController().addGoal(attackPlayerGoal, 99);
-
-//            var navigator = npc.getNavigator();
-//            navigator.getLocalParameters()
-//                    .attackRange(5D)
-//                    .attackDelayTicks(2)
-//                    .updatePathRate(1)
-//                    .baseSpeed(1F);
+            var attackKingdomGoal = new TargetKingdomClaimGoal(kingdom, npc, 10, 5 * 1000, 0.5f);
+            npc.getDefaultGoalController().addGoal(attackKingdomGoal, 99);
 
             kingdom.getAttackers().put(npc.getEntity().getEntityId(), npc);
         }
