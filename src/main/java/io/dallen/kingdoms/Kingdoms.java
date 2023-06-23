@@ -34,12 +34,15 @@ public final class Kingdoms extends JavaPlugin {
         var mainworld = Bukkit.getWorlds().get(0);
         MobSpawning.startSpawning(this);
 
+        var worldGen = new WorldGenCommand(mainworld);
+        getCommand("genworld").setExecutor(worldGen);
+        getServer().getPluginManager().registerEvents(worldGen, this);
+
         getServer().getPluginManager().registerEvents(new CustomBlockListener(), this);
         getServer().getPluginManager().registerEvents(new ChestGUI.ChestGUIHandler(), this);
         getServer().getPluginManager().registerEvents(new MobListener(), this);
 
         getCommand("update").setExecutor(new UpdateCommand());
-        getCommand("genworld").setExecutor(new WorldGenCommand());
         getCommand("test").setExecutor(new TestCommand());
 
         setupCrafting();
