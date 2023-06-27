@@ -33,13 +33,10 @@ public class ChestGUI {
 
     @Setter
     private String name;
-    @Setter
+
     private int size;
-    @Setter
     private InventoryType type;
-    @Setter
     private Consumer<OptionClickEvent> clickHandler;
-    @Setter
     private Consumer<CloseEvent>  closeHandler;
 
     private Object menuData;
@@ -47,28 +44,27 @@ public class ChestGUI {
     private ItemStack[] optionIcons;
     private Object[] optionData;
 
-    public ChestGUI(String name, InventoryType type, Consumer<OptionClickEvent> clickHandler) {
+    public ChestGUI(String name, InventoryType type) {
         this.type = type;
         this.name = name;
-        this.clickHandler = clickHandler;
         this.size = type.getDefaultSize();
         optionNames = new String[this.size];
         optionIcons = new ItemStack[this.size];
         optionData = new Object[this.size];
     }
 
-    public ChestGUI(String name, int size, Consumer<OptionClickEvent> clickHandler) {
+    public ChestGUI(String name, int size) {
         this.type = InventoryType.CHEST;
         this.name = name;
-        if (size > 8) {
-            this.size = size;
-        } else {
-            this.size = size * 9;
-        }
+        this.size = size;
         optionNames = new String[this.size];
         optionIcons = new ItemStack[this.size];
         optionData = new Object[this.size];
+    }
+
+    public ChestGUI setClickHandler(Consumer<OptionClickEvent> clickHandler) {
         this.clickHandler = clickHandler;
+        return this;
     }
 
     public ChestGUI setCloseEvent(Consumer<CloseEvent> closeHandler) {
@@ -122,7 +118,13 @@ public class ChestGUI {
 //        anvilContainer.maximumRepairCost = 0;
 //        Inventory inventory = anvilContainer.getBukkitView().getTopInventory();
 
-        Inventory inventory = Bukkit.createInventory(player, type, name);
+        Inventory inventory;
+        if (type == InventoryType.CHEST) {
+            inventory = Bukkit.createInventory(player, size, name);
+        } else {
+            inventory = Bukkit.createInventory(player, type, name);
+        }
+
         for (int i = 0; i < optionIcons.length; i++) {
             if (optionIcons[i] != null) {
                 inventory.setItem(i, optionIcons[i]);
@@ -176,6 +178,7 @@ public class ChestGUI {
         private final Player player;
         private final MenuInstance menu;
         private final ItemStack clicked;
+        private final int slot;
 
         @Setter
         private boolean close = true;
@@ -261,7 +264,7 @@ public class ChestGUI {
                 clicked = menu.inventory.getItem(slot);
             }
             OptionClickEvent e = new OptionClickEvent((Player) event.getWhoClicked(),
-                    menu, clicked);
+                    menu, clicked, slot);
             menu.clickHandler.accept(e);
             if (e.close) {
                 final Player p = (Player) event.getWhoClicked();

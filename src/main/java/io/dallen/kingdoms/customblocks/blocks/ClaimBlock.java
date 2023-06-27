@@ -1,5 +1,7 @@
-package io.dallen.kingdoms.customblocks;
+package io.dallen.kingdoms.customblocks.blocks;
 
+import io.dallen.kingdoms.customblocks.CustomBlock;
+import io.dallen.kingdoms.customblocks.CustomBlockData;
 import io.dallen.kingdoms.customitems.CustomItemIndex;
 import io.dallen.kingdoms.kingdom.Kingdom;
 import io.dallen.kingdoms.menus.ChestGUI;
@@ -24,11 +26,13 @@ public class ClaimBlock extends CustomBlock {
         super("Claim", base);
     }
 
-    void onPlace(BlockPlaceEvent blockPlaceEvent) {
+    @Override
+    public void onPlace(BlockPlaceEvent blockPlaceEvent) {
         var claimData = new ClaimBlockData(null, blockPlaceEvent.getPlayer());
         CustomBlockData.setBlockData(blockPlaceEvent.getBlock().getLocation(), claimData);
 
-        ChestGUI gui = new ChestGUI("Claim", InventoryType.ANVIL, (menuEvent) -> {
+        ChestGUI gui = new ChestGUI("Claim", InventoryType.ANVIL);
+        gui.setClickHandler((menuEvent) -> {
             var anvilMenu = (ChestGUI.AnvilMenuInstance) menuEvent.getMenu();
             var claimName = anvilMenu.getCurrentItemName();
             var newKingdom = new Kingdom(claimName, blockPlaceEvent.getBlock().getLocation(), blockPlaceEvent.getPlayer());
@@ -38,20 +42,23 @@ public class ClaimBlock extends CustomBlock {
             blockPlaceEvent.getPlayer().sendMessage("Created kingdom " + newKingdom.getName());
         });
 
-        gui.setOption(0, CustomItemIndex.Submit.itemStack(), "Name Claim");
+        gui.setOption(0, CustomItemIndex.SUBMIT.toItemStack(), "Name Claim");
         gui.setCloseEvent((closeEvent -> {
             blockPlaceEvent.getBlockPlaced().breakNaturally();
         }));
         gui.sendMenu(blockPlaceEvent.getPlayer());
     }
 
-    void onBreak(BlockBreakEvent event) {
+    @Override
+    public void onBreak(BlockBreakEvent event) {
+        var claimData = CustomBlockData.removeBlockData(event.getBlock().getLocation(), ClaimBlockData.class);
+
         if (event.getPlayer().getGameMode() != GameMode.CREATIVE) {
             event.setCancelled(true);
             event.getPlayer().sendMessage("Claim cannot be broken");
+            return;
         }
 
-        var claimData = CustomBlockData.getBlockData(event.getBlock().getLocation(), ClaimBlockData.class);
         if (claimData == null || claimData.kingdom == null) {
             return;
         }
@@ -59,7 +66,8 @@ public class ClaimBlock extends CustomBlock {
         claimData.kingdom.destroy();
     }
 
-    void onInteract(PlayerInteractEvent event) {
+    @Override
+    public void onInteract(PlayerInteractEvent event) {
         var claimData = CustomBlockData.getBlockData(event.getClickedBlock().getLocation(), ClaimBlockData.class);
         if (claimData == null) {
             return;

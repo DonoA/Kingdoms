@@ -20,5 +20,12 @@ public class CustomBlockData {
     public static <T extends CustomBlockData> void setBlockData(Location l, T data) {
         blockDataMap.put(l, data);
     }
+    public static <T extends CustomBlockData> T removeBlockData(Location l, Class<T> clss) {
+        var data = blockDataMap.remove(l);
+        if (clss.isInstance(data)) {
+            return (T) data;
+        }
+        return null;
+    }
 
 }

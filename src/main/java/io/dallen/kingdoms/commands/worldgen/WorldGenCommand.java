@@ -25,15 +25,17 @@ import org.bukkit.util.noise.PerlinNoiseGenerator;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
 @RequiredArgsConstructor
-public class WorldGenCommand implements CommandExecutor, Listener {
+public class WorldGenCommand implements CommandExecutor {
 
     private final World overworld;
 
@@ -44,38 +46,15 @@ public class WorldGenCommand implements CommandExecutor, Listener {
             return true;
         }
         commandSender.sendMessage("Deleting old world...");
-        commandSender.sendMessage("New Version");
 
         var player = (Player) commandSender;
         player.teleport(overworld.getSpawnLocation());
 
-        WorldCreator creator = new WorldCreator("kingdomszz")
-                .environment(World.Environment.NORMAL)
-                .type(WorldType.NORMAL);
+        var tempWorldName = "temp";
 
-        /*
-        {
-        "generate_features": false
-          "dimensions": {
-            "minecraft:overworld": {
-              "type": "minecraft:overworld",
-              "generator": {
-                "biome_source": {
-                  "seed": 0,
-                  "large_biomes": false,
-                  "type": "minecraft:vanilla_layered"
-                },
-                "seed": 0,
-                "settings": "minecraft:overworld",
-                "type": "minecraft:noise"
-              }
-            },
-           }
-
-         */
-
-        Bukkit.unloadWorld(creator.name(), false);
-        var oldWorldPath = Path.of(creator.name());
+        // Delete temp world if existing
+        Bukkit.unloadWorld(tempWorldName, false);
+        var oldWorldPath = Path.of(tempWorldName);
         if (Files.exists(oldWorldPath)) {
             Files.walk(oldWorldPath)
                     .sorted(Comparator.reverseOrder())
@@ -87,43 +66,36 @@ public class WorldGenCommand implements CommandExecutor, Listener {
             return true;
         }
 
+        // Generate new temp world for player while data is updated
         commandSender.sendMessage("Building new world...");
-        var kingdomsWorld = creator.createWorld();
-        player.teleport(kingdomsWorld.getSpawnLocation());
+        var tempCreator = new WorldCreator(tempWorldName)
+                .environment(World.Environment.NORMAL)
+                .type(WorldType.FLAT);
+        var tempWorld = tempCreator.createWorld();
+        player.teleport(tempWorld.getSpawnLocation());
 
+        Bukkit.unloadWorld(overworld, true);
+
+        var defaultWorldName = overworld.getName();
+        var worldDatapacks = Path.of(defaultWorldName, "datapacks");
+        Files.createDirectories(worldDatapacks);
+        Files.copy(Path.of("plugins", "kingdoms-datapack.zip"),
+                Path.of(worldDatapacks.toString(), "kingdoms-datapack.zip"),
+                StandardCopyOption.REPLACE_EXISTING);
+
+        var regionFolder = Path.of(defaultWorldName, "region");
+        Files.walk(regionFolder)
+                .sorted(Comparator.reverseOrder())
+                .map(Path::toFile)
+                .forEach(File::delete);
+
+        var reloadOverworld = Bukkit.createWorld(new WorldCreator(defaultWorldName));
+        player.teleport(reloadOverworld.getSpawnLocation());
+        Bukkit.unloadWorld(tempWorld, false);
+
+        player.kickPlayer("Go unzip the datapack");
+
+        Bukkit.shutdown();
         return true;
     }
-
-    @EventHandler
-    public void onChunkLoad(ChunkLoadEvent e) {
-        if (e.isNewChunk()) {
-            System.out.println("New Chunk");
-        }
-    }
-
-//    @RequiredArgsConstructor
-//    public static class KingdomsChunkGen extends ChunkGenerator {
-//
-//        private final ChunkGenerator defaultGen;
-//
-//        @Override
-//        public void generateNoise(@NotNull WorldInfo worldInfo, @NotNull Random random, int chunkX, int chunkZ, @NotNull ChunkGenerator.ChunkData chunkData) {
-//            defaultGen.generateNoise(worldInfo, random, chunkX, chunkZ, chunkData);
-//        }
-//
-//        @Override
-//        public void generateSurface(@NotNull WorldInfo worldInfo, @NotNull Random random, int chunkX, int chunkZ, @NotNull ChunkGenerator.ChunkData chunkData) {
-//            defaultGen.generateSurface(worldInfo, random, chunkX, chunkZ, chunkData);
-//        }
-//
-//        @Override
-//        public void generateBedrock(@NotNull WorldInfo worldInfo, @NotNull Random random, int chunkX, int chunkZ, @NotNull ChunkGenerator.ChunkData chunkData) {
-//            defaultGen.generateBedrock(worldInfo, random, chunkX, chunkZ, chunkData);
-//        }
-//
-//        @Override
-//        public void generateCaves(@NotNull WorldInfo worldInfo, @NotNull Random random, int chunkX, int chunkZ, @NotNull ChunkGenerator.ChunkData chunkData) {
-//            //pass
-//        }
-//    }
 }

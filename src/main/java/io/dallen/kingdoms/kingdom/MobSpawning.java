@@ -3,20 +3,15 @@ package io.dallen.kingdoms.kingdom;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import net.citizensnpcs.api.CitizensAPI;
-import net.citizensnpcs.api.ai.goals.TargetNearbyEntityGoal;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Zombie;
 import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class MobSpawning {
@@ -33,6 +28,11 @@ public class MobSpawning {
     }
 
     private void doSpawns(Kingdom kingdom, Iterator<Location> iter) {
+        var worldTime = kingdom.getClaim().getWorld().getTime();
+        if (worldTime > 0 && worldTime < 12_000) {
+            return;
+        }
+
         for (int i = kingdom.getAttackers().size(); i < maxMonsters; i++) {
             if (!iter.hasNext()) {
                 return;

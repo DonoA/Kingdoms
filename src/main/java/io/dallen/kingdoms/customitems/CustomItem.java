@@ -1,6 +1,7 @@
 package io.dallen.kingdoms.customitems;
 
 import io.dallen.kingdoms.util.ItemUtil;
+import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -15,10 +16,14 @@ public class CustomItem {
     private final String name;
     private final Material baseItem;
 
-    public CustomItem(String name, Material baseItem) {
+    @Getter
+    private final boolean holdable;
+
+    public CustomItem(String name, Material baseItem, boolean holdable) {
         if (baseItem.isBlock()) {
             throw new UnsupportedOperationException(baseItem + " must only be an item type");
         }
+        this.holdable = holdable;
         this.name = name;
         this.baseItem = baseItem;
 
@@ -30,12 +35,16 @@ public class CustomItem {
         usedMaterials.put(baseItem, this);
     }
 
+    public CustomItem(String name, Material baseItem) {
+        this(name, baseItem, false);
+    }
+
 
     public Material toMaterial() {
         return baseItem;
     }
 
-    public ItemStack itemStack() {
+    public ItemStack toItemStack() {
         return ItemUtil.setItemNameAndLore(baseItem, name);
     }
 

@@ -42,10 +42,10 @@ public class CustomBlock {
         return ItemUtil.setItemNameAndLore(baseBlock, name);
     }
 
-    void onPlace(BlockPlaceEvent event) { }
+    public void onPlace(BlockPlaceEvent event) { }
 
-    void onBreak(BlockBreakEvent event) { }
+    public void onBreak(BlockBreakEvent event) { }
 
-    void onInteract(PlayerInteractEvent event) { }
+    public void onInteract(PlayerInteractEvent event) { }
 
 }

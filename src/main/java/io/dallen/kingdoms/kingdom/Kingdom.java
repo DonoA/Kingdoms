@@ -5,8 +5,6 @@ import lombok.Getter;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -34,8 +32,7 @@ public class Kingdom {
     private  List<Player> members = new ArrayList<>();
 
     @Getter
-    private Bounds bounds;
-    private List<Material> previousBounds = new ArrayList<>();
+    private AreaBounds areaBounds;
 
     @Getter
     private Map<Integer, NPC> attackers = new HashMap<>();
@@ -48,7 +45,7 @@ public class Kingdom {
         this.claim = claim;
         this.owner = owner;
 
-        bounds = Bounds.builder()
+        var bounds = Bounds.builder()
                 .blockX(claim.getBlockX())
                 .blockY(claim.getBlockY())
                 .blockZ(claim.getBlockZ())
@@ -58,6 +55,18 @@ public class Kingdom {
                 .plusZ(defaultSize)
                 .minusZ(defaultSize)
                 .build();
+
+        areaBounds = new AreaBounds(bounds, true);
+    }
+
+    public static Kingdom getOwner(Location location) {
+        for (var kingdom : allKingdoms.values()) {
+            if (kingdom.getAreaBounds().getBounds().contains(location.getBlockX(), location.getBlockZ())) {
+                return kingdom;
+            }
+        }
+
+        return null;
     }
 
     public static void register(Kingdom kingdom) {
@@ -73,25 +82,14 @@ public class Kingdom {
     }
 
     public void placeBounds() {
-        previousBounds.clear();
-
-        bounds.forEachBorder((x, z) -> {
-            var block = new Location(claim.getWorld(), x, claim.getBlockY() - 1, z)
-                    .getBlock();
-
-            previousBounds.add(block.getType());
-            block.setType(outlineMaterial);
-        });
+        areaBounds.placeBounds(claim.getWorld(), outlineMaterial);
     }
 
     public void eraseBounds() {
-        bounds.forEachBorder((x, z, i) -> {
-            if (i >= previousBounds.size()) {
-                return;
-            }
-            new Location(claim.getWorld(), x, claim.getBlockY() - 1, z)
-                    .getBlock()
-                    .setType(previousBounds.get(i));
-        });
+        areaBounds.eraseBounds(claim.getWorld());
+    }
+
+    public Bounds getBounds() {
+        return areaBounds.getBounds();
     }
 }

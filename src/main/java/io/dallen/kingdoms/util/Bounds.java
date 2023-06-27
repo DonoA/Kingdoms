@@ -70,6 +70,14 @@ public class Bounds implements Cloneable {
         }
     }
 
+    public int getSizeX() {
+        return minusX + plusX + 1;
+    }
+
+    public int getSizeZ() {
+        return minusZ + plusZ + 1;
+    }
+
     public interface ForEachIndex {
         void accept(int x, int z, int i);
     }
