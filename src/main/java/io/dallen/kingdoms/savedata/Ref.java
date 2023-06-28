@@ -2,7 +2,7 @@ package io.dallen.kingdoms.savedata;
 
 import lombok.Getter;
 
-public class Ref<V extends SaveData<V>>{
+public class Ref<V>{
 
     private final SaveDataManager<Object, V> index;
 
@@ -15,11 +15,11 @@ public class Ref<V extends SaveData<V>>{
         this.value = value;
     }
 
-    public static <K, V extends SaveData<V>> Ref<V> create(SaveDataManager<K, V> index, K key) {
+    public static <K, V> Ref<V> create(SaveDataManager<K, V> index, K key) {
         return create(index, key, null);
     }
 
-    public static <K, V extends SaveData<V>> Ref<V> create(SaveDataManager<K, V> index, K key, V value) {
+    public static <K, V> Ref<V> create(SaveDataManager<K, V> index, K key, V value) {
         return new Ref<>((SaveDataManager<Object, V>) index, key, value);
     }
 

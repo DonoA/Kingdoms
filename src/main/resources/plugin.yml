@@ -12,6 +12,11 @@ commands:
     description: Generate new kingdoms world
     usage: /genworld
 
+  cleardata:
+    description: Remove all kingdoms data
+    usage: /cleardata
+
   test:
     description: Test something
     usage: /test
+

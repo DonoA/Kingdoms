@@ -18,17 +18,10 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import java.util.UUID;
-
 public class ClaimBlock extends CustomBlock {
 
     @AllArgsConstructor
     public static class ClaimBlockData extends CustomBlockData {
-
-        static {
-            CustomBlockData.registerSubclass(ClaimBlockData.class);
-        }
-
         public Ref<Kingdom> kingdom;
         public OfflinePlayer owner;
     }

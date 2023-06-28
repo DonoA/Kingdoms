@@ -4,6 +4,7 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import io.dallen.kingdoms.commands.ClearDataCommand;
 import io.dallen.kingdoms.commands.TestCommand;
 import io.dallen.kingdoms.customblocks.CustomBlockData;
 import io.dallen.kingdoms.customblocks.CustomBlockIndex;
@@ -18,12 +19,16 @@ import io.dallen.kingdoms.menus.ChestGUI;
 import io.dallen.kingdoms.packets.PacketListeners;
 import io.dallen.kingdoms.commands.update.UpdateCommand;
 import io.dallen.kingdoms.commands.worldgen.WorldGenCommand;
+import io.dallen.kingdoms.savedata.SaveDataManager;
 import io.dallen.kingdoms.savedata.adapters.LocationAdapter;
 import io.dallen.kingdoms.savedata.adapters.NPCAdapter;
 import io.dallen.kingdoms.savedata.adapters.OfflinePlayerAdapter;
 import io.dallen.kingdoms.savedata.adapters.PlayerAdapter;
 import io.dallen.kingdoms.savedata.adapters.RefAdapter;
 import io.dallen.kingdoms.util.ItemUtil;
+import io.dallen.kingdoms.util.SafeScheduler;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
@@ -38,6 +43,7 @@ public final class Kingdoms extends JavaPlugin {
     public static Kingdoms instance;
     public static ProtocolManager protocolManager;
     public static Gson gson;
+    public static SafeScheduler scheduler;
 
     static {
         var builder = new GsonBuilder();
@@ -51,12 +57,17 @@ public final class Kingdoms extends JavaPlugin {
         gson = builder.create();
     }
 
+    @Getter @Setter
+    private boolean clearData = false;
+
     @Override
     public void onEnable() {
         instance = this;
 
         protocolManager = ProtocolLibrary.getProtocolManager();
         PacketListeners.registerListeners(this, protocolManager);
+
+        scheduler = new SafeScheduler(Bukkit.getScheduler(), this);
 
         var mainworld = Bukkit.getWorlds().get(0);
         MobSpawning.startSpawning(this);
@@ -72,18 +83,29 @@ public final class Kingdoms extends JavaPlugin {
 
         getCommand("update").setExecutor(new UpdateCommand());
         getCommand("test").setExecutor(new TestCommand());
+        getCommand("cleardata").setExecutor(new ClearDataCommand());
 
         setupCrafting();
         setGameRules(mainworld);
 
-//        CustomBlockData.loadAll();
-        Kingdom.getKingdomIndex().loadAll();
+        for (var manager : SaveDataManager.getDataManagers()) {
+            manager.loadAll();
+        }
     }
 
     @Override
     public void onDisable() {
-//        CustomBlockData.saveAll();
-        Kingdom.getKingdomIndex().saveAll();
+        scheduler.getScheduler().cancelTasks(this);
+
+        if (clearData) {
+            for (var manager : SaveDataManager.getDataManagers()) {
+                manager.clear();
+            }
+        }
+
+        for (var manager : SaveDataManager.getDataManagers()) {
+            manager.saveAll();
+        }
     }
 
     private void setGameRules(World world) {

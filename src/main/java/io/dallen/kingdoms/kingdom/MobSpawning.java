@@ -1,5 +1,6 @@
 package io.dallen.kingdoms.kingdom;
 
+import io.dallen.kingdoms.Kingdoms;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import net.citizensnpcs.api.CitizensAPI;
@@ -8,6 +9,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,9 +24,9 @@ public class MobSpawning {
 
     private int maxMonsters = 2;
 
-    public static void startSpawning(Plugin plugin) {
+    public static BukkitTask startSpawning(Plugin plugin) {
         var spawning = new MobSpawning(plugin);
-        Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, spawning::locateSpawns, 20, 20);
+        return Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, spawning::locateSpawns, 20, 20);
     }
 
     private void doSpawns(Kingdom kingdom, Iterator<Location> iter) {
@@ -52,7 +54,9 @@ public class MobSpawning {
     }
 
     public void locateSpawns() {
-        for (var kingdom : Kingdom.getKingdomIndex().values()) {
+        var allKingdoms = Kingdom.getKingdomIndex()
+                .values().toArray(new Kingdom[0]);
+        for (var kingdom : allKingdoms) {
             spawnAttackers(kingdom);
         }
     }
@@ -81,7 +85,8 @@ public class MobSpawning {
                 });
 
         Collections.shuffle(spawnLoc);
-        Bukkit.getScheduler().runTask(plugin, () -> doSpawns(kingdom, spawnLoc.iterator()));
+
+        Kingdoms.scheduler.runTask(() -> doSpawns(kingdom, spawnLoc.iterator()));
     }
 
     private Location trySpawn(Kingdom k, int x, int z) {

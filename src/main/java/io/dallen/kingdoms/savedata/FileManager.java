@@ -1,6 +1,5 @@
 package io.dallen.kingdoms.savedata;
 
-import io.dallen.kingdoms.Kingdoms;
 import org.bukkit.Bukkit;
 
 import java.io.IOException;

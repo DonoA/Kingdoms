@@ -11,14 +11,13 @@ import com.google.gson.JsonSerializer;
 import com.google.gson.reflect.TypeToken;
 import io.dallen.kingdoms.kingdom.Kingdom;
 import io.dallen.kingdoms.savedata.Ref;
-import io.dallen.kingdoms.savedata.SaveData;
 import io.dallen.kingdoms.savedata.SaveDataManager;
 import lombok.RequiredArgsConstructor;
 
 import java.lang.reflect.Type;
 
 @RequiredArgsConstructor
-public class RefAdapter<K, V extends SaveData<V>> implements JsonSerializer<Ref<V>>, JsonDeserializer<Ref<V>>  {
+public class RefAdapter<K, V> implements JsonSerializer<Ref<V>>, JsonDeserializer<Ref<V>>  {
 
     private final SaveDataManager<K, V> dataManager;
     private final Class<K> keyClass;
@@ -43,6 +42,6 @@ public class RefAdapter<K, V extends SaveData<V>> implements JsonSerializer<Ref<
         var jsonId = ctx.serialize(id);
         json.add("id", jsonId);
 
-        return null;
+        return json;
     }
 }

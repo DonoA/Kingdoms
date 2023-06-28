@@ -1,8 +1,8 @@
 package io.dallen.kingdoms.kingdom;
 
+import io.dallen.kingdoms.savedata.FileManager;
 import io.dallen.kingdoms.savedata.Ref;
-import io.dallen.kingdoms.savedata.SaveData;
-import io.dallen.kingdoms.savedata.kingdom.KingdomSaveData;
+import io.dallen.kingdoms.savedata.SaveDataManager;
 import io.dallen.kingdoms.util.Bounds;
 import io.dallen.kingdoms.util.OfflinePlayerUtil;
 import lombok.AllArgsConstructor;
@@ -22,14 +22,14 @@ import java.util.UUID;
 
 @Builder
 @AllArgsConstructor
-public class Kingdom implements SaveData<Kingdom> {
+public class Kingdom {
 
     public final static Material outlineMaterial = Material.OBSIDIAN;
     public final static int defaultSize = 10;
 
     @Getter
-    private final static KingdomSaveData kingdomIndex =
-            new KingdomSaveData();
+    private final static SaveDataManager<String, Kingdom> kingdomIndex =
+            new SaveDataManager<>(FileManager.KINGDOMS_SAVE_DATA, String.class);
 
     @Getter
     private final String name;
@@ -105,8 +105,7 @@ public class Kingdom implements SaveData<Kingdom> {
         return areaBounds.getBounds();
     }
 
-    @Override
     public Ref<Kingdom> asRef() {
-        return Ref.create(kingdomIndex, name);
+        return Ref.create(kingdomIndex, name, this);
     }
 }
