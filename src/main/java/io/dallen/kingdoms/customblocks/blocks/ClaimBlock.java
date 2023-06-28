@@ -1,25 +1,36 @@
 package io.dallen.kingdoms.customblocks.blocks;
 
+import io.dallen.kingdoms.Kingdoms;
 import io.dallen.kingdoms.customblocks.CustomBlock;
 import io.dallen.kingdoms.customblocks.CustomBlockData;
 import io.dallen.kingdoms.customitems.CustomItemIndex;
 import io.dallen.kingdoms.kingdom.Kingdom;
 import io.dallen.kingdoms.menus.ChestGUI;
+import io.dallen.kingdoms.savedata.Ref;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import java.util.UUID;
+
 public class ClaimBlock extends CustomBlock {
 
     @AllArgsConstructor
-    private static class ClaimBlockData extends CustomBlockData {
-        public Kingdom kingdom;
-        public Player owner;
+    public static class ClaimBlockData extends CustomBlockData {
+
+        static {
+            CustomBlockData.registerSubclass(ClaimBlockData.class);
+        }
+
+        public Ref<Kingdom> kingdom;
+        public OfflinePlayer owner;
     }
 
     public ClaimBlock(Material base) {
@@ -38,7 +49,7 @@ public class ClaimBlock extends CustomBlock {
             var newKingdom = new Kingdom(claimName, blockPlaceEvent.getBlock().getLocation(), blockPlaceEvent.getPlayer());
             Kingdom.register(newKingdom);
             newKingdom.placeBounds();
-            claimData.kingdom = newKingdom;
+            claimData.kingdom = newKingdom.asRef();
             blockPlaceEvent.getPlayer().sendMessage("Created kingdom " + newKingdom.getName());
         });
 
@@ -63,7 +74,7 @@ public class ClaimBlock extends CustomBlock {
             return;
         }
 
-        claimData.kingdom.destroy();
+        claimData.kingdom.get().destroy();
     }
 
     @Override

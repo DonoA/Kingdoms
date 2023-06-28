@@ -47,12 +47,12 @@ public class MobSpawning {
             var attackKingdomGoal = new TargetKingdomClaimGoal(kingdom, npc, 0.01f);
             npc.getDefaultGoalController().addGoal(attackKingdomGoal, 99);
 
-            kingdom.getAttackers().put(npc.getEntity().getEntityId(), npc);
+            kingdom.getAttackers().put(npc.getUniqueId(), npc);
         }
     }
 
     public void locateSpawns() {
-        for (var kingdom : Kingdom.getAllKingdoms().values()) {
+        for (var kingdom : Kingdom.getKingdomIndex().values()) {
             spawnAttackers(kingdom);
         }
     }

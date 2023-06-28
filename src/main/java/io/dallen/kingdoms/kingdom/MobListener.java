@@ -9,10 +9,10 @@ public class MobListener implements Listener {
 
     @EventHandler
     public void onEntityDeath(EntityDeathEvent e) {
-        for (var kingdom : Kingdom.getAllKingdoms().values()) {
-            var attacker = kingdom.getAttackers().get(e.getEntity().getEntityId());
+        for (var kingdom : Kingdom.getKingdomIndex().values()) {
+            var attacker = kingdom.getAttackers().get(e.getEntity().getUniqueId());
             if (attacker != null) {
-                kingdom.getAttackers().remove(e.getEntity().getEntityId());
+                kingdom.getAttackers().remove(e.getEntity().getUniqueId());
                 Bukkit.broadcastMessage("Attacker of " + kingdom.getName() + " killed");
                 return;
             }

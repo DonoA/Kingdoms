@@ -1,7 +1,6 @@
 package io.dallen.kingdoms.kingdom;
 
 import io.dallen.kingdoms.util.Bounds;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Location;

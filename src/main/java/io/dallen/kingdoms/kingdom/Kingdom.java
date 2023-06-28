@@ -1,24 +1,35 @@
 package io.dallen.kingdoms.kingdom;
 
+import io.dallen.kingdoms.savedata.Ref;
+import io.dallen.kingdoms.savedata.SaveData;
+import io.dallen.kingdoms.savedata.kingdom.KingdomSaveData;
 import io.dallen.kingdoms.util.Bounds;
+import io.dallen.kingdoms.util.OfflinePlayerUtil;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
-public class Kingdom {
+@Builder
+@AllArgsConstructor
+public class Kingdom implements SaveData<Kingdom> {
 
     public final static Material outlineMaterial = Material.OBSIDIAN;
     public final static int defaultSize = 10;
 
     @Getter
-    private static Map<String, Kingdom> allKingdoms = new HashMap<>();
+    private final static KingdomSaveData kingdomIndex =
+            new KingdomSaveData();
 
     @Getter
     private final String name;
@@ -27,15 +38,16 @@ public class Kingdom {
     private final Location claim;
 
     @Getter
-    private final Player owner;
+    private final OfflinePlayer owner;
 
-    private  List<Player> members = new ArrayList<>();
+    @Getter
+    private  List<OfflinePlayer> members = new ArrayList<>();
 
     @Getter
     private AreaBounds areaBounds;
 
     @Getter
-    private Map<Integer, NPC> attackers = new HashMap<>();
+    private Map<UUID, NPC> attackers = new HashMap<>();
 
     @Getter
     private boolean destoryed = false;
@@ -60,7 +72,7 @@ public class Kingdom {
     }
 
     public static Kingdom getOwner(Location location) {
-        for (var kingdom : allKingdoms.values()) {
+        for (var kingdom : kingdomIndex.values()) {
             if (kingdom.getAreaBounds().getBounds().contains(location.getBlockX(), location.getBlockZ())) {
                 return kingdom;
             }
@@ -70,15 +82,15 @@ public class Kingdom {
     }
 
     public static void register(Kingdom kingdom) {
-        allKingdoms.put(kingdom.getName(), kingdom);
+        kingdomIndex.put(kingdom.getName(), kingdom);
     }
 
     public void destroy() {
-        owner.sendMessage("Your kingdom has fallen!");
+        OfflinePlayerUtil.trySendMessage(owner, "Your kingdom has fallen!");
         destoryed = true;
         eraseBounds();
         attackers.values().forEach(NPC::destroy);
-        allKingdoms.remove(getName());
+        kingdomIndex.remove(getName());
     }
 
     public void placeBounds() {
@@ -91,5 +103,10 @@ public class Kingdom {
 
     public Bounds getBounds() {
         return areaBounds.getBounds();
+    }
+
+    @Override
+    public Ref<Kingdom> asRef() {
+        return Ref.create(kingdomIndex, name);
     }
 }

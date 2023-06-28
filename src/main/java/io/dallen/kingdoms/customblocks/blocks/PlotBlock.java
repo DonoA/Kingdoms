@@ -12,9 +12,9 @@ import org.bukkit.event.block.BlockPlaceEvent;
 
 public class PlotBlock extends CustomBlock {
 
-    private static class PlotData extends CustomBlockData {
-
-    }
+//    private static class PlotData extends CustomBlockData {
+//
+//    }
 
     public PlotBlock(Material baseBlock) {
         super("Plot", baseBlock);

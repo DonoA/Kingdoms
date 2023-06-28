@@ -2,18 +2,27 @@ package io.dallen.kingdoms;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import io.dallen.kingdoms.commands.TestCommand;
+import io.dallen.kingdoms.customblocks.CustomBlockData;
 import io.dallen.kingdoms.customblocks.CustomBlockIndex;
 import io.dallen.kingdoms.customblocks.CustomBlockListener;
 import io.dallen.kingdoms.customitems.CustomItemIndex;
 import io.dallen.kingdoms.customitems.CustomItemListener;
 import io.dallen.kingdoms.kingdom.CraftingListener;
+import io.dallen.kingdoms.kingdom.Kingdom;
 import io.dallen.kingdoms.kingdom.MobListener;
 import io.dallen.kingdoms.kingdom.MobSpawning;
 import io.dallen.kingdoms.menus.ChestGUI;
 import io.dallen.kingdoms.packets.PacketListeners;
 import io.dallen.kingdoms.commands.update.UpdateCommand;
 import io.dallen.kingdoms.commands.worldgen.WorldGenCommand;
+import io.dallen.kingdoms.savedata.adapters.LocationAdapter;
+import io.dallen.kingdoms.savedata.adapters.NPCAdapter;
+import io.dallen.kingdoms.savedata.adapters.OfflinePlayerAdapter;
+import io.dallen.kingdoms.savedata.adapters.PlayerAdapter;
+import io.dallen.kingdoms.savedata.adapters.RefAdapter;
 import io.dallen.kingdoms.util.ItemUtil;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Bukkit;
@@ -28,6 +37,19 @@ public final class Kingdoms extends JavaPlugin {
 
     public static Kingdoms instance;
     public static ProtocolManager protocolManager;
+    public static Gson gson;
+
+    static {
+        var builder = new GsonBuilder();
+
+        LocationAdapter.register(builder);
+        RefAdapter.register(builder);
+        OfflinePlayerAdapter.register(builder);
+        PlayerAdapter.register(builder);
+        NPCAdapter.register(builder);
+
+        gson = builder.create();
+    }
 
     @Override
     public void onEnable() {
@@ -53,6 +75,15 @@ public final class Kingdoms extends JavaPlugin {
 
         setupCrafting();
         setGameRules(mainworld);
+
+//        CustomBlockData.loadAll();
+        Kingdom.getKingdomIndex().loadAll();
+    }
+
+    @Override
+    public void onDisable() {
+//        CustomBlockData.saveAll();
+        Kingdom.getKingdomIndex().saveAll();
     }
 
     private void setGameRules(World world) {
@@ -187,8 +218,5 @@ public final class Kingdoms extends JavaPlugin {
         }
     }
 
-    @Override
-    public void onDisable() {
-        // Plugin shutdown logic
-    }
+
 }
