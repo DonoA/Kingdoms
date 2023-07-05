@@ -13,18 +13,21 @@ import io.dallen.kingdoms.customitems.CustomItemIndex;
 import io.dallen.kingdoms.customitems.CustomItemListener;
 import io.dallen.kingdoms.kingdom.CraftingListener;
 import io.dallen.kingdoms.kingdom.Kingdom;
-import io.dallen.kingdoms.kingdom.MobListener;
-import io.dallen.kingdoms.kingdom.MobSpawning;
+import io.dallen.kingdoms.kingdom.plot.Plot;
+import io.dallen.kingdoms.kingdom.mobs.MobListener;
+import io.dallen.kingdoms.kingdom.mobs.MobSpawning;
 import io.dallen.kingdoms.menus.ChestGUI;
 import io.dallen.kingdoms.packets.PacketListeners;
 import io.dallen.kingdoms.commands.update.UpdateCommand;
 import io.dallen.kingdoms.commands.worldgen.WorldGenCommand;
 import io.dallen.kingdoms.savedata.SaveDataManager;
+import io.dallen.kingdoms.savedata.adapters.SubClassAdapter;
 import io.dallen.kingdoms.savedata.adapters.LocationAdapter;
 import io.dallen.kingdoms.savedata.adapters.NPCAdapter;
 import io.dallen.kingdoms.savedata.adapters.OfflinePlayerAdapter;
 import io.dallen.kingdoms.savedata.adapters.PlayerAdapter;
 import io.dallen.kingdoms.savedata.adapters.RefAdapter;
+import io.dallen.kingdoms.savedata.adapters.WorldAdapter;
 import io.dallen.kingdoms.util.ItemUtil;
 import io.dallen.kingdoms.util.SafeScheduler;
 import lombok.Getter;
@@ -53,12 +56,20 @@ public final class Kingdoms extends JavaPlugin {
         OfflinePlayerAdapter.register(builder);
         PlayerAdapter.register(builder);
         NPCAdapter.register(builder);
+        WorldAdapter.register(builder);
+        SubClassAdapter.register(builder);
 
         gson = builder.create();
     }
 
     @Getter @Setter
     private boolean clearData = false;
+
+    private final List<SaveDataManager<?, ?>> saveDataManagers = List.of(
+            Kingdom.getKingdomIndex(),
+            Plot.getPlotIndex(),
+            CustomBlockData.getBlockData()
+    );
 
     @Override
     public void onEnable() {
@@ -88,7 +99,7 @@ public final class Kingdoms extends JavaPlugin {
         setupCrafting();
         setGameRules(mainworld);
 
-        for (var manager : SaveDataManager.getDataManagers()) {
+        for (var manager : saveDataManagers) {
             manager.loadAll();
         }
     }
@@ -98,12 +109,12 @@ public final class Kingdoms extends JavaPlugin {
         scheduler.getScheduler().cancelTasks(this);
 
         if (clearData) {
-            for (var manager : SaveDataManager.getDataManagers()) {
+            for (var manager : saveDataManagers) {
                 manager.clear();
             }
         }
 
-        for (var manager : SaveDataManager.getDataManagers()) {
+        for (var manager : saveDataManagers) {
             manager.saveAll();
         }
     }

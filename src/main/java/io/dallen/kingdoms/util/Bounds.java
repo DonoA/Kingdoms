@@ -2,12 +2,15 @@ package io.dallen.kingdoms.util;
 
 import lombok.Builder;
 import lombok.Data;
+import org.bukkit.World;
 
 import java.util.function.BiConsumer;
 
 @Builder
 @Data
 public class Bounds implements Cloneable {
+
+    private World world;
 
     private int blockX;
     private int blockY;

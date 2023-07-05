@@ -89,13 +89,6 @@ public class ChestGUI {
         return this;
     }
 
-    public ChestGUI setOption(int pos, ItemStack icon, String name, Object data, String... info) {
-        optionNames[pos] = name;
-        optionIcons[pos] = ItemUtil.setItemNameAndLore(icon, name, info);
-        optionData[pos] = data;
-        return this;
-    }
-
     public ChestGUI removeOption(int pos) {
         optionNames[pos] = null;
         optionIcons[pos] = null;

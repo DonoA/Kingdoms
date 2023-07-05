@@ -18,6 +18,7 @@ public class ChestSizingGUI {
 
     public void sendToPlayer(Player player) {
         var proposedBounds = Bounds.builder()
+                .world(blockLoc.getWorld())
                 .blockX(blockLoc.getBlockX())
                 .blockY(blockLoc.getBlockY())
                 .blockZ(blockLoc.getBlockZ())
@@ -30,7 +31,6 @@ public class ChestSizingGUI {
         var defaultSizeText = proposedBounds.getSizeX() + "x" + proposedBounds.getSizeZ();
         var gui = new ChestGUI(title + " (" + defaultSizeText + ")", 5 * 9);
         gui.setClickHandler((menuEvent) -> {
-            menuEvent.getPlayer().sendMessage("Clicked " + menuEvent.getSlot());
             switch (menuEvent.getSlot()) {
                 case 4:
                     proposedBounds.add(1, 0, 0, 0);
@@ -58,7 +58,7 @@ public class ChestSizingGUI {
                     break;
                 case 22:
                     complete.accept(proposedBounds);
-                    break;
+                    return;
             }
             var sizeText = proposedBounds.getSizeX() + "x" + proposedBounds.getSizeZ();
             gui.setOption(22, CustomItemIndex.SUBMIT.toItemStack(), sizeText);

@@ -1,6 +1,7 @@
-package io.dallen.kingdoms.kingdom;
+package io.dallen.kingdoms.kingdom.mobs;
 
 import io.dallen.kingdoms.Kingdoms;
+import io.dallen.kingdoms.kingdom.Kingdom;
 import io.dallen.kingdoms.packets.BlockBreakAnimator;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
@@ -70,7 +71,7 @@ public class TargetKingdomClaimGoal extends BehaviorGoalAdapter {
                 }
                 break;
             case TARGETING_CLAIM_BLOCK:
-                targetBlock = targetKingdom.getClaim();
+                targetBlock = targetKingdom.getBlock();
                 if (canHitBlock(targetBlock)) {
                     var broken = hitBlock(targetBlock);
                     if (broken) {
@@ -134,11 +135,11 @@ public class TargetKingdomClaimGoal extends BehaviorGoalAdapter {
 
     private void targetClaim() {
         var nav = npc.getNavigator();
-        if (nav.getTargetAsLocation() != null && targetKingdom.getClaim().equals(nav.getTargetAsLocation())) {
+        if (nav.getTargetAsLocation() != null && targetKingdom.getBlock().equals(nav.getTargetAsLocation())) {
             return;
         }
 
-        nav.setTarget(targetKingdom.getClaim());
+        nav.setTarget(targetKingdom.getBlock());
         nav.getLocalParameters().addSingleUseCallback((cancelReason) -> {
             if (cancelReason == CancelReason.STUCK) {
                 state = State.STUCK;
@@ -149,11 +150,11 @@ public class TargetKingdomClaimGoal extends BehaviorGoalAdapter {
     }
 
     private Location getObstructingBlock() {
-        if (targetKingdom.getClaim().getBlockY() < npc.getEntity().getLocation().getBlockY()) {
+        if (targetKingdom.getBlock().getBlockY() < npc.getEntity().getLocation().getBlockY()) {
             return npc.getStoredLocation().clone().add(0, -1 ,0);
         }
 
-        var targetVector = targetKingdom.getClaim().clone().subtract(npc.getEntity().getLocation());
+        var targetVector = targetKingdom.getBlock().clone().subtract(npc.getEntity().getLocation());
         var offsetX = targetVector.getBlockX() == 0 ? 0 : targetVector.getBlockX() / Math.abs(targetVector.getBlockX());
         var offsetZ = targetVector.getBlockZ() == 0 ? 0 : targetVector.getBlockZ() / Math.abs(targetVector.getBlockZ());
 

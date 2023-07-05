@@ -2,6 +2,7 @@ package io.dallen.kingdoms.customblocks;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -33,6 +34,10 @@ public class CustomBlockListener implements Listener {
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (event.getClickedBlock() == null) {
+            return;
+        }
+
+        if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
             return;
         }
 

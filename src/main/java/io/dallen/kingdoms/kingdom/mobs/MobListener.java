@@ -1,5 +1,6 @@
-package io.dallen.kingdoms.kingdom;
+package io.dallen.kingdoms.kingdom.mobs;
 
+import io.dallen.kingdoms.kingdom.Kingdom;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

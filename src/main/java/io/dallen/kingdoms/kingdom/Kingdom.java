@@ -1,12 +1,9 @@
 package io.dallen.kingdoms.kingdom;
 
 import io.dallen.kingdoms.savedata.FileManager;
-import io.dallen.kingdoms.savedata.Ref;
 import io.dallen.kingdoms.savedata.SaveDataManager;
 import io.dallen.kingdoms.util.Bounds;
 import io.dallen.kingdoms.util.OfflinePlayerUtil;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Location;
@@ -16,16 +13,16 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
-@Builder
-@AllArgsConstructor
-public class Kingdom {
+public class Kingdom extends ClaimedRegion<String, Kingdom> {
 
     public final static Material outlineMaterial = Material.OBSIDIAN;
-    public final static int defaultSize = 10;
+    public final static int defaultSize = 20;
 
     @Getter
     private final static SaveDataManager<String, Kingdom> kingdomIndex =
@@ -35,16 +32,10 @@ public class Kingdom {
     private final String name;
 
     @Getter
-    private final Location claim;
-
-    @Getter
     private final OfflinePlayer owner;
 
     @Getter
-    private  List<OfflinePlayer> members = new ArrayList<>();
-
-    @Getter
-    private AreaBounds areaBounds;
+    private Set<OfflinePlayer> members = new HashSet<>();
 
     @Getter
     private Map<UUID, NPC> attackers = new HashMap<>();
@@ -53,11 +44,15 @@ public class Kingdom {
     private boolean destoryed = false;
 
     public Kingdom(String name, Location claim, Player owner) {
+        super(defaultBounds(claim), claim);
         this.name = name;
-        this.claim = claim;
         this.owner = owner;
+        members.add(owner);
+    }
 
+    private static AreaBounds defaultBounds(Location claim) {
         var bounds = Bounds.builder()
+                .world(claim.getWorld())
                 .blockX(claim.getBlockX())
                 .blockY(claim.getBlockY())
                 .blockZ(claim.getBlockZ())
@@ -68,12 +63,12 @@ public class Kingdom {
                 .minusZ(defaultSize)
                 .build();
 
-        areaBounds = new AreaBounds(bounds, true);
+        return new AreaBounds(bounds, true);
     }
 
     public static Kingdom getOwner(Location location) {
         for (var kingdom : kingdomIndex.values()) {
-            if (kingdom.getAreaBounds().getBounds().contains(location.getBlockX(), location.getBlockZ())) {
+            if (kingdom.getBounds().contains(location.getBlockX(), location.getBlockZ())) {
                 return kingdom;
             }
         }
@@ -81,31 +76,29 @@ public class Kingdom {
         return null;
     }
 
-    public static void register(Kingdom kingdom) {
-        kingdomIndex.put(kingdom.getName(), kingdom);
-    }
-
     public void destroy() {
         OfflinePlayerUtil.trySendMessage(owner, "Your kingdom has fallen!");
         destoryed = true;
-        eraseBounds();
         attackers.values().forEach(NPC::destroy);
-        kingdomIndex.remove(getName());
+        super.destroy();
     }
 
-    public void placeBounds() {
-        areaBounds.placeBounds(claim.getWorld(), outlineMaterial);
+    @Override
+    protected Material getBorderMaterial() {
+        return outlineMaterial;
     }
 
-    public void eraseBounds() {
-        areaBounds.eraseBounds(claim.getWorld());
+    @Override
+    protected SaveDataManager<String, Kingdom> getIndex() {
+        return kingdomIndex;
     }
 
-    public Bounds getBounds() {
-        return areaBounds.getBounds();
+    @Override
+    protected String getId() {
+        return name;
     }
 
-    public Ref<Kingdom> asRef() {
-        return Ref.create(kingdomIndex, name, this);
+    public boolean isMember(OfflinePlayer player) {
+        return members.contains(player);
     }
 }

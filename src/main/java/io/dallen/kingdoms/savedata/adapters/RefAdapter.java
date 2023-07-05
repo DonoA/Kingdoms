@@ -10,11 +10,13 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.google.gson.reflect.TypeToken;
 import io.dallen.kingdoms.kingdom.Kingdom;
+import io.dallen.kingdoms.kingdom.plot.Plot;
 import io.dallen.kingdoms.savedata.Ref;
 import io.dallen.kingdoms.savedata.SaveDataManager;
 import lombok.RequiredArgsConstructor;
 
 import java.lang.reflect.Type;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 public class RefAdapter<K, V> implements JsonSerializer<Ref<V>>, JsonDeserializer<Ref<V>>  {
@@ -25,6 +27,8 @@ public class RefAdapter<K, V> implements JsonSerializer<Ref<V>>, JsonDeserialize
     public static void register(GsonBuilder builder) {
         builder.registerTypeAdapter(new TypeToken<Ref<Kingdom>>(){}.getType(),
                 new RefAdapter<>(Kingdom.getKingdomIndex(), String.class));
+        builder.registerTypeAdapter(new TypeToken<Ref<Plot>>(){}.getType(),
+                new RefAdapter<>(Plot.getPlotIndex(), UUID.class));
     }
 
     @Override

@@ -8,8 +8,6 @@ import io.dallen.kingdoms.kingdom.Kingdom;
 import io.dallen.kingdoms.menus.ChestGUI;
 import io.dallen.kingdoms.savedata.Ref;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -23,7 +21,6 @@ public class ClaimBlock extends CustomBlock {
     @AllArgsConstructor
     public static class ClaimBlockData extends CustomBlockData {
         public Ref<Kingdom> kingdom;
-        public OfflinePlayer owner;
     }
 
     public ClaimBlock(Material base) {
@@ -32,7 +29,7 @@ public class ClaimBlock extends CustomBlock {
 
     @Override
     public void onPlace(BlockPlaceEvent blockPlaceEvent) {
-        var claimData = new ClaimBlockData(null, blockPlaceEvent.getPlayer());
+        var claimData = new ClaimBlockData(null);
         CustomBlockData.setBlockData(blockPlaceEvent.getBlock().getLocation(), claimData);
 
         ChestGUI gui = new ChestGUI("Claim", InventoryType.ANVIL);
@@ -40,7 +37,7 @@ public class ClaimBlock extends CustomBlock {
             var anvilMenu = (ChestGUI.AnvilMenuInstance) menuEvent.getMenu();
             var claimName = anvilMenu.getCurrentItemName();
             var newKingdom = new Kingdom(claimName, blockPlaceEvent.getBlock().getLocation(), blockPlaceEvent.getPlayer());
-            Kingdom.register(newKingdom);
+            newKingdom.register();
             newKingdom.placeBounds();
             claimData.kingdom = newKingdom.asRef();
             blockPlaceEvent.getPlayer().sendMessage("Created kingdom " + newKingdom.getName());
@@ -76,6 +73,6 @@ public class ClaimBlock extends CustomBlock {
         if (claimData == null) {
             return;
         }
-        event.getPlayer().sendMessage("This claim is owned by " + claimData.owner);
+        event.getPlayer().sendMessage("This claim is owned by " + claimData.kingdom.get().getOwner());
     }
 }

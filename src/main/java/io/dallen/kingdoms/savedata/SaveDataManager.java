@@ -8,21 +8,15 @@ import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class SaveDataManager<K, V> extends HashMap<K, V> {
 
     protected final String saveLocation;
     protected final Class<K> keyType;
 
-    @Getter
-    private static List<SaveDataManager<?, ?>> dataManagers = new ArrayList<>();
-
     public SaveDataManager(String saveLocation, Class<K> keyType) {
         this.saveLocation = saveLocation;
         this.keyType = keyType;
-
-        dataManagers.add(this);
     }
 
     public void saveAll() {

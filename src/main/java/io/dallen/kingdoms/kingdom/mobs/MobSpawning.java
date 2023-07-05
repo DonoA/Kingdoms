@@ -1,6 +1,7 @@
-package io.dallen.kingdoms.kingdom;
+package io.dallen.kingdoms.kingdom.mobs;
 
 import io.dallen.kingdoms.Kingdoms;
+import io.dallen.kingdoms.kingdom.Kingdom;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import net.citizensnpcs.api.CitizensAPI;
@@ -30,7 +31,7 @@ public class MobSpawning {
     }
 
     private void doSpawns(Kingdom kingdom, Iterator<Location> iter) {
-        var worldTime = kingdom.getClaim().getWorld().getTime();
+        var worldTime = kingdom.getBlock().getWorld().getTime();
         if (worldTime > 0 && worldTime < 12_000) {
             return;
         }
@@ -91,14 +92,14 @@ public class MobSpawning {
 
     private Location trySpawn(Kingdom k, int x, int z) {
         for (int y = 0; y < spawnRadius; y++) {
-            var testLoc = new Location(k.getClaim().getWorld(), x, k.getClaim().getBlockY() + y, z);
+            var testLoc = new Location(k.getBlock().getWorld(), x, k.getBlock().getBlockY() + y, z);
             if (canSpawn(testLoc)) {
                 return testLoc;
             }
         }
 
         for (int y = 0; y < spawnRadius; y++) {
-            var testLoc = new Location(k.getClaim().getWorld(), x, k.getClaim().getBlockY() - y, z);
+            var testLoc = new Location(k.getBlock().getWorld(), x, k.getBlock().getBlockY() - y, z);
             if (canSpawn(testLoc)) {
                 return testLoc;
             }
