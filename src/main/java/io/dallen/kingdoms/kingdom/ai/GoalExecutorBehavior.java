@@ -9,7 +9,7 @@ public class GoalExecutorBehavior extends BehaviorGoalAdapter {
 
     private final NpcState initState;
 
-    @Setter
+    @Setter @Getter
     private NpcState currentState;
 
     @Setter

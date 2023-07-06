@@ -13,6 +13,7 @@ import io.dallen.kingdoms.customitems.CustomItemIndex;
 import io.dallen.kingdoms.customitems.CustomItemListener;
 import io.dallen.kingdoms.kingdom.CraftingListener;
 import io.dallen.kingdoms.kingdom.Kingdom;
+import io.dallen.kingdoms.kingdom.ai.GoalListener;
 import io.dallen.kingdoms.kingdom.plot.Plot;
 import io.dallen.kingdoms.kingdom.mobs.MobListener;
 import io.dallen.kingdoms.kingdom.mobs.MobSpawning;
@@ -91,6 +92,7 @@ public final class Kingdoms extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ChestGUI.ChestGUIHandler(), this);
         getServer().getPluginManager().registerEvents(new MobListener(), this);
         getServer().getPluginManager().registerEvents(new CraftingListener(), this);
+        getServer().getPluginManager().registerEvents(new GoalListener(), this);
 
         getCommand("update").setExecutor(new UpdateCommand());
         getCommand("test").setExecutor(new TestCommand());

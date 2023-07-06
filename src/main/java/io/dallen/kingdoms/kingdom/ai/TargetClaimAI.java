@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Random;
 
 @RequiredArgsConstructor
-public class TargetClaimAI {
+public class TargetClaimAI extends KingdomsAI {
 
     private static Random random = new Random();
 
@@ -25,68 +25,101 @@ public class TargetClaimAI {
     private Location lastLoc = null;
     private Location targetBlock = null;
 
+    @Override
     public GoalExecutorBehavior executor() {
-        return new GoalExecutorBehavior(this::initState);
+        return new GoalExecutorBehavior(initState);
     }
 
     // States
-    private NpcState initState(GoalExecutorBehavior executor) {
-        return this::targetClaim;
-    }
+    private final NpcState initState = new NpcState() {
+        @Override
+        public NpcState execute(GoalExecutorBehavior executor) {
+            return targetClaim;
+        }
 
-    private NpcState targetClaim(GoalExecutorBehavior executor) {
+        @Override
+        public String explain() {
+            return "Preparing to attack";
+        }
+    };
+
+    private final NpcState targetClaim = new NpcState() {
+        @Override
+        public NpcState execute(GoalExecutorBehavior executor) {
 //        if (checkStuck()) {
 //            return this::targetObstruction;
 //        }
 
-        var nav = npc.getNavigator();
-        if (nav.getTargetAsLocation() != null && targetKingdom.getBlock().equals(nav.getTargetAsLocation())) {
+            var nav = npc.getNavigator();
+            if (nav.getTargetAsLocation() != null && targetKingdom.getBlock().equals(nav.getTargetAsLocation())) {
+                return null;
+            }
+
+            nav.setTarget(targetKingdom.getBlock());
+            nav.getLocalParameters().addSingleUseCallback((cancelReason) -> {
+                if (cancelReason == CancelReason.STUCK) {
+                    executor.setCurrentState(targetObstruction);
+                } else if (cancelReason == null) { // finished
+                    executor.setCurrentState(targetClaimBlock);
+                }
+            });
             return null;
         }
 
-        nav.setTarget(targetKingdom.getBlock());
-        nav.getLocalParameters().addSingleUseCallback((cancelReason) -> {
-            if (cancelReason == CancelReason.STUCK) {
-                executor.setCurrentState(this::targetObstruction);
-            } else if (cancelReason == null) { // finished
-                executor.setCurrentState(this::targetClaimBlock);
-            }
-        });
-        return null;
-    }
+        @Override
+        public String explain() {
+            return "Targeting claim";
+        }
+    };
 
-    private NpcState targetClaimBlock(GoalExecutorBehavior executor) {
-        targetBlock = targetKingdom.getBlock();
+    private final NpcState targetClaimBlock = new NpcState() {
+        @Override
+        public NpcState execute(GoalExecutorBehavior executor) {
+            targetBlock = targetKingdom.getBlock();
 
-        if (canHitBlock(targetBlock)) {
-            var broken = hitBlock(targetBlock);
-            if (broken) {
-                targetKingdom.destroy();
-                executor.setFinished(true);
+            if (canHitBlock(targetBlock)) {
+                var broken = hitBlock(targetBlock);
+                if (broken) {
+                    targetKingdom.destroy();
+                    executor.setFinished(true);
+                }
+            } else {
+                return initState;
             }
-        } else {
-            return this::initState;
+
+            return null;
         }
 
-        return null;
-    }
-
-    private NpcState targetObstruction(GoalExecutorBehavior executor) {
-        if (targetBlock == null) {
-            targetBlock = getObstructingBlock();
+        @Override
+        public String explain() {
+            return "Attacking claim block";
         }
+    };
 
-        if (canHitBlock(targetBlock)) {
-            var broken = hitBlock(targetBlock);
-            if (broken) {
-                return this::initState;
+    private final NpcState targetObstruction = new NpcState() {
+        @Override
+        public NpcState execute(GoalExecutorBehavior executor) {
+            if (targetBlock == null) {
+                targetBlock = getObstructingBlock();
             }
-        } else {
-            return this::initState;
+
+            if (canHitBlock(targetBlock)) {
+                var broken = hitBlock(targetBlock);
+                if (broken) {
+                    return initState;
+                }
+            } else {
+                return initState;
+            }
+
+            return null;
         }
 
-        return null;
-    }
+        @Override
+        public String explain() {
+            return "Breaking obstructing block";
+        }
+    };
 
     // Helpers
     private boolean checkStuck() {

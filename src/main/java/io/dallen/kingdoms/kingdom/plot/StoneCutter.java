@@ -1,5 +1,6 @@
 package io.dallen.kingdoms.kingdom.plot;
 
+import io.dallen.kingdoms.kingdom.ai.BasicWorkerAI;
 import io.dallen.kingdoms.menus.OptionCost;
 import io.dallen.kingdoms.savedata.Ref;
 import net.citizensnpcs.api.CitizensAPI;
@@ -20,7 +21,7 @@ public class StoneCutter extends PlotController {
     }
 
     private NPC worker;
-    private BasicWorkerGoal goal;
+    private BasicWorkerAI goal;
 
     public StoneCutter(Ref<Plot> plot) {
         super(plot);
@@ -31,8 +32,8 @@ public class StoneCutter extends PlotController {
         getPlot().setFloor(floorMaterial);
         worker = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, "Stone Cutter");
 
-        goal = new BasicWorkerGoal(worker, getPlot());
-        worker.getDefaultGoalController().addGoal(goal, 99);
+        goal = new BasicWorkerAI(worker, getPlot());
+        worker.getDefaultGoalController().addGoal(goal.executor(), 99);
 
         worker.spawn(getPlot().getBlock());
         worker.setProtected(false);

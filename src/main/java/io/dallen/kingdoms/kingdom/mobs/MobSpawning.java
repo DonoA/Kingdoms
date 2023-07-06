@@ -24,7 +24,7 @@ public class MobSpawning {
 
     private int spawnRadius = 15;
 
-    private int maxMonsters = 2;
+    private int maxMonsters = 0;
 
     public static BukkitTask startSpawning(Plugin plugin) {
         var spawning = new MobSpawning(plugin);
