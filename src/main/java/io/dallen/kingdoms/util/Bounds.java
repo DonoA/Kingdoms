@@ -62,6 +62,12 @@ public class Bounds implements Cloneable {
             (z > blockZ - minusZ && z < blockZ + plusZ);
     }
 
+    public boolean contains(int x, int y, int z) {
+        return (x > blockX - minusX && x < blockX + plusX) &&
+                (z > blockZ - minusZ && z < blockZ + plusZ) &&
+                (y > blockY && y < blockY + height);
+    }
+
     @Override
     public Bounds clone() {
         try {

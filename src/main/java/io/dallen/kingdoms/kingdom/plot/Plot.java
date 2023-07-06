@@ -65,7 +65,15 @@ public class Plot extends ClaimedRegion<UUID, Plot> implements Listener {
     @Override
     public void eraseBounds() {
         setFloor(Material.DIRT);
-        super.placeBounds();
+    }
+
+    @Override
+    public void destroy() {
+        var controller = getController();
+
+        if (controller != null) {
+            controller.onDestroy();
+        }
     }
 
     public void setFloor(Material mat) {
@@ -95,7 +103,7 @@ public class Plot extends ClaimedRegion<UUID, Plot> implements Listener {
     @EventHandler
     public void onPlace(BlockPlaceEvent event) {
         var placeLoc = event.getBlockPlaced().getLocation();
-        if (!getBounds().contains(placeLoc.getBlockX(), placeLoc.getBlockZ())) {
+        if (!getBounds().contains(placeLoc.getBlockX(), placeLoc.getBlockY(), placeLoc.getBlockZ())) {
             return;
         }
 
@@ -109,7 +117,7 @@ public class Plot extends ClaimedRegion<UUID, Plot> implements Listener {
     @EventHandler
     public void onBreak(BlockBreakEvent event) {
         var placeLoc = event.getBlock().getLocation();
-        if (!getBounds().contains(placeLoc.getBlockX(), placeLoc.getBlockZ())) {
+        if (!getBounds().contains(placeLoc.getBlockX(), placeLoc.getBlockY(), placeLoc.getBlockZ())) {
             return;
         }
 

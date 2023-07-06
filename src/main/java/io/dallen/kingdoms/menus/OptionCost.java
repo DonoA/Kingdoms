@@ -56,7 +56,7 @@ public class OptionCost {
 
             if (remaining > item.getAmount()) {
                 count += item.getAmount();
-                item.setType(Material.AIR);
+                item.setAmount(0);
             } else {
                 count += remaining;
                 item.setAmount(item.getAmount() - remaining);

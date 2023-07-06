@@ -2,6 +2,7 @@ package io.dallen.kingdoms.kingdom.mobs;
 
 import io.dallen.kingdoms.Kingdoms;
 import io.dallen.kingdoms.kingdom.Kingdom;
+import io.dallen.kingdoms.kingdom.ai.TargetClaimAI;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import net.citizensnpcs.api.CitizensAPI;
@@ -47,8 +48,8 @@ public class MobSpawning {
             npc.spawn(spawnLoc);
             npc.setProtected(false);
 
-            var attackKingdomGoal = new TargetKingdomClaimGoal(kingdom, npc, 0.01f);
-            npc.getDefaultGoalController().addGoal(attackKingdomGoal, 99);
+            var attackKingdomGoal = new TargetClaimAI(kingdom, npc, 0.01f);
+            npc.getDefaultGoalController().addGoal(attackKingdomGoal.executor(), 1);
 
             kingdom.getAttackers().put(npc.getUniqueId(), npc);
         }
@@ -109,9 +110,25 @@ public class MobSpawning {
     }
 
     private boolean canSpawn(Location l) {
-        return l.getBlock().getType().isSolid() &&
+        return l.getBlock().getType().isSolid() && !spawnable(l.getBlock().getType()) &&
                 l.clone().add(0, 1, 0).getBlock().getType() == Material.AIR &&
                 l.clone().add(0, 2, 0).getBlock().getType() == Material.AIR;
+    }
+
+    private boolean spawnable(Material m) {
+        switch (m) {
+            case OAK_LEAVES:
+            case SPRUCE_LEAVES:
+            case BIRCH_LEAVES:
+            case DARK_OAK_LEAVES:
+            case MANGROVE_LEAVES:
+            case JUNGLE_LEAVES:
+            case AZALEA_LEAVES:
+            case CHERRY_LEAVES:
+                return false;
+            default:
+                return true;
+        }
     }
 
 }
