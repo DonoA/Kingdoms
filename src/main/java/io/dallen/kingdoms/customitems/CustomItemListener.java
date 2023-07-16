@@ -8,8 +8,20 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 public class CustomItemListener implements Listener {
+
+    @EventHandler
+    public void onInteract(PlayerInteractEvent event) {
+        var mat = event.getMaterial();
+        var customItem = CustomItem.usedMaterials.get(mat);
+        if (customItem == null) {
+            return;
+        }
+
+        customItem.onInteract(event);
+    }
 
     @EventHandler
     public void onInventoryOpen(InventoryOpenEvent event) {

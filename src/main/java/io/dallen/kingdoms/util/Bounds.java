@@ -27,7 +27,7 @@ public class Bounds implements Cloneable {
         forEachBorder((x, z, i) -> f.accept(x, z));
     }
 
-    public void forEachBorder(ForEachIndex f) {
+    public void forEachBorder(ForEachIndex2D f) {
         int i = 0;
         for (int x = -getMinusX(); x <= getPlusX(); x++) {
             f.accept(blockX + x, blockZ - getMinusZ(), i++);
@@ -40,11 +40,22 @@ public class Bounds implements Cloneable {
         }
     }
 
-    public void forEach(ForEachIndex f) {
+    public void forEachBase(ForEachIndex2D f) {
         int i = 0;
         for (int x = -getMinusX(); x <= getPlusX(); x++) {
             for (int z = -getMinusZ(); z <= getPlusZ(); z++) {
                 f.accept(blockX + x, blockZ + z, i++);
+            }
+        }
+    }
+
+    public void forEach(ForEachIndex3D f) {
+        int i = 0;
+        for (int x = -getMinusX(); x <= getPlusX(); x++) {
+            for (int y = 0; y < getHeight(); y++) {
+                for (int z = -getMinusZ(); z <= getPlusZ(); z++) {
+                    f.accept(blockX + x, blockY + y, blockZ + z, i++);
+                }
             }
         }
     }
@@ -65,7 +76,7 @@ public class Bounds implements Cloneable {
     public boolean contains(int x, int y, int z) {
         return (x > blockX - minusX && x < blockX + plusX) &&
                 (z > blockZ - minusZ && z < blockZ + plusZ) &&
-                (y > blockY && y < blockY + height);
+                (y >= blockY && y < blockY + height);
     }
 
     @Override
@@ -87,8 +98,12 @@ public class Bounds implements Cloneable {
         return minusZ + plusZ + 1;
     }
 
-    public interface ForEachIndex {
+    public interface ForEachIndex2D {
         void accept(int x, int z, int i);
+    }
+
+    public interface ForEachIndex3D {
+        void accept(int x, int y, int z, int i);
     }
 
 }

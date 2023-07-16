@@ -17,6 +17,7 @@ import io.dallen.kingdoms.kingdom.ai.GoalListener;
 import io.dallen.kingdoms.kingdom.plot.Plot;
 import io.dallen.kingdoms.kingdom.mobs.MobListener;
 import io.dallen.kingdoms.kingdom.mobs.MobSpawning;
+import io.dallen.kingdoms.kingdom.plot.PlotListener;
 import io.dallen.kingdoms.menus.ChestGUI;
 import io.dallen.kingdoms.packets.PacketListeners;
 import io.dallen.kingdoms.commands.update.UpdateCommand;
@@ -93,6 +94,7 @@ public final class Kingdoms extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new MobListener(), this);
         getServer().getPluginManager().registerEvents(new CraftingListener(), this);
         getServer().getPluginManager().registerEvents(new GoalListener(), this);
+        getServer().getPluginManager().registerEvents(new PlotListener(), this);
 
         getCommand("update").setExecutor(new UpdateCommand());
         getCommand("test").setExecutor(new TestCommand());
@@ -146,6 +148,16 @@ public final class Kingdoms extends JavaPlugin {
                 .btmRow("SPS")
                 .itemMap('S', Material.COBBLESTONE)
                 .itemMap('P', Material.OAK_PLANKS)
+                .build()
+                .register(this);
+
+        CraftingListener.Recipe.builder()
+                .name("config")
+                .result(CustomItemIndex.SET_CHEST_TYPE.toItemStack())
+                .topRow(" S ")
+                .midRow(" S ")
+                .btmRow(" S ")
+                .itemMap('S', Material.STICK)
                 .build()
                 .register(this);
 

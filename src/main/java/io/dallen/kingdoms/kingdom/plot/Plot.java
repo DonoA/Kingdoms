@@ -77,7 +77,7 @@ public class Plot extends ClaimedRegion<UUID, Plot> implements Listener {
     }
 
     public void setFloor(Material mat) {
-        getBounds().forEach((x, z, index) -> {
+        getBounds().forEachBase((x, z, index) -> {
             var loc = new Location(getBlock().getWorld(), x, getBlock().getBlockY() - 1, z);
             loc.getBlock().setType(mat);
         });
@@ -98,33 +98,5 @@ public class Plot extends ClaimedRegion<UUID, Plot> implements Listener {
 
         this.controller = new SubClass<>(controller);
         getController().onCreate();
-    }
-
-    @EventHandler
-    public void onPlace(BlockPlaceEvent event) {
-        var placeLoc = event.getBlockPlaced().getLocation();
-        if (!getBounds().contains(placeLoc.getBlockX(), placeLoc.getBlockY(), placeLoc.getBlockZ())) {
-            return;
-        }
-
-        if (getController() == null) {
-            return;
-        }
-
-        getController().onPlace(event);
-    }
-
-    @EventHandler
-    public void onBreak(BlockBreakEvent event) {
-        var placeLoc = event.getBlock().getLocation();
-        if (!getBounds().contains(placeLoc.getBlockX(), placeLoc.getBlockY(), placeLoc.getBlockZ())) {
-            return;
-        }
-
-        if (getController() == null) {
-            return;
-        }
-
-        getController().onBreak(event);
     }
 }

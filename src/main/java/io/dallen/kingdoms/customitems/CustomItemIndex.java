@@ -8,4 +8,8 @@ public class CustomItemIndex {
     public final static CustomItem EMPTY = new CustomMenuItem(CustomMenuItem.EMPTY, Material.ARMS_UP_POTTERY_SHERD);
     public final static CustomItem INCREASE = new CustomMenuItem(CustomMenuItem.EMPTY, Material.BLADE_POTTERY_SHERD);
     public final static CustomItem DECREASE = new CustomMenuItem(CustomMenuItem.EMPTY, Material.BREWER_POTTERY_SHERD);
+    public final static CustomItem RECYCLE = new CustomMenuItem(CustomMenuItem.EMPTY, Material.BURN_POTTERY_SHERD);
+
+    public final static CustomItem SET_CHEST_TYPE = new ChestConfigurator(Material.DANGER_POTTERY_SHERD);
+
 }

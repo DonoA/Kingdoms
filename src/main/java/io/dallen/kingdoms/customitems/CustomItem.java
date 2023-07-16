@@ -48,5 +48,5 @@ public class CustomItem {
         return ItemUtil.setItemNameAndLore(baseItem, name);
     }
 
-    void onInteract(PlayerInteractEvent event) { }
+    public void onInteract(PlayerInteractEvent event) { }
 }

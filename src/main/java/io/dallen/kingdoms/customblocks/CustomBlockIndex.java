@@ -2,16 +2,17 @@ package io.dallen.kingdoms.customblocks;
 
 import io.dallen.kingdoms.customblocks.blocks.ClaimBlock;
 import io.dallen.kingdoms.customblocks.blocks.PlotBlock;
+import io.dallen.kingdoms.customblocks.blocks.PlotChest;
 import org.bukkit.Material;
 
 public class CustomBlockIndex {
 
     public final static CustomBlock CLAIM = new ClaimBlock(Material.WHITE_GLAZED_TERRACOTTA);
     public final static CustomBlock PLOT = new PlotBlock(Material.ORANGE_GLAZED_TERRACOTTA);
+    public final static CustomBlock PLOT_CHEST = new PlotChest(Material.CHEST);
+    public final static CustomBlock PLOT_CHEST_TRAPPED = new PlotBlock(Material.TRAPPED_CHEST);
 
-    public final static CustomBlock INPUT_CHEST = new ClaimBlock(Material.MAGENTA_GLAZED_TERRACOTTA);
-    public final static CustomBlock OUTPUT_CHEST = new ClaimBlock(Material.LIGHT_BLUE_GLAZED_TERRACOTTA);
-    public final static CustomBlock BULK_STORAGE_CHEST = new ClaimBlock(Material.YELLOW_GLAZED_TERRACOTTA);
+    public final static CustomBlock BULK_STORAGE_CHEST = new ClaimBlock(Material.MAGENTA_GLAZED_TERRACOTTA);
 
 
     /**

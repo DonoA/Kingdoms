@@ -69,7 +69,7 @@ public class MobSpawning {
         kingdom.getBounds()
                 .clone()
                 .add(spawnRadius, spawnRadius, spawnRadius, spawnRadius)
-                .forEach((x, z, i) -> {
+                .forEachBase((x, z, i) -> {
                     if (kingdom.getBounds().contains(x, z)) {
                         return;
                     }

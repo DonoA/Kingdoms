@@ -142,6 +142,7 @@ public class ChestGUI {
         private String[] optionNames;
         private ItemStack[] optionIcons;
         private Inventory inventory;
+        private ChestGUI gui;
 
         public MenuInstance(ChestGUI menu, Inventory inv) {
             this.name = menu.name;
@@ -150,6 +151,7 @@ public class ChestGUI {
             this.optionIcons = menu.optionIcons;
             this.clickHandler = menu.clickHandler;
             this.closeHandler = menu.closeHandler;
+            this.gui = menu;
             this.inventory = inv;
         }
     }
