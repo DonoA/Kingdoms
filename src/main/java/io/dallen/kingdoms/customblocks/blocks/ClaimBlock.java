@@ -1,6 +1,5 @@
 package io.dallen.kingdoms.customblocks.blocks;
 
-import io.dallen.kingdoms.Kingdoms;
 import io.dallen.kingdoms.customblocks.CustomBlock;
 import io.dallen.kingdoms.customblocks.CustomBlockData;
 import io.dallen.kingdoms.customitems.CustomItemIndex;
@@ -10,7 +9,6 @@ import io.dallen.kingdoms.savedata.Ref;
 import lombok.AllArgsConstructor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryType;
@@ -69,6 +67,8 @@ public class ClaimBlock extends CustomBlock {
 
     @Override
     public void onInteract(PlayerInteractEvent event) {
+        event.setCancelled(true);
+
         var claimData = CustomBlockData.getBlockData(event.getClickedBlock().getLocation(), ClaimBlockData.class);
         if (claimData == null) {
             return;

@@ -11,10 +11,8 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -56,7 +54,8 @@ public class Kingdom extends ClaimedRegion<String, Kingdom> {
                 .blockX(claim.getBlockX())
                 .blockY(claim.getBlockY())
                 .blockZ(claim.getBlockZ())
-                .height(10)
+                .height(100)
+                .depth(50)
                 .plusX(defaultSize)
                 .minusX(defaultSize)
                 .plusZ(defaultSize)
@@ -66,9 +65,9 @@ public class Kingdom extends ClaimedRegion<String, Kingdom> {
         return new AreaBounds(bounds, true);
     }
 
-    public static Kingdom getOwner(Location location) {
+    public static Kingdom findKingdom(Location location) {
         for (var kingdom : kingdomIndex.values()) {
-            if (kingdom.getBounds().contains(location.getBlockX(), location.getBlockZ())) {
+            if (kingdom.getBounds().contains(location.getBlockX(), location.getBlockY(), location.getBlockZ())) {
                 return kingdom;
             }
         }

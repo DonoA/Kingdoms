@@ -22,6 +22,7 @@ public class Bounds implements Cloneable {
     private int minusZ;
 
     private int height;
+    private int depth;
 
     public void forEachBorder(BiConsumer<Integer, Integer> f) {
         forEachBorder((x, z, i) -> f.accept(x, z));
@@ -52,7 +53,7 @@ public class Bounds implements Cloneable {
     public void forEach(ForEachIndex3D f) {
         int i = 0;
         for (int x = -getMinusX(); x <= getPlusX(); x++) {
-            for (int y = 0; y < getHeight(); y++) {
+            for (int y = getDepth(); y < getHeight(); y++) {
                 for (int z = -getMinusZ(); z <= getPlusZ(); z++) {
                     f.accept(blockX + x, blockY + y, blockZ + z, i++);
                 }
@@ -76,7 +77,7 @@ public class Bounds implements Cloneable {
     public boolean contains(int x, int y, int z) {
         return (x > blockX - minusX && x < blockX + plusX) &&
                 (z > blockZ - minusZ && z < blockZ + plusZ) &&
-                (y >= blockY && y < blockY + height);
+                (y >= blockY - depth && y < blockY + height);
     }
 
     @Override
@@ -96,6 +97,9 @@ public class Bounds implements Cloneable {
 
     public int getSizeZ() {
         return minusZ + plusZ + 1;
+    }
+    public int getTotalHeight() {
+        return depth + height;
     }
 
     public interface ForEachIndex2D {

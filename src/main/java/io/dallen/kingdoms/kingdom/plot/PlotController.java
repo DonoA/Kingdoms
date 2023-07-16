@@ -27,6 +27,9 @@ public abstract class PlotController {
 
     public void onDestroy() { }
 
-    public abstract ChestGUI getMenu();
+    public abstract ChestGUI getPlotMenu();
 
+    public ChestGUI getCraftingMenu() {
+        return null;
+    }
 }

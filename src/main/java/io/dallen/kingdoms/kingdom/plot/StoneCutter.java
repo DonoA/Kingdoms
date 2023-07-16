@@ -1,7 +1,6 @@
 package io.dallen.kingdoms.kingdom.plot;
 
 import io.dallen.kingdoms.customblocks.CustomBlockData;
-import io.dallen.kingdoms.customblocks.CustomBlockIndex;
 import io.dallen.kingdoms.customblocks.blocks.PlotChest;
 import io.dallen.kingdoms.customitems.CustomItemIndex;
 import io.dallen.kingdoms.menus.ChestGUI;
@@ -16,17 +15,14 @@ import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Chest;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public class StoneCutter extends PlotController {
-
+public class StoneCutter extends CraftingPlotController {
 
     @RequiredArgsConstructor @Getter
     public static class PlotRequirement {
@@ -68,6 +64,15 @@ public class StoneCutter extends PlotController {
         return List.of(
             bed, inputChest, outputChest, stoneCutter
         );
+    }
+
+    private boolean canEnable() {
+        for(var req : getAllReqs()) {
+            if (!req.isCompleted()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public StoneCutter(Ref<Plot> plot) {
@@ -157,7 +162,7 @@ public class StoneCutter extends PlotController {
     }
 
     @Override
-    public ChestGUI getMenu() {
+    public ChestGUI getPlotMenu() {
         var gui = new ChestGUI("Stone Cutter", 18);
         for (int i = 0; i < getAllReqs().size(); i++) {
             var req = getAllReqs().get(i);
@@ -171,5 +176,14 @@ public class StoneCutter extends PlotController {
         gui.setOption(10, CustomItemIndex.INCREASE.toItemStack(), "Current Production");
         gui.setOption(11, CustomItemIndex.DECREASE.toItemStack(), "Current Consumption");
         return gui;
+    }
+
+    @Override
+    public ChestGUI getCraftingMenu() {
+        if (canEnable()) {
+            return new ChestGUI("Ready to craft", 9);
+        } else {
+            return new ChestGUI("Plot Not Ready", 9);
+        }
     }
 }

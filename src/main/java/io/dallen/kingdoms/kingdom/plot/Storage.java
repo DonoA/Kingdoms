@@ -10,7 +10,7 @@ public class Storage extends PlotController {
     }
 
     @Override
-    public ChestGUI getMenu() {
+    public ChestGUI getPlotMenu() {
         return null;
     }
 }

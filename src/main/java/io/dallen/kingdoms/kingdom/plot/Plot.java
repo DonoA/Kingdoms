@@ -37,6 +37,16 @@ public class Plot extends ClaimedRegion<UUID, Plot> implements Listener {
         this.kingdom = kingdom.asRef();
     }
 
+    public static Plot findPlot(Location location) {
+        for (var plot : plotIndex.values()) {
+            if (plot.getBounds().contains(location.getBlockX(), location.getBlockY(), location.getBlockZ())) {
+                return plot;
+            }
+        }
+
+        return null;
+    }
+
     @Override
     protected Material getBorderMaterial() {
         return outlineMaterial;

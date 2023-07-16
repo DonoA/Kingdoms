@@ -2,7 +2,6 @@ package io.dallen.kingdoms.customblocks.blocks;
 
 import io.dallen.kingdoms.customblocks.CustomBlock;
 import io.dallen.kingdoms.customblocks.CustomBlockData;
-import io.dallen.kingdoms.customblocks.CustomBlockIndex;
 import io.dallen.kingdoms.customitems.CustomItemIndex;
 import io.dallen.kingdoms.kingdom.Kingdom;
 import io.dallen.kingdoms.kingdom.plot.Plot;
@@ -14,7 +13,6 @@ import io.dallen.kingdoms.savedata.Ref;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -38,7 +36,7 @@ public class PlotBlock extends CustomBlock {
         CustomBlockData.setBlockData(event.getBlock().getLocation(), data);
 
         var blockLoc = event.getBlock().getLocation();
-        var kingdom = Kingdom.getOwner(blockLoc);
+        var kingdom = Kingdom.findKingdom(blockLoc);
         if (kingdom == null) {
             event.setCancelled(true);
             event.getPlayer().sendMessage("Plot must be placed within kingdom");
@@ -74,6 +72,8 @@ public class PlotBlock extends CustomBlock {
     }
 
     public void onInteract(PlayerInteractEvent event) {
+        event.setCancelled(true);
+
         var data = CustomBlockData.getBlockData(event.getClickedBlock().getLocation(), PlotData.class);
         if (data == null || data.plot == null) {
             return;
@@ -88,7 +88,7 @@ public class PlotBlock extends CustomBlock {
         if (plot.getController() == null) {
             emptyPlotAssign(plot).sendMenu(event.getPlayer());
         } else {
-            plot.getController().getMenu().sendMenu(event.getPlayer());
+            plot.getController().getPlotMenu().sendMenu(event.getPlayer());
         }
     }
 
