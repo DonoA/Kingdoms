@@ -12,6 +12,8 @@ public class PlotCrafting extends CustomBlock {
 
     @Override
     public void onInteract(PlayerInteractEvent event) {
+        event.setCancelled(true);
+
         var blockLoc = event.getClickedBlock().getLocation();
         var plot = Plot.findPlot(blockLoc);
         if (plot == null || plot.getController() == null) {
@@ -20,7 +22,7 @@ public class PlotCrafting extends CustomBlock {
 
         var craftingMenu = plot.getController().getCraftingMenu();
         if (craftingMenu != null) {
-
+            craftingMenu.sendMenu(event.getPlayer());
         }
     }
 }

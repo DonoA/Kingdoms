@@ -3,6 +3,7 @@ package io.dallen.kingdoms.customblocks;
 import io.dallen.kingdoms.customblocks.blocks.ClaimBlock;
 import io.dallen.kingdoms.customblocks.blocks.PlotBlock;
 import io.dallen.kingdoms.customblocks.blocks.PlotChest;
+import io.dallen.kingdoms.customblocks.blocks.PlotCrafting;
 import org.bukkit.Material;
 
 public class CustomBlockIndex {
@@ -11,6 +12,7 @@ public class CustomBlockIndex {
     public final static CustomBlock PLOT = new PlotBlock(Material.ORANGE_GLAZED_TERRACOTTA);
     public final static CustomBlock PLOT_CHEST = new PlotChest(Material.CHEST);
     public final static CustomBlock PLOT_CHEST_TRAPPED = new PlotChest(Material.TRAPPED_CHEST);
+    public final static CustomBlock STONE_CUTTER = new PlotCrafting("Stone Cutter", Material.STONECUTTER);
 
     public final static CustomBlock BULK_STORAGE_CHEST = new ClaimBlock(Material.MAGENTA_GLAZED_TERRACOTTA);
 

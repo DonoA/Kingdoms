@@ -1,8 +1,10 @@
 package io.dallen.kingdoms.kingdom.plot;
 
+import io.dallen.kingdoms.Kingdoms;
 import io.dallen.kingdoms.customblocks.CustomBlockData;
 import io.dallen.kingdoms.customblocks.blocks.PlotChest;
 import io.dallen.kingdoms.customitems.CustomItemIndex;
+import io.dallen.kingdoms.menus.ChestCraftingGUI;
 import io.dallen.kingdoms.menus.ChestGUI;
 import io.dallen.kingdoms.menus.OptionCost;
 import io.dallen.kingdoms.savedata.Ref;
@@ -13,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
+import org.apache.commons.lang3.tuple.Pair;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -20,7 +24,6 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 public class StoneCutter extends CraftingPlotController {
 
@@ -52,6 +55,28 @@ public class StoneCutter extends CraftingPlotController {
                 .build();
     }
 
+    private final ChestCraftingGUI crafting = ChestCraftingGUI.builder()
+            .title("Stone Cutter")
+            .item(ChestCraftingGUI.CraftingRecipe.builder()
+                    .product(Material.STONE_PICKAXE)
+                    .timeToCraft(30)
+                    .ingredient(Pair.of(Material.COBBLESTONE, 3))
+                    .ingredient(Pair.of(Material.STICK, 2))
+                    .build())
+            .item(ChestCraftingGUI.CraftingRecipe.builder()
+                    .product(Material.STONE_SHOVEL)
+                    .timeToCraft(30)
+                    .ingredient(Pair.of(Material.COBBLESTONE, 1))
+                    .ingredient(Pair.of(Material.STICK, 2))
+                    .build())
+            .item(ChestCraftingGUI.CraftingRecipe.builder()
+                    .product(Material.STONE_HOE)
+                    .timeToCraft(30)
+                    .ingredient(Pair.of(Material.COBBLESTONE, 2))
+                    .ingredient(Pair.of(Material.STICK, 2))
+                    .build())
+            .build();
+
     private NPC worker;
 //    private BasicWorkerAI goal;
 
@@ -66,17 +91,10 @@ public class StoneCutter extends CraftingPlotController {
         );
     }
 
-    private boolean canEnable() {
-        for(var req : getAllReqs()) {
-            if (!req.isCompleted()) {
-                return false;
-            }
-        }
-        return true;
-    }
 
     public StoneCutter(Ref<Plot> plot) {
         super(plot, "Stone Cutter");
+        scanPlotAsync();
     }
 
     @Override
@@ -102,38 +120,28 @@ public class StoneCutter extends CraftingPlotController {
 
     @Override
     public void onPlace(BlockPlaceEvent event) {
-        CompletableFuture.runAsync(this::scanPlot);
-        event.getPlayer().sendMessage("Scanning");
-//        var blockData = event.getBlockPlaced().getBlockData();
-//        if (blockData instanceof Bed) {
-//            goal.getBeds().add(event.getBlock().getLocation());
-//            event.getPlayer().sendMessage("Added bed to stone cutter");
-//        }
+        scanPlotAsync();
     }
 
     @Override
     public void onBreak(BlockBreakEvent event) {
-//        var blockData = event.getBlock().getBlockData();
-//        if (blockData instanceof Bed) {
-//            goal.getBeds().remove(event.getBlock().getLocation());
-//            event.getPlayer().sendMessage("Removed bed from stone cutter");
-//        }
+        scanPlotAsync();
     }
 
-    public void onBuildingUpdate() {
-
+    private void scanPlotAsync() {
+        Bukkit.getScheduler().runTaskAsynchronously(Kingdoms.instance, this::scanPlot);
     }
 
     private void scanPlot() {
         var owner = getPlot().getKingdom().getOwner();
         var plotWorld = getPlot().getBlock().getWorld();
         getAllReqs().forEach(req -> req.setRechecked(false));
-        OfflinePlayerUtil.trySendMessage(owner, "Starting plot scan");
         getPlot().getBounds().forEach(((x, y, z, i) -> {
             var blocLoc = new Location(plotWorld, x, y, z);
             var typ = blocLoc.getBlock().getType();
             checkPoi(blocLoc, typ);
         }));
+        checkEnabled();
     }
 
     private void checkPoi(Location blocLoc, Material typ) {
@@ -161,8 +169,21 @@ public class StoneCutter extends CraftingPlotController {
         }
     }
 
+    private boolean checkEnabled() {
+        for(var req : getAllReqs()) {
+            if (!req.isCompleted()) {
+                crafting.setEnabled(false);
+                return false;
+            }
+        }
+        crafting.setEnabled(true);
+        return true;
+    }
+
+
     @Override
     public ChestGUI getPlotMenu() {
+        scanPlot();
         var gui = new ChestGUI("Stone Cutter", 18);
         for (int i = 0; i < getAllReqs().size(); i++) {
             var req = getAllReqs().get(i);
@@ -180,10 +201,7 @@ public class StoneCutter extends CraftingPlotController {
 
     @Override
     public ChestGUI getCraftingMenu() {
-        if (canEnable()) {
-            return new ChestGUI("Ready to craft", 9);
-        } else {
-            return new ChestGUI("Plot Not Ready", 9);
-        }
+        checkEnabled();
+        return crafting.getMenu();
     }
 }

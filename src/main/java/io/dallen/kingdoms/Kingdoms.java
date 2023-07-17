@@ -23,6 +23,7 @@ import io.dallen.kingdoms.packets.PacketListeners;
 import io.dallen.kingdoms.commands.update.UpdateCommand;
 import io.dallen.kingdoms.commands.worldgen.WorldGenCommand;
 import io.dallen.kingdoms.savedata.SaveDataManager;
+import io.dallen.kingdoms.savedata.adapters.ApachePairAdapter;
 import io.dallen.kingdoms.savedata.adapters.SubClassAdapter;
 import io.dallen.kingdoms.savedata.adapters.LocationAdapter;
 import io.dallen.kingdoms.savedata.adapters.NPCAdapter;
@@ -60,6 +61,7 @@ public final class Kingdoms extends JavaPlugin {
         NPCAdapter.register(builder);
         WorldAdapter.register(builder);
         SubClassAdapter.register(builder);
+        ApachePairAdapter.register(builder);
 
         gson = builder.create();
     }
