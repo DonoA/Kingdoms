@@ -1,5 +1,6 @@
-package io.dallen.kingdoms.kingdom.plot;
+package io.dallen.kingdoms.kingdom.plot.controller;
 
+import io.dallen.kingdoms.kingdom.plot.Plot;
 import io.dallen.kingdoms.menus.ChestGUI;
 import io.dallen.kingdoms.savedata.Ref;
 import lombok.AllArgsConstructor;
@@ -32,4 +33,6 @@ public abstract class PlotController {
     public ChestGUI getCraftingMenu() {
         return null;
     }
+
+    public void tick() { };
 }

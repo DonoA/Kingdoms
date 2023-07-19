@@ -28,7 +28,8 @@ public class OptionCost {
             var mat = item.getType();
 
             var count = accounting.getOrDefault(mat, 0);
-            accounting.put(mat, count + item.getAmount());
+            count += item.getAmount();
+            accounting.put(mat, count);
 
             if (count >= requirements.get(mat)) {
                 accountedFor.add(mat);

@@ -1,11 +1,8 @@
-package io.dallen.kingdoms.kingdom.plot;
+package io.dallen.kingdoms.kingdom.plot.controller;
 
+import io.dallen.kingdoms.kingdom.plot.Plot;
 import io.dallen.kingdoms.menus.ChestGUI;
 import io.dallen.kingdoms.savedata.Ref;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
 
 public abstract class CraftingPlotController extends PlotController {
 

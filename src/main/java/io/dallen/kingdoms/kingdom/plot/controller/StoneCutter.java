@@ -1,27 +1,28 @@
-package io.dallen.kingdoms.kingdom.plot;
+package io.dallen.kingdoms.kingdom.plot.controller;
 
 import io.dallen.kingdoms.Kingdoms;
 import io.dallen.kingdoms.customblocks.CustomBlockData;
 import io.dallen.kingdoms.customblocks.blocks.PlotChest;
 import io.dallen.kingdoms.customitems.CustomItemIndex;
+import io.dallen.kingdoms.kingdom.plot.Plot;
+import io.dallen.kingdoms.kingdom.plot.PlotInventory;
 import io.dallen.kingdoms.menus.ChestCraftingGUI;
 import io.dallen.kingdoms.menus.ChestGUI;
 import io.dallen.kingdoms.menus.OptionCost;
 import io.dallen.kingdoms.savedata.Ref;
 import io.dallen.kingdoms.util.MaterialUtil;
-import io.dallen.kingdoms.util.OfflinePlayerUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
-import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
@@ -55,26 +56,36 @@ public class StoneCutter extends CraftingPlotController {
                 .build();
     }
 
+    private final PlotInventory inputInventory = new PlotInventory();
+    private final PlotInventory outputInventory = new PlotInventory();
+
     private final ChestCraftingGUI crafting = ChestCraftingGUI.builder()
             .title("Stone Cutter")
             .item(ChestCraftingGUI.CraftingRecipe.builder()
                     .product(Material.STONE_PICKAXE)
                     .timeToCraft(30)
-                    .ingredient(Pair.of(Material.COBBLESTONE, 3))
-                    .ingredient(Pair.of(Material.STICK, 2))
+                    .cost(OptionCost.builder()
+                            .requirement(Material.COBBLESTONE, 3)
+                            .requirement(Material.STICK, 2)
+                            .build())
                     .build())
             .item(ChestCraftingGUI.CraftingRecipe.builder()
                     .product(Material.STONE_SHOVEL)
                     .timeToCraft(30)
-                    .ingredient(Pair.of(Material.COBBLESTONE, 1))
-                    .ingredient(Pair.of(Material.STICK, 2))
+                    .cost(OptionCost.builder()
+                            .requirement(Material.COBBLESTONE, 1)
+                            .requirement(Material.STICK, 2)
+                            .build())
                     .build())
             .item(ChestCraftingGUI.CraftingRecipe.builder()
                     .product(Material.STONE_HOE)
                     .timeToCraft(30)
-                    .ingredient(Pair.of(Material.COBBLESTONE, 2))
-                    .ingredient(Pair.of(Material.STICK, 2))
+                    .cost(OptionCost.builder()
+                            .requirement(Material.COBBLESTONE, 2)
+                            .requirement(Material.STICK, 2)
+                            .build())
                     .build())
+            .plotInputs(inputInventory)
             .build();
 
     private NPC worker;
@@ -91,6 +102,7 @@ public class StoneCutter extends CraftingPlotController {
         );
     }
 
+    private long workAdded = 0;
 
     public StoneCutter(Ref<Plot> plot) {
         super(plot, "Stone Cutter");
@@ -100,7 +112,7 @@ public class StoneCutter extends CraftingPlotController {
     @Override
     public void onCreate() {
         getPlot().setFloor(floorMaterial);
-        worker = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, "Stone Cutter");
+//        worker = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, "Stone Cutter");
 
 //        goal = new BasicWorkerAI(worker, getPlot());
 //        worker.getDefaultGoalController().addGoal(goal.executor(), 99);
@@ -133,9 +145,10 @@ public class StoneCutter extends CraftingPlotController {
     }
 
     private void scanPlot() {
-        var owner = getPlot().getKingdom().getOwner();
         var plotWorld = getPlot().getBlock().getWorld();
         getAllReqs().forEach(req -> req.setRechecked(false));
+        inputInventory.getChests().clear();
+        outputInventory.getChests().clear();
         getPlot().getBounds().forEach(((x, y, z, i) -> {
             var blocLoc = new Location(plotWorld, x, y, z);
             var typ = blocLoc.getBlock().getType();
@@ -162,8 +175,10 @@ public class StoneCutter extends CraftingPlotController {
             }
 
             if (chestData.getTyp() == PlotChest.PlotChestType.INPUT) {
+                inputInventory.getChests().add(blocLoc);
                 inputChest.setPoi(blocLoc);
             } else if (chestData.getTyp() == PlotChest.PlotChestType.OUTPUT) {
+                outputInventory.getChests().add(blocLoc);
                 outputChest.setPoi(blocLoc);
             }
         }
@@ -194,7 +209,7 @@ public class StoneCutter extends CraftingPlotController {
             }
         }
         gui.setOption(9, CustomItemIndex.RECYCLE.toItemStack(), "Change plot type");
-        gui.setOption(10, CustomItemIndex.INCREASE.toItemStack(), "Current Production");
+        gui.setOption(10, CustomItemIndex.INCREASE.toItemStack(), "Current Production", "Current work done: " + workAdded);
         gui.setOption(11, CustomItemIndex.DECREASE.toItemStack(), "Current Consumption");
         return gui;
     }
@@ -203,5 +218,28 @@ public class StoneCutter extends CraftingPlotController {
     public ChestGUI getCraftingMenu() {
         checkEnabled();
         return crafting.getMenu();
+    }
+
+    @Override
+    public void tick() {
+        if (!checkEnabled()) {
+            return;
+        }
+
+        var next = crafting.getNextToBuild();
+        if (next == null) {
+            workAdded = 0;
+            return;
+        }
+
+        workAdded++;
+        if (workAdded < next.getTimeToCraft()) {
+            return;
+        }
+
+        crafting.removeNextToBuild(next.getProduct());
+        next.getCost().purchase(inputInventory);
+        outputInventory.addItem(new ItemStack(next.getProduct()));
+        workAdded = 0;
     }
 }

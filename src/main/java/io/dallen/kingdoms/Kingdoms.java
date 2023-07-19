@@ -86,6 +86,7 @@ public final class Kingdoms extends JavaPlugin {
 
         var mainworld = Bukkit.getWorlds().get(0);
         MobSpawning.startSpawning(this);
+        Plot.startTicking(this);
 
         var worldGen = new WorldGenCommand(mainworld);
         getCommand("genworld").setExecutor(worldGen);

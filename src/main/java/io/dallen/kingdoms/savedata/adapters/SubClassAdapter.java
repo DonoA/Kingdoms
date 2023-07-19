@@ -8,9 +8,10 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.google.gson.reflect.TypeToken;
-import io.dallen.kingdoms.kingdom.plot.PlotController;
+import io.dallen.kingdoms.kingdom.plot.controller.PlotController;
 import io.dallen.kingdoms.savedata.SubClass;
 import lombok.SneakyThrows;
+import org.bukkit.inventory.Inventory;
 
 import java.lang.reflect.Type;
 
@@ -18,6 +19,8 @@ public class SubClassAdapter<T> implements JsonSerializer<SubClass<T>>, JsonDese
 
     public static void register(GsonBuilder builder) {
         builder.registerTypeAdapter(new TypeToken<SubClass<PlotController>>(){}.getType(),
+                new SubClassAdapter<>());
+        builder.registerTypeAdapter(new TypeToken<SubClass<Inventory>>(){}.getType(),
                 new SubClassAdapter<>());
     }
 

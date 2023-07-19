@@ -63,6 +63,11 @@ public class PlotListener implements Listener {
             return;
         }
 
+        var invTitle = e.getView().getTitle();
+        if ("Input Chest".equals(invTitle) || "Output Chest".equals(invTitle)) {
+            return;
+        }
+
         if (chestData.getTyp() == PlotChest.PlotChestType.INPUT) {
             e.setCancelled(true);
             e.getView().setTitle("Input Chest");
