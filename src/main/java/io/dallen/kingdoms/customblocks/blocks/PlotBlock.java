@@ -116,7 +116,7 @@ public class PlotBlock extends CustomBlock {
             case STONE_PICKAXE:
                 var stoneCost = StoneCutter.getCost(plot);
                 if (!stoneCost.canPurchase(player.getInventory())) {
-                    clickEvent.setNext(clickEvent.getMenu().getGui());
+                    clickEvent.setNext(clickEvent.getMenu().getMenu());
                     player.sendMessage("Too expensive!");
                 } else {
                     stoneCost.purchase(player.getInventory());

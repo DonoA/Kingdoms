@@ -1,5 +1,6 @@
 package io.dallen.kingdoms.menus;
 
+import com.google.gson.annotations.Expose;
 import io.dallen.kingdoms.customitems.CustomItemIndex;
 import io.dallen.kingdoms.kingdom.plot.PlotInventory;
 import io.dallen.kingdoms.savedata.SubClass;
@@ -8,16 +9,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.Setter;
 import lombok.Singular;
-import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 
 public class ChestCraftingGUI {
 
@@ -32,26 +32,30 @@ public class ChestCraftingGUI {
     private final String title;
     private final List<CraftingRecipe> items;
     private final Map<Material, Integer> itemOrder;
-    private final SubClass<Inventory> plotInputs;
+    private final PlotInventory plotInputs;
 
     private final int[] currentCrafting = new int[9];
     @Setter
     private boolean enabled = false;
 
+    @Expose(serialize = false, deserialize = false)
+    private ChestGUI menu = null;
+
     @Builder
-    public ChestCraftingGUI(String title, @Singular List<CraftingRecipe> items, Inventory plotInputs) {
+    public ChestCraftingGUI(String title, @Singular List<CraftingRecipe> items, PlotInventory plotInputs) {
         this.title = title;
         this.items = items;
         this.itemOrder = new HashMap<>();
         for (int i = 0; i < items.size(); i++) {
             itemOrder.put(items.get(i).getProduct(), i);
         }
-        this.plotInputs = new SubClass<>(plotInputs);
+        this.plotInputs = plotInputs;
+
     }
 
-    public ChestGUI getMenu() {
-        var enabledText = enabled ? "Enabled" : "Disabled";
-        var gui = new ChestGUI(title + " (" + enabledText + ")", 9*4);
+    public ItemStack[] getItems() {
+        var menuItems = new ItemStack[9 * 5];
+
         for (int i = 0; i < items.size(); i++) {
             var item = items.get(i);
             var currentlyCrafting = currentCrafting[i];
@@ -73,30 +77,45 @@ public class ChestCraftingGUI {
                         CustomItemIndex.DECREASE.toMaterial(),
                         "Craft " + item.getProduct().name() + " --",
                         lore);
-                gui.setOption(i, increase);
-                gui.setOption(18 + i, decrease);
+                menuItems[i] = increase;
+                menuItems[18 + i] = decrease;
 
-                if (item.getCost().canPurchase(plotInputs.getValue())) {
+                if (item.getCost().canPurchase(plotInputs)) {
                     var canCraft = ItemUtil.setItemNameAndLore(
                             CustomItemIndex.SUBMIT.toMaterial(),
                             "Materials Available");
-                    gui.setOption(27 + i, canCraft);
+                    menuItems[27 + i] = canCraft;
                 } else {
                     var canCraft = ItemUtil.setItemNameAndLore(
                             CustomItemIndex.CANCEL.toMaterial(),
                             "Missing required materials");
-                    gui.setOption(27 + i, canCraft);
+                    menuItems[27 + i] = canCraft;
                 }
 
             } else {
-                gui.setOption(i, CustomItemIndex.CANCEL.toItemStack());
-                gui.setOption(18 + i, CustomItemIndex.CANCEL.toItemStack());
+                menuItems[i] = CustomItemIndex.CANCEL.toItemStack();
+                menuItems[18 + i] = CustomItemIndex.CANCEL.toItemStack();
             }
-            gui.setOption(9 + i, icon);
+            menuItems[9 + i] = icon;
         }
 
-        gui.setClickHandler(this::handleClick);
-        return gui;
+        return menuItems;
+    }
+
+    public ChestGUI getMenuAndRefresh() {
+        if (menu == null) {
+            this.menu = new ChestGUI(title, 9*5);
+            this.menu.setClickHandler(this::handleClick);
+        }
+        refresh();
+        return menu;
+    }
+
+    private void refresh() {
+        var enabledText = enabled ? "Enabled" : "Disabled";
+        menu.setName(title + " (" + enabledText + ")");
+        menu.setOptions(getItems());
+        menu.refreshAllViewers();
     }
 
     public void handleClick(ChestGUI.OptionClickEvent event) {
@@ -116,7 +135,7 @@ public class ChestCraftingGUI {
             }
         }
 
-        event.setNext(getMenu());
+        event.setNext(getMenuAndRefresh());
     }
 
     public CraftingRecipe getNextToBuild() {
@@ -126,7 +145,7 @@ public class ChestCraftingGUI {
             }
 
             var item = items.get(i);
-            if (item.getCost().canPurchase(plotInputs.getValue())) {
+            if (item.getCost().canPurchase(plotInputs)) {
                 return items.get(i);
             }
         }

@@ -1,5 +1,6 @@
 package io.dallen.kingdoms.kingdom.plot.controller;
 
+import com.google.gson.annotations.Expose;
 import io.dallen.kingdoms.Kingdoms;
 import io.dallen.kingdoms.customblocks.CustomBlockData;
 import io.dallen.kingdoms.customblocks.blocks.PlotChest;
@@ -14,12 +15,10 @@ import io.dallen.kingdoms.util.MaterialUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.EntityType;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
@@ -87,6 +86,9 @@ public class StoneCutter extends CraftingPlotController {
                     .build())
             .plotInputs(inputInventory)
             .build();
+
+    @Expose(serialize = false, deserialize = false)
+    private ChestGUI controllerMenu = null;
 
     private NPC worker;
 //    private BasicWorkerAI goal;
@@ -199,25 +201,32 @@ public class StoneCutter extends CraftingPlotController {
     @Override
     public ChestGUI getPlotMenu() {
         scanPlot();
-        var gui = new ChestGUI("Stone Cutter", 18);
+        if (controllerMenu == null) {
+            controllerMenu = new ChestGUI("Stone Cutter", 18);
+        }
+        refreshControllerMenu();
+        return controllerMenu;
+    }
+
+    private void refreshControllerMenu() {
         for (int i = 0; i < getAllReqs().size(); i++) {
             var req = getAllReqs().get(i);
             if (req.isCompleted()) {
-                gui.setOption(i, CustomItemIndex.SUBMIT.toItemStack(), req.getName(), "Completed!");
+                controllerMenu.setOption(i, CustomItemIndex.SUBMIT.toItemStack(), req.getName(), "Completed!");
             } else {
-                gui.setOption(i, CustomItemIndex.CANCEL.toItemStack(), req.getName(), "Incomplete!");
+                controllerMenu.setOption(i, CustomItemIndex.CANCEL.toItemStack(), req.getName(), "Incomplete!");
             }
         }
-        gui.setOption(9, CustomItemIndex.RECYCLE.toItemStack(), "Change plot type");
-        gui.setOption(10, CustomItemIndex.INCREASE.toItemStack(), "Current Production", "Current work done: " + workAdded);
-        gui.setOption(11, CustomItemIndex.DECREASE.toItemStack(), "Current Consumption");
-        return gui;
+        controllerMenu.setOption(9, CustomItemIndex.RECYCLE.toItemStack(), "Change plot type");
+        controllerMenu.setOption(10, CustomItemIndex.INCREASE.toItemStack(), "Current Production", "Current work done: " + workAdded);
+        controllerMenu.setOption(11, CustomItemIndex.DECREASE.toItemStack(), "Current Consumption");
+        controllerMenu.refreshAllViewers();
     }
 
     @Override
     public ChestGUI getCraftingMenu() {
         checkEnabled();
-        return crafting.getMenu();
+        return crafting.getMenuAndRefresh();
     }
 
     @Override
@@ -226,6 +235,12 @@ public class StoneCutter extends CraftingPlotController {
             return;
         }
 
+        tickCrafting();
+        crafting.getMenuAndRefresh();
+        refreshControllerMenu();
+    }
+
+    private void tickCrafting() {
         var next = crafting.getNextToBuild();
         if (next == null) {
             workAdded = 0;

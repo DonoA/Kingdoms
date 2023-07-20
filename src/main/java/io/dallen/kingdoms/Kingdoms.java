@@ -22,6 +22,7 @@ import io.dallen.kingdoms.menus.ChestGUI;
 import io.dallen.kingdoms.packets.PacketListeners;
 import io.dallen.kingdoms.commands.update.UpdateCommand;
 import io.dallen.kingdoms.commands.worldgen.WorldGenCommand;
+import io.dallen.kingdoms.savedata.ExposeExclusionStrategy;
 import io.dallen.kingdoms.savedata.SaveDataManager;
 import io.dallen.kingdoms.savedata.adapters.ApachePairAdapter;
 import io.dallen.kingdoms.savedata.adapters.SubClassAdapter;
@@ -53,6 +54,9 @@ public final class Kingdoms extends JavaPlugin {
 
     static {
         var builder = new GsonBuilder();
+
+        builder.addSerializationExclusionStrategy(new ExposeExclusionStrategy.Serialize());
+        builder.addDeserializationExclusionStrategy(new ExposeExclusionStrategy.Deserialize());
 
         LocationAdapter.register(builder);
         RefAdapter.register(builder);
