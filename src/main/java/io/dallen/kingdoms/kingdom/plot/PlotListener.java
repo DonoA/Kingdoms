@@ -10,39 +10,47 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 public class PlotListener implements Listener {
 
     @EventHandler
     public void onPlace(BlockPlaceEvent event) {
         var placeLoc = event.getBlockPlaced().getLocation();
-        for (var plot :  Plot.getPlotIndex().values()) {
-            if (!plot.getBounds().contains(placeLoc.getBlockX(), placeLoc.getBlockY(), placeLoc.getBlockZ())) {
-                return;
-            }
+        var plot = Plot.findPlot(placeLoc);
 
-            if (plot.getController() == null) {
-                return;
-            }
-
-            plot.getController().onPlace(event);
+        if (plot == null || plot.getController() == null) {
+            return;
         }
+
+        plot.getController().onPlace(event);
     }
 
     @EventHandler
     public void onBreak(BlockBreakEvent event) {
         var placeLoc = event.getBlock().getLocation();
-        for (var plot :  Plot.getPlotIndex().values()) {
-            if (!plot.getBounds().contains(placeLoc.getBlockX(), placeLoc.getBlockY(), placeLoc.getBlockZ())) {
-                return;
-            }
+        var plot = Plot.findPlot(placeLoc);
 
-            if (plot.getController() == null) {
-                return;
-            }
-
-            plot.getController().onBreak(event);
+        if (plot == null || plot.getController() == null) {
+            return;
         }
+
+        plot.getController().onBreak(event);
+    }
+
+    @EventHandler
+    public void onInteract(PlayerInteractEvent event) {
+        var clicked = event.getClickedBlock();
+        if (clicked == null) {
+            return;
+        }
+
+        var plot = Plot.findPlot(clicked.getLocation());
+        if (plot == null || plot.getController() == null) {
+            return;
+        }
+
+        plot.getController().onInteract(event);
     }
 
     @EventHandler

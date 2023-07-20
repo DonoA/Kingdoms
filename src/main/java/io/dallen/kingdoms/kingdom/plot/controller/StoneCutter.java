@@ -13,10 +13,7 @@ import io.dallen.kingdoms.menus.OptionCost;
 import io.dallen.kingdoms.savedata.Ref;
 import io.dallen.kingdoms.util.Lazy;
 import io.dallen.kingdoms.util.MaterialUtil;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -29,36 +26,6 @@ import java.util.List;
 
 @NoArgsConstructor
 public class StoneCutter extends CraftingPlotController {
-
-    @RequiredArgsConstructor @Getter
-    public static class PlotRequirement {
-        private final String name;
-
-        private boolean completed = false;
-        private Location poi = null;
-
-        @Setter
-        private boolean rechecked = false;
-
-        public void setPoi(Location newPoi) {
-            if (newPoi == null) {
-                completed = false;
-            } else {
-                rechecked = true;
-                completed = true;
-            }
-            poi = newPoi;
-        }
-
-        public void ensureRechecked() {
-            if (rechecked) {
-                return;
-            }
-
-            completed = false;
-            poi = null;
-        }
-    }
 
     private final static Material floorMaterial = Material.COBBLESTONE;
     public static OptionCost getCost(Plot plot) {
@@ -220,15 +187,8 @@ public class StoneCutter extends CraftingPlotController {
     }
 
     private void refreshControllerMenu() {
-        for (int i = 0; i < getAllReqs().size(); i++) {
-            var req = getAllReqs().get(i);
-            if (req.isCompleted()) {
-                controllerMenu.get().setOption(i, CustomItemIndex.SUBMIT.toItemStack(), req.getName(), "Completed!");
-            } else {
-                controllerMenu.get().setOption(i, CustomItemIndex.CANCEL.toItemStack(), req.getName(), "Incomplete!");
-            }
-        }
-        controllerMenu.get().setOption(9, CustomItemIndex.RECYCLE.toItemStack(), "Change plot type");
+        PlotRequirement.updateWithReqs(controllerMenu.get(), getAllReqs());
+
         controllerMenu.get().setOption(10, CustomItemIndex.INCREASE.toItemStack(), "Current Production", "Current work done: " + workAdded);
         controllerMenu.get().setOption(11, CustomItemIndex.DECREASE.toItemStack(), "Current Consumption");
         controllerMenu.get().refreshAllViewers();

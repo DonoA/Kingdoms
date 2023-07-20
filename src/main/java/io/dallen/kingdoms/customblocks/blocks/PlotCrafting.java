@@ -2,6 +2,7 @@ package io.dallen.kingdoms.customblocks.blocks;
 
 import io.dallen.kingdoms.customblocks.CustomBlock;
 import io.dallen.kingdoms.kingdom.plot.Plot;
+import io.dallen.kingdoms.kingdom.plot.controller.CraftingPlotController;
 import org.bukkit.Material;
 import org.bukkit.event.player.PlayerInteractEvent;
 
@@ -20,9 +21,9 @@ public class PlotCrafting extends CustomBlock {
             return;
         }
 
-        var craftingMenu = plot.getController().getCraftingMenu();
-        if (craftingMenu != null) {
-            craftingMenu.sendMenu(event.getPlayer());
+        var controller = plot.getController();
+        if (controller instanceof CraftingPlotController) {
+            ((CraftingPlotController) controller).getCraftingMenu().sendMenu(event.getPlayer());
         }
     }
 }

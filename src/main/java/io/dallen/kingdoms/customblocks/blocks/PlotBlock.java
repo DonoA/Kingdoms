@@ -94,15 +94,17 @@ public class PlotBlock extends CustomBlock {
 
 
     public static ChestGUI emptyPlotAssign(Plot plot) {
-        var stoneCost = StoneCutter.getCost(plot);
+        var stoneCutterCost = StoneCutter.getCost(plot);
+        var storageCost = Storage.getCost(plot);
 
         var guiName = "Plot";
         if (plot.getController() != null) {
             guiName = "Plot (" + plot.getController().getName() + ")";
         }
         var gui = new ChestGUI(guiName, 9);
-        gui.setOption(0, new ItemStack(Material.STONE_PICKAXE), "Stone Worker", stoneCost.requirements());
-        gui.setOption(1, new ItemStack(Material.BARREL), "Storage");
+        gui.setOption(0, new ItemStack(Material.STONE_PICKAXE), "Stone Worker", stoneCutterCost.requirements());
+        gui.setOption(1, new ItemStack(Material.WHEAT), "Farm");
+        gui.setOption(2, new ItemStack(Material.BARREL), "Storage", storageCost.requirements());
         if (plot.getController() != null) {
             gui.setOption(8, CustomItemIndex.CANCEL.toItemStack(), "Clear Plot");
         }

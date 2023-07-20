@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -32,9 +33,7 @@ public abstract class PlotController {
 
     public abstract ChestGUI getPlotMenu();
 
-    public ChestGUI getCraftingMenu() {
-        return null;
-    }
-
     public void tick() { };
+
+    public void onInteract(PlayerInteractEvent event) { }
 }

@@ -2,6 +2,8 @@ package io.dallen.kingdoms.customblocks.blocks;
 
 import io.dallen.kingdoms.customblocks.CustomBlock;
 import io.dallen.kingdoms.customblocks.CustomBlockData;
+import io.dallen.kingdoms.kingdom.plot.Plot;
+import io.dallen.kingdoms.savedata.Ref;
 import lombok.Data;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -9,6 +11,7 @@ import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 public class PlotChest extends CustomBlock {
 
