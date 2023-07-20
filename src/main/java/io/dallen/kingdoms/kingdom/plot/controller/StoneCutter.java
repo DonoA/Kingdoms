@@ -11,8 +11,10 @@ import io.dallen.kingdoms.menus.ChestCraftingGUI;
 import io.dallen.kingdoms.menus.ChestGUI;
 import io.dallen.kingdoms.menus.OptionCost;
 import io.dallen.kingdoms.savedata.Ref;
+import io.dallen.kingdoms.util.Lazy;
 import io.dallen.kingdoms.util.MaterialUtil;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import net.citizensnpcs.api.npc.NPC;
@@ -25,6 +27,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
+@NoArgsConstructor
 public class StoneCutter extends CraftingPlotController {
 
     @RequiredArgsConstructor @Getter
@@ -45,6 +48,15 @@ public class StoneCutter extends CraftingPlotController {
                 completed = true;
             }
             poi = newPoi;
+        }
+
+        public void ensureRechecked() {
+            if (rechecked) {
+                return;
+            }
+
+            completed = false;
+            poi = null;
         }
     }
 
@@ -88,7 +100,8 @@ public class StoneCutter extends CraftingPlotController {
             .build();
 
     @Expose(serialize = false, deserialize = false)
-    private ChestGUI controllerMenu = null;
+    private final Lazy<ChestGUI> controllerMenu = new Lazy<>(() ->
+        new ChestGUI("Stone Cutter", 18));
 
     private NPC worker;
 //    private BasicWorkerAI goal;
@@ -156,6 +169,7 @@ public class StoneCutter extends CraftingPlotController {
             var typ = blocLoc.getBlock().getType();
             checkPoi(blocLoc, typ);
         }));
+        getAllReqs().forEach(PlotRequirement::ensureRechecked);
         checkEnabled();
     }
 
@@ -201,26 +215,23 @@ public class StoneCutter extends CraftingPlotController {
     @Override
     public ChestGUI getPlotMenu() {
         scanPlot();
-        if (controllerMenu == null) {
-            controllerMenu = new ChestGUI("Stone Cutter", 18);
-        }
         refreshControllerMenu();
-        return controllerMenu;
+        return controllerMenu.get();
     }
 
     private void refreshControllerMenu() {
         for (int i = 0; i < getAllReqs().size(); i++) {
             var req = getAllReqs().get(i);
             if (req.isCompleted()) {
-                controllerMenu.setOption(i, CustomItemIndex.SUBMIT.toItemStack(), req.getName(), "Completed!");
+                controllerMenu.get().setOption(i, CustomItemIndex.SUBMIT.toItemStack(), req.getName(), "Completed!");
             } else {
-                controllerMenu.setOption(i, CustomItemIndex.CANCEL.toItemStack(), req.getName(), "Incomplete!");
+                controllerMenu.get().setOption(i, CustomItemIndex.CANCEL.toItemStack(), req.getName(), "Incomplete!");
             }
         }
-        controllerMenu.setOption(9, CustomItemIndex.RECYCLE.toItemStack(), "Change plot type");
-        controllerMenu.setOption(10, CustomItemIndex.INCREASE.toItemStack(), "Current Production", "Current work done: " + workAdded);
-        controllerMenu.setOption(11, CustomItemIndex.DECREASE.toItemStack(), "Current Consumption");
-        controllerMenu.refreshAllViewers();
+        controllerMenu.get().setOption(9, CustomItemIndex.RECYCLE.toItemStack(), "Change plot type");
+        controllerMenu.get().setOption(10, CustomItemIndex.INCREASE.toItemStack(), "Current Production", "Current work done: " + workAdded);
+        controllerMenu.get().setOption(11, CustomItemIndex.DECREASE.toItemStack(), "Current Consumption");
+        controllerMenu.get().refreshAllViewers();
     }
 
     @Override
@@ -236,7 +247,7 @@ public class StoneCutter extends CraftingPlotController {
         }
 
         tickCrafting();
-        crafting.getMenuAndRefresh();
+        crafting.refresh();
         refreshControllerMenu();
     }
 

@@ -5,8 +5,11 @@ import io.dallen.kingdoms.customitems.CustomItemIndex;
 import io.dallen.kingdoms.kingdom.plot.PlotInventory;
 import io.dallen.kingdoms.savedata.SubClass;
 import io.dallen.kingdoms.util.ItemUtil;
+import io.dallen.kingdoms.util.Lazy;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.Singular;
 import org.bukkit.Material;
@@ -19,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@NoArgsConstructor
 public class ChestCraftingGUI {
 
     @Data
@@ -29,17 +33,22 @@ public class ChestCraftingGUI {
         private final long timeToCraft;
     }
 
-    private final String title;
-    private final List<CraftingRecipe> items;
-    private final Map<Material, Integer> itemOrder;
-    private final PlotInventory plotInputs;
+    @Getter
+    private String title;
+    private List<CraftingRecipe> items;
+    private Map<Material, Integer> itemOrder;
+    private PlotInventory plotInputs;
 
     private final int[] currentCrafting = new int[9];
     @Setter
     private boolean enabled = false;
 
     @Expose(serialize = false, deserialize = false)
-    private ChestGUI menu = null;
+    private final Lazy<ChestGUI> menu = new Lazy<>(() -> {
+        var gui = new ChestGUI(getTitle(), 9*5);
+        gui.setClickHandler(this::handleClick);
+        return gui;
+    });
 
     @Builder
     public ChestCraftingGUI(String title, @Singular List<CraftingRecipe> items, PlotInventory plotInputs) {
@@ -50,7 +59,6 @@ public class ChestCraftingGUI {
             itemOrder.put(items.get(i).getProduct(), i);
         }
         this.plotInputs = plotInputs;
-
     }
 
     public ItemStack[] getItems() {
@@ -103,19 +111,15 @@ public class ChestCraftingGUI {
     }
 
     public ChestGUI getMenuAndRefresh() {
-        if (menu == null) {
-            this.menu = new ChestGUI(title, 9*5);
-            this.menu.setClickHandler(this::handleClick);
-        }
         refresh();
-        return menu;
+        return menu.get();
     }
 
-    private void refresh() {
+    public void refresh() {
         var enabledText = enabled ? "Enabled" : "Disabled";
-        menu.setName(title + " (" + enabledText + ")");
-        menu.setOptions(getItems());
-        menu.refreshAllViewers();
+        menu.get().setName(title + " (" + enabledText + ")");
+        menu.get().setOptions(getItems());
+        menu.get().refreshAllViewers();
     }
 
     public void handleClick(ChestGUI.OptionClickEvent event) {

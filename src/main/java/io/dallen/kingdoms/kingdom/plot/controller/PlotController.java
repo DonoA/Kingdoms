@@ -5,16 +5,18 @@ import io.dallen.kingdoms.menus.ChestGUI;
 import io.dallen.kingdoms.savedata.Ref;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
 @AllArgsConstructor
+@NoArgsConstructor
 public abstract class PlotController {
 
     protected Ref<Plot> plot;
 
     @Getter
-    private final String name;
+    private String name;
 
     public Plot getPlot() {
         return plot.get();
