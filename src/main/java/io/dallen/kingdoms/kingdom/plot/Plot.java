@@ -110,8 +110,12 @@ public class Plot extends ClaimedRegion<UUID, Plot> implements Listener {
             getController().onDestroy();
         }
 
-        this.controller = new SubClass<>(controller);
-        getController().onCreate();
+        if (controller == null) {
+            this.controller = null;
+        } else {
+            this.controller = new SubClass<>(controller);
+            getController().onCreate();
+        }
     }
 
     public static BukkitTask startTicking(Plugin plugin) {

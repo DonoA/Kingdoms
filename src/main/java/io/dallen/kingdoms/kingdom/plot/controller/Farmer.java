@@ -1,15 +1,166 @@
 package io.dallen.kingdoms.kingdom.plot.controller;
 
+import com.google.gson.annotations.Expose;
+import io.dallen.kingdoms.Kingdoms;
+import io.dallen.kingdoms.customblocks.CustomBlockData;
+import io.dallen.kingdoms.customblocks.blocks.PlotChest;
+import io.dallen.kingdoms.customitems.CustomItemIndex;
+import io.dallen.kingdoms.kingdom.plot.Plot;
+import io.dallen.kingdoms.kingdom.plot.PlotInventory;
 import io.dallen.kingdoms.menus.ChestGUI;
+import io.dallen.kingdoms.savedata.Ref;
+import io.dallen.kingdoms.util.Lazy;
+import io.dallen.kingdoms.util.MaterialUtil;
 import lombok.NoArgsConstructor;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.data.Ageable;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
+
+import java.util.List;
+import java.util.Set;
 
 @NoArgsConstructor
 public class Farmer extends PlotController {
 
+    private static final Set<Material> hoes = Set.of(
+            Material.WOODEN_HOE, Material.STONE_HOE, Material.GOLDEN_HOE,
+            Material.DIAMOND_HOE, Material.NETHERITE_HOE
+    );
 
+    private final PlotInventory inputInventory = new PlotInventory();
+    private final PlotInventory outputInventory = new PlotInventory();
+
+    private final PlotRequirement bed = new PlotRequirement("Bed");
+    private final PlotRequirement inputChest = new PlotRequirement("Input Chest");
+    private final PlotRequirement outputChest = new PlotRequirement("Output Chest");
+
+    public List<PlotRequirement> getAllReqs() {
+        return List.of(
+                bed, inputChest, outputChest
+        );
+    }
+
+    @Override
+    public List<PlotInventory> getAllPlotInventories() {
+        return List.of(
+                inputInventory, outputInventory
+        );
+    }
+
+    @Expose(serialize = false, deserialize = false)
+    private final Lazy<BasicPlotGUI> controllerMenu = new Lazy<>(() ->
+            new BasicPlotGUI("Farmer", plot));
+
+    public Farmer(Ref<Plot> plot) {
+        super(plot, "Farmer");
+    }
+
+    @Override
+    public void onCreate() {
+        getPlot().setFloor(Material.DIRT);
+    }
+
+    @Override
+    public void onDestroy() {
+        getPlot().setFloor(Material.DIRT);
+    }
+
+    @Override
+    public void onPlace(BlockPlaceEvent event) {
+        super.scanPlotAsync();
+    }
+
+    @Override
+    public void onBreak(BlockBreakEvent event) {
+        scanPlotAsync();
+    }
+
+    @Override
+    protected void scanBlock(Location blocLoc, Material typ) {
+        if (MaterialUtil.isBed(typ)) {
+            bed.setPoi(blocLoc);
+            return;
+        }
+
+        if (Material.CHEST.equals(typ)) {
+            var chestData = CustomBlockData.getBlockData(blocLoc, PlotChest.ChestMetadata.class);
+            if (chestData == null) {
+                return;
+            }
+
+            if (chestData.getTyp() == PlotChest.PlotChestType.INPUT) {
+                inputInventory.getChests().add(blocLoc);
+                inputChest.setPoi(blocLoc);
+            } else if (chestData.getTyp() == PlotChest.PlotChestType.OUTPUT) {
+                outputInventory.getChests().add(blocLoc);
+                outputChest.setPoi(blocLoc);
+            }
+        }
+    }
 
     @Override
     public ChestGUI getPlotMenu() {
-        return null;
+        scanPlot();
+        refreshControllerMenu();
+        return controllerMenu.get();
+    }
+
+    private void refreshControllerMenu() {
+        controllerMenu.get().updateWithReqs(getAllReqs());
+        controllerMenu.get().refreshAllViewers();
+    }
+
+    @Override
+    public void tick() {
+        if (!checkEnabled()) {
+            return;
+        }
+
+        tickFarming();
+    }
+
+    private void tickFarming() {
+        var plotWorld = getPlot().getBlock().getWorld();
+        getPlot().getBounds().forEach(((x, y, z, i) -> {
+            var block = new Location(plotWorld, x, y, z).getBlock();
+            var blockData = block.getBlockData();
+
+            if (blockData instanceof Ageable) {
+                var ageable = (Ageable) blockData;
+
+                if (ageable.getAge() >= 7) {
+                    var didHarvest = attemptToHarvest(block);
+                    if (didHarvest) {
+                        ageable.setAge(0);
+                        block.setBlockData(ageable);
+                    }
+                }
+            }
+        }));
+    }
+
+    private boolean attemptToHarvest(Block block) {
+        var offset = inputInventory.firstOf(hoes);
+        if (offset == -1) {
+            return false;
+        }
+
+        var item = inputInventory.getItem(offset);
+        var meta = (Damageable) item.getItemMeta();
+        meta.setDamage(meta.getDamage() + 1);
+
+        if (meta.getDamage() >= item.getType().getMaxDurability()) {
+            inputInventory.clear(offset);
+        } else {
+            item.setItemMeta(meta);
+        }
+
+        return true;
     }
 }

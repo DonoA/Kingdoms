@@ -67,8 +67,8 @@ public class StoneCutter extends CraftingPlotController {
             .build();
 
     @Expose(serialize = false, deserialize = false)
-    private final Lazy<ChestGUI> controllerMenu = new Lazy<>(() ->
-        new ChestGUI("Stone Cutter", 18));
+    private final Lazy<BasicPlotGUI> controllerMenu = new Lazy<>(() ->
+        new BasicPlotGUI("Stone Cutter", plot));
 
     private NPC worker;
 //    private BasicWorkerAI goal;
@@ -78,9 +78,16 @@ public class StoneCutter extends CraftingPlotController {
     private final PlotRequirement outputChest = new PlotRequirement("Output Chest");
     private final PlotRequirement stoneCutter = new PlotRequirement("Stone Cutting Table");
 
-    private List<PlotRequirement> getAllReqs() {
+    public List<PlotRequirement> getAllReqs() {
         return List.of(
             bed, inputChest, outputChest, stoneCutter
+        );
+    }
+
+    @Override
+    public List<PlotInventory> getAllPlotInventories() {
+        return List.of(
+                inputInventory, outputInventory
         );
     }
 
@@ -110,6 +117,7 @@ public class StoneCutter extends CraftingPlotController {
         if (worker != null) {
             worker.destroy();
         }
+        getPlot().setFloor(Material.DIRT);
     }
 
     @Override
@@ -122,25 +130,7 @@ public class StoneCutter extends CraftingPlotController {
         scanPlotAsync();
     }
 
-    private void scanPlotAsync() {
-        Bukkit.getScheduler().runTaskAsynchronously(Kingdoms.instance, this::scanPlot);
-    }
-
-    private void scanPlot() {
-        var plotWorld = getPlot().getBlock().getWorld();
-        getAllReqs().forEach(req -> req.setRechecked(false));
-        inputInventory.getChests().clear();
-        outputInventory.getChests().clear();
-        getPlot().getBounds().forEach(((x, y, z, i) -> {
-            var blocLoc = new Location(plotWorld, x, y, z);
-            var typ = blocLoc.getBlock().getType();
-            checkPoi(blocLoc, typ);
-        }));
-        getAllReqs().forEach(PlotRequirement::ensureRechecked);
-        checkEnabled();
-    }
-
-    private void checkPoi(Location blocLoc, Material typ) {
+    protected void scanBlock(Location blocLoc, Material typ) {
         if (Material.STONECUTTER.equals(typ)) {
             stoneCutter.setPoi(blocLoc);
             return;
@@ -167,17 +157,12 @@ public class StoneCutter extends CraftingPlotController {
         }
     }
 
-    private boolean checkEnabled() {
-        for(var req : getAllReqs()) {
-            if (!req.isCompleted()) {
-                crafting.setEnabled(false);
-                return false;
-            }
-        }
-        crafting.setEnabled(true);
-        return true;
+    @Override
+    public boolean checkEnabled() {
+        var enabled = super.checkEnabled();
+        crafting.setEnabled(enabled);
+        return enabled;
     }
-
 
     @Override
     public ChestGUI getPlotMenu() {
@@ -187,7 +172,7 @@ public class StoneCutter extends CraftingPlotController {
     }
 
     private void refreshControllerMenu() {
-        PlotRequirement.updateWithReqs(controllerMenu.get(), getAllReqs());
+        controllerMenu.get().updateWithReqs(getAllReqs());
 
         controllerMenu.get().setOption(10, CustomItemIndex.INCREASE.toItemStack(), "Current Production", "Current work done: " + workAdded);
         controllerMenu.get().setOption(11, CustomItemIndex.DECREASE.toItemStack(), "Current Consumption");

@@ -35,20 +35,25 @@ public class Storage extends PlotController {
     private final PlotInventory storageInventory = new PlotInventory();
 
     @Expose(serialize = false, deserialize = false)
-    private final Lazy<ChestGUI> controllerMenu = new Lazy<>(() ->
-            new ChestGUI("Storage", 18));
+    private final Lazy<BasicPlotGUI> controllerMenu = new Lazy<>(() ->
+            new BasicPlotGUI("Storage", plot));
 
     private final PlotRequirement inputChest = new PlotRequirement("Input Chest");
     private final PlotRequirement outputChest = new PlotRequirement("Output Chest");
     private final PlotRequirement storageSpace = new PlotRequirement("Storage Space");
 
-    private List<PlotRequirement> getAllReqs() {
+    public List<PlotRequirement> getAllReqs() {
         return List.of(
                 inputChest, outputChest, storageSpace
         );
     }
 
-    private long workAdded = 0;
+    @Override
+    public List<PlotInventory> getAllPlotInventories() {
+        return List.of(
+                storageInventory
+        );
+    }
 
     public Storage(Ref<Plot> plot) {
         super(plot, "Storage");
@@ -57,6 +62,11 @@ public class Storage extends PlotController {
     @Override
     public void onCreate() {
         getPlot().setFloor(floorMaterial);
+    }
+
+    @Override
+    public void onDestroy() {
+        getPlot().setFloor(Material.DIRT);
     }
 
     @Override
@@ -69,25 +79,8 @@ public class Storage extends PlotController {
         scanPlotAsync();
     }
 
-    private void scanPlotAsync() {
-        Bukkit.getScheduler().runTaskAsynchronously(Kingdoms.instance, this::scanPlot);
-    }
-
-    private void scanPlot() {
-        var plotWorld = getPlot().getBlock().getWorld();
-        getAllReqs().forEach(req -> req.setRechecked(false));
-        storageInventory.getChests().clear();
-        getPlot().getBounds().forEach(((x, y, z, i) -> {
-            var blocLoc = new Location(plotWorld, x, y, z);
-            var typ = blocLoc.getBlock().getType();
-            checkPoi(blocLoc, typ);
-        }));
-        getAllReqs().forEach(PlotRequirement::ensureRechecked);
-
-
-    }
-
-    private void checkPoi(Location blocLoc, Material typ) {
+    @Override
+    protected void scanBlock(Location blocLoc, Material typ) {
         if (!Material.CHEST.equals(typ)) {
             return;
         }
@@ -111,7 +104,7 @@ public class Storage extends PlotController {
     @Override
     public ChestGUI getPlotMenu() {
         scanPlot();
-        PlotRequirement.updateWithReqs(controllerMenu.get(), getAllReqs());
+        controllerMenu.get().updateWithReqs(getAllReqs());
 
         controllerMenu.get().refreshAllViewers();
         return controllerMenu.get();

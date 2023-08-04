@@ -279,7 +279,9 @@ public class ChestGUI {
             }
             OptionClickEvent e = new OptionClickEvent((Player) event.getWhoClicked(),
                     menu, clicked, slot);
-            menu.clickHandler.accept(e);
+            if (menu.clickHandler != null) {
+                menu.clickHandler.accept(e);
+            }
             if (e.close) {
                 final Player p = (Player) event.getWhoClicked();
                 final OptionClickEvent ev = e;

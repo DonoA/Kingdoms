@@ -39,15 +39,5 @@ public class PlotRequirement {
         poi = null;
     }
 
-    public static void updateWithReqs(ChestGUI gui, List<PlotRequirement> requirementList) {
-        for (int i = 0; i < requirementList.size(); i++) {
-            var req = requirementList.get(i);
-            if (req.isCompleted()) {
-                gui.setOption(i, CustomItemIndex.SUBMIT.toItemStack(), req.getName(), "Completed!");
-            } else {
-                gui.setOption(i, CustomItemIndex.CANCEL.toItemStack(), req.getName(), "Incomplete!");
-            }
-        }
-        gui.setOption(9, CustomItemIndex.RECYCLE.toItemStack(), "Change plot type");
-    }
+
 }

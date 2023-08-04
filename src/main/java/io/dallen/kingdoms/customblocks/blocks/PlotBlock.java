@@ -5,6 +5,7 @@ import io.dallen.kingdoms.customblocks.CustomBlockData;
 import io.dallen.kingdoms.customitems.CustomItemIndex;
 import io.dallen.kingdoms.kingdom.Kingdom;
 import io.dallen.kingdoms.kingdom.plot.Plot;
+import io.dallen.kingdoms.kingdom.plot.controller.PlotController;
 import io.dallen.kingdoms.kingdom.plot.controller.StoneCutter;
 import io.dallen.kingdoms.kingdom.plot.controller.Storage;
 import io.dallen.kingdoms.menus.ChestGUI;
@@ -88,50 +89,13 @@ public class PlotBlock extends CustomBlock {
         var plot = data.plot.get();
 
         if (plot.getController() == null) {
-            emptyPlotAssign(plot).sendMenu(event.getPlayer());
+            PlotController.emptyPlotAssign(plot).sendMenu(event.getPlayer());
         } else {
             plot.getController().getPlotMenu().sendMenu(event.getPlayer());
         }
     }
 
 
-    public static ChestGUI emptyPlotAssign(Plot plot) {
-        var stoneCutterCost = StoneCutter.getCost(plot);
-        var storageCost = Storage.getCost(plot);
 
-        var guiName = "Plot";
-        if (plot.getController() != null) {
-            guiName = "Plot (" + plot.getController().getName() + ")";
-        }
-        var gui = new ChestGUI(guiName, 9);
-        gui.setOption(0, new ItemStack(Material.STONE_PICKAXE), "Stone Worker", stoneCutterCost.requirements());
-        gui.setOption(1, new ItemStack(Material.WHEAT), "Farm");
-        gui.setOption(2, new ItemStack(Material.BARREL), "Storage", storageCost.requirements());
-        if (plot.getController() != null) {
-            gui.setOption(8, CustomItemIndex.CANCEL.toItemStack(), "Clear Plot");
-        }
-        gui.setClickHandler(clickEvent -> handlePlotAssign(clickEvent, plot));
-        return gui;
-    }
-
-    private static void handlePlotAssign(ChestGUI.OptionClickEvent clickEvent, Plot plot) {
-        var player = clickEvent.getPlayer();
-        switch (clickEvent.getClicked().getType()) {
-            case STONE_PICKAXE:
-                var stoneCost = StoneCutter.getCost(plot);
-                if (!stoneCost.canPurchase(player.getInventory())) {
-                    clickEvent.setNext(clickEvent.getMenu().getMenu());
-                    player.sendMessage("Too expensive!");
-                } else {
-                    stoneCost.purchase(player.getInventory());
-                    plot.setController(new StoneCutter(plot.asRef()));
-                }
-                break;
-            case BARREL:
-                plot.setController(new Storage(plot.asRef()));
-                break;
-
-        }
-    }
 
 }

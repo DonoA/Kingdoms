@@ -2,6 +2,7 @@ package io.dallen.kingdoms.kingdom.plot;
 
 import lombok.Getter;
 import org.apache.commons.lang.NotImplementedException;
+import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Chest;
@@ -19,6 +20,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -79,9 +81,82 @@ public class PlotInventory implements Inventory {
         return result;
     }
 
+    public int first(@NotNull Material material) throws IllegalArgumentException {
+        return firstOf(Set.of(material));
+    }
+
+    public int firstOf(@NotNull Set<Material> materials) throws IllegalArgumentException {
+        var invs = getChestInventories();
+        var idx = -1;
+        for (var inv : invs) {
+            for (var item : inv.getContents()) {
+                idx++;
+
+                if (item == null) {
+                    continue;
+                }
+
+                if (materials.contains(item.getType())) {
+                    return idx;
+                }
+            }
+        }
+        return -1;
+    }
+
     @Override
     public int getSize() {
-        throw new NotImplementedException("Dummy Inventory");
+        return getChestInventories().stream()
+                .mapToInt(Inventory::getSize)
+                .sum();
+    }
+
+    private Pair<Inventory, Integer> getInvForOffset(int i) {
+        var invs = getChestInventories();
+        for (var inv : invs) {
+            if (i <= inv.getSize()) {
+                return Pair.of(inv, i);
+            } else {
+                i -= inv.getSize();
+            }
+        }
+
+        return null;
+    }
+
+    @Nullable
+    @Override
+    public ItemStack getItem(int i) {
+        var result = getInvForOffset(i);
+        if (result == null) {
+            return null;
+        }
+        return result.getLeft().getItem(result.getRight());
+    }
+
+    @Override
+    public void setItem(int i, @Nullable ItemStack itemStack) {
+        var result = getInvForOffset(i);
+        if (result == null) {
+            return;
+        }
+
+        result.getLeft().setItem(result.getRight(), itemStack);
+    }
+
+    @Override
+    public void clear(int i) {
+        var result = getInvForOffset(i);
+        if (result == null) {
+            return;
+        }
+
+        result.getLeft().clear(result.getRight());
+    }
+
+    @Override
+    public void clear() {
+        getChestInventories().forEach(Inventory::clear);
     }
 
     @Override
@@ -93,19 +168,6 @@ public class PlotInventory implements Inventory {
     public void setMaxStackSize(int i) {
         throw new NotImplementedException("Dummy Inventory");
     }
-
-    @Nullable
-    @Override
-    public ItemStack getItem(int i) {
-        throw new NotImplementedException("Dummy Inventory");
-    }
-
-    @Override
-    public void setItem(int i, @Nullable ItemStack itemStack) {
-        throw new NotImplementedException("Dummy Inventory");
-    }
-
-
 
     @NotNull
     @Override
@@ -172,10 +234,6 @@ public class PlotInventory implements Inventory {
         throw new NotImplementedException("Dummy Inventory");
     }
 
-    @Override
-    public int first(@NotNull Material material) throws IllegalArgumentException {
-        throw new NotImplementedException("Dummy Inventory");
-    }
 
     @Override
     public int first(@NotNull ItemStack itemStack) {
@@ -202,15 +260,7 @@ public class PlotInventory implements Inventory {
         throw new NotImplementedException("Dummy Inventory");
     }
 
-    @Override
-    public void clear(int i) {
-        throw new NotImplementedException("Dummy Inventory");
-    }
 
-    @Override
-    public void clear() {
-        throw new NotImplementedException("Dummy Inventory");
-    }
 
     @NotNull
     @Override
