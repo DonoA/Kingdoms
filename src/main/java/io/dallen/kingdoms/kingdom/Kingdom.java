@@ -5,6 +5,7 @@ import io.dallen.kingdoms.savedata.SaveDataManager;
 import io.dallen.kingdoms.util.Bounds;
 import io.dallen.kingdoms.util.OfflinePlayerUtil;
 import lombok.Getter;
+import lombok.ToString;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -17,6 +18,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+@ToString
 public class Kingdom extends ClaimedRegion<String, Kingdom> {
 
     public final static Material outlineMaterial = Material.OBSIDIAN;

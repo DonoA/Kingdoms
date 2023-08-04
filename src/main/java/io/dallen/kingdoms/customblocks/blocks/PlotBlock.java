@@ -12,6 +12,7 @@ import io.dallen.kingdoms.menus.ChestSizingGUI;
 import io.dallen.kingdoms.savedata.Ref;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.ToString;
 import org.bukkit.Material;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -22,6 +23,7 @@ public class PlotBlock extends CustomBlock {
 
     @AllArgsConstructor
     @Getter
+    @ToString
     private static class PlotData extends CustomBlockData {
         private Ref<Plot> plot;
     }

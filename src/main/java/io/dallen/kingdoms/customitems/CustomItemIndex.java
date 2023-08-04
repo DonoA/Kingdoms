@@ -12,4 +12,6 @@ public class CustomItemIndex {
 
     public final static CustomItem SET_CHEST_TYPE = new ChestConfigurator(Material.DANGER_POTTERY_SHERD);
 
+    public final static CustomItem DEBUG_TOOL = new DebugTool(Material.EXPLORER_POTTERY_SHERD);
+
 }

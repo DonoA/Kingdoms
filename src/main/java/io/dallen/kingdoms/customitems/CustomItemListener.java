@@ -1,5 +1,6 @@
 package io.dallen.kingdoms.customitems;
 
+import io.dallen.kingdoms.util.ItemUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
@@ -9,6 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class CustomItemListener implements Listener {
 
@@ -41,13 +43,19 @@ public class CustomItemListener implements Listener {
             }
 
             var customItem = CustomItem.usedMaterials.get(item.getType());
-            if (customItem == null || customItem.isHoldable()) {
+            if (customItem == null) {
                 continue;
             }
 
-            playerInv.remove(customItem.toMaterial());
-            Bukkit.getLogger().info("Removed " + customItem.toMaterial().name() + " from " + player.getName());
+            if (customItem.isHoldable()) {
+                ItemUtil.ensureItemName(item, customItem.getName());
+            } else {
+                playerInv.remove(customItem.toMaterial());
+                Bukkit.getLogger().info("Removed " + customItem.toMaterial().name() + " from " + player.getName());
+            }
         }
     }
+
+
 
 }

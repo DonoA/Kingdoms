@@ -32,4 +32,13 @@ public class Ref<V>{
 
         return value;
     }
+
+    @Override
+    public String toString() {
+        if (get() == null) {
+            return "Ref(Class=null,Key=" + key + ")";
+        } else {
+            return "Ref(" + get().toString() + ")";
+        }
+    }
 }

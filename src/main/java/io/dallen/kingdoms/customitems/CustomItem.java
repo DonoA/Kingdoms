@@ -13,6 +13,7 @@ public class CustomItem {
 
     public static Map<Material, CustomItem> usedMaterials = new HashMap<>();
 
+    @Getter
     private final String name;
     private final Material baseItem;
 

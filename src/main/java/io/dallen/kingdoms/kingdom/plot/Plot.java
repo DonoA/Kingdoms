@@ -10,6 +10,7 @@ import io.dallen.kingdoms.savedata.SaveDataManager;
 import io.dallen.kingdoms.savedata.SubClass;
 import io.dallen.kingdoms.util.Bounds;
 import lombok.Getter;
+import lombok.ToString;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -19,6 +20,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.util.UUID;
 
+@ToString
 public class Plot extends ClaimedRegion<UUID, Plot> implements Listener {
 
     public final static Material outlineMaterial = Material.OBSIDIAN;

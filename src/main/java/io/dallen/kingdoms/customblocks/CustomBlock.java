@@ -1,6 +1,7 @@
 package io.dallen.kingdoms.customblocks;
 
 import io.dallen.kingdoms.util.ItemUtil;
+import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -15,6 +16,7 @@ public class CustomBlock {
 
     public static Map<Material, CustomBlock> usedMaterials = new HashMap<>();
 
+    @Getter
     private final String name;
     private final Material baseBlock;
 

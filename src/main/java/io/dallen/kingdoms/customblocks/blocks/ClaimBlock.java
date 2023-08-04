@@ -7,6 +7,7 @@ import io.dallen.kingdoms.kingdom.Kingdom;
 import io.dallen.kingdoms.menus.ChestGUI;
 import io.dallen.kingdoms.savedata.Ref;
 import lombok.AllArgsConstructor;
+import lombok.ToString;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -17,6 +18,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 public class ClaimBlock extends CustomBlock {
 
     @AllArgsConstructor
+    @ToString
     public static class ClaimBlockData extends CustomBlockData {
         public Ref<Kingdom> kingdom;
     }

@@ -34,6 +34,12 @@ public class ItemUtil {
         item.setItemMeta(im);
         return item;
     }
-    
-//    public static boolean isSameTool()
+
+    public static void ensureItemName(ItemStack item, String name) {
+        if (item.getItemMeta() != null && item.getItemMeta().getDisplayName().equals(name)) {
+            return;
+        }
+
+        ItemUtil.setItemNameAndLore(item, name);
+    }
 }
