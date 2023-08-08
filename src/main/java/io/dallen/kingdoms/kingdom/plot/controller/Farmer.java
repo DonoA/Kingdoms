@@ -131,21 +131,40 @@ public class Farmer extends PlotController {
             var block = new Location(plotWorld, x, y, z).getBlock();
             var blockData = block.getBlockData();
 
-            if (blockData instanceof Ageable) {
+            var drop = getDrop(block.getType());
+            if (drop != null) {
                 var ageable = (Ageable) blockData;
 
-                if (ageable.getAge() >= 7) {
-                    var didHarvest = attemptToHarvest(block);
+                if (ageable.getAge() >= ageable.getMaximumAge()) {
+                    var didHarvest = attemptToHarvest();
                     if (didHarvest) {
                         ageable.setAge(0);
                         block.setBlockData(ageable);
+                        outputInventory.addItem(new ItemStack(drop));
                     }
                 }
             }
         }));
     }
 
-    private boolean attemptToHarvest(Block block) {
+    private Material getDrop(Material mat) {
+        switch (mat) {
+            case WHEAT:
+                return Material.WHEAT;
+            case BEETROOTS:
+                return Material.BEETROOT;
+            case CARROTS:
+                return Material.CARROT;
+            case POTATOES:
+                return Material.POTATO;
+            case SWEET_BERRY_BUSH:
+                return Material.SWEET_BERRIES;
+            default:
+                return null;
+        }
+    }
+
+    private boolean attemptToHarvest() {
         var offset = inputInventory.firstOf(hoes);
         if (offset == -1) {
             return false;
