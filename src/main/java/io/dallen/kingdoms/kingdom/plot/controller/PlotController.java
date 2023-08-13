@@ -102,7 +102,7 @@ public abstract class PlotController {
             case STONE_PICKAXE:
                 var stoneCost = StoneCutter.getCost(plot);
                 if (!stoneCost.canPurchase(player.getInventory())) {
-                    clickEvent.setNext(clickEvent.getMenu().getMenu());
+                    clickEvent.setClose(false);
                     player.sendMessage("Too expensive!");
                 } else {
                     stoneCost.purchase(player.getInventory());
@@ -113,7 +113,14 @@ public abstract class PlotController {
                 plot.setController(new Farmer(plot.asRef()));
                 break;
             case BARREL:
-                plot.setController(new Storage(plot.asRef()));
+                var storageCost = Storage.getCost(plot);
+                if (!storageCost.canPurchase(player.getInventory())) {
+                    clickEvent.setClose(false);
+                    player.sendMessage("Too expensive!");
+                } else {
+                    storageCost.purchase(player.getInventory());
+                    plot.setController(new Storage(plot.asRef()));
+                }
                 break;
 
         }

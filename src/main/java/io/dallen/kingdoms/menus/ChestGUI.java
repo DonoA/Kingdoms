@@ -264,19 +264,23 @@ public class ChestGUI {
             if (!event.getInventory().equals(menu.inventory)) {
                 return;
             }
-            openMenus.remove(playerName);
 
             var clicked = event.getCursor();
             event.getCursor().setType(Material.AIR);
-            event.setCancelled(true);
             int slot = event.getRawSlot();
             if (slot < 0 || slot >= menu.size) {
                 return;
             }
+            event.setCancelled(true);
 
             if (clicked == null || clicked.getType() == Material.AIR) {
                 clicked = menu.inventory.getItem(slot);
             }
+
+            if (clicked == null) {
+                clicked = new ItemStack(Material.AIR);
+            }
+
             OptionClickEvent e = new OptionClickEvent((Player) event.getWhoClicked(),
                     menu, clicked, slot);
             if (menu.clickHandler != null) {
@@ -293,8 +297,8 @@ public class ChestGUI {
                         p.closeInventory();
                     }
                 }, 1);
+                openMenus.remove(playerName);
             }
-            openMenus.remove(event.getWhoClicked().getName());
         }
     }
 }

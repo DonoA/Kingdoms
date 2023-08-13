@@ -10,6 +10,8 @@ import io.dallen.kingdoms.kingdom.plot.PlotInventory;
 import io.dallen.kingdoms.menus.ChestGUI;
 import io.dallen.kingdoms.menus.OptionCost;
 import io.dallen.kingdoms.savedata.Ref;
+import io.dallen.kingdoms.util.ItemStackMaterial;
+import io.dallen.kingdoms.util.ItemUtil;
 import io.dallen.kingdoms.util.Lazy;
 import io.dallen.kingdoms.util.MaterialUtil;
 import lombok.NoArgsConstructor;
@@ -17,11 +19,17 @@ import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Chest;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
 
 @NoArgsConstructor
 public class Storage extends PlotController {
@@ -120,6 +128,85 @@ public class Storage extends PlotController {
         }
 
         event.setCancelled(true);
-        event.getPlayer().sendMessage("Clicked output");
+
+        var gui = getStorageGUI();
+        gui.sendMenu(event.getPlayer());
+    }
+
+    @NotNull
+    private ChestGUI getStorageGUI() {
+        var allItems = new HashMap<ItemStackMaterial, Integer>();
+        for (var item : storageInventory.getContents()) {
+            if (item == null) {
+                continue;
+            }
+
+            var itemStackKey = new ItemStackMaterial(item);
+            var count = allItems.getOrDefault(itemStackKey, 0);
+            allItems.put(itemStackKey, count + item.getAmount());
+        }
+
+        var menuSize = allItems.size();
+        if (menuSize < 27) {
+            menuSize = 27;
+        } else if (menuSize % 9 != 0) {
+            menuSize = (menuSize / 9) * 9;
+        }
+
+        var gui = new ChestGUI("Storage", menuSize);
+        var idx = 0;
+        for (var entry : allItems.entrySet()) {
+            var icon = entry.getKey().toItemStack();
+            ItemUtil.setItemLore(icon, "Count " + entry.getValue());
+            gui.setOption(idx, icon);
+            idx++;
+        }
+        gui.setClickHandler(handleStorageClick(allItems));
+        return gui;
+    }
+
+    private Consumer<ChestGUI.OptionClickEvent> handleStorageClick(Map<ItemStackMaterial, Integer> allItems) {
+        return (event) -> {
+            var clicked = event.getClicked();
+            if (clicked.getType() == Material.AIR) {
+                event.setClose(false);
+                return;
+            }
+
+            var pickupItem = new ItemStack(clicked.getType());
+            ItemUtil.setItemNameAndLore(pickupItem, clicked.getItemMeta().getDisplayName());
+            var possibleAmount = allItems.get(new ItemStackMaterial(clicked)); // Does not select the item count correctly
+            var actualAmount = Math.min(possibleAmount, pickupItem.getMaxStackSize());
+            pickupItem.setAmount(actualAmount);
+
+            event.getMenu().getView().setCursor(pickupItem);
+            storageInventory.remove(pickupItem);
+
+            event.setNext(getStorageGUI());
+        };
+    }
+
+    @Override
+    public void tick() {
+        if (inputChest.getPoi() == null) {
+            return;
+        }
+
+        var inchestBlock = inputChest.getPoi().getBlock();
+        var inputInventory = (Chest) inchestBlock.getState();
+        var inv = inputInventory.getBlockInventory();
+        if (inv.isEmpty()) {
+            return;
+        }
+
+        for (int i = 0; i < inv.getSize(); i++) {
+            var item = inv.getItem(i);
+            if (item == null) {
+                continue;
+            }
+
+            storageInventory.addItem(item);
+            inv.clear(i);
+        }
     }
 }

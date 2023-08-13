@@ -43,7 +43,7 @@ public class ChestConfigurator extends CustomItem {
                     metadata.setTyp(PlotChest.PlotChestType.OUTPUT);
                     break;
                 default:
-                    click.setNext(gui);
+                    click.setClose(false);
                     break;
             }
         });

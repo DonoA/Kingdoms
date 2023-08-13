@@ -160,6 +160,54 @@ public class PlotInventory implements Inventory {
     }
 
     @Override
+    public ItemStack[] getContents() {
+        return getChestInventories()
+                .stream()
+                .flatMap(inv -> Arrays.stream(inv.getContents()))
+                .toArray(ItemStack[]::new);
+    }
+
+    @NotNull
+    @Override
+    public ItemStack[] getStorageContents() {
+        return getContents();
+    }
+
+    @NotNull
+    @Override
+    public HashMap<Integer, ItemStack> removeItem(@NotNull ItemStack... itemStacks) throws IllegalArgumentException {
+        var invs = getChestInventories();
+        List<ItemStack> itemList = new ArrayList<>(Arrays.asList(itemStacks));
+        var result = new HashMap<Integer, ItemStack>();
+        for (var inv :  invs) {
+            result = inv.removeItem(itemList.toArray(new ItemStack[0]));
+            var toRemove = new ArrayList<Integer>();
+            for (var i = 0; i < itemList.size(); i++) {
+                var newAmount = result.get(i);
+                if (newAmount == null) {
+                    toRemove.add(i);
+                } else {
+                    itemList.set(i, newAmount);
+                }
+            }
+
+            toRemove.forEach(index -> itemList.remove(index.intValue()));
+        }
+        return result;
+    }
+
+    @Override
+    public void remove(@NotNull ItemStack itemStack) {
+        removeItem(itemStack);
+    }
+
+    /**
+     *
+     * Unimplemented bellow
+     *
+     */
+
+    @Override
     public int getMaxStackSize() {
         throw new NotImplementedException("Dummy Inventory");
     }
@@ -169,26 +217,8 @@ public class PlotInventory implements Inventory {
         throw new NotImplementedException("Dummy Inventory");
     }
 
-    @NotNull
-    @Override
-    public HashMap<Integer, ItemStack> removeItem(@NotNull ItemStack... itemStacks) throws IllegalArgumentException {
-        throw new NotImplementedException("Dummy Inventory");
-    }
-
-    @NotNull
-    @Override
-    public ItemStack[] getContents() {
-        throw new NotImplementedException("Dummy Inventory");
-    }
-
     @Override
     public void setContents(@NotNull ItemStack[] itemStacks) throws IllegalArgumentException {
-        throw new NotImplementedException("Dummy Inventory");
-    }
-
-    @NotNull
-    @Override
-    public ItemStack[] getStorageContents() {
         throw new NotImplementedException("Dummy Inventory");
     }
 
@@ -254,13 +284,6 @@ public class PlotInventory implements Inventory {
     public void remove(@NotNull Material material) throws IllegalArgumentException {
         throw new NotImplementedException("Dummy Inventory");
     }
-
-    @Override
-    public void remove(@NotNull ItemStack itemStack) {
-        throw new NotImplementedException("Dummy Inventory");
-    }
-
-
 
     @NotNull
     @Override

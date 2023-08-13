@@ -35,6 +35,13 @@ public class ItemUtil {
         return item;
     }
 
+    public static ItemStack setItemLore(ItemStack item, String... lore) {
+        ItemMeta im = item.getItemMeta();
+        im.setLore(Arrays.asList(lore));
+        item.setItemMeta(im);
+        return item;
+    }
+
     public static void ensureItemName(ItemStack item, String name) {
         if (item.getItemMeta() != null && item.getItemMeta().getDisplayName().equals(name)) {
             return;

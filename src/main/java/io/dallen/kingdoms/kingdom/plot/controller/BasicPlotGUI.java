@@ -19,6 +19,7 @@ public class BasicPlotGUI extends ChestGUI {
 
     private void controllerClick(ChestGUI.OptionClickEvent optionClickEvent) {
         if (optionClickEvent.getClicked().getType() != CustomItemIndex.RECYCLE.toMaterial()) {
+            optionClickEvent.setClose(false);
             return;
         }
 
