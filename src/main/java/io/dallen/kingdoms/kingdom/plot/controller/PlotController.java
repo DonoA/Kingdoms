@@ -80,6 +80,7 @@ public abstract class PlotController {
     public static ChestGUI emptyPlotAssign(Plot plot) {
         var stoneCutterCost = StoneCutter.getCost(plot);
         var storageCost = Storage.getCost(plot);
+        var quarryCost = Quarry.getCost(plot);
 
         var guiName = "Plot";
         if (plot.getController() != null) {
@@ -89,6 +90,8 @@ public abstract class PlotController {
         gui.setOption(0, new ItemStack(Material.STONE_PICKAXE), "Stone Worker", stoneCutterCost.requirements());
         gui.setOption(1, new ItemStack(Material.WHEAT), "Farm");
         gui.setOption(2, new ItemStack(Material.BARREL), "Storage", storageCost.requirements());
+        gui.setOption(3, new ItemStack(Material.COBBLESTONE), "Quarry", quarryCost.requirements());
+
         if (plot.getController() != null) {
             gui.setOption(8, CustomItemIndex.CANCEL.toItemStack(), "Clear Plot");
         }
@@ -122,7 +125,16 @@ public abstract class PlotController {
                     plot.setController(new Storage(plot.asRef()));
                 }
                 break;
-
+            case COBBLESTONE:
+                var quarryCost = Quarry.getCost(plot);
+                if (!quarryCost.canPurchase(player.getInventory())) {
+                    clickEvent.setClose(false);
+                    player.sendMessage("Too expensive!");
+                } else {
+                    quarryCost.purchase(player.getInventory());
+                    plot.setController(new Quarry(plot.asRef()));
+                }
+                break;
         }
     }
 }

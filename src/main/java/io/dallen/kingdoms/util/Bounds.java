@@ -2,8 +2,10 @@ package io.dallen.kingdoms.util;
 
 import lombok.Builder;
 import lombok.Data;
+import org.bukkit.Location;
 import org.bukkit.World;
 
+import java.util.Locale;
 import java.util.function.BiConsumer;
 
 @Builder
@@ -26,6 +28,10 @@ public class Bounds implements Cloneable {
 
     public void forEachBorder(BiConsumer<Integer, Integer> f) {
         forEachBorder((x, z, i) -> f.accept(x, z));
+    }
+
+    public Location center() {
+        return new Location(world, blockX, blockY, blockZ);
     }
 
     public void forEachBorder(ForEachIndex2D f) {

@@ -88,6 +88,8 @@ public class Plot extends ClaimedRegion<UUID, Plot> implements Listener {
         if (controller != null) {
             controller.onDestroy();
         }
+
+        super.destroy();
     }
 
     public void setFloor(Material mat) {
