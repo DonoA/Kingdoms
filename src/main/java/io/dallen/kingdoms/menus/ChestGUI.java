@@ -57,7 +57,14 @@ public class ChestGUI {
     public ChestGUI(String name, int size) {
         this.type = InventoryType.CHEST;
         this.name = name;
+        if (size == 0) {
+            size = 9;
+        }
+        if (size % 9 != 0) {
+            size = ((size / 9) + 1) * 9;
+        }
         this.size = size;
+
         optionNames = new String[this.size];
         optionIcons = new ItemStack[this.size];
         optionData = new Object[this.size];
@@ -85,22 +92,22 @@ public class ChestGUI {
         return this;
     }
 
-//    public ChestGUI addOption(ItemStack icon, String name, String... info) {
-//        int pos = getNextOpen();
-//        optionNames[pos] = name;
-//        optionIcons[pos] = ItemUtil.setItemNameAndLore(icon, name, info);
-//        return this;
-//    }
-//
-//    private int getNextOpen(int start) {
-//        for (int i = start; i < optionNames.length; i++) {
-//            if (optionNames[i] == null) {
-//                return i;
-//            }
-//        }
-//
-//        throw new IndexOutOfBoundsException("Not enough open gui slots");
-//    }
+    public ChestGUI addOption(ItemStack icon, String name, String... info) {
+        int pos = getNextOpen();
+        optionNames[pos] = name;
+        optionIcons[pos] = ItemUtil.setItemNameAndLore(icon, name, info);
+        return this;
+    }
+
+    private int getNextOpen() {
+        for (int i = 0; i < optionNames.length; i++) {
+            if (optionNames[i] == null) {
+                return i;
+            }
+        }
+
+        throw new IndexOutOfBoundsException("Not enough open gui slots");
+    }
 
     public void setOptions(ItemStack[] items) {
         for (int i = 0; i < items.length; i++) {

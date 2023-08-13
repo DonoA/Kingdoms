@@ -41,6 +41,9 @@ public class Kingdom extends ClaimedRegion<String, Kingdom> {
     private Map<UUID, NPC> attackers = new HashMap<>();
 
     @Getter
+    private Map<String, String> blueprints = new HashMap<>();
+
+    @Getter
     private boolean destoryed = false;
 
     public Kingdom(String name, Location claim, Player owner) {
@@ -111,5 +114,13 @@ public class Kingdom extends ClaimedRegion<String, Kingdom> {
         }
 
         return owner.isOnline();
+    }
+
+    public String getBlueprintForName(String name) {
+        return blueprints.get(name);
+    }
+
+    public Set<String> blueprintNames() {
+        return blueprints.keySet();
     }
 }

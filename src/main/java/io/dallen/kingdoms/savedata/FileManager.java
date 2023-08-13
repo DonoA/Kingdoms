@@ -37,4 +37,10 @@ public class FileManager {
         Files.createDirectories(dataFolder);
         return dataFolder;
     }
+
+    public static Path getSchematicFolder() throws IOException {
+        var dataFolder = Path.of(Kingdoms.instance.getDataFolder().getPath(), "schematics");
+        Files.createDirectories(dataFolder);
+        return dataFolder;
+    }
 }

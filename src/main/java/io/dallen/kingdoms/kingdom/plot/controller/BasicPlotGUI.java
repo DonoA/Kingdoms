@@ -1,30 +1,17 @@
 package io.dallen.kingdoms.kingdom.plot.controller;
 
-import com.sk89q.worldedit.WorldEdit;
-import com.sk89q.worldedit.bukkit.BukkitAdapter;
-import com.sk89q.worldedit.bukkit.BukkitWorld;
-import com.sk89q.worldedit.extent.clipboard.BlockArrayClipboard;
-import com.sk89q.worldedit.extent.clipboard.Clipboard;
-import com.sk89q.worldedit.extent.clipboard.io.BuiltInClipboardFormat;
-import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats;
-import com.sk89q.worldedit.function.operation.ForwardExtentCopy;
-import com.sk89q.worldedit.function.operation.Operations;
-import com.sk89q.worldedit.math.BlockVector3;
-import com.sk89q.worldedit.regions.CuboidRegion;
-import com.sk89q.worldedit.session.ClipboardHolder;
-import io.dallen.kingdoms.Kingdoms;
+import com.sk89q.worldedit.WorldEditException;
 import io.dallen.kingdoms.customitems.CustomItemIndex;
 import io.dallen.kingdoms.kingdom.plot.Plot;
 import io.dallen.kingdoms.menus.ChestGUI;
-import io.dallen.kingdoms.savedata.FileManager;
 import io.dallen.kingdoms.savedata.Ref;
+import io.dallen.kingdoms.util.WorldEditUtil;
 import lombok.SneakyThrows;
 import org.bukkit.Material;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 public class BasicPlotGUI extends ChestGUI {
@@ -37,62 +24,75 @@ public class BasicPlotGUI extends ChestGUI {
         setClickHandler(this::controllerClick);
     }
 
+    public Plot getPlot() {
+        return plotRef.get();
+    }
+
     @SneakyThrows
     private void controllerClick(ChestGUI.OptionClickEvent optionClickEvent) {
         if (optionClickEvent.getClicked().getType() == CustomItemIndex.RECYCLE.toMaterial()) {
-            plotRef.get().setController(null);
+            getPlot().setController(null);
             return;
         }
 
         if (optionClickEvent.getClicked().getType() == Material.BOOK) {
-            var plotBounds = plotRef.get().getBounds();
-
-            var min = BukkitAdapter.asBlockVector(plotBounds.minPoint());
-            var max = BukkitAdapter.asBlockVector(plotBounds.maxPoint());
-            var world = new BukkitWorld(plotBounds.getWorld());
-
-            var region = new CuboidRegion(min, max);
-            var clipboard = new BlockArrayClipboard(region);
-
-            var forwardExtentCopy = new ForwardExtentCopy(
-                    world, region, clipboard, region.getMinimumPoint()
-            );
-            //Configure
-            Operations.complete(forwardExtentCopy);
-
-            var file = new File(FileManager.getDataFolder() + "/testSchem.schem");
-
-            try (var writer = BuiltInClipboardFormat.SPONGE_SCHEMATIC.getWriter(new FileOutputStream(file))) {
-                writer.write(clipboard);
-            }
-
+            optionClickEvent.setNext(createSchematicMenu());
             return;
         }
 
         if (optionClickEvent.getClicked().getType() == Material.ENCHANTED_BOOK) {
-            var plotBounds = plotRef.get().getBounds();
-            var file = new File(FileManager.getDataFolder() + "/testSchem.schem");
-            Clipboard clipboard;
-
-            var format = ClipboardFormats.findByFile(file);
-            try (var reader = format.getReader(new FileInputStream(file))) {
-                clipboard = reader.read();
-            }
-
-            var world = new BukkitWorld(plotBounds.getWorld());
-            try (var editSession = WorldEdit.getInstance().newEditSession(world)) {
-                var operation = new ClipboardHolder(clipboard)
-                        .createPaste(editSession)
-                        .to(BukkitAdapter.asBlockVector(plotBounds.minPoint()))
-                        // configure here
-                        .build();
-                Operations.complete(operation);
-            }
-
+            optionClickEvent.setNext(getSchematicMenu());
             return;
         }
 
         optionClickEvent.setClose(false);
+    }
+
+    public ChestGUI createSchematicMenu() {
+        var gui = new ChestGUI("Create Blueprint", InventoryType.ANVIL);
+        gui.setClickHandler((menuEvent) -> {
+            var anvilMenu = (ChestGUI.AnvilMenuInstance) menuEvent.getMenu();
+            var blueprintName = anvilMenu.getCurrentItemName();
+            var plotBounds = getPlot().getBounds();
+
+            try {
+                var exactName = WorldEditUtil.saveBounds(plotBounds, blueprintName);
+                getPlot().getKingdom().getBlueprints().put(blueprintName, exactName);
+            } catch (WorldEditException | IOException e) {
+                menuEvent.getPlayer().sendMessage("Failed to save blueprint");
+                e.printStackTrace();
+            }
+        });
+
+        gui.setOption(0, new ItemStack(Material.BOOK), "Name Blueprint");
+        return gui;
+    }
+
+    public ChestGUI getSchematicMenu() {
+        var blueprints = getPlot().getKingdom().blueprintNames();
+        var gui = new ChestGUI("Plan Blueprint", blueprints.size());
+        gui.setClickHandler((menuEvent) -> {
+            if (menuEvent.getClicked().getType() == Material.AIR) {
+                menuEvent.setClose(false);
+                return;
+            }
+
+            var blueprintName = menuEvent.getClicked().getItemMeta().getDisplayName();
+            var exactName = getPlot().getKingdom().getBlueprintForName(blueprintName);
+
+            try {
+                WorldEditUtil.loadToBounds(getPlot().getBounds(), exactName);
+            } catch (WorldEditException | IOException e) {
+                menuEvent.getPlayer().sendMessage("Failed to load blueprint");
+                e.printStackTrace();
+            }
+        });
+
+        for (var blueprint : blueprints) {
+            gui.addOption(new ItemStack(Material.ENCHANTED_BOOK), blueprint);
+        }
+
+        return gui;
     }
 
     public void updateWithReqs(List<PlotRequirement> requirementList) {

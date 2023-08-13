@@ -149,8 +149,6 @@ public class Storage extends PlotController {
         var menuSize = allItems.size();
         if (menuSize < 27) {
             menuSize = 27;
-        } else if (menuSize % 9 != 0) {
-            menuSize = (menuSize / 9) * 9;
         }
 
         var gui = new ChestGUI("Storage", menuSize);
