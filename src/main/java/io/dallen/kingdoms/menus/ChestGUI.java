@@ -21,6 +21,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.function.Consumer;
@@ -83,6 +84,23 @@ public class ChestGUI {
         optionIcons[pos] = ItemUtil.setItemNameAndLore(icon, name, info);
         return this;
     }
+
+//    public ChestGUI addOption(ItemStack icon, String name, String... info) {
+//        int pos = getNextOpen();
+//        optionNames[pos] = name;
+//        optionIcons[pos] = ItemUtil.setItemNameAndLore(icon, name, info);
+//        return this;
+//    }
+//
+//    private int getNextOpen(int start) {
+//        for (int i = start; i < optionNames.length; i++) {
+//            if (optionNames[i] == null) {
+//                return i;
+//            }
+//        }
+//
+//        throw new IndexOutOfBoundsException("Not enough open gui slots");
+//    }
 
     public void setOptions(ItemStack[] items) {
         for (int i = 0; i < items.length; i++) {

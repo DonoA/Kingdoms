@@ -174,8 +174,8 @@ public class StoneCutter extends CraftingPlotController {
     private void refreshControllerMenu() {
         controllerMenu.get().updateWithReqs(getAllReqs());
 
-        controllerMenu.get().setOption(10, CustomItemIndex.INCREASE.toItemStack(), "Current Production", "Current work done: " + workAdded);
-        controllerMenu.get().setOption(11, CustomItemIndex.DECREASE.toItemStack(), "Current Consumption");
+//        controllerMenu.get().setOption(10, CustomItemIndex.INCREASE.toItemStack(), "Current Production", "Current work done: " + workAdded);
+//        controllerMenu.get().setOption(11, CustomItemIndex.DECREASE.toItemStack(), "Current Consumption");
         controllerMenu.get().refreshAllViewers();
     }
 

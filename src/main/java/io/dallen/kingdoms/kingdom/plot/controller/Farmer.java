@@ -11,6 +11,7 @@ import io.dallen.kingdoms.menus.ChestGUI;
 import io.dallen.kingdoms.savedata.Ref;
 import io.dallen.kingdoms.util.Lazy;
 import io.dallen.kingdoms.util.MaterialUtil;
+import io.dallen.kingdoms.util.ToolTypes;
 import lombok.NoArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -27,11 +28,6 @@ import java.util.Set;
 
 @NoArgsConstructor
 public class Farmer extends PlotController {
-
-    private static final Set<Material> hoes = Set.of(
-            Material.WOODEN_HOE, Material.STONE_HOE, Material.GOLDEN_HOE,
-            Material.DIAMOND_HOE, Material.NETHERITE_HOE
-    );
 
     private final PlotInventory inputInventory = new PlotInventory();
     private final PlotInventory outputInventory = new PlotInventory();
@@ -136,7 +132,7 @@ public class Farmer extends PlotController {
                 var ageable = (Ageable) blockData;
 
                 if (ageable.getAge() >= ageable.getMaximumAge()) {
-                    var didHarvest = attemptToHarvest();
+                    var didHarvest = locateAndDamage(ToolTypes.getHoes(), inputInventory);
                     if (didHarvest) {
                         ageable.setAge(0);
                         block.setBlockData(ageable);
@@ -162,24 +158,5 @@ public class Farmer extends PlotController {
             default:
                 return null;
         }
-    }
-
-    private boolean attemptToHarvest() {
-        var offset = inputInventory.firstOf(hoes);
-        if (offset == -1) {
-            return false;
-        }
-
-        var item = inputInventory.getItem(offset);
-        var meta = (Damageable) item.getItemMeta();
-        meta.setDamage(meta.getDamage() + 1);
-
-        if (meta.getDamage() >= item.getType().getMaxDurability()) {
-            inputInventory.clear(offset);
-        } else {
-            item.setItemMeta(meta);
-        }
-
-        return true;
     }
 }

@@ -33,6 +33,12 @@ public class Bounds implements Cloneable {
     public Location center() {
         return new Location(world, blockX, blockY, blockZ);
     }
+    public Location minPoint() {
+        return new Location(world, blockX - minusX, blockY, blockZ - minusZ);
+    }
+    public Location maxPoint() {
+        return new Location(world, blockX + plusX, blockY + height, blockZ + plusZ);
+    }
 
     public void forEachBorder(ForEachIndex2D f) {
         int i = 0;

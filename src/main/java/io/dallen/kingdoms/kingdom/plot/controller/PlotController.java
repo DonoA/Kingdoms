@@ -15,9 +15,12 @@ import org.bukkit.Material;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 
 import java.util.List;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -76,65 +79,22 @@ public abstract class PlotController {
         return true;
     }
 
-
-    public static ChestGUI emptyPlotAssign(Plot plot) {
-        var stoneCutterCost = StoneCutter.getCost(plot);
-        var storageCost = Storage.getCost(plot);
-        var quarryCost = Quarry.getCost(plot);
-
-        var guiName = "Plot";
-        if (plot.getController() != null) {
-            guiName = "Plot (" + plot.getController().getName() + ")";
+    protected boolean locateAndDamage(Set<Material> tools, PlotInventory toolInv) {
+        var offset = toolInv.firstOf(tools);
+        if (offset == -1) {
+            return false;
         }
-        var gui = new ChestGUI(guiName, 9);
-        gui.setOption(0, new ItemStack(Material.STONE_PICKAXE), "Stone Worker", stoneCutterCost.requirements());
-        gui.setOption(1, new ItemStack(Material.WHEAT), "Farm");
-        gui.setOption(2, new ItemStack(Material.BARREL), "Storage", storageCost.requirements());
-        gui.setOption(3, new ItemStack(Material.COBBLESTONE), "Quarry", quarryCost.requirements());
 
-        if (plot.getController() != null) {
-            gui.setOption(8, CustomItemIndex.CANCEL.toItemStack(), "Clear Plot");
-        }
-        gui.setClickHandler(clickEvent -> handlePlotAssign(clickEvent, plot));
-        return gui;
-    }
+        var item = toolInv.getItem(offset);
+        var meta = (Damageable) item.getItemMeta();
+        meta.setDamage(meta.getDamage() + 1);
 
-    private static void handlePlotAssign(ChestGUI.OptionClickEvent clickEvent, Plot plot) {
-        var player = clickEvent.getPlayer();
-        switch (clickEvent.getClicked().getType()) {
-            case STONE_PICKAXE:
-                var stoneCost = StoneCutter.getCost(plot);
-                if (!stoneCost.canPurchase(player.getInventory())) {
-                    clickEvent.setClose(false);
-                    player.sendMessage("Too expensive!");
-                } else {
-                    stoneCost.purchase(player.getInventory());
-                    plot.setController(new StoneCutter(plot.asRef()));
-                }
-                break;
-            case WHEAT:
-                plot.setController(new Farmer(plot.asRef()));
-                break;
-            case BARREL:
-                var storageCost = Storage.getCost(plot);
-                if (!storageCost.canPurchase(player.getInventory())) {
-                    clickEvent.setClose(false);
-                    player.sendMessage("Too expensive!");
-                } else {
-                    storageCost.purchase(player.getInventory());
-                    plot.setController(new Storage(plot.asRef()));
-                }
-                break;
-            case COBBLESTONE:
-                var quarryCost = Quarry.getCost(plot);
-                if (!quarryCost.canPurchase(player.getInventory())) {
-                    clickEvent.setClose(false);
-                    player.sendMessage("Too expensive!");
-                } else {
-                    quarryCost.purchase(player.getInventory());
-                    plot.setController(new Quarry(plot.asRef()));
-                }
-                break;
+        if (meta.getDamage() >= item.getType().getMaxDurability()) {
+            toolInv.clear(offset);
+        } else {
+            item.setItemMeta(meta);
         }
+
+        return true;
     }
 }

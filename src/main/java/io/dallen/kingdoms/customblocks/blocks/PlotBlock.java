@@ -4,6 +4,7 @@ import io.dallen.kingdoms.customblocks.CustomBlock;
 import io.dallen.kingdoms.customblocks.CustomBlockData;
 import io.dallen.kingdoms.customitems.CustomItemIndex;
 import io.dallen.kingdoms.kingdom.Kingdom;
+import io.dallen.kingdoms.kingdom.plot.EmptyPlotAssigner;
 import io.dallen.kingdoms.kingdom.plot.Plot;
 import io.dallen.kingdoms.kingdom.plot.controller.PlotController;
 import io.dallen.kingdoms.kingdom.plot.controller.StoneCutter;
@@ -89,7 +90,7 @@ public class PlotBlock extends CustomBlock {
         var plot = data.plot.get();
 
         if (plot.getController() == null) {
-            PlotController.emptyPlotAssign(plot).sendMenu(event.getPlayer());
+            EmptyPlotAssigner.emptyPlotAssign(plot).sendMenu(event.getPlayer());
         } else {
             plot.getController().getPlotMenu().sendMenu(event.getPlayer());
         }

@@ -44,6 +44,10 @@ public class SaveDataManager<K, V> extends HashMap<K, V> {
         try {
             var rawJson = FileManager.readDataFile(saveLocation);
             var loadedData = Kingdoms.gson.fromJson(rawJson, JsonArray.class);
+            if (loadedData == null) {
+                return;
+            }
+
             for (var entry : loadedData) {
                 var jsonObj = entry.getAsJsonObject();
                 var keyObj = Kingdoms.gson.fromJson(jsonObj.get("key"), keyType);

@@ -1,5 +1,6 @@
 package io.dallen.kingdoms.savedata;
 
+import io.dallen.kingdoms.Kingdoms;
 import org.bukkit.Bukkit;
 
 import java.io.IOException;
@@ -14,8 +15,7 @@ public class FileManager {
 
     public static void writeDataFile(String fileName, String toWrite) {
         try {
-            createFolder();
-            Files.writeString(Path.of("plugins", "kingdoms", fileName), toWrite);
+            Files.writeString(Path.of(getDataFolder().toString(), fileName), toWrite);
         } catch (IOException e) {
             Bukkit.getLogger().warning("Failed to write data file " + fileName);
             e.printStackTrace();
@@ -24,8 +24,7 @@ public class FileManager {
 
     public static String readDataFile(String fileName) {
         try {
-            createFolder();
-            return Files.readString(Path.of("plugins", "kingdoms", fileName));
+            return Files.readString(Path.of(getDataFolder().toString(), fileName));
         } catch (IOException e) {
             Bukkit.getLogger().warning("Failed to read data file " + fileName);
             e.printStackTrace();
@@ -33,8 +32,9 @@ public class FileManager {
         return "";
     }
 
-    public static void createFolder() throws IOException {
-        var dataFolder = Path.of("plugins", "kingdoms");
+    public static Path getDataFolder() throws IOException {
+        var dataFolder = Kingdoms.instance.getDataFolder().toPath();
         Files.createDirectories(dataFolder);
+        return dataFolder;
     }
 }

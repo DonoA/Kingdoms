@@ -102,4 +102,14 @@ public class Kingdom extends ClaimedRegion<String, Kingdom> {
     public boolean isMember(OfflinePlayer player) {
         return members.contains(player);
     }
+
+    public boolean isOnline() {
+        for (var offlinePlayer : members) {
+            if (offlinePlayer.isOnline()) {
+                return true;
+            }
+        }
+
+        return owner.isOnline();
+    }
 }

@@ -130,6 +130,10 @@ public class Plot extends ClaimedRegion<UUID, Plot> implements Listener {
                 continue;
             }
 
+            if (!plot.getKingdom().isOnline()) {
+                continue;
+            }
+
             plot.getController().tick();
         }
     }

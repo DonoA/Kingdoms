@@ -9,26 +9,18 @@ import io.dallen.kingdoms.kingdom.plot.PlotInventory;
 import io.dallen.kingdoms.menus.ChestGUI;
 import io.dallen.kingdoms.menus.OptionCost;
 import io.dallen.kingdoms.savedata.Ref;
-import io.dallen.kingdoms.util.Bounds;
-import io.dallen.kingdoms.util.ItemStackMaterial;
-import io.dallen.kingdoms.util.ItemUtil;
 import io.dallen.kingdoms.util.Lazy;
 import io.dallen.kingdoms.util.MaterialUtil;
+import io.dallen.kingdoms.util.ToolTypes;
 import lombok.NoArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Chest;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Consumer;
 
 @NoArgsConstructor
 public class Quarry extends PlotController {
@@ -39,7 +31,8 @@ public class Quarry extends PlotController {
                 .build();
     }
 
-    private final PlotInventory storageInventory = new PlotInventory();
+    private final PlotInventory inputInventory = new PlotInventory();
+    private final PlotInventory outputInventory = new PlotInventory();
 
     @Expose(serialize = false, deserialize = false)
     private final Lazy<BasicPlotGUI> controllerMenu = new Lazy<>(() ->
@@ -47,41 +40,41 @@ public class Quarry extends PlotController {
 
     private final PlotRequirement inputChest = new PlotRequirement("Input Chest");
     private final PlotRequirement outputChest = new PlotRequirement("Output Chest");
-    private final PlotRequirement storageSpace = new PlotRequirement("Storage Space");
     private final PlotRequirement bed = new PlotRequirement("Bed");
 
     public List<PlotRequirement> getAllReqs() {
         return List.of(
-                inputChest, outputChest, storageSpace, bed
+                inputChest, outputChest, bed
         );
     }
 
     @Override
     public List<PlotInventory> getAllPlotInventories() {
         return List.of(
-                storageInventory
+                inputInventory, outputInventory
         );
     }
 
     private int maxDepth;
-    private Location lastBroken;
+    private Location currentBlock;
     private boolean done;
+    private int blockHits = 0;
 
     public Quarry(Ref<Plot> plot) {
         super(plot, "Quarry");
         var bounds = getPlot().getBounds();
         this.maxDepth = Math.max(bounds.getSizeX(), bounds.getSizeZ()) - 1;
-        this.lastBroken = new Location(bounds.getWorld(),
-                bounds.getBlockX() - bounds.getMinusX(),
+        var minPoint = bounds.minPoint();
+        this.currentBlock = new Location(bounds.getWorld(),
+                minPoint.getBlockX(),
                 bounds.getBlockY() - 1,
-                bounds.getBlockZ() - bounds.getMinusZ());
+                minPoint.getBlockZ());
         this.done = false;
     }
 
     @Override
     public void onCreate() {
         getPlot().setFloor(floorMaterial);
-        Bukkit.broadcastMessage("Depth " + maxDepth);
     }
 
     @Override
@@ -115,41 +108,59 @@ public class Quarry extends PlotController {
 
             if (chestType == PlotChest.PlotChestType.INPUT) {
                 inputChest.setPoi(blocLoc);
+                inputInventory.getChests().add(blocLoc);
             } else if (chestType == PlotChest.PlotChestType.OUTPUT) {
                 outputChest.setPoi(blocLoc);
-            } else {
-                storageInventory.getChests().add(blocLoc);
-                storageSpace.setPoi(blocLoc);
+                outputInventory.getChests().add(blocLoc);
             }
         }
     }
 
     @Override
     public ChestGUI getPlotMenu() {
+        refreshControllerMenu();
+        return controllerMenu.get();
+    }
+
+    private void refreshControllerMenu() {
         scanPlot();
         controllerMenu.get().updateWithReqs(getAllReqs());
 
-        controllerMenu.get().setOption(10, CustomItemIndex.INCREASE.toItemStack(), "Done?", String.valueOf(done));
-        controllerMenu.get().setOption(11, CustomItemIndex.INCREASE.toItemStack(), "Target Block", lastBroken.toString());
+//        controllerMenu.get().setOption(10, CustomItemIndex.INCREASE.toItemStack(), "Done?", String.valueOf(done));
+//        controllerMenu.get().setOption(11, CustomItemIndex.INCREASE.toItemStack(), "Target Block", currentBlock.toString());
 
         controllerMenu.get().refreshAllViewers();
-        return controllerMenu.get();
     }
 
     @Override
     public void tick() {
+        refreshControllerMenu();
+
         if (done) {
             return;
         }
 
-        var nextBlock = getNextBlock(lastBroken);
-        if (nextBlock == null) {
-            done = true;
+        var didMine = locateAndDamage(ToolTypes.getPickaxes(), inputInventory);
+        if (!didMine) {
             return;
         }
 
-        nextBlock.getBlock().setType(Material.AIR);
-        lastBroken = nextBlock;
+        blockHits++;
+        if (blockHits < 10) {
+            return;
+        }
+        blockHits = 0;
+
+        var bloc = currentBlock.getBlock();
+        outputInventory.addItem(new ItemStack(bloc.getType()));
+        currentBlock.getBlock().setType(Material.AIR);
+
+        var nextBlock = getNextBlock(currentBlock);
+        if (nextBlock == null) {
+            done = true;
+        } else {
+            currentBlock = nextBlock;
+        }
     }
 
     private Location getNextBlock(Location lastBroken) {
